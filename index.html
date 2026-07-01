@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>共有スペース｜Tools &amp; Sites</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --sub: #9198a1;
+      --accent: #2f81f7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .wrap { max-width: 840px; margin: 0 auto; padding: 56px 24px 80px; }
+    header { border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 32px; }
+    h1 { font-size: 28px; margin: 0 0 8px; }
+    .lead { color: var(--sub); margin: 0; font-size: 15px; }
+    h2 { font-size: 16px; color: var(--sub); font-weight: 600; margin: 40px 0 16px; letter-spacing: .04em; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .card {
+      display: block;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color .15s, transform .15s;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .card .name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+    .card .desc { color: var(--sub); font-size: 13px; }
+    .empty {
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      color: var(--sub);
+      font-size: 14px;
+      text-align: center;
+    }
+    footer { margin-top: 56px; color: var(--sub); font-size: 12px; border-top: 1px solid var(--border); padding-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>🧰 共有スペース</h1>
+      <p class="lead">チームで使うツール・サイトの置き場。URLを共有すれば、誰でもブラウザから開けます。</p>
+    </header>
+
+    <h2>SITES &amp; TOOLS</h2>
+    <div class="grid">
+      <!-- ↓ サイト/ツールを追加したらここにカードを増やす -->
+      <a class="card" href="./sample/">
+        <div class="name">サンプルページ</div>
+        <div class="desc">動作確認用のテストページ</div>
+      </a>
+    </div>
+
+    <div class="empty" style="margin-top:16px;">
+      新しいサイト・ツールはフォルダを追加すると、ここに並びます。
+    </div>
+
+    <footer>
+      Powered by GitHub Pages ・ 社内共有用
+    </footer>
+  </div>
+</body>
+</html>
