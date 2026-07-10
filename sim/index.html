@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>投資シミュレーション</title>
+<style>
+  :root{
+    --gold:#c6a35a;
+    --gold-track:#d9c290;
+    --ink:#0f2540;
+    --blue:#2f6df6;
+    --line:#c9d2e0;
+    --bg:#ffffff;
+    --muted:#8a94a6;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",-apple-system,sans-serif;
+    background:#eef1f5;
+    display:flex;
+    justify-content:center;
+    padding:24px;
+  }
+  .card{
+    width:100%;
+    max-width:620px;
+    background:var(--bg);
+    border:2px solid var(--blue);
+    border-radius:6px;
+    padding:22px 22px 26px;
+  }
+  .label-sim{
+    color:var(--blue);
+    font-weight:700;
+    letter-spacing:.14em;
+    font-size:13px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:8px 12px;
+    margin-bottom:12px;
+  }
+  h1{
+    font-size:30px;
+    font-weight:800;
+    color:#1a2233;
+    margin:0 0 12px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:14px 12px;
+    letter-spacing:.02em;
+  }
+  .desc{
+    color:var(--muted);
+    font-size:15px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:12px;
+    margin-bottom:18px;
+  }
+  .row{
+    border:1px solid #e3e8ef;
+    border-radius:4px;
+    padding:14px 14px 18px;
+    margin-bottom:14px;
+  }
+  .row-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:12px;
+  }
+  .row-name{font-size:17px;font-weight:700;color:#2a3345;}
+  .row-val{font-size:22px;font-weight:800;color:var(--gold);}
+  input[type=range]{
+    -webkit-appearance:none;
+    appearance:none;
+    width:100%;
+    height:10px;
+    border-radius:6px;
+    background:#dfe3e9;
+    outline:none;
+  }
+  input[type=range]::-webkit-slider-runnable-track{height:10px;border-radius:6px;background:transparent;}
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;
+    width:26px;height:26px;border-radius:50%;
+    background:#fff;border:3px solid var(--gold);
+    cursor:pointer;margin-top:-8px;
+    box-shadow:0 1px 3px rgba(0,0,0,.2);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:26px;height:26px;border-radius:50%;
+    background:#fff;border:3px solid var(--gold);cursor:pointer;
+  }
+  .result{
+    background:var(--ink);
+    border-radius:6px;
+    text-align:center;
+    padding:18px;
+    margin-top:6px;
+  }
+  .result-cap{color:#c7d0e0;font-size:15px;margin-bottom:6px;}
+  .result-num{color:var(--gold);font-size:44px;font-weight:800;letter-spacing:.01em;}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="label-sim">SIMULATION</div>
+    <h1>いくら・どれくらいで、いくらに？</h1>
+    <div class="desc">投資額と期間を動かして、受取イメージをチェック。</div>
+
+    <div class="row">
+      <div class="row-head">
+        <span class="row-name">投資額</span>
+        <span class="row-val" id="amountLabel">100万円</span>
+      </div>
+      <input type="range" id="amount" min="1" max="500" step="1" value="100">
+    </div>
+
+    <div class="row">
+      <div class="row-head">
+        <span class="row-name">運用期間</span>
+        <span class="row-val" id="monthsLabel">12ヶ月</span>
+      </div>
+      <input type="range" id="months" min="1" max="24" step="1" value="12">
+    </div>
+
+    <div class="row">
+      <div class="row-head">
+        <span class="row-name">目標利回り（実績平均）</span>
+        <span class="row-val" id="rateLabel">5.5%</span>
+      </div>
+      <input type="range" id="rate" min="4" max="12" step="0.1" value="5.5">
+    </div>
+
+    <div class="result">
+      <div class="result-cap">受取イメージ（税引前）</div>
+      <div class="result-num" id="result">+ 55,000円</div>
+    </div>
+  </div>
+
+<script>
+  const amount = document.getElementById('amount');
+  const months = document.getElementById('months');
+  const rate   = document.getElementById('rate');
+
+  const amountLabel = document.getElementById('amountLabel');
+  const monthsLabel = document.getElementById('monthsLabel');
+  const rateLabel   = document.getElementById('rateLabel');
+  const result      = document.getElementById('result');
+
+  function fillTrack(el){
+    const pct = (el.value - el.min) / (el.max - el.min) * 100;
+    el.style.background =
+      `linear-gradient(90deg, var(--gold-track) ${pct}%, #dfe3e9 ${pct}%)`;
+  }
+
+  function update(){
+    const man = Number(amount.value);          // 投資額（万円）
+    const m   = Number(months.value);          // 運用期間（ヶ月）
+    const r   = Number(rate.value);            // 利回り（%）
+
+    amountLabel.textContent = man + '万円';
+    monthsLabel.textContent = m + 'ヶ月';
+    rateLabel.textContent   = r.toFixed(1) + '%';
+
+    // 受取（税引前）＝ 投資額 × 利回り × 運用期間 ÷ 12
+    const profit = man * 10000 * (r / 100) * (m / 12);
+    result.textContent = '+ ' + Math.round(profit).toLocaleString('ja-JP') + '円';
+
+    [amount, months, rate].forEach(fillTrack);
+  }
+
+  [amount, months, rate].forEach(el => el.addEventListener('input', update));
+  update();
+</script>
+</body>
+</html>
