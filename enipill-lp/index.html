@@ -1,41 +1,530 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex, nofollow">
-  <title>低用量ピル比較サイト｜デザイン確認用プレビュー</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: #eceef1;
-      font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif;
-      color: #333;
-      -webkit-text-size-adjust: 100%;
-    }
-    .bar {
-      max-width: 430px; margin: 0 auto; padding: 12px 16px;
-      font-size: 12px; color: #8a8f98; text-align: center; letter-spacing: .02em;
-    }
-    .lp {
-      max-width: 430px; margin: 0 auto; background: #fff;
-      box-shadow: 0 0 28px rgba(0,0,0,.10);
-    }
-    .lp img { width: 100%; height: auto; display: block; }
-    .note {
-      max-width: 430px; margin: 0 auto; padding: 18px 18px 40px;
-      font-size: 12px; line-height: 1.8; color: #9198a1; text-align: center;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="低用量ピルのオンライン処方を料金・ピルの種類・サポートで徹底比較。">
+<title>低用量ピル比較ナビ｜オンライン処方 総合ランキング</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#EF6B7E; --red:#D14059; --dark:#292E3D; --gray:#808594; --lgray:#A1A6B0;
+  --orange:#F29E33; --teal:#1A7385; --gold:#F2B826; --green:#218C59; --blue:#2180B8;
+  --bronze:#BD8554; --note:#4D4F5C; --pinkbg:#FFF1F3; --ctagreen:#2BB673;
+  --line:#ececf0;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  font-family:"Noto Sans JP",-apple-system,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+  color:var(--dark); background:#e9ebee; line-height:1.7; font-size:14px;
+}
+img{max-width:100%; display:block;}
+a{text-decoration:none; color:inherit;}
+
+/* 全体をSP幅で中央寄せ（PCは両サイド余白） */
+.lp{max-width:430px; margin:0 auto; background:#fff; overflow:hidden;}
+
+/* セクション共通 */
+.sec{padding:36px 20px;}
+.sec-ttl{font-size:21px; font-weight:700; text-align:center; letter-spacing:.01em;}
+.sec-sub{font-size:13px; font-weight:500; color:var(--gray); text-align:center; margin-top:8px;}
+
+/* CTAボタン */
+.cta{
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  background:var(--pink); color:#fff; font-weight:700; font-size:16px;
+  padding:16px 20px; border-radius:999px; text-align:center;
+  box-shadow:0 6px 14px rgba(239,107,126,.32); width:100%;
+}
+.cta.green{background:var(--ctagreen); box-shadow:0 6px 14px rgba(43,182,115,.30);}
+.cta.sm{font-size:14px; padding:13px 18px;}
+
+/* チェックリスト */
+.checks{list-style:none;}
+.checks li{display:flex; gap:8px; align-items:flex-start; padding:5px 0; font-size:13px;}
+.checks .ck{color:var(--pink); font-weight:700; flex:none;}
+
+/* ============ 1. FV（画像） ============ */
+.fv img{width:100%;}
+
+/* ============ 2. キャンペーン枠 ============ */
+.campaign{background:var(--pinkbg); padding:22px 20px 24px; text-align:center;}
+.campaign .head{font-size:16px; font-weight:700; color:var(--pink); margin-bottom:14px;}
+.campaign .banner{border-radius:12px; overflow:hidden; margin-bottom:14px;}
+.price-card{background:#fff; border:1.5px solid var(--pink); border-radius:14px; padding:16px 18px; margin-bottom:14px;}
+.price-card .lbl{font-size:13px; font-weight:700; margin-bottom:6px;}
+.price-card .before{color:var(--gray); font-size:12px; margin-bottom:2px;}
+.price-card .before s{font-size:15px;}
+.price-card .arrow{color:var(--pink); font-size:12px;}
+.price-card .now{font-size:38px; font-weight:900; color:var(--pink); line-height:1.2;}
+.price-card .now small{font-size:13px; color:var(--note); font-weight:700;}
+.price-card .badge{display:inline-block; background:#ffe9ef; color:var(--pink); font-size:12px; font-weight:700; padding:5px 12px; border-radius:999px; margin-top:8px;}
+.campaign .free{color:var(--teal); font-weight:700; font-size:13px; margin-bottom:14px;}
+
+/* ============ 3. 当サイト限定特典 ============ */
+.bonus{background:var(--pink); padding:22px 20px 24px; text-align:center; color:#fff;}
+.bonus .tag{display:inline-block; background:#fff; color:var(--red); font-size:13px; font-weight:700; padding:5px 14px; border-radius:999px; margin-bottom:12px;}
+.bonus h3{font-size:19px; font-weight:700; margin-bottom:14px;}
+.bonus .box{background:#fff; border-radius:12px; padding:14px 18px; margin-bottom:16px; text-align:left;}
+.bonus .box li{color:var(--dark);}
+.bonus .box .ck{color:var(--pink);}
+
+/* ============ 比較表 ============ */
+.cmp{width:100%; border-collapse:collapse; table-layout:fixed; margin-top:18px; border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+.cmp th,.cmp td{border:1px solid var(--line); text-align:center; vertical-align:middle; padding:10px 2px;}
+.cmp thead th{font-size:13px; font-weight:700; background:#fafafc; padding:12px 2px;}
+.cmp .col-eni{width:30%;}
+.cmp .col-c{width:22%;}
+.cmp .rowh{width:26%; font-size:12px; font-weight:700; background:#fafafc; text-align:left; padding-left:10px;}
+.cmp thead .eni{background:var(--pink); color:#fff;}
+.cmp td.eni{background:#fff4f6;}
+.mark{font-size:22px; font-weight:700; line-height:1;}
+.mark.g{color:var(--pink);} .mark.o{color:var(--orange);} .mark.x{color:var(--lgray);}
+.cval{font-size:12px; font-weight:700; margin-top:3px;}
+.cval.hi{color:var(--red);}
+.cnote{font-size:9px; color:var(--gray); font-weight:500;}
+.cmp-cta-row td{padding:10px 4px; border:1px solid var(--line);}
+.mini-btn{display:inline-block; font-size:11px; font-weight:700; padding:6px 10px; border-radius:6px; border:1.5px solid var(--pink); color:var(--red);}
+.mini-btn.fill{background:var(--pink); color:#fff;}
+.cmp-note{font-size:11px; color:var(--gray); margin-top:10px; line-height:1.6;}
+
+/* ============ ミニピル導線 ============ */
+.mini{margin:0 20px 0; background:#eafafc; border:1px solid #bfeaf0; border-radius:12px; padding:16px 18px; display:flex; gap:12px; align-items:flex-start;}
+.mini .ico{font-size:22px; flex:none;}
+.mini .ttl{font-size:15px; font-weight:700; color:var(--teal);}
+.mini p{font-size:13px; color:#6b7080; margin:4px 0 8px;}
+.mini a{font-size:14px; font-weight:700; color:var(--teal);}
+
+/* ============ 不安喚起 ============ */
+.warn{background:#fffdf5;}
+.warn .box{background:#fff; border:1px solid #f2e4c4; border-radius:12px; padding:18px; text-align:center;}
+.warn .big{font-size:17px; font-weight:700; line-height:1.5;}
+.warn .kiken{display:inline-block; background:#fff3dc; color:#e58c1a; font-size:13px; font-weight:700; padding:5px 14px; border-radius:999px; margin:12px 0;}
+.warn p{font-size:13px; color:#4d4f5c; font-weight:500; text-align:left; margin-bottom:12px;}
+.warn .lead{color:var(--red); font-weight:700; text-align:center;}
+
+/* ============ 選び方ナビ ============ */
+.nav3 .item{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-top:12px; box-shadow:0 2px 8px rgba(0,0,0,.03);}
+.nav3 .item h4{font-size:15px; font-weight:700; display:flex; gap:8px; align-items:center;}
+.nav3 .item p{font-size:13px; color:var(--dark); font-weight:500; margin-top:4px;}
+.nav3 .price h4{color:var(--green);} .nav3 .speed h4{color:var(--blue);} .nav3 .safe h4{color:var(--red);}
+.nav3 .eniword{color:var(--red); font-weight:700;}
+
+/* ============ 失敗しない選び方Point ============ */
+.points .item{background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px; margin-top:14px;}
+.points .no{display:inline-flex; flex-direction:column; align-items:center; justify-content:center; width:44px; height:44px; background:var(--pink); color:#fff; border-radius:10px; flex:none;}
+.points .no .p{font-size:7px; font-weight:700; letter-spacing:.1em;}
+.points .no .n{font-size:15px; font-weight:700; line-height:1;}
+.points .row{display:flex; gap:12px; align-items:center;}
+.points .row h4{font-size:15px; font-weight:700;}
+.points .desc{font-size:13px; color:#73788c; font-weight:500; margin:8px 0;}
+.points .hit{display:flex; gap:6px; font-size:13px; font-weight:700; color:var(--red);}
+.points .hit .ck{color:var(--pink);}
+
+/* ============ 個別紹介ブロック ============ */
+.brand{padding:0 20px 34px;}
+.brand-card{border-radius:16px; padding:20px; margin-top:20px;}
+.brand-card.rank1{background:var(--pinkbg);}
+.brand-card.rank2{background:#f6f7f9;}
+.brand-card.rank3{background:#faf6f3;}
+.emblem{display:flex; flex-direction:column; align-items:center; margin-bottom:6px;}
+.emblem .crown{font-size:20px; line-height:1;}
+.emblem .medal{width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; color:#fff; margin-top:2px;}
+.emblem .medal.g{background:linear-gradient(135deg,#f7c948,#e0a800);}
+.emblem .medal.s{background:linear-gradient(135deg,#c7ccd4,#9aa1ab);}
+.emblem .medal.b{background:linear-gradient(135deg,#d69a6a,#b5793f);}
+.brand-card h3{font-size:28px; font-weight:700; text-align:center;}
+.brand-card .rank1 h3{font-size:30px;}
+.brand-card .bsub{font-size:13px; color:var(--gray); font-weight:500; text-align:center; margin-top:2px;}
+.badge-line{text-align:center; margin:10px 0;}
+.badge-line .b{display:inline-block; background:#ffe9ef; color:var(--red); font-size:13px; font-weight:700; padding:5px 12px; border-radius:8px;}
+.brand-card.rank2 .badge-line .b{background:#e9edf5; color:#3b5b8f;}
+.brand-card.rank3 .badge-line .b{background:#f6e7ec; color:var(--red);}
+.prodimg{background:#eceaeb; border-radius:12px; height:150px; display:flex; align-items:center; justify-content:center; color:#b2a8ad; font-size:13px; font-weight:500; margin:12px 0;}
+.brand-card h5{font-size:15px; font-weight:700; margin:14px 0 8px;}
+.plan{background:#fff; border-radius:10px; overflow:hidden; margin-top:14px;}
+.plan .prow{display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border-bottom:1px solid var(--line); font-size:13px;}
+.plan .prow:last-child{border-bottom:none;}
+.plan .prow.best{border:1.5px solid var(--pink); border-radius:8px;}
+.plan .pname b{font-weight:700;} .plan .pbest{display:block; font-size:10px; color:var(--red); font-weight:700;}
+.plan .pprice{font-size:16px; font-weight:700;}
+.plan .prow.best .pprice{color:var(--red);}
+.brand-card .cta{margin-top:16px;}
+.pricebar{display:flex; justify-content:space-between; align-items:center; background:#fff; border-radius:10px; padding:12px 14px; margin-top:12px; font-size:13px; font-weight:700;}
+.brand-card.rank2 .checks .ck{color:#949ca8;}
+.brand-card.rank3 .checks .ck{color:var(--bronze);}
+.outline-cta{display:block; text-align:center; border:1.5px solid var(--red); color:var(--red); font-weight:700; padding:13px; border-radius:999px; margin-top:14px; font-size:15px;}
+
+/* ============ 口コミ ============ */
+.voice .v{background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px; margin-top:14px;}
+.voice .vh{display:flex; gap:10px; align-items:center;}
+.voice .av{width:36px; height:36px; border-radius:50%; background:#ffe9ef; color:var(--red); font-weight:700; display:flex; align-items:center; justify-content:center; flex:none;}
+.voice .vn{font-size:13px; font-weight:700;}
+.voice .star{font-size:12px; color:var(--gold);}
+.voice p{font-size:13px; color:#4d4f5c; font-weight:500; margin-top:8px;}
+
+/* ============ 取扱ピル ============ */
+.pills .grp{background:#fafafc; border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-top:14px;}
+.pills .grp .gh{font-size:15px; font-weight:700; color:var(--red);}
+.pills .grp .gh small{color:var(--gray); font-size:12px; margin-left:6px;}
+.pills .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
+.pills .chip{background:#ffeef2; color:var(--red); font-size:12px; font-weight:500; padding:6px 12px; border-radius:999px;}
+.pills .note{font-size:10px; color:var(--gray); margin-top:14px; text-align:center;}
+
+/* ============ ピルの効果 ============ */
+.eff .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;}
+.eff .c{background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 12px; text-align:center;}
+.eff .c .ico{font-size:26px;}
+.eff .c h4{font-size:14px; font-weight:700; color:var(--pink); margin:6px 0 4px;}
+.eff .c p{font-size:11px; color:var(--gray); font-weight:500; line-height:1.5;}
+.eff .note{font-size:10px; color:var(--gray); text-align:center; margin-top:12px;}
+
+/* ============ 料金相場 ============ */
+.souba .box{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px; text-align:center; margin-top:14px;}
+.souba .box .l{font-size:13px; font-weight:700; color:var(--gray);}
+.souba .box .n{font-size:25px; font-weight:700; margin:4px 0;}
+.souba .box .s{font-size:12px; color:var(--gray); font-weight:500;}
+.souba .box.eni{background:var(--pinkbg); border-color:var(--pink);}
+.souba .box.eni .l{color:var(--red);} .souba .box.eni .n{color:var(--red);}
+.souba .note{font-size:10px; color:var(--gray); text-align:center; margin-top:12px;}
+
+/* ============ FAQ ============ */
+.faq details{background:#fff; border:1px solid var(--line); border-radius:12px; margin-top:12px; overflow:hidden;}
+.faq summary{display:flex; gap:10px; align-items:center; padding:14px 16px; font-size:14px; font-weight:700; cursor:pointer; list-style:none;}
+.faq summary::-webkit-details-marker{display:none;}
+.faq .qi{width:24px; height:24px; border-radius:6px; background:var(--pink); color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; flex:none;}
+.faq summary::after{content:"＋"; margin-left:auto; color:var(--gray); font-weight:700;}
+.faq details[open] summary::after{content:"−";}
+.faq .a{display:flex; gap:10px; padding:0 16px 16px; font-size:12px; color:#73788c; font-weight:500;}
+.faq .ai{width:24px; height:24px; border-radius:6px; background:#eef0f3; color:#666b7a; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; flex:none;}
+
+/* ============ 運営者情報 ============ */
+.about .row{border-top:1px solid var(--line); padding:12px 0; display:flex; gap:12px; font-size:12px;}
+.about .row:first-of-type{border-top:none;}
+.about .k{font-weight:700; width:88px; flex:none; color:var(--dark);}
+.about .v{color:#73788c; font-weight:500;}
+
+/* ============ 最終CTA ============ */
+.final{background:var(--pinkbg); text-align:center; padding:40px 20px;}
+.final h2{font-size:22px; font-weight:700;}
+.final p{font-size:13px; color:var(--note); font-weight:500; margin:10px 0 18px;}
+.final .cta{max-width:340px; margin:0 auto;}
+.final .fnote{font-size:12px; color:var(--gray); margin-top:12px;}
+
+/* ============ フッター ============ */
+.footer{background:#292E3D; color:#c9cdd6; padding:26px 20px; text-align:center; font-size:11px; line-height:1.9;}
+.footer .links{color:#fff; font-weight:500; margin-bottom:10px;}
+.footer .disc{color:#8b909c; font-size:10px; text-align:left; margin:10px 0;}
+.footer .cp{color:#6b7080;}
+
+/* レビュー用の帯 */
+.review-bar{max-width:430px; margin:0 auto; text-align:center; font-size:11px; color:#8a8f98; padding:8px;}
+</style>
 </head>
 <body>
-  <p class="bar">低用量ピル比較サイト ｜ デザイン確認用プレビュー</p>
-  <div class="lp">
-    <img src="lp.png" alt="低用量ピル比較サイト デザイン全体" loading="lazy">
+<div class="lp">
+
+  <!-- 1. FV -->
+  <section class="fv"><img src="images/fv.png" alt="低用量ピル比較ナビ｜オンライン処方 総合ランキング BEST3"></section>
+
+  <!-- 2. キャンペーン枠 -->
+  <section class="campaign">
+    <div class="head">＼このページ限定／ 特別割引キャンペーン</div>
+    <div class="banner"><img src="images/cp_banner.png" alt="特別割引キャンペーン 1シート1,685円"></div>
+    <div class="price-card">
+      <div class="lbl">＼ 初回限定・1シートあたり ／</div>
+      <div class="before">変更前 <s>¥2,500（税込¥2,750）</s></div>
+      <div class="arrow">▼</div>
+      <div class="now">¥1,685 <small>（税込約¥1,854）</small></div>
+      <span class="badge">1シートあたり ¥815 もお得！</span>
+    </div>
+    <div class="free">＋ 副作用対策薬を含む「安心セット」も無料</div>
+    <a class="cta" href="https://any-pill.com/">キャンペーン価格でエニピルを見る →</a>
+  </section>
+
+  <!-- 3. 当サイト限定特典 -->
+  <section class="bonus">
+    <span class="tag">🎁 当サイト限定特典</span>
+    <h3>いまエニピルに申し込むと、</h3>
+    <ul class="box checks">
+      <li><span class="ck">✓</span>体に合わなければ全額返金保証（初回）</li>
+      <li><span class="ck">✓</span>吐き気止め・浮腫み止めが無料セット</li>
+      <li><span class="ck">✓</span>初診・再診料が0円</li>
+    </ul>
+    <a class="cta" style="background:#292E3D;box-shadow:none;" href="https://any-pill.com/">特典付きで申し込む →</a>
+  </section>
+
+  <!-- 4. 比較表① -->
+  <section class="sec">
+    <h2 class="sec-ttl">💊 総合比較ランキング</h2>
+    <p class="sec-sub">料金・種類・サポートを編集部が総合評価</p>
+    <table class="cmp">
+      <thead><tr><th class="rowh"></th><th class="col-eni eni">👑エニピル</th><th class="col-c">Oops</th><th class="col-c">メデリ</th></tr></thead>
+      <tbody>
+        <tr><td class="rowh">月額料金</td>
+          <td class="eni"><span class="mark g">◎</span><div class="cval hi">1,685円〜</div><div class="cnote">全込み</div></td>
+          <td><span class="mark o">○</span><div class="cval">1,850円〜</div><div class="cnote">税込</div></td>
+          <td><span class="mark o">○</span><div class="cval">初月0円</div><div class="cnote">以降1,853円</div></td></tr>
+        <tr><td class="rowh">初診・再診</td>
+          <td class="eni"><span class="mark g">◎</span><div class="cval hi">無料</div></td>
+          <td><span class="mark g">◎</span><div class="cval">無料</div></td>
+          <td><span class="mark g">◎</span><div class="cval">無料</div></td></tr>
+        <tr><td class="rowh">ピルの種類</td>
+          <td class="eni"><span class="mark g">◎</span><div class="cval hi">15種</div><div class="cnote">最多クラス</div></td>
+          <td><span class="mark o">○</span><div class="cval">9種</div></td>
+          <td><span class="mark o">○</span><div class="cval">14種</div></td></tr>
+        <tr><td class="rowh">返金保証</td>
+          <td class="eni"><span class="mark g">◎</span><div class="cval hi">全額返金</div></td>
+          <td><span class="mark x">△</span><div class="cval">なし</div></td>
+          <td><span class="mark x">△</span><div class="cval">なし</div></td></tr>
+        <tr><td class="rowh">副作用対策</td>
+          <td class="eni"><span class="mark g">◎</span><div class="cval hi">無料セット</div></td>
+          <td><span class="mark x">△</span><div class="cval">なし</div></td>
+          <td><span class="mark x">△</span><div class="cval">なし</div></td></tr>
+        <tr><td class="rowh">診療時間</td>
+          <td class="eni"><span class="mark g">◎</span><div class="cval hi">24時間</div><div class="cnote">予約不要</div></td>
+          <td><span class="mark o">○</span><div class="cval">24時間</div></td>
+          <td><span class="mark o">○</span><div class="cval">24時間</div></td></tr>
+        <tr><td class="rowh">配送</td>
+          <td class="eni"><span class="mark o">○</span><div class="cval hi">最短翌日</div></td>
+          <td><span class="mark o">○</span><div class="cval">最短翌日</div></td>
+          <td><span class="mark o">○</span><div class="cval">最短翌日</div></td></tr>
+        <tr><td class="rowh">総合評価</td>
+          <td class="eni"><span class="mark g">◎</span><div class="cval hi">★4.9</div></td>
+          <td><span class="mark o">○</span><div class="cval">★4.6</div></td>
+          <td><span class="mark o">○</span><div class="cval">★4.5</div></td></tr>
+        <tr class="cmp-cta-row"><td class="rowh"></td>
+          <td class="eni"><a class="mini-btn fill" href="https://any-pill.com/">公式 →</a></td>
+          <td><a class="mini-btn" href="#">公式</a></td>
+          <td><a class="mini-btn" href="#">公式</a></td></tr>
+      </tbody>
+    </table>
+    <a class="cta green" style="margin-top:14px;" href="https://any-pill.com/">エニピルを詳しく見る →</a>
+    <p class="cmp-note">※エニピルは税抜・キャンペーン価格、他社は税込。2026年時点の最安プラン目安</p>
+  </section>
+
+  <!-- 5. ミニピル導線 -->
+  <div class="mini">
+    <div class="ico">🚭</div>
+    <div>
+      <div class="ttl">喫煙中・授乳中の方へ</div>
+      <p>低用量ピルが使えない方も、エニピルの「ミニピル」なら対応可能。</p>
+      <a href="https://any-pill.com/lp/mini/tp-587-ab1/">ミニピルの詳細を見る →</a>
+    </div>
   </div>
-  <p class="note">
-    ※本ページはデザイン確認用の画像プレビューです。<br>
-    ボタン・アコーディオン等の動作は本実装後に反映されます。
-  </p>
+
+  <!-- 6. 不安喚起 -->
+  <section class="sec warn">
+    <h2 class="sec-ttl">⚠️ 低用量ピルの正しい入手方法</h2>
+    <div class="box" style="margin-top:16px;">
+      <div class="big">低用量ピルは薬局で<br>市販されていません</div>
+      <span class="kiken">通販での個人輸入もキケン！</span>
+      <p>ピルは医師の診療のうえで処方されるお薬です。個人輸入の海外製ピルは、偽造品や健康被害のリスクがあり危険。</p>
+      <div class="lead">→ 国内承認薬を扱う正規のオンライン処方を選びましょう。</div>
+    </div>
+  </section>
+
+  <!-- 7. 選び方ナビ -->
+  <section class="sec nav3" style="background:#fafafc;">
+    <h2 class="sec-ttl">🧭 あなたはどう選ぶ？</h2>
+    <p class="sec-sub">重視するポイントで選べば、失敗しない</p>
+    <div class="item price"><h4>💰 価格で選ぶなら</h4><p>→ <span class="eniword">エニピル</span>：月¥1,685〜の最安クラス＋全部コミコミ</p></div>
+    <div class="item speed"><h4>⚡ スピードで選ぶなら</h4><p>→ <span class="eniword">エニピル</span>：最短翌日ポスト投函・24時間診療</p></div>
+    <div class="item safe"><h4>🛡 安心で選ぶなら</h4><p>→ <span class="eniword">エニピル</span>：全額返金保証＋プライム上場企業</p></div>
+  </section>
+
+  <!-- 8. 失敗しない選び方Point -->
+  <section class="sec points">
+    <h2 class="sec-ttl">🔎 失敗しない選び方</h2>
+    <p class="sec-sub">この3つをチェックすれば、後悔しない</p>
+    <div class="item">
+      <div class="row"><div class="no"><span class="p">Point</span><span class="n">1</span></div><h4>ピルの種類は豊富か？</h4></div>
+      <p class="desc">避妊・生理痛・PMS・肌荒れなど、目的で選ぶ薬は変わる。取扱が多いほど自分に合う1錠が見つかる。</p>
+      <div class="hit"><span class="ck">✓</span>エニピルは低用量6種を含む計15種で最多クラス</div>
+    </div>
+    <div class="item">
+      <div class="row"><div class="no"><span class="p">Point</span><span class="n">2</span></div><h4>安心して続けられるか？</h4></div>
+      <p class="desc">国内承認薬か・返金保証はあるか・運営元は信頼できるか。長く飲むものだからこそ重要。</p>
+      <div class="hit"><span class="ck">✓</span>エニピルは国内承認薬中心＋全額返金保証＋プライム上場企業</div>
+    </div>
+    <div class="item">
+      <div class="row"><div class="no"><span class="p">Point</span><span class="n">3</span></div><h4>アフターフォローは充実？</h4></div>
+      <p class="desc">継続服用が前提だから、副作用対策や相談体制が整っているかを必ずチェック。</p>
+      <div class="hit"><span class="ck">✓</span>エニピルは副作用対策薬が無料＋24時間チャット相談</div>
+    </div>
+  </section>
+
+  <!-- 9. エニピル個別 -->
+  <div class="brand">
+    <div class="brand-card rank1">
+      <div class="emblem"><span class="crown">👑</span><span class="medal g">1位</span></div>
+      <h3 style="font-size:30px;">エニピル</h3>
+      <div class="bsub">国内最安クラス、産婦人科医在籍で、はじめてでも安心</div>
+      <div class="badge-line"><span class="b">全額返金保証 × 最安クラス</span></div>
+      <div class="prodimg">📷 エニピル 商品イメージ</div>
+      <h5>エニピルのおすすめポイント</h5>
+      <ul class="checks">
+        <li><span class="ck">✓</span>体に合わなければ全額返金保証（初回）</li>
+        <li><span class="ck">✓</span>吐き気止め・浮腫み止めが無料セット</li>
+        <li><span class="ck">✓</span>取扱ピル15種・薬剤の変更もOK</li>
+        <li><span class="ck">✓</span>初診・再診料が0円</li>
+        <li><span class="ck">✓</span>予約不要の24時間オンライン診療</li>
+        <li><span class="ck">✓</span>最短翌日ポストに届く（品名は雑貨）</li>
+        <li><span class="ck">✓</span>プライム市場上場・処方実績90万件</li>
+        <li><span class="ck">✓</span>産婦人科医在籍で相談しやすい</li>
+      </ul>
+      <h5>料金プラン（低用量ピル・税抜）</h5>
+      <div class="plan">
+        <div class="prow best"><div class="pname"><b>12シートおまとめ</b><span class="pbest">いちばんお得</span></div><div class="pprice">¥1,685/月</div></div>
+        <div class="prow"><div class="pname"><b>3シートおまとめ</b></div><div class="pprice">¥2,700/月</div></div>
+        <div class="prow"><div class="pname"><b>毎月発送プラン</b></div><div class="pprice">¥3,300</div></div>
+      </div>
+      <a class="cta" href="https://any-pill.com/">エニピルで問診を始める →</a>
+    </div>
+  </div>
+
+  <!-- 10. 利用者の声 -->
+  <section class="sec voice" style="background:#fafafc;">
+    <h2 class="sec-ttl">💬 利用者のリアルな声</h2>
+    <p class="sec-sub">エニピル利用者アンケート ★4.8／回答1,200件〜</p>
+    <div class="v"><div class="vh"><div class="av">K</div><div><div class="vn">K.Aさん（26歳・会社員）</div><div class="star">★★★★★</div></div></div><p>料金が明朗で続けやすい。副作用の相談もLINEですぐ返ってきて安心でした。</p></div>
+    <div class="v"><div class="vh"><div class="av">M</div><div><div class="vn">M.Sさん（31歳・主婦）</div><div class="star">★★★★☆</div></div></div><p>最短翌日で届いて助かった。梱包も雑貨扱いでバレない配慮が嬉しい。</p></div>
+    <div class="v"><div class="vh"><div class="av">Y</div><div><div class="vn">Y.Tさん（23歳・学生）</div><div class="star">★★★★★</div></div></div><p>初めてで不安だったけど返金保証があるから試せた。今は生理痛がかなり軽い。</p></div>
+    <div class="v"><div class="vh"><div class="av">A</div><div><div class="vn">A.Mさん（28歳・会社員）</div><div class="star">★★★★★</div></div></div><p>取扱の種類が多くて、自分に合うピルを選べた。医師も親身に相談にのってくれて安心。</p></div>
+    <div class="v"><div class="vh"><div class="av">N</div><div><div class="vn">N.Kさん（34歳・主婦）</div><div class="star">★★★★☆</div></div></div><p>初めてで心配だったけど、24時間チャットで質問できたのが助かった。返金保証も安心材料。</p></div>
+    <div class="v"><div class="vh"><div class="av">R</div><div><div class="vn">R.Hさん（21歳・学生）</div><div class="star">★★★★★</div></div></div><p>初月から負担が少なくて学生でも続けやすい。飲み始めてから肌荒れも落ち着いてきた。</p></div>
+  </section>
+
+  <!-- 11. Oops個別 -->
+  <div class="brand">
+    <div class="brand-card rank2">
+      <div class="emblem"><span class="crown">👑</span><span class="medal s">2位</span></div>
+      <h3>Oops（ウープス）</h3>
+      <div class="bsub">オンライン完結で使いやすい</div>
+      <div class="badge-line"><span class="b">診察実績450万件の安心感</span></div>
+      <div class="prodimg">📷 Oops（ウープス）商品イメージ</div>
+      <h5>Oopsのおすすめポイント</h5>
+      <ul class="checks">
+        <li><span class="ck">✓</span>オンラインで診察〜処方まで完結</li>
+        <li><span class="ck">✓</span>取扱9種のシンプルな選択肢</li>
+        <li><span class="ck">✓</span>LINEでいつでも相談OK</li>
+        <li><span class="ck">✓</span>最短当日発送・翌日お届け</li>
+      </ul>
+      <div class="pricebar"><span>月額料金（税込）</span><span>1,850円〜/月</span></div>
+      <a class="outline-cta" href="#">Oops公式サイトを見る →</a>
+    </div>
+  </div>
+
+  <!-- 12. メデリ個別 -->
+  <div class="brand">
+    <div class="brand-card rank3">
+      <div class="emblem"><span class="crown">👑</span><span class="medal b">3位</span></div>
+      <h3>メデリピル</h3>
+      <div class="bsub">産婦人科医が監修。はじめてでも安心</div>
+      <div class="badge-line"><span class="b">初月0円で始めやすい</span></div>
+      <div class="prodimg">📷 メデリピル 商品イメージ</div>
+      <h5>メデリピルのおすすめポイント</h5>
+      <ul class="checks">
+        <li><span class="ck">✓</span>初月分のピル代が0円</li>
+        <li><span class="ck">✓</span>産婦人科医が監修・診療で安心</li>
+        <li><span class="ck">✓</span>取扱ピル14種と豊富なラインナップ</li>
+        <li><span class="ck">✓</span>診療費ずっと無料・LINEで24時間</li>
+      </ul>
+      <div class="pricebar"><span>月額料金（税込）</span><span>初月0円 / 1,853円〜</span></div>
+      <a class="outline-cta" href="#">メデリピル公式サイトを見る →</a>
+    </div>
+  </div>
+
+  <!-- 13. 取扱ピルの種類 -->
+  <section class="sec pills">
+    <h2 class="sec-ttl">💊 エニピルの取り扱いピル種類</h2>
+    <p class="sec-sub">エニピルは低用量・超低用量・ミニピルなど計15種を取扱。<br>あなたに合う1錠がきっと見つかる。</p>
+    <div class="grp"><div class="gh">低用量ピル<small>6種</small></div><div class="chips"><span class="chip">トリキュラー</span><span class="chip">マーベロン</span><span class="chip">ラベルフィーユ</span><span class="chip">ファボワール</span><span class="chip">アンジュ</span><span class="chip">シンフェーズ</span></div></div>
+    <div class="grp"><div class="gh">超低用量ピル<small>4種</small></div><div class="chips"><span class="chip">ヤーズ</span><span class="chip">ヤーズフレックス</span><span class="chip">ルナベル配合錠</span><span class="chip">フリウェル</span></div></div>
+    <div class="grp"><div class="gh">ミニピル（黄体ホルモン）<small>2種</small></div><div class="chips"><span class="chip">セラゼッタ</span><span class="chip">ノアルテン</span></div></div>
+    <p class="note">※取扱銘柄・在庫は変更になる場合があります。詳細は公式サイトをご確認ください。</p>
+  </section>
+
+  <!-- 14. ピルの効果 -->
+  <section class="sec eff" style="background:#fafafc;">
+    <h2 class="sec-ttl">🌸 避妊だけじゃない。ピルの効果</h2>
+    <p class="sec-sub">低用量ピルは女性の毎日をラクにする</p>
+    <div class="grid">
+      <div class="c"><div class="ico">🩸</div><h4>生理痛・PMSの緩和</h4><p>重い生理痛や不調をやわらげる</p></div>
+      <div class="c"><div class="ico">📅</div><h4>生理周期が安定</h4><p>予定が立てやすく急な生理も防ぐ</p></div>
+      <div class="c"><div class="ico">✨</div><h4>ニキビ・肌荒れ改善</h4><p>ホルモンバランスを整え肌トラブル軽減</p></div>
+      <div class="c"><div class="ico">🛡</div><h4>高い避妊効果</h4><p>正しく服用でほぼ確実に避妊できる</p></div>
+    </div>
+    <p class="note">※効果はピル服用中のものです。効果には個人差があります。</p>
+  </section>
+
+  <!-- 15. 料金相場 -->
+  <section class="sec souba">
+    <h2 class="sec-ttl">💰 低用量ピルの料金相場</h2>
+    <p class="sec-sub">オンライン処方の相場と比べても、エニピルは安い</p>
+    <div class="box"><div class="l">一般的なオンライン処方の相場</div><div class="n">月 2,000〜4,000円</div><div class="s">別途、診療費や送料がかかる場合も</div></div>
+    <div class="box eni"><div class="l">👑 エニピル（全部コミコミ）</div><div class="n">月 1,685円〜</div><div class="s">診療費0円・副作用対策も無料・最安クラス</div></div>
+    <p class="note">※エニピルは税抜・キャンペーン価格、他社は税込。2026年時点。プランや割引で変動します。</p>
+  </section>
+
+  <!-- 16. 比較表② -->
+  <section class="sec" style="background:#fafafc;">
+    <h2 class="sec-ttl">🔁 もう一度チェック</h2>
+    <p class="sec-sub">読み終えたいま、あらためて3社を比較</p>
+    <table class="cmp">
+      <thead><tr><th class="rowh"></th><th class="col-eni eni">👑エニピル</th><th class="col-c">Oops</th><th class="col-c">メデリ</th></tr></thead>
+      <tbody>
+        <tr><td class="rowh">月額料金</td><td class="eni"><div class="cval hi">1,685円〜</div></td><td><div class="cval">1,850円〜</div></td><td><div class="cval">初月0円</div></td></tr>
+        <tr><td class="rowh">返金保証</td><td class="eni"><div class="cval hi">◎ 全額</div></td><td><div class="cval" style="color:#b8bac4;">−</div></td><td><div class="cval" style="color:#b8bac4;">−</div></td></tr>
+        <tr><td class="rowh">副作用対策</td><td class="eni"><div class="cval hi">◎ 無料</div></td><td><div class="cval" style="color:#b8bac4;">−</div></td><td><div class="cval" style="color:#b8bac4;">−</div></td></tr>
+        <tr><td class="rowh">総合評価</td><td class="eni"><div class="cval hi">★4.9</div></td><td><div class="cval">★4.6</div></td><td><div class="cval">★4.5</div></td></tr>
+      </tbody>
+    </table>
+    <a class="cta" style="margin-top:14px;" href="https://any-pill.com/">エニピルで問診を始める →</a>
+  </section>
+
+  <!-- 17. FAQ -->
+  <section class="sec faq">
+    <h2 class="sec-ttl">❓ よくある質問</h2>
+    <details open><summary><span class="qi">Q</span>副作用はある？</summary><div class="a"><span class="ai">A</span>飲み始めに軽い吐き気などが出ることがありますが、多くは1〜2ヶ月で落ち着きます。エニピルは対策薬も無料でお届け。</div></details>
+    <details><summary><span class="qi">Q</span>低用量ピルの効果は？</summary><div class="a"><span class="ai">A</span>避妊のほか、生理痛・PMSの緩和、生理周期の安定、ニキビ・肌荒れの改善が期待できます。</div></details>
+    <details><summary><span class="qi">Q</span>どうやって飲むの？</summary><div class="a"><span class="ai">A</span>1日1錠を毎日ほぼ同じ時間に服用します。飲み忘れ防止のLINEリマインドも利用できます。</div></details>
+    <details><summary><span class="qi">Q</span>何歳から飲める？</summary><div class="a"><span class="ai">A</span>初経を迎えていれば服用可能です。未成年は保護者の同意が必要な場合があります。</div></details>
+    <details><summary><span class="qi">Q</span>妊娠しにくくなる？</summary><div class="a"><span class="ai">A</span>服用をやめれば、通常は妊娠可能な状態に戻ります。将来の妊娠に影響はありません。</div></details>
+    <details><summary><span class="qi">Q</span>誰でも飲める？</summary><div class="a"><span class="ai">A</span>一部の持病がある方・喫煙者は服用できない場合があります。問診で医師が判断します。</div></details>
+    <details><summary><span class="qi">Q</span>オンライン処方は安全？</summary><div class="a"><span class="ai">A</span>医師のオンライン診療を受けて処方されます。国内承認薬を中心に取り扱っています。</div></details>
+  </section>
+
+  <!-- 18. 運営者情報 -->
+  <section class="sec about">
+    <h2 class="sec-ttl">🔍 調査概要・運営者情報</h2>
+    <div style="margin-top:16px;">
+      <div class="row"><div class="k">調査方法</div><div class="v">各クリニックの公式サイト掲載情報をもとに、料金・ピル種類・サポート内容を比較・評価。</div></div>
+      <div class="row"><div class="k">比較項目</div><div class="v">月額料金／初診・再診料／取扱ピル種類／返金保証／副作用対策／診療時間／配送スピード</div></div>
+      <div class="row"><div class="k">情報更新日</div><div class="v">2026年7月（料金・仕様は各社最新の公式情報を優先）</div></div>
+      <div class="row"><div class="k">運営者</div><div class="v">（運営会社名・お問い合わせ先を記載）</div></div>
+    </div>
+  </section>
+
+  <!-- 19. 最終CTA -->
+  <section class="final">
+    <h2>迷ったら、まずはエニピル。</h2>
+    <p>全額返金保証つき。合わなければ返金だから、はじめてでも試しやすい。</p>
+    <a class="cta" href="https://any-pill.com/">エニピルの問診を始める →</a>
+    <div class="fnote">24時間・予約不要 ／ 最短翌日ポストにお届け</div>
+  </section>
+
+  <!-- フッター -->
+  <footer class="footer">
+    <div class="links">運営者情報 ・ プライバシーポリシー ・ 免責事項</div>
+    <p class="disc">本サイトは各社の公式情報をもとにした比較・紹介コンテンツです。掲載内容は変更される場合があります。ピルの効果・副作用には個人差があり、服用は医師の診断のもと行ってください。</p>
+    <div class="cp">© 2026 PILL比較ナビ</div>
+  </footer>
+
+</div>
 </body>
 </html>
