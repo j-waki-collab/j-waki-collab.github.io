@@ -109,6 +109,12 @@
     position:fixed; inset:0; z-index:-1;
     background:#080b14 url("assets/ui/bg_ritual.jpg") center / cover no-repeat;
   }
+  .title-bg video{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  }
+  @media (orientation: landscape){
+    .title-bg video{display:none;} /* 横画面は静止画背景＋CSSカード扇 */
+  }
   .title-bg::after{content:""; position:absolute; inset:0;
     background:linear-gradient(180deg,rgba(5,8,16,.1) 0%,rgba(5,8,16,.05) 40%,rgba(5,8,16,.72) 100%);}
   .title-wrap{min-height:calc(100vh - 90px); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:10px 0 30px;}
@@ -165,11 +171,44 @@
   }
   .theme-box .t-label{font-size:11px; color:var(--sub); letter-spacing:.3em;}
   .theme-box .t-txt{font-size:18px; font-weight:700; margin-top:8px; color:var(--gold-l); letter-spacing:.06em;}
+  .theme-box .t-scope{font-size:11px; color:var(--sub); margin-top:8px; letter-spacing:.1em;}
+  .theme-box .t-btns{display:flex; gap:8px; justify-content:center; margin-top:12px;}
   .theme-box button{
-    margin-top:12px; background:transparent; border:1px solid rgba(201,169,97,.4); color:var(--sub);
-    border-radius:6px; padding:7px 16px; font-size:12px; cursor:pointer; font-family:var(--serif); letter-spacing:.15em; transition:.15s;
+    background:transparent; border:1px solid rgba(201,169,97,.4); color:var(--sub);
+    border-radius:6px; padding:8px 14px; font-size:12px; cursor:pointer; font-family:var(--serif); letter-spacing:.12em; transition:.15s;
   }
   .theme-box button:hover{border-color:var(--gold); color:var(--gold-l);}
+
+  /* お題選択モーダル */
+  .chips{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px;}
+  .chip{
+    padding:7px 12px; border:1px solid rgba(201,169,97,.35); border-radius:99px;
+    font-size:12px; cursor:pointer; color:var(--sub); transition:.15s; letter-spacing:.05em;
+  }
+  .chip:hover{border-color:var(--gold); color:var(--gold-l);}
+  .chip.on{
+    background:linear-gradient(180deg,#e8d3a0,#b98f45); color:#3a2b12; font-weight:700; border-color:#8a6f3c;
+  }
+  .theme-list{
+    max-height:34vh; overflow-y:auto; margin:14px 0 4px;
+    border:1px solid rgba(201,169,97,.25); border-radius:10px;
+  }
+  .theme-item{
+    padding:12px 14px; font-size:14px; cursor:pointer; transition:.12s;
+    border-bottom:1px solid rgba(201,169,97,.12); letter-spacing:.04em;
+  }
+  .theme-item:last-child{border-bottom:none;}
+  .theme-item:hover{background:rgba(201,169,97,.1); color:var(--gold-l);}
+  .theme-item .g{font-size:10.5px; color:var(--sub); margin-right:8px; letter-spacing:.08em;}
+
+  /* 減点表示 */
+  .penalty-badge{
+    display:inline-block; font-family:var(--latin); font-weight:700; font-size:13px; letter-spacing:.05em;
+  }
+  .score-line{
+    text-align:center; margin:2px 0 4px; font-size:15px; color:var(--gold-l); letter-spacing:.15em;
+  }
+  .score-line b{font-family:var(--latin); font-size:26px; font-weight:900;}
 
   /* ===== 配布（カードめくり） ===== */
   .pass-wrap{text-align:center; padding:8px 0;}
@@ -307,7 +346,11 @@
 
   <!-- タイトル -->
   <section class="screen active" id="screen-title">
-    <div class="title-bg"></div>
+    <div class="title-bg">
+      <video autoplay muted loop playsinline poster="assets/ui/bg_ritual.jpg">
+        <source src="assets/ui/title_loop.mp4" type="video/mp4">
+      </video>
+    </div>
     <div class="title-wrap">
       <div>
         <div class="title-logo">HUSH</div>
@@ -367,9 +410,13 @@
       </div>
 
       <div class="theme-box">
-        <div class="t-label">お題 ─ 数字の大きさをこれで表現する</div>
-        <div class="t-txt" id="themeText">好きな食べ物の「熱さ」</div>
-        <button id="rerollTheme">お題を変える</button>
+        <div class="t-label">お題 ─ 数字が大きいほど「それらしい」答えを言う</div>
+        <div class="t-txt" id="themeText"></div>
+        <div class="t-scope" id="themeScopeLabel">出題範囲：すべてのジャンル</div>
+        <div class="t-btns">
+          <button id="rerollTheme">ランダムに変える</button>
+          <button id="openThemes">一覧から選ぶ</button>
+        </div>
       </div>
 
       <button class="btn btn-gold mt" id="startDist">カードを配る</button>
@@ -451,6 +498,7 @@
       <img class="emblem" id="emblemImg" src="assets/ui/victory.png" alt="">
       <div class="verdict-txt">
         <div class="big" id="verdictBig"></div>
+        <div class="score-line" id="scoreLine"></div>
         <div class="sm" id="verdictSm"></div>
       </div>
       <div class="label">並べた順</div>
@@ -466,6 +514,17 @@
   </section>
 </div>
 
+<!-- お題選択 -->
+<div class="modal-bg" id="themeModal">
+  <div class="modal">
+    <h3>お題を選ぶ</h3>
+    <div class="chips" id="genreChips"></div>
+    <button class="btn btn-dark" id="randomInScope">この範囲からランダムで決定</button>
+    <div class="theme-list" id="themeList"></div>
+    <button class="btn btn-gold close" id="closeThemes">とじる</button>
+  </div>
+</div>
+
 <!-- あそびかた -->
 <div class="modal-bg" id="rulesModal">
   <div class="modal">
@@ -475,7 +534,7 @@
       <li>端末を1人ずつ手渡しし、自分の番でカードをめくって、自分だけの数字をこっそり確認します。</li>
       <li>全員が確認したら話し合い開始。数字は口にせず、お題に沿った言葉だけで自分の数字の大きさを表現します。</li>
       <li>相談しながら、全員を「数字が小さいと思う順」に並べます。</li>
-      <li>公開して答え合わせ。全員が昇順に並んでいれば勝利です。</li>
+      <li>公開して答え合わせ。本来の順位とのズレの合計がそのまま減点になります。減点0の完全一致で勝利です。</li>
     </ol>
     <button class="btn btn-gold close" id="closeRules">とじる</button>
   </div>
@@ -486,15 +545,29 @@
   "use strict";
   const $ = s=>document.querySelector(s);
 
-  const themesJa = [
-    "好きな食べ物の「熱さ」","行ってみたい国の「遠さ」","動物の「かわいさ」","朝の強さ",
-    "コンビニへの愛","1日にスマホを見る時間","カラオケ十八番の盛り上がり度","こだわりの強さ",
-    "ポジティブ度","休日のインドア度","辛い物への耐性","財布のひもの固さ",
-    "映画で泣く度","方向音痴レベル","ラーメンへの熱量","冬の寒がり度",
-    "遅刻しがち度","甘党度","早起き自慢","旅行の荷物の多さ"
+  const THEMES = [
+    {g:"チェーン店・外食", items:["一番人気のコンビニ","一番人気のコンビニ商品","一番人気のコンビニスイーツ","一番人気のファミレス","一番人気の牛丼チェーン","一番人気のハンバーガーチェーン","一番人気のカフェチェーン","一番人気の回転寿司チェーン","一番人気のラーメンチェーン","一番人気の焼肉チェーン"]},
+    {g:"お酒・ドリンク", items:["一番人気のお酒","一番人気のビール","一番人気のサワー","一番人気のカクテル","一番人気の日本酒","一番人気の焼酎","一番人気のウイスキー","一番人気のワイン","一番人気の梅酒","一番人気のノンアルコールドリンク"]},
+    {g:"お菓子", items:["一番人気のお菓子","一番人気のチョコレート菓子","一番人気のポテトチップス","一番人気のグミ","一番人気のガム","一番人気の駄菓子","一番人気のクッキー","一番人気の和菓子","一番人気のスナック菓子","一番人気のおつまみ"]},
+    {g:"スイーツ", items:["一番人気のアイス","一番人気のケーキ","一番人気のデザート","一番人気のプリン","一番人気のシュークリーム","一番人気のドーナツ","一番人気のパフェ","一番人気のパン","一番人気のフルーツ","一番人気のスイーツブランド"]},
+    {g:"グルメ", items:["一番人気の寿司ネタ","一番人気の焼肉の部位","一番人気のラーメン","一番人気の鍋","一番人気の中華料理","一番人気の韓国料理","一番人気のイタリア料理","一番人気の和食","一番人気の洋食","一番人気の丼もの"]},
+    {g:"映画・アニメ・漫画", items:["一番人気のアニメ","一番人気のアニメ映画","一番人気の映画","一番人気の洋画","一番人気の邦画","一番人気のドラマ","一番人気の韓国ドラマ","一番人気の漫画","一番人気の少年漫画","一番人気の少女漫画"]},
+    {g:"ゲーム", items:["一番人気のゲーム","一番人気のスマホゲーム","一番人気のSwitchソフト","一番人気のRPG","一番人気のFPSゲーム","一番人気のボードゲーム","一番人気のカードゲーム"]},
+    {g:"キャラクター", items:["一番人気のアニメキャラクター","一番人気のポケモン","一番人気のディズニーキャラクター","一番人気のサンリオキャラクター","一番人気のジブリキャラクター","一番人気のマリオキャラクター","一番人気のドラえもんのひみつ道具","一番人気のワンピースキャラクター","一番人気のドラゴンボールキャラクター","一番人気の鬼滅の刃キャラクター"]},
+    {g:"有名人", items:["一番人気の芸能人","一番人気の俳優","一番人気の女優","一番人気のお笑い芸人","一番人気のYouTuber","一番人気のVTuber","一番人気の歌手","一番人気のアイドル","一番人気のスポーツ選手","一番人気の声優"]},
+    {g:"旅行・おでかけ", items:["一番人気の旅行先","一番人気の海外旅行先","一番人気の国内旅行先","一番人気の温泉地","一番人気のテーマパーク","一番人気の遊園地","一番人気の水族館","一番人気の動物園","一番人気の世界遺産","一番人気の絶景スポット"]},
+    {g:"動物・生き物", items:["一番人気の犬種","一番人気の猫種","一番人気のペット","一番人気の動物","一番人気の海の生き物","一番人気の鳥","一番人気の恐竜"]},
+    {g:"季節", items:["春といえば思い浮かぶもの","春といえば思い浮かぶイベント","春といえば思い浮かぶ食べ物","春といえば思い浮かぶ花","春といえば思い浮かぶ行事","夏といえば思い浮かぶもの","夏といえば思い浮かぶイベント","夏といえば思い浮かぶ食べ物","夏といえば思い浮かぶ風物詩","夏といえば思い浮かぶ遊び","秋といえば思い浮かぶもの","秋といえば思い浮かぶイベント","秋といえば思い浮かぶ食べ物","秋といえば思い浮かぶ景色","秋といえば思い浮かぶ味覚","冬といえば思い浮かぶもの","冬といえば思い浮かぶイベント","冬といえば思い浮かぶ食べ物","冬といえば思い浮かぶ遊び","冬といえば思い浮かぶ景色"]},
+    {g:"学校", items:["一番人気の学校行事","一番人気の教科","一番人気の部活動","一番人気の給食","一番人気の制服"]},
+    {g:"職業", items:["一番人気の職業","一番憧れる職業","一番稼げると思う職業","AIに代替されにくい職業","子どもがなりたい職業"]},
+    {g:"モノ・ブランド", items:["一番人気の家電","一番人気のスマートフォン","一番人気の車","一番人気のブランド","一番人気のファッションブランド","一番人気のスポーツブランド","一番人気の高級ブランド"]},
+    {g:"デジタル・サービス", items:["一番人気のSNS","一番人気のアプリ","一番人気のサブスクサービス","一番人気の動画配信サービス","一番人気の音楽配信サービス"]},
+    {g:"もしも・空想", items:["一番欲しい超能力","一番役に立つ超能力","一番強いと思う魔法","一番欲しいドラえもんのひみつ道具","無人島に一つだけ持っていくもの"]},
+    {g:"怖いもの", items:["一番怖い生き物","一番怖いホラー映画","一番怖い都市伝説","一番怖い自然災害","一番危険だと思う動物"]},
+    {g:"気持ち・体験", items:["一番テンションが上がる出来事","一番嬉しいプレゼント","一番感動する出来事","一番緊張する瞬間","一番ストレスを感じること"]}
   ];
 
-  const state = { members:[], nums:[], min:1, max:100, timerTotal:180, order:[], theme:"" };
+  const state = { members:[], nums:[], min:1, max:100, timerTotal:180, order:[], theme:"", themeScope:null };
 
   function show(id){
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -502,12 +575,76 @@
     window.scrollTo({top:0,behavior:'smooth'});
   }
 
-  function pickTheme(){
-    state.theme = themesJa[Math.floor(Math.random()*themesJa.length)];
-    $('#themeText').textContent = state.theme;
+  // ---- お題 ----
+  function themePool(){
+    const g = THEMES.find(t=>t.g===state.themeScope);
+    return g ? g.items : THEMES.flatMap(t=>t.items);
   }
+  function scopeLabel(){
+    return '出題範囲：' + (state.themeScope || 'すべてのジャンル');
+  }
+  function pickTheme(){
+    const p = themePool();
+    state.theme = p[Math.floor(Math.random()*p.length)];
+    $('#themeText').textContent = state.theme;
+    $('#themeScopeLabel').textContent = scopeLabel();
+  }
+  function renderGenreChips(){
+    const wrap = $('#genreChips'); wrap.innerHTML='';
+    const mk = (label, scope)=>{
+      const c = document.createElement('div');
+      c.className = 'chip' + ((state.themeScope===scope)?' on':'');
+      c.textContent = label;
+      c.onclick = ()=>{ state.themeScope = scope; renderGenreChips(); renderThemeList(); };
+      wrap.appendChild(c);
+    };
+    mk('すべて', null);
+    THEMES.forEach(t=>mk(t.g, t.g));
+  }
+  function renderThemeList(){
+    const wrap = $('#themeList'); wrap.innerHTML='';
+    const scope = state.themeScope;
+    const rows = scope
+      ? THEMES.filter(t=>t.g===scope)
+      : THEMES;
+    rows.forEach(t=>{
+      t.items.forEach(item=>{
+        const el = document.createElement('div');
+        el.className = 'theme-item';
+        el.innerHTML = scope ? item : `<span class="g">${t.g}</span>${item}`;
+        el.onclick = ()=>{
+          state.theme = item;
+          $('#themeText').textContent = item;
+          $('#themeScopeLabel').textContent = scopeLabel();
+          $('#themeModal').classList.remove('open');
+        };
+        wrap.appendChild(el);
+      });
+    });
+  }
+  $('#openThemes').onclick = ()=>{
+    renderGenreChips(); renderThemeList();
+    $('#themeModal').classList.add('open');
+  };
+  $('#closeThemes').onclick = ()=>$('#themeModal').classList.remove('open');
+  $('#themeModal').addEventListener('click',e=>{ if(e.target===$('#themeModal')) $('#themeModal').classList.remove('open'); });
+  $('#randomInScope').onclick = ()=>{
+    pickTheme();
+    $('#themeModal').classList.remove('open');
+  };
 
   // ---- タイトル ----
+  // 縦画面で背景動画が再生中のときだけCSSのカード扇を隠す（動画内に扇があるため）
+  const bgVideo = document.querySelector('.title-bg video');
+  function syncTitleCards(){
+    const portrait = matchMedia('(orientation: portrait)').matches;
+    const playing = bgVideo && !bgVideo.paused && !bgVideo.ended && bgVideo.readyState>2;
+    document.querySelector('.title-cards').style.visibility = (portrait && playing)? 'hidden':'visible';
+  }
+  if(bgVideo){
+    ['playing','pause','error'].forEach(ev=>bgVideo.addEventListener(ev,syncTitleCards));
+    window.addEventListener('resize',syncTitleCards);
+  }
   $('#goSetup').onclick = ()=>show('screen-setup');
   $('#backTitle').onclick = ()=>show('screen-title');
   $('#openRules').onclick = ()=>$('#rulesModal').classList.add('open');
@@ -669,25 +806,40 @@
   // ---- 公開・判定 ----
   $('#doReveal').onclick=()=>{ renderResult(); show('screen-result'); };
   function renderResult(){
-    let ok=true;
-    for(let i=1;i<state.order.length;i++){ if(state.order[i].num < state.order[i-1].num){ ok=false; break; } }
+    // 減点方式：正しい順位とのズレの合計を減点にする
+    const sorted = state.order.map(o=>o.num).slice().sort((a,b)=>a-b);
+    let total = 0;
+    const rows = state.order.map((o,i)=>{
+      const trueIdx = sorted.indexOf(o.num);
+      const diff = Math.abs(i - trueIdx);
+      total += diff;
+      return {...o, diff};
+    });
+    const ok = total===0;
 
     $('#emblemImg').src = ok? 'assets/ui/victory.png' : 'assets/ui/defeat.png';
-    const vb=$('#verdictBig'), vs=$('#verdictSm');
+    const vb=$('#verdictBig'), vs=$('#verdictSm'), sl=$('#scoreLine');
     vb.className='big '+(ok?'win':'lose');
-    if(ok){ vb.textContent='勝利'; vs.textContent='見事な昇順。心は通じ合っていたようです。'; }
-    else { vb.textContent='敗北'; vs.textContent='順序が乱れています。答え合わせをどうぞ。'; }
+    if(ok){
+      vb.textContent='勝利';
+      sl.innerHTML='減点 <b>0</b>';
+      vs.textContent='完全一致。心は通じ合っていたようです。';
+    }else{
+      vb.textContent='敗北';
+      sl.innerHTML=`減点 <b>-${total}</b>`;
+      vs.textContent='ズレた順位の分だけ減点。答え合わせをどうぞ。';
+    }
 
     const wrap=$('#resultList'); wrap.innerHTML='';
-    state.order.forEach((o,i)=>{
-      const good = (i===0) || (o.num >= state.order[i-1].num);
+    rows.forEach((o,i)=>{
+      const good = o.diff===0;
       const el=document.createElement('div');
       el.className='result-item '+(good?'ok':'ng');
       el.style.animationDelay=(i*0.09)+'s';
       el.innerHTML=`<div class="rank">${i+1}</div>
         <div class="num">${o.num}</div>
         <div class="nm">${o.name}</div>
-        <div class="flag">${good?'正':'乱'}</div>`;
+        <div class="flag penalty-badge">${good?'正位':`-${o.diff}`}</div>`;
       wrap.appendChild(el);
     });
   }
