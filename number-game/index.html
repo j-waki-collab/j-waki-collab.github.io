@@ -2,303 +2,490 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>数字配布ゲーム｜ITO風パス&プレイ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>HUSH ─ 価値観を並べる協力ゲーム ─</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Shippori+Mincho+B1:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0e1020; --bg2:#161a34; --card:#1c2140; --card2:#232a52;
-    --line:#333c6e; --txt:#eef1ff; --sub:#9aa3d4; --acc:#6c7bff; --acc2:#00d4b8;
-    --warn:#ff6b8a; --gold:#ffd45e; --shadow:0 20px 60px rgba(0,0,0,.45);
-    --radius:22px;
+    --gold:#c9a961; --gold-l:#e8d3a0; --gold-d:#8a6f3c;
+    --navy:#0d1526; --navy2:#141d33;
+    --parch:#e8d9b5; --parch-d:#cbb98d;
+    --ink:#2a1f14; --txt:#efe6d0; --sub:#b3a37f;
+    --ruby:#c22347; --emerald:#1e8f6e;
+    --serif:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+    --latin:"Cinzel",serif;
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
-  html,body{height:100%;}
+  html,body{min-height:100%;}
   body{
-    font-family:-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
-    color:var(--txt); min-height:100%;
+    font-family:var(--serif);
+    color:var(--txt);
+    background:#080b14 url("assets/ui/bg_parchment.jpg") center top / cover fixed no-repeat;
     display:flex; align-items:flex-start; justify-content:center;
-    padding:26px 16px 60px; position:relative; overflow-x:hidden;
-    background:linear-gradient(-45deg,#ff5e9c,#8a5cff,#3a7bff,#00d4b8,#ffb347,#ff5e9c);
-    background-size:400% 400%;
-    animation:bgshift 18s ease infinite;
+    padding:24px 16px 56px;
   }
-  @keyframes bgshift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-  /* 動くカラフルな光の玉 */
-  body::before,body::after{
-    content:""; position:fixed; border-radius:50%; filter:blur(70px); opacity:.55; z-index:0; pointer-events:none;
+  body::after{ /* 全体を少し暗くして文字を立たせる */
+    content:""; position:fixed; inset:0; background:rgba(5,7,14,.35); pointer-events:none; z-index:0;
   }
-  body::before{width:420px; height:420px; background:radial-gradient(circle,#ffde59,#ff5e9c 70%); top:-120px; left:-100px; animation:float1 14s ease-in-out infinite;}
-  body::after{width:480px; height:480px; background:radial-gradient(circle,#00e0c6,#5c8bff 70%); bottom:-160px; right:-140px; animation:float2 16s ease-in-out infinite;}
-  @keyframes float1{50%{transform:translate(80px,60px) scale(1.15);}}
-  @keyframes float2{50%{transform:translate(-70px,-50px) scale(1.1);}}
-  .app{position:relative; z-index:1;}
-  .app{width:100%; max-width:560px;}
-  .screen{display:none; animation:pop .35s ease;}
+  .app{width:100%; max-width:540px; position:relative; z-index:1;}
+  .screen{display:none; animation:fadein .45s ease;}
   .screen.active{display:block;}
-  @keyframes pop{from{opacity:0; transform:translateY(14px) scale(.98);} to{opacity:1; transform:none;}}
+  @keyframes fadein{from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;}}
 
-  .brand{text-align:center; margin-bottom:22px;}
-  .brand h1{font-size:26px; letter-spacing:.5px; font-weight:800; color:#fff; text-shadow:0 2px 16px rgba(0,0,0,.35);}
-  .brand p{color:rgba(255,255,255,.92); font-size:13px; margin-top:6px; text-shadow:0 1px 8px rgba(0,0,0,.35);}
-
-  .card{
-    background:linear-gradient(180deg,rgba(28,33,64,.82),rgba(22,26,52,.88));
-    -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,.14); border-radius:var(--radius);
-    box-shadow:var(--shadow); padding:22px;
+  /* ===== 装飾パネル ===== */
+  .panel{
+    background:linear-gradient(180deg,rgba(13,21,38,.92),rgba(10,15,28,.94));
+    border:1px solid rgba(201,169,97,.55);
+    border-radius:14px;
+    box-shadow:0 24px 70px rgba(0,0,0,.65), inset 0 0 0 1px rgba(0,0,0,.5), inset 0 0 60px rgba(201,169,97,.05);
+    padding:24px 22px;
+    position:relative;
   }
-  .label{font-size:12px; color:var(--sub); font-weight:700; letter-spacing:.6px; margin:18px 0 9px; text-transform:uppercase;}
+  .panel::before{
+    content:""; position:absolute; inset:6px; border:1px solid rgba(201,169,97,.25); border-radius:9px; pointer-events:none;
+  }
+
+  .label{
+    font-size:12px; color:var(--gold); font-weight:700; letter-spacing:.25em;
+    margin:20px 0 10px; display:flex; align-items:center; gap:10px;
+  }
+  .label::after{content:""; flex:1; height:1px; background:linear-gradient(90deg,rgba(201,169,97,.5),transparent);}
   .label:first-child{margin-top:0;}
 
   input,select{
-    width:100%; background:var(--card2); border:1px solid var(--line); color:var(--txt);
-    border-radius:14px; padding:14px 15px; font-size:16px; outline:none; transition:.15s;
+    width:100%; background:rgba(8,12,22,.8); border:1px solid rgba(201,169,97,.4); color:var(--txt);
+    border-radius:8px; padding:13px 14px; font-size:16px; outline:none; transition:.15s; font-family:var(--serif);
   }
-  input:focus,select:focus{border-color:var(--acc); box-shadow:0 0 0 3px rgba(108,123,255,.22);}
+  input:focus{border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,169,97,.18);}
 
   .member-row{display:flex; gap:8px; margin-bottom:9px; align-items:center;}
-  .member-row .idx{width:26px; text-align:center; color:var(--sub); font-weight:700; font-size:14px;}
+  .member-row .idx{width:24px; text-align:center; color:var(--gold); font-weight:700; font-size:14px; font-family:var(--latin);}
   .member-row input{flex:1;}
   .icon-btn{
-    width:44px; height:44px; flex:none; border-radius:13px; border:1px solid var(--line);
-    background:var(--card2); color:var(--warn); font-size:20px; cursor:pointer; transition:.15s;
-    display:flex; align-items:center; justify-content:center;
+    width:44px; height:44px; flex:none; border-radius:8px; border:1px solid rgba(201,169,97,.35);
+    background:rgba(8,12,22,.8); color:var(--ruby); font-size:18px; cursor:pointer; transition:.15s;
+    display:flex; align-items:center; justify-content:center; font-family:var(--serif);
   }
-  .icon-btn:hover{background:#2c1730; border-color:var(--warn);}
+  .icon-btn:hover{border-color:var(--ruby); background:rgba(194,35,71,.12);}
   .icon-btn:disabled{opacity:.25; cursor:not-allowed;}
 
   .add-btn{
-    width:100%; margin-top:4px; background:transparent; border:1.5px dashed var(--line);
-    color:var(--sub); border-radius:14px; padding:12px; font-size:14px; font-weight:700; cursor:pointer; transition:.15s;
+    width:100%; margin-top:4px; background:transparent; border:1px dashed rgba(201,169,97,.4);
+    color:var(--sub); border-radius:8px; padding:12px; font-size:14px; cursor:pointer; transition:.15s; font-family:var(--serif); letter-spacing:.1em;
   }
-  .add-btn:hover{border-color:var(--acc); color:var(--acc);}
+  .add-btn:hover{border-color:var(--gold); color:var(--gold-l);}
 
   .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .unit{font-size:12px; color:var(--sub); text-align:center; margin-top:6px; letter-spacing:.2em;}
 
+  /* ===== ボタン ===== */
   .btn{
-    width:100%; border:none; border-radius:16px; padding:17px; font-size:17px; font-weight:800;
-    cursor:pointer; transition:.18s; letter-spacing:.4px;
+    width:100%; border:none; border-radius:10px; padding:16px; font-size:17px; font-weight:700;
+    cursor:pointer; transition:.18s; letter-spacing:.15em; font-family:var(--serif); position:relative;
   }
-  .btn-primary{background:linear-gradient(90deg,var(--acc),#8a63ff); color:#fff; box-shadow:0 12px 28px rgba(108,123,255,.4);}
-  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 16px 34px rgba(108,123,255,.55);}
-  .btn-primary:active{transform:translateY(0);}
-  .btn-ghost{background:var(--card2); color:var(--txt); border:1px solid var(--line);}
-  .btn-ghost:hover{border-color:var(--acc);}
-  .btn-go{background:linear-gradient(90deg,var(--acc2),#31e0a0); color:#04231d; box-shadow:0 12px 28px rgba(0,212,184,.35);}
-  .btn-go:hover{transform:translateY(-2px);}
+  .btn-gold{
+    background:linear-gradient(180deg,#f0e0b8,#d9c084 45%,#c0a15c);
+    color:#3a2b12; border:1px solid #8a6f3c;
+    box-shadow:0 10px 26px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.5), inset 0 -2px 6px rgba(122,92,40,.45);
+    text-shadow:0 1px 0 rgba(255,255,255,.35);
+  }
+  .btn-gold:hover{transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.5);}
+  .btn-gold:active{transform:translateY(0);}
+  .btn-dark{
+    background:rgba(8,12,22,.85); color:var(--gold-l); border:1px solid rgba(201,169,97,.5);
+  }
+  .btn-dark:hover{border-color:var(--gold); background:rgba(201,169,97,.08);}
   .btn-row{display:flex; gap:12px; margin-top:16px;}
   .btn-row .btn{margin-top:0;}
-  .mt{margin-top:16px;}
+  .mt{margin-top:18px;}
 
-  .hint{font-size:12px; color:var(--sub); margin-top:10px; line-height:1.7;}
+  .hint{font-size:12px; color:var(--sub); margin-top:12px; line-height:1.9;}
 
-  /* パスフェーズ */
-  .pass-wrap{text-align:center; padding:14px 4px;}
-  .pass-count{color:var(--sub); font-size:13px; font-weight:700; letter-spacing:1px;}
-  .pass-name{font-size:34px; font-weight:800; margin:14px 0 6px;}
-  .pass-name em{font-style:normal; color:var(--acc2);}
-  .pass-sub{color:var(--sub); font-size:14px; margin-bottom:26px; line-height:1.7;}
-
-  .cardface{
-    position:relative; width:min(72vw,270px); aspect-ratio:1696/2528; border-radius:20px;
-    margin:0 auto 22px; overflow:hidden;
-    display:flex; align-items:center; justify-content:center; cursor:pointer; user-select:none;
-    transition:.2s;
+  /* ===== タイトル画面 ===== */
+  #screen-title{position:relative;}
+  .title-bg{
+    position:fixed; inset:0; z-index:-1;
+    background:#080b14 url("assets/ui/bg_ritual.jpg") center / cover no-repeat;
   }
-  .cardface.back{
-    background:
-      radial-gradient(120% 90% at 50% 0%,#2b2140 0%,#12101f 55%,#0a0810 100%);
-    border:2px solid #6c5a3a; box-shadow:0 24px 60px rgba(0,0,0,.6),inset 0 0 40px rgba(0,0,0,.6);
-    flex-direction:column;
+  .title-bg::after{content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg,rgba(5,8,16,.1) 0%,rgba(5,8,16,.05) 40%,rgba(5,8,16,.72) 100%);}
+  .title-wrap{min-height:calc(100vh - 90px); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:10px 0 30px;}
+  .title-logo{
+    font-family:var(--latin); font-weight:900; font-size:clamp(64px,19vw,96px); line-height:1;
+    background:linear-gradient(180deg,#f7ecc9 10%,#e3c583 45%,#b98f45 75%,#e9d59a 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 3px 14px rgba(0,0,0,.8)) drop-shadow(0 0 26px rgba(201,169,97,.28));
+    letter-spacing:.06em;
   }
-  .cardface.back::before{
-    content:""; position:absolute; inset:10px; border:1px solid rgba(198,164,102,.35); border-radius:13px; pointer-events:none;
+  .title-sub{
+    margin-top:14px; font-size:clamp(15px,4.2vw,19px); font-weight:600; color:#efe2bd; letter-spacing:.18em;
+    text-shadow:0 2px 10px rgba(0,0,0,.85);
   }
-  .cardface.back:hover{transform:translateY(-4px) scale(1.01);}
-  .cardface.back .q{font-size:88px; font-weight:900; color:#c6a466; text-shadow:0 4px 24px rgba(198,164,102,.4); font-family:Georgia,serif;}
-  .cardface.back .tap{position:absolute; bottom:18px; font-size:12px; color:rgba(198,164,102,.75); letter-spacing:2px;}
-  .cardface.front{
-    background:#0a0810; border:2px solid #c6a466;
-    box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 30px rgba(198,164,102,.15);
+  .title-rule{
+    width:min(74vw,330px); height:14px; margin:16px auto 0;
+    background:linear-gradient(90deg,transparent,rgba(201,169,97,.9) 18%,rgba(201,169,97,.9) 82%,transparent) center / 100% 1px no-repeat;
+    position:relative;
   }
-  .cardface.front img{width:100%; height:100%; object-fit:cover; display:block;}
-  .cardface.front .num{font-size:110px; font-weight:900; color:#eef1ff; line-height:1;}
-  .card-caption{text-align:center; color:#c6a466; font-weight:700; font-size:15px; margin:-6px 0 18px; letter-spacing:.5px;}
+  .title-rule::after{
+    content:""; position:absolute; left:50%; top:50%; width:8px; height:8px; transform:translate(-50%,-50%) rotate(45deg);
+    background:linear-gradient(135deg,#e8d3a0,#b98f45); box-shadow:0 0 10px rgba(201,169,97,.8);
+  }
+  .title-cards{
+    display:flex; justify-content:center; margin:40px 0 34px; height:170px; align-items:flex-end;
+  }
+  .title-cards img{
+    width:104px; border-radius:8px; border:1px solid rgba(201,169,97,.7);
+    box-shadow:0 14px 34px rgba(0,0,0,.65);
+    margin:0 -26px; transform-origin:50% 115%;
+    animation:cardrise 1s cubic-bezier(.2,.8,.25,1) backwards;
+  }
+  .title-cards img:nth-child(1){transform:rotate(-22deg); animation-delay:.10s;}
+  .title-cards img:nth-child(2){transform:rotate(-11deg); animation-delay:.18s;}
+  .title-cards img:nth-child(3){transform:rotate(0deg) translateY(-10px); animation-delay:.26s;}
+  .title-cards img:nth-child(4){transform:rotate(11deg); animation-delay:.34s;}
+  .title-cards img:nth-child(5){transform:rotate(22deg); animation-delay:.42s;}
+  @keyframes cardrise{from{opacity:0; transform:translateY(50px) rotate(0);}}
+  .title-btns{width:min(84vw,360px);}
+  .btn-play{
+    font-size:24px; padding:18px; letter-spacing:.5em; text-indent:.5em;
+  }
+  .title-btns .btn-row .btn{font-size:15px; padding:13px;}
 
-  .timer-big{font-size:78px; font-weight:900; text-align:center; letter-spacing:2px; font-variant-numeric:tabular-nums; margin:6px 0;}
-  .timer-big.danger{color:var(--warn); animation:pulse .8s infinite;}
-  @keyframes pulse{50%{opacity:.5;}}
-  .timer-label{text-align:center; color:var(--sub); font-size:13px; letter-spacing:1px; font-weight:700;}
-  .progress{height:10px; border-radius:99px; background:var(--card2); overflow:hidden; margin:22px 0;}
-  .progress>i{display:block; height:100%; background:linear-gradient(90deg,var(--acc2),var(--acc)); transition:width 1s linear;}
+  /* ===== 見出し（各画面共通） ===== */
+  .scr-head{text-align:center; margin-bottom:18px;}
+  .scr-head .en{font-family:var(--latin); font-weight:700; font-size:13px; letter-spacing:.45em; color:var(--gold); text-indent:.45em;}
+  .scr-head .ja{font-size:21px; font-weight:700; letter-spacing:.2em; margin-top:6px; color:#f2e8cf; text-shadow:0 2px 8px rgba(0,0,0,.7);}
 
-  /* 並べ替え */
+  /* ===== お題ボックス ===== */
+  .theme-box{
+    background:rgba(8,12,22,.7); border:1px solid rgba(201,169,97,.4); border-radius:10px;
+    padding:16px; margin-top:18px; text-align:center; position:relative;
+  }
+  .theme-box .t-label{font-size:11px; color:var(--sub); letter-spacing:.3em;}
+  .theme-box .t-txt{font-size:18px; font-weight:700; margin-top:8px; color:var(--gold-l); letter-spacing:.06em;}
+  .theme-box button{
+    margin-top:12px; background:transparent; border:1px solid rgba(201,169,97,.4); color:var(--sub);
+    border-radius:6px; padding:7px 16px; font-size:12px; cursor:pointer; font-family:var(--serif); letter-spacing:.15em; transition:.15s;
+  }
+  .theme-box button:hover{border-color:var(--gold); color:var(--gold-l);}
+
+  /* ===== 配布（カードめくり） ===== */
+  .pass-wrap{text-align:center; padding:8px 0;}
+  .pass-count{color:var(--gold); font-size:12px; font-weight:700; letter-spacing:.35em; font-family:var(--latin);}
+  .pass-name{font-size:30px; font-weight:700; margin:12px 0 6px; letter-spacing:.1em;}
+  .pass-name em{font-style:normal; color:var(--gold-l);}
+  .pass-sub{color:var(--sub); font-size:13.5px; margin-bottom:22px; line-height:1.9;}
+
+  .flipbox{
+    width:min(66vw,250px); aspect-ratio:1696/2528; margin:0 auto 20px;
+    perspective:1400px; cursor:pointer; user-select:none;
+  }
+  .flipinner{
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d; transition:transform .75s cubic-bezier(.25,.8,.3,1);
+  }
+  .flipbox.flipped .flipinner{transform:rotateY(180deg);}
+  .face{
+    position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    border-radius:12px; overflow:hidden; border:1px solid rgba(201,169,97,.8);
+    box-shadow:0 22px 55px rgba(0,0,0,.7);
+  }
+  .face img{width:100%; height:100%; object-fit:cover; display:block;}
+  .face.front{transform:rotateY(180deg); background:#0a0810; display:flex; align-items:center; justify-content:center;}
+  .face.front .bignum{
+    font-family:var(--latin); font-size:96px; font-weight:900; color:var(--gold-l);
+    text-shadow:0 0 30px rgba(201,169,97,.5);
+  }
+  .flipbox:not(.flipped):hover .flipinner{transform:rotateY(0) translateY(-5px);}
+  .tapnote{color:var(--sub); font-size:12px; letter-spacing:.25em; margin-bottom:16px;}
+  .card-caption{color:var(--gold-l); font-weight:700; font-size:15px; margin-bottom:16px; letter-spacing:.1em;}
+
+  /* ===== タイマー ===== */
+  .timer-wrap{text-align:center;}
+  .hourglass{
+    width:110px; margin:6px auto 2px; display:block;
+    filter:drop-shadow(0 10px 24px rgba(0,0,0,.6));
+    animation:hgfloat 3.2s ease-in-out infinite;
+  }
+  @keyframes hgfloat{50%{transform:translateY(-7px);}}
+  .timer-big{
+    font-family:var(--latin); font-size:72px; font-weight:700; letter-spacing:.06em;
+    font-variant-numeric:tabular-nums; margin:2px 0 4px; color:#f2e8cf;
+    text-shadow:0 3px 16px rgba(0,0,0,.8);
+  }
+  .timer-big.danger{color:var(--ruby); animation:pulse .8s infinite;}
+  @keyframes pulse{50%{opacity:.45;}}
+  .progress{
+    height:8px; border-radius:99px; background:rgba(8,12,22,.85); overflow:hidden; margin:20px 0;
+    border:1px solid rgba(201,169,97,.35);
+  }
+  .progress>i{display:block; height:100%; background:linear-gradient(90deg,#8a6f3c,#e8d3a0); transition:width 1s linear;}
+
+  /* ===== 並べ替え ===== */
   .order-item{
-    display:flex; align-items:center; gap:12px; background:var(--card2); border:1px solid var(--line);
-    border-radius:15px; padding:14px 15px; margin-bottom:10px; cursor:grab;
+    display:flex; align-items:center; gap:12px; background:rgba(8,12,22,.75);
+    border:1px solid rgba(201,169,97,.4);
+    border-radius:10px; padding:13px 14px; margin-bottom:10px; cursor:grab;
   }
   .order-item.drag{opacity:.4;}
-  .order-item .rank{width:30px; height:30px; flex:none; border-radius:9px; background:var(--acc); color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:14px;}
-  .order-item .nm{flex:1; font-weight:700; font-size:16px;}
-  .order-item .move{display:flex; gap:4px;}
-  .order-item .move button{width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--txt); font-size:16px; cursor:pointer;}
-  .order-item .move button:hover{border-color:var(--acc);}
-  .order-item .move button:disabled{opacity:.25;}
-
-  /* 結果 */
-  .result-item{
-    display:flex; align-items:center; gap:14px; border-radius:15px; padding:15px; margin-bottom:11px;
-    border:1px solid var(--line); animation:pop .4s ease backwards;
+  .order-item .rank{
+    width:30px; height:30px; flex:none; border-radius:6px;
+    background:linear-gradient(180deg,#e8d3a0,#b98f45); color:#3a2b12; font-weight:700;
+    display:flex; align-items:center; justify-content:center; font-size:14px; font-family:var(--latin);
   }
-  .result-item .rank{width:30px; text-align:center; color:var(--sub); font-weight:800;}
-  .result-item .num{width:56px; height:56px; flex:none; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:900;}
-  .result-item .nm{flex:1; font-weight:700; font-size:17px;}
-  .result-item.ok{background:linear-gradient(90deg,rgba(0,212,184,.12),transparent);}
-  .result-item.ok .num{background:linear-gradient(160deg,var(--acc2),#31e0a0); color:#04231d;}
-  .result-item.ng{background:linear-gradient(90deg,rgba(255,107,138,.12),transparent);}
-  .result-item.ng .num{background:linear-gradient(160deg,var(--warn),#ff9aae); color:#3a0713;}
-  .result-item .flag{font-size:20px;}
+  .order-item .nm{flex:1; font-weight:600; font-size:16px; letter-spacing:.06em;}
+  .order-item .move{display:flex; gap:5px;}
+  .order-item .move button{
+    width:38px; height:38px; border-radius:7px; border:1px solid rgba(201,169,97,.4);
+    background:rgba(8,12,22,.8); color:var(--gold-l); font-size:15px; cursor:pointer; transition:.15s;
+  }
+  .order-item .move button:hover{border-color:var(--gold);}
+  .order-item .move button:disabled{opacity:.2;}
 
-  .verdict{text-align:center; padding:20px; border-radius:20px; margin-bottom:20px;}
-  .verdict.win{background:linear-gradient(160deg,rgba(0,212,184,.16),rgba(108,123,255,.1)); border:1px solid var(--acc2);}
-  .verdict.lose{background:linear-gradient(160deg,rgba(255,107,138,.16),rgba(108,123,255,.08)); border:1px solid var(--warn);}
-  .verdict .big{font-size:30px; font-weight:900; margin-bottom:6px;}
-  .verdict .big.win{color:var(--acc2);} .verdict .big.lose{color:var(--warn);}
-  .verdict .sm{color:var(--sub); font-size:14px;}
+  /* ===== 結果 ===== */
+  .emblem{width:min(56vw,230px); display:block; margin:0 auto 4px; filter:drop-shadow(0 12px 30px rgba(0,0,0,.6)); animation:emblem-in .8s cubic-bezier(.2,.8,.3,1.2) backwards;}
+  @keyframes emblem-in{from{opacity:0; transform:scale(.6) translateY(24px);}}
+  .verdict-txt{text-align:center; margin-bottom:20px;}
+  .verdict-txt .big{font-size:26px; font-weight:700; letter-spacing:.18em;}
+  .verdict-txt .big.win{color:var(--gold-l); text-shadow:0 0 24px rgba(201,169,97,.5);}
+  .verdict-txt .big.lose{color:#d96a84;}
+  .verdict-txt .sm{color:var(--sub); font-size:13px; margin-top:8px; letter-spacing:.08em;}
 
-  .steps{display:flex; justify-content:center; gap:7px; margin-bottom:20px;}
-  .steps i{width:8px; height:8px; border-radius:99px; background:var(--line);}
-  .steps i.on{background:var(--acc); width:22px;}
+  .result-item{
+    display:flex; align-items:center; gap:13px; border-radius:10px; padding:13px 14px; margin-bottom:10px;
+    border:1px solid rgba(201,169,97,.35); background:rgba(8,12,22,.72);
+    animation:fadein .4s ease backwards;
+  }
+  .result-item.ng{border-color:rgba(194,35,71,.55); background:rgba(40,10,20,.55);}
+  .result-item .rank{width:26px; text-align:center; color:var(--sub); font-weight:700; font-family:var(--latin);}
+  .result-item .num{
+    width:52px; height:52px; flex:none; border-radius:8px; display:flex; align-items:center; justify-content:center;
+    font-size:22px; font-weight:700; font-family:var(--latin);
+  }
+  .result-item.ok .num{background:linear-gradient(180deg,#e8d3a0,#b98f45); color:#3a2b12;}
+  .result-item.ng .num{background:linear-gradient(180deg,#d96a84,#8f1c38); color:#fff;}
+  .result-item .nm{flex:1; font-weight:600; font-size:16px;}
+  .result-item .flag{font-size:12px; letter-spacing:.1em; font-weight:700;}
+  .result-item.ok .flag{color:var(--emerald);}
+  .result-item.ng .flag{color:#d96a84;}
 
-  .theme-box{background:var(--card2); border:1px dashed var(--line); border-radius:15px; padding:14px 16px; margin-top:16px; text-align:center;}
-  .theme-box .t-label{font-size:11px; color:var(--sub); letter-spacing:1px; font-weight:700;}
-  .theme-box .t-txt{font-size:18px; font-weight:800; margin-top:6px; color:var(--gold);}
-  .theme-box button{margin-top:10px; background:transparent; border:1px solid var(--line); color:var(--sub); border-radius:10px; padding:7px 14px; font-size:12px; cursor:pointer;}
-  .theme-box button:hover{border-color:var(--gold); color:var(--gold);}
+  /* ===== あそびかたモーダル ===== */
+  .modal-bg{
+    display:none; position:fixed; inset:0; background:rgba(4,6,12,.8); z-index:50;
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .modal-bg.open{display:flex;}
+  .modal{
+    max-width:480px; width:100%; max-height:82vh; overflow-y:auto;
+    background:linear-gradient(180deg,rgba(20,29,51,.98),rgba(10,15,28,.98));
+    border:1px solid rgba(201,169,97,.6); border-radius:14px; padding:26px 24px;
+  }
+  .modal h3{font-size:19px; color:var(--gold-l); letter-spacing:.25em; text-align:center; margin-bottom:18px;}
+  .modal ol{padding-left:0; list-style:none; counter-reset:step;}
+  .modal ol li{
+    counter-increment:step; position:relative; padding-left:40px; margin-bottom:14px;
+    font-size:14px; line-height:1.9; color:var(--txt);
+  }
+  .modal ol li::before{
+    content:counter(step); position:absolute; left:0; top:2px;
+    width:26px; height:26px; border-radius:50%;
+    background:linear-gradient(180deg,#e8d3a0,#b98f45); color:#3a2b12;
+    font-family:var(--latin); font-weight:700; font-size:13px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .modal .close{margin-top:8px;}
+
+  .steps{display:flex; justify-content:center; gap:7px; margin-bottom:18px;}
+  .steps i{width:7px; height:7px; border-radius:99px; background:rgba(201,169,97,.25); transform:rotate(45deg); border-radius:1px;}
+  .steps i.on{background:var(--gold); box-shadow:0 0 8px rgba(201,169,97,.7);}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="brand">
-    <h1>🎴 <span>数字配布ゲーム</span></h1>
-    <p>1〜100の数字をこっそり配って、小さい順に並べよう（ITO風・1台で回し見）</p>
-  </div>
 
-  <!-- ① セットアップ -->
-  <section class="screen active" id="screen-setup">
-    <div class="card">
+  <!-- タイトル -->
+  <section class="screen active" id="screen-title">
+    <div class="title-bg"></div>
+    <div class="title-wrap">
+      <div>
+        <div class="title-logo">HUSH</div>
+        <div class="title-sub">価値観を並べる協力ゲーム</div>
+        <div class="title-rule"></div>
+      </div>
+      <div class="title-cards">
+        <img src="assets/ui/card_back.jpg" alt="">
+        <img src="assets/ui/card_back.jpg" alt="">
+        <img src="assets/ui/card_back.jpg" alt="">
+        <img src="assets/ui/card_back.jpg" alt="">
+        <img src="assets/ui/card_back.jpg" alt="">
+      </div>
+      <div class="title-btns">
+        <button class="btn btn-gold btn-play" id="goSetup">遊ぶ</button>
+        <div class="btn-row">
+          <button class="btn btn-dark" id="openRules">あそびかた</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 設定 -->
+  <section class="screen" id="screen-setup">
+    <div class="scr-head">
+      <div class="en">GATHER</div>
+      <div class="ja">旅の仲間と掟</div>
+    </div>
+    <div class="panel">
       <div class="steps"><i class="on"></i><i></i><i></i><i></i></div>
       <div class="label">メンバー（2〜10人）</div>
       <div id="members"></div>
-      <button class="add-btn" id="addMember">＋ メンバーを追加</button>
+      <button class="add-btn" id="addMember">メンバーを追加</button>
 
       <div class="label">数字の範囲</div>
       <div class="grid2">
         <div>
           <input type="number" id="minNum" value="1" min="1">
-          <div class="hint" style="text-align:center;">最小</div>
+          <div class="unit">最小</div>
         </div>
         <div>
           <input type="number" id="maxNum" value="100" min="2">
-          <div class="hint" style="text-align:center;">最大</div>
+          <div class="unit">最大</div>
         </div>
       </div>
 
-      <div class="label">話し合いタイマー</div>
+      <div class="label">話し合いの刻限</div>
       <div class="grid2">
         <div>
           <input type="number" id="timerMin" value="3" min="0" max="60">
-          <div class="hint" style="text-align:center;">分</div>
+          <div class="unit">分</div>
         </div>
         <div>
           <input type="number" id="timerSec" value="0" min="0" max="59">
-          <div class="hint" style="text-align:center;">秒</div>
+          <div class="unit">秒</div>
         </div>
       </div>
 
       <div class="theme-box">
-        <div class="t-label">お題（数字の大きさをこれで表現しよう）</div>
+        <div class="t-label">お題 ─ 数字の大きさをこれで表現する</div>
         <div class="t-txt" id="themeText">好きな食べ物の「熱さ」</div>
-        <button id="rerollTheme">🎲 お題を変える</button>
+        <button id="rerollTheme">お題を変える</button>
       </div>
 
-      <button class="btn btn-primary mt" id="startDist">カードを配る →</button>
-      <div class="hint">配り方：この画面を1人ずつに手渡しして、自分の番でカードをめくって数字を確認 → 隠して次の人へ。全員が確認したらタイマーで話し合いスタート！</div>
+      <button class="btn btn-gold mt" id="startDist">カードを配る</button>
+      <div class="hint">この端末を1人ずつ手渡しして、自分の番でカードをめくって数字を確認。全員が確認したら話し合いが始まります。</div>
+      <div class="btn-row">
+        <button class="btn btn-dark" id="backTitle">タイトルへ戻る</button>
+      </div>
     </div>
   </section>
 
-  <!-- ② 配布（パス&プレイ） -->
+  <!-- 配布 -->
   <section class="screen" id="screen-pass">
-    <div class="card pass-wrap">
-      <div class="pass-count" id="passCount">1 / 4 人目</div>
-      <div class="pass-name"><em id="passName">たろう</em> の番</div>
-      <div class="pass-sub" id="passSub">他の人に見られてないか確認して、<br>カードをタップして数字をチェック！</div>
+    <div class="scr-head">
+      <div class="en">DRAW</div>
+      <div class="ja">運命の一枚</div>
+    </div>
+    <div class="panel pass-wrap">
+      <div class="pass-count" id="passCount">1 / 4</div>
+      <div class="pass-name"><em id="passName"></em> の番</div>
+      <div class="pass-sub" id="passSub">まわりに見られていないか確かめて、<br>カードに触れて数字を確認しましょう。</div>
 
-      <div class="cardface back" id="cardBack">
-        <div class="q">?</div>
-        <div class="tap">タップしてめくる</div>
+      <div class="flipbox" id="flipbox">
+        <div class="flipinner">
+          <div class="face back"><img src="assets/ui/card_back.jpg" alt=""></div>
+          <div class="face front">
+            <img id="cardImg" alt="" src="" style="display:none;">
+            <div class="bignum" id="cardNum" style="display:none;"></div>
+          </div>
+        </div>
       </div>
-      <div class="cardface front" id="cardFront" style="display:none;">
-        <img id="cardImg" alt="" src="">
-        <div class="num" id="cardNum" style="display:none;">50</div>
-      </div>
-      <div class="card-caption" id="cardWhose" style="display:none;">たろう の数字</div>
+      <div class="tapnote" id="tapNote">カードに触れてめくる</div>
+      <div class="card-caption" id="cardWhose" style="display:none;"></div>
 
-      <button class="btn btn-primary" id="nextPerson" style="display:none;">隠して次の人へ →</button>
+      <button class="btn btn-gold" id="nextPerson" style="display:none;">伏せて次の人へ</button>
     </div>
   </section>
 
-  <!-- ③ 話し合いタイマー -->
+  <!-- 話し合い -->
   <section class="screen" id="screen-timer">
-    <div class="card">
+    <div class="scr-head">
+      <div class="en">COUNCIL</div>
+      <div class="ja">静寂の談合</div>
+    </div>
+    <div class="panel timer-wrap">
       <div class="steps"><i></i><i></i><i class="on"></i><i></i></div>
-      <div class="timer-label">話し合いタイム</div>
+      <img class="hourglass" src="assets/ui/hourglass.png" alt="">
       <div class="timer-big" id="timerDisplay">03:00</div>
       <div class="theme-box">
         <div class="t-label">お題</div>
-        <div class="t-txt" id="timerTheme">好きな食べ物の「熱さ」</div>
+        <div class="t-txt" id="timerTheme"></div>
       </div>
       <div class="progress"><i id="timerBar" style="width:100%"></i></div>
       <div class="btn-row">
-        <button class="btn btn-ghost" id="pauseTimer">⏸ 一時停止</button>
-        <button class="btn btn-go" id="toReveal">並べ替えへ →</button>
+        <button class="btn btn-dark" id="pauseTimer">一時停止</button>
+        <button class="btn btn-gold" id="toReveal">並べ替えへ</button>
       </div>
-      <div class="hint">数字は言わずに、お題に沿った表現で大きさを伝え合おう。準備ができたら「並べ替えへ」。（タイマー0でも自動で進むよ）</div>
+      <div class="hint">数字そのものは口にせず、お題に沿った言葉だけで大きさを伝え合いましょう。刻限が尽きると自動で並べ替えに進みます。</div>
     </div>
   </section>
 
-  <!-- ④ 並べ替え -->
+  <!-- 並べ替え -->
   <section class="screen" id="screen-order">
-    <div class="card">
+    <div class="scr-head">
+      <div class="en">ORDEAL</div>
+      <div class="ja">序列の審判</div>
+    </div>
+    <div class="panel">
       <div class="steps"><i></i><i></i><i></i><i class="on"></i></div>
-      <div class="label">小さいと思う順に並べよう（上が小さい）</div>
+      <div class="label">小さいと思う順に並べる（上が小さい）</div>
       <div id="orderList"></div>
-      <button class="btn btn-primary mt" id="doReveal">🎉 全員の数字を公開！</button>
-      <div class="hint">ドラッグ、または ▲▼ ボタンで並べ替え。並べ終わったら公開ボタンで答え合わせ！</div>
+      <button class="btn btn-gold mt" id="doReveal">全員の数字を公開する</button>
+      <div class="hint">ドラッグ、または上下ボタンで並べ替え。並べ終えたら公開して答え合わせです。</div>
     </div>
   </section>
 
-  <!-- ⑤ 結果 -->
+  <!-- 結果 -->
   <section class="screen" id="screen-result">
-    <div class="card">
-      <div class="verdict" id="verdict">
-        <div class="big" id="verdictBig">成功！</div>
+    <div class="panel">
+      <img class="emblem" id="emblemImg" src="assets/ui/victory.png" alt="">
+      <div class="verdict-txt">
+        <div class="big" id="verdictBig"></div>
         <div class="sm" id="verdictSm"></div>
       </div>
-      <div class="label">あなたたちが並べた順 ↓</div>
+      <div class="label">並べた順</div>
       <div id="resultList"></div>
       <div class="btn-row">
-        <button class="btn btn-ghost" id="playAgain">同じメンバーで再戦</button>
-        <button class="btn btn-primary" id="backSetup">設定に戻る</button>
+        <button class="btn btn-dark" id="playAgain">同じ仲間で再戦</button>
+        <button class="btn btn-gold" id="backSetup">設定に戻る</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-dark" id="resultToTitle">タイトルへ戻る</button>
       </div>
     </div>
   </section>
+</div>
+
+<!-- あそびかた -->
+<div class="modal-bg" id="rulesModal">
+  <div class="modal">
+    <h3>あそびかた</h3>
+    <ol>
+      <li>メンバーを登録し、お題と話し合いの刻限を決めます。</li>
+      <li>端末を1人ずつ手渡しし、自分の番でカードをめくって、自分だけの数字をこっそり確認します。</li>
+      <li>全員が確認したら話し合い開始。数字は口にせず、お題に沿った言葉だけで自分の数字の大きさを表現します。</li>
+      <li>相談しながら、全員を「数字が小さいと思う順」に並べます。</li>
+      <li>公開して答え合わせ。全員が昇順に並んでいれば勝利です。</li>
+    </ol>
+    <button class="btn btn-gold close" id="closeRules">とじる</button>
+  </div>
 </div>
 
 <script>
 (function(){
   "use strict";
   const $ = s=>document.querySelector(s);
+
   const themesJa = [
     "好きな食べ物の「熱さ」","行ってみたい国の「遠さ」","動物の「かわいさ」","朝の強さ",
     "コンビニへの愛","1日にスマホを見る時間","カラオケ十八番の盛り上がり度","こだわりの強さ",
@@ -307,32 +494,34 @@
     "遅刻しがち度","甘党度","早起き自慢","旅行の荷物の多さ"
   ];
 
-  const state = {
-    members:[], nums:[], min:1, max:100, timerTotal:180,
-    order:[], theme:""
-  };
+  const state = { members:[], nums:[], min:1, max:100, timerTotal:180, order:[], theme:"" };
 
-  // ---- 画面遷移 ----
   function show(id){
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     $('#'+id).classList.add('active');
     window.scrollTo({top:0,behavior:'smooth'});
   }
 
-  // ---- お題 ----
   function pickTheme(){
     state.theme = themesJa[Math.floor(Math.random()*themesJa.length)];
     $('#themeText').textContent = state.theme;
   }
 
-  // ---- メンバー欄 ----
+  // ---- タイトル ----
+  $('#goSetup').onclick = ()=>show('screen-setup');
+  $('#backTitle').onclick = ()=>show('screen-title');
+  $('#openRules').onclick = ()=>$('#rulesModal').classList.add('open');
+  $('#closeRules').onclick = ()=>$('#rulesModal').classList.remove('open');
+  $('#rulesModal').addEventListener('click',e=>{ if(e.target===$('#rulesModal')) $('#rulesModal').classList.remove('open'); });
+
+  // ---- メンバー ----
   const defaults = ["たろう","はなこ","じろう","さぶろう"];
   function memberRow(name){
     const row = document.createElement('div');
     row.className='member-row';
     row.innerHTML = `<div class="idx"></div>
       <input type="text" maxlength="12" placeholder="名前" value="${name||''}">
-      <button class="icon-btn" title="削除">✕</button>`;
+      <button class="icon-btn" title="削除">×</button>`;
     row.querySelector('.icon-btn').onclick = ()=>{ row.remove(); renumber(); };
     $('#members').appendChild(row);
     renumber();
@@ -355,17 +544,16 @@
   $('#startDist').onclick = ()=>{
     const names=[...document.querySelectorAll('.member-row input')]
       .map(i=>i.value.trim()).filter(v=>v);
-    if(names.length<2){ alert('メンバーは2人以上入れてね！'); return; }
-    if(new Set(names).size!==names.length){ alert('同じ名前が2人いるよ。区別できる名前にしてね！'); return; }
+    if(names.length<2){ alert('メンバーは2人以上必要です'); return; }
+    if(new Set(names).size!==names.length){ alert('同じ名前が重複しています。区別できる名前にしてください'); return; }
 
     let min=parseInt($('#minNum').value,10), max=parseInt($('#maxNum').value,10);
-    if(isNaN(min)||isNaN(max)||min>=max){ alert('数字の範囲がおかしいよ（最小 < 最大）'); return; }
-    if(max-min+1 < names.length){ alert('人数に対して数字の範囲が狭すぎるよ！範囲を広げてね。'); return; }
+    if(isNaN(min)||isNaN(max)||min>=max){ alert('数字の範囲が正しくありません（最小 < 最大）'); return; }
+    if(max-min+1 < names.length){ alert('人数に対して数字の範囲が狭すぎます。範囲を広げてください'); return; }
 
     const mm=parseInt($('#timerMin').value,10)||0, ss=parseInt($('#timerSec').value,10)||0;
     state.timerTotal = Math.max(0, mm*60+ss);
 
-    // ユニークな数字を配布
     const pool=[]; for(let n=min;n<=max;n++)pool.push(n);
     shuffle(pool);
     state.members = names;
@@ -377,28 +565,30 @@
     renderPass();
   };
 
-  // ---- パス&プレイ ----
+  // ---- 配布（カードめくり） ----
   let passIndex=0, flipped=false;
-  // カード画像のパス（範囲内のみ画像あり）。1〜100想定。
   function cardImgPath(num){ return `assets/cards/card_${String(num).padStart(3,'0')}.jpg`; }
   function hasCardImg(num){ return num>=1 && num<=100; }
 
   function renderPass(){
     flipped=false;
     const n=state.members.length;
-    $('#passCount').textContent = `${passIndex+1} / ${n} 人目`;
+    $('#passCount').textContent = `${passIndex+1} / ${n}`;
     $('#passName').textContent = state.members[passIndex];
-    $('#passSub').innerHTML = '他の人に見られてないか確認して、<br>カードをタップして数字をチェック！';
-    $('#cardBack').style.display='flex';
-    $('#cardFront').style.display='none';
+    $('#passSub').innerHTML = 'まわりに見られていないか確かめて、<br>カードに触れて数字を確認しましょう。';
+    $('#flipbox').classList.remove('flipped');
+    $('#tapNote').style.display='block';
     $('#cardWhose').style.display='none';
     $('#nextPerson').style.display='none';
-    $('#nextPerson').textContent = (passIndex===n-1)?'全員OK！話し合いへ →':'隠して次の人へ →';
-    // 次の人のカードを先読み（表示のもたつき防止）
+    $('#nextPerson').textContent = (passIndex===n-1)?'全員確認した。話し合いへ':'伏せて次の人へ';
+    // 表面をリセット（前の人の数字が透けないように）
+    $('#cardImg').style.display='none'; $('#cardImg').src='';
+    $('#cardNum').style.display='none';
+    // 先読み
     const nx=state.nums[passIndex];
     if(nx!=null && hasCardImg(nx)){ const pre=new Image(); pre.src=cardImgPath(nx); }
   }
-  $('#cardBack').onclick = ()=>{
+  $('#flipbox').onclick = ()=>{
     if(flipped)return; flipped=true;
     const num=state.nums[passIndex];
     if(hasCardImg(num)){
@@ -410,12 +600,12 @@
       $('#cardNum').style.display='block';
       $('#cardImg').style.display='none';
     }
-    $('#cardWhose').textContent = state.members[passIndex]+' の数字（ナイショ！）';
-    $('#cardBack').style.display='none';
-    $('#cardFront').style.display='flex';
+    $('#flipbox').classList.add('flipped');
+    $('#tapNote').style.display='none';
+    $('#cardWhose').textContent = state.members[passIndex]+' の数字（他言無用）';
     $('#cardWhose').style.display='block';
     $('#nextPerson').style.display='block';
-    $('#passSub').innerHTML='この数字はナイショ！<br>覚えたら隠して次の人に渡そう。';
+    $('#passSub').innerHTML='この数字は秘密。<br>覚えたら伏せて、次の人に渡しましょう。';
   };
   $('#nextPerson').onclick = ()=>{
     if(passIndex < state.members.length-1){ passIndex++; renderPass(); }
@@ -428,10 +618,10 @@
   function startTimer(){
     $('#timerTheme').textContent=state.theme;
     tRemain=state.timerTotal; tPaused=false;
-    $('#pauseTimer').textContent='⏸ 一時停止';
+    $('#pauseTimer').textContent='一時停止';
     paintTimer();
     if(tTimer)clearInterval(tTimer);
-    if(state.timerTotal===0){ $('#timerDisplay').textContent='フリー'; $('#timerBar').style.width='100%'; return; }
+    if(state.timerTotal===0){ $('#timerDisplay').textContent='自由'; $('#timerBar').style.width='100%'; return; }
     tTimer=setInterval(()=>{
       if(tPaused)return;
       tRemain--; paintTimer();
@@ -444,7 +634,7 @@
     const pct = state.timerTotal? (tRemain/state.timerTotal*100):100;
     $('#timerBar').style.width=Math.max(0,pct)+'%';
   }
-  $('#pauseTimer').onclick=()=>{ tPaused=!tPaused; $('#pauseTimer').textContent=tPaused?'▶ 再開':'⏸ 一時停止'; };
+  $('#pauseTimer').onclick=()=>{ tPaused=!tPaused; $('#pauseTimer').textContent=tPaused?'再開する':'一時停止'; };
   $('#toReveal').onclick=()=>{ if(tTimer)clearInterval(tTimer); buildOrder(); show('screen-order'); };
 
   // ---- 並べ替え ----
@@ -460,13 +650,12 @@
       el.innerHTML=`<div class="rank">${i+1}</div>
         <div class="nm">${o.name}</div>
         <div class="move">
-          <button class="up" ${i===0?'disabled':''}>▲</button>
-          <button class="down" ${i===state.order.length-1?'disabled':''}>▼</button>
+          <button class="up" ${i===0?'disabled':''}>上</button>
+          <button class="down" ${i===state.order.length-1?'disabled':''}>下</button>
         </div>`;
       el.querySelector('.up').onclick=()=>{swap(i,i-1);};
       el.querySelector('.down').onclick=()=>{swap(i,i+1);};
-      // drag
-      el.addEventListener('dragstart',e=>{dragI=i; el.classList.add('drag');});
+      el.addEventListener('dragstart',()=>{dragI=i; el.classList.add('drag');});
       el.addEventListener('dragend',()=>el.classList.remove('drag'));
       el.addEventListener('dragover',e=>{e.preventDefault();});
       el.addEventListener('drop',e=>{e.preventDefault(); move(dragI,i);});
@@ -480,26 +669,25 @@
   // ---- 公開・判定 ----
   $('#doReveal').onclick=()=>{ renderResult(); show('screen-result'); };
   function renderResult(){
-    // 正しい昇順（数字の小さい順）
     let ok=true;
     for(let i=1;i<state.order.length;i++){ if(state.order[i].num < state.order[i-1].num){ ok=false; break; } }
 
-    const v=$('#verdict'), vb=$('#verdictBig'), vs=$('#verdictSm');
-    v.className='verdict '+(ok?'win':'lose');
+    $('#emblemImg').src = ok? 'assets/ui/victory.png' : 'assets/ui/defeat.png';
+    const vb=$('#verdictBig'), vs=$('#verdictSm');
     vb.className='big '+(ok?'win':'lose');
-    if(ok){ vb.textContent='🎉 成功！ 完璧な昇順！'; vs.textContent='みんな小さい順にバッチリ並べられたよ！'; }
-    else { vb.textContent='💥 ざんねん…順番ミス！'; vs.textContent='小さい順になってない所があるよ。下で答え合わせしてみて！'; }
+    if(ok){ vb.textContent='勝利'; vs.textContent='見事な昇順。心は通じ合っていたようです。'; }
+    else { vb.textContent='敗北'; vs.textContent='順序が乱れています。答え合わせをどうぞ。'; }
 
     const wrap=$('#resultList'); wrap.innerHTML='';
     state.order.forEach((o,i)=>{
       const good = (i===0) || (o.num >= state.order[i-1].num);
       const el=document.createElement('div');
       el.className='result-item '+(good?'ok':'ng');
-      el.style.animationDelay=(i*0.08)+'s';
+      el.style.animationDelay=(i*0.09)+'s';
       el.innerHTML=`<div class="rank">${i+1}</div>
         <div class="num">${o.num}</div>
         <div class="nm">${o.name}</div>
-        <div class="flag">${good?'✅':'⚠️'}</div>`;
+        <div class="flag">${good?'正':'乱'}</div>`;
       wrap.appendChild(el);
     });
   }
@@ -513,13 +701,14 @@
     passIndex=0; show('screen-pass'); renderPass();
   };
   $('#backSetup').onclick=()=>{ show('screen-setup'); };
+  $('#resultToTitle').onclick=()=>{ show('screen-title'); };
 
-  // Enterキーでカードめくり／次へ（パス画面）
+  // Enterキー：配布画面でめくり／次へ
   document.addEventListener('keydown',e=>{
     if(!$('#screen-pass').classList.contains('active'))return;
     if(e.key==='Enter'||e.key===' '){
       e.preventDefault();
-      if(!flipped) $('#cardBack').click();
+      if(!flipped) $('#flipbox').click();
       else $('#nextPerson').click();
     }
   });
