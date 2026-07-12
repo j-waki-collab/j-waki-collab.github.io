@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>FemON マンジャロ新LP ワイヤー実機プレビュー（DRAFT）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --green:#2EA359; --green-dark:#1F5937; --gold:#D9A626; --dark:#1F1F29; --gray:#73737f; --bg:#F5F6F8; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Noto Sans JP',sans-serif; color:var(--dark); background:#e9eaee; }
+  .draft-banner { position:sticky; top:0; z-index:99; background:#c0392b; color:#fff; text-align:center; font-size:11px; padding:6px; font-weight:700; }
+  .wrap { max-width:390px; margin:0 auto; background:#fff; }
+  section { padding:22px 16px; }
+  section.alt { background:var(--bg); }
+  .tag { font-size:9px; color:#9aa; font-weight:700; margin-bottom:8px; }
+  h1 { font-size:34px; line-height:1.2; }
+  h2 { font-size:18px; margin-bottom:12px; }
+  .band { background:var(--gold); color:#fff; text-align:center; font-weight:700; font-size:13px; padding:7px; border-radius:4px; margin-bottom:10px; }
+  .sub { font-size:14px; font-weight:500; line-height:1.6; margin:8px 0; }
+  .photo { width:100%; border-radius:10px; display:block; margin:10px 0; }
+  .chips { display:flex; gap:6px; margin:10px 0; }
+  .chip { flex:1; background:#EBF7EE; color:var(--green-dark); font-size:11.5px; font-weight:700; text-align:center; padding:9px 4px; border-radius:6px; }
+  .price { font-size:16px; font-weight:700; color:#BF3318; margin:8px 0; }
+  .cta { display:block; width:100%; background:var(--green); color:#fff; font-size:15px; font-weight:700; text-align:center; padding:15px; border-radius:26px; text-decoration:none; margin:10px 0; }
+  .note { font-size:9px; color:var(--gray); line-height:1.5; }
+  .card { background:#fff; border-radius:8px; padding:12px 14px; margin-bottom:8px; }
+  .card h3 { font-size:14px; color:var(--green-dark); margin-bottom:4px; }
+  .card p { font-size:12px; line-height:1.5; }
+  .scarcity { background:#FFF3E6; }
+  .scarcity h2 { color:#CC4D0D; font-size:15px; }
+  .checks { font-size:13px; line-height:2; }
+  .lead-green { font-size:12px; font-weight:500; color:var(--green-dark); margin-top:8px; }
+  .diagram { background:#fff; border:1px solid #d9dde3; border-radius:10px; padding:16px 14px; text-align:center; }
+  .dchips { display:flex; gap:8px; justify-content:center; margin-bottom:8px; }
+  .dchip { color:#fff; font-weight:700; font-size:14px; padding:10px 22px; border-radius:999px; }
+  .arrow { font-size:11px; color:var(--gray); font-weight:700; margin:6px 0; }
+  .dcards { display:flex; gap:8px; }
+  .dcard { flex:1; background:#EFF8F2; border-radius:8px; padding:12px; }
+  .dcard b { display:block; font-size:13.5px; color:var(--green-dark); }
+  .dcard span { font-size:10.5px; }
+  .bars { display:flex; gap:14px; align-items:flex-end; justify-content:center; margin:12px 0 4px; height:130px; }
+  .barcol { display:flex; flex-direction:column; align-items:center; gap:4px; justify-content:flex-end; height:100%; }
+  .barcol i { display:block; width:52px; border-radius:5px 5px 0 0; font-style:normal; }
+  .barcol em { font-style:normal; font-size:10.5px; font-weight:700; color:var(--gray); }
+  .barcol small { font-size:10px; color:var(--gray); }
+  table { width:100%; border-collapse:collapse; background:#fff; border-radius:8px; overflow:hidden; font-size:11.5px; }
+  th, td { padding:8px 10px; text-align:right; }
+  th:first-child, td:first-child { text-align:left; }
+  thead tr { background:#E5EAF5; font-weight:700; }
+  tbody tr:nth-child(even) { background:#F7F7F9; }
+  .cmp-row { margin-bottom:12px; }
+  .cmp-row label { font-size:11px; color:var(--gray); display:block; margin-bottom:4px; }
+  .cmp-row.own label { color:var(--green-dark); font-weight:700; }
+  .cmp-bar { display:flex; align-items:center; gap:8px; }
+  .cmp-bar i { display:block; height:22px; border-radius:4px; font-style:normal; }
+  .cmp-bar b { font-size:11.5px; }
+  .faq-card { background:var(--bg); border-radius:8px; padding:10px 14px; margin-bottom:8px; font-size:12px; line-height:1.5; }
+  .final { background:var(--green-dark); color:#fff; }
+  .final h2 { color:#fff; font-size:20px; }
+  .final p { color:#d8e8dd; font-size:12px; margin-bottom:8px; }
+  .freeze { outline:2px dashed #c0392b; outline-offset:-6px; position:relative; }
+  .freeze::after { content:"⚠ 法務確認中（実装凍結）"; position:absolute; top:6px; right:8px; font-size:9px; color:#c0392b; font-weight:700; }
+</style>
+</head>
+<body>
+<div class="draft-banner">DRAFT — 構成検討用ワイヤーモック（仮画像・コピー法務確認前／実LPではありません）</div>
+<div class="wrap">
+
+<section>
+  <div class="tag">01｜FV</div>
+  <div class="band">効果を実感できなければ 全額返金保証</div>
+  <h1>マンジャロ</h1>
+  <p class="sub">（GIP/GLP-1）オンライン処方<br>3ヶ月で −6kg※ を目指す医療ダイエット</p>
+  <img class="photo" src="https://images.unsplash.com/photo-1558172443-381a52803532?w=900&q=80&fm=jpg" alt="">
+  <div class="chips"><div class="chip">送料0円</div><div class="chip">診療費0円</div><div class="chip">全額返金保証</div></div>
+  <p class="price">4本セット 初回 ¥19,250（税込）</p>
+  <a class="cta" href="#">LINEで問診票を入力する（無料）</a>
+  <p class="note">※SURMOUNT-1試験に基づく目安。効果には個人差があります</p>
+</section>
+
+<section class="alt">
+  <div class="tag">02｜選ばれる理由</div>
+  <h2>FemONが選ばれる3つの理由</h2>
+  <div class="card"><h3>① 全額返金保証（初回）</h3><p>効果を実感できなければ全額返金。“試して損しない”医療ダイエット</p></div>
+  <div class="card"><h3>② 副作用対策薬 0円</h3><p>吐き気止め・浮腫み止めを無料同梱。GLP-1の不安に先回り</p></div>
+  <div class="card"><h3>③ プライム上場グループ</h3><p>累計18万人・処方実績90万件の安心運営</p></div>
+</section>
+
+<section class="scarcity freeze">
+  <div class="tag">03｜希少性</div>
+  <h2>🔥 今月のキャンペーン枠 残りわずか</h2>
+  <p style="font-size:12px; line-height:1.6;">初回¥8,800オフは今月申込分まで。枠が埋まり次第終了します</p>
+</section>
+
+<section>
+  <div class="tag">04｜お悩み共感</div>
+  <h2>こんなお悩み、ありませんか？</h2>
+  <img class="photo" src="https://images.unsplash.com/photo-1522844990619-4951c40f7eda?w=900&q=80&fm=jpg" alt="">
+  <p class="checks">✔ 食事制限も運動も、続かなかった<br>✔ 年々落ちにくくなった体重が気になる<br>✔ 健康診断でBMI・血糖値を指摘された<br>✔ リバウンドを繰り返している</p>
+  <p class="lead-green">→ 美容目的だけでなく、健康リスクが気になる方の医療ダイエットとしても</p>
+</section>
+
+<section class="alt">
+  <div class="tag">05｜教育</div>
+  <h2>マンジャロ（GIP/GLP-1）とは？</h2>
+  <div class="diagram">
+    <div class="dchips"><span class="dchip" style="background:#3373BF;">GIP</span><span class="dchip" style="background:#2EA359;">GLP-1</span></div>
+    <div class="arrow">▼ 2つの受容体に同時に働く ▼</div>
+    <div class="dcards">
+      <div class="dcard"><b>食欲を抑える</b><span>自然と食事量が減る</span></div>
+      <div class="dcard"><b>満腹感キープ</b><span>無理な我慢が不要に</span></div>
+    </div>
+    <p class="note" style="margin-top:8px;">週1回の自己注射でOK</p>
+  </div>
+  <p style="font-size:12.5px; line-height:1.6; margin-top:10px;">世界初のGIP/GLP-1デュアル受容体作動薬。食欲を抑える＋満腹感を保つ、2つの働きで無理なく食事量が減らせます。</p>
+</section>
+
+<section class="freeze">
+  <div class="tag">06｜エビデンス</div>
+  <h2>臨床試験で示された減量効果</h2>
+  <div class="diagram">
+    <p style="font-size:11.5px; font-weight:700;">体重の推移イメージ（チルゼパチド／SURMOUNT-1）</p>
+    <div class="bars">
+      <div class="barcol"><em>100%</em><i style="height:100px; background:#c0c7d1;"></i><small>開始時</small></div>
+      <div class="barcol"><em>−8%</em><i style="height:92px; background:#99b8a6;"></i><small>12週</small></div>
+      <div class="barcol"><em>−12%</em><i style="height:82px; background:#66ad80;"></i><small>36週</small></div>
+      <div class="barcol"><em style="color:#1F5937;">−15%超</em><i style="height:72px; background:#2EA359;"></i><small>72週</small></div>
+    </div>
+  </div>
+  <p class="note" style="margin-top:8px;">※ 72週・最高用量群。国内では肥満症への使用は適応外です。効果には個人差があります</p>
+</section>
+
+<section class="alt">
+  <div class="tag">07｜料金全透明</div>
+  <h2>料金プラン（全用量・税込）</h2>
+  <table>
+    <thead><tr><th>用量・プラン</th><th>初回</th><th>2回目以降</th></tr></thead>
+    <tbody>
+      <tr><td>2.5mg（4本）</td><td>¥19,250</td><td>¥29,150</td></tr>
+      <tr><td>5.0mg（4本）</td><td>¥44,000</td><td>¥49,500</td></tr>
+      <tr><td>3ヶ月おまとめ</td><td>¥67,320〜</td><td>¥112,200</td></tr>
+    </tbody>
+  </table>
+  <p class="lead-green">診察料0円・送料0円・処方確定まで料金は一切かかりません。契約期間の縛りなし</p>
+</section>
+
+<section>
+  <div class="tag">08｜相場比較</div>
+  <h2>マンジャロの相場は月3万円前後</h2>
+  <div class="diagram" style="text-align:left;">
+    <div class="cmp-row"><label>一般的な相場</label><div class="cmp-bar"><i style="width:78%; background:#c0c7d1;"></i><b>月3万円前後</b></div></div>
+    <div class="cmp-row own"><label>FemON 初回</label><div class="cmp-bar"><i style="width:50%; background:#2EA359;"></i><b style="color:#1F5937;">¥19,250 ＋全額返金保証</b></div></div>
+  </div>
+  <p style="font-size:12.5px; line-height:1.6; margin-top:10px;">「高いお金を払ったのに合わなかった」リスクがありません。安さだけでなく“損しない”で選んでください。</p>
+</section>
+
+<section class="alt">
+  <div class="tag">09｜副作用対策</div>
+  <h2>副作用が不安な方こそFemON</h2>
+  <p class="checks">✔ 吐き気止め・浮腫み止めを0円で同梱<br>✔ 麻酔シート・二日酔い対策薬も無料<br>✔ 専門カウンセラーにいつでも相談OK<br>✔ 薬剤の変更・休薬もLINEで完結</p>
+  <p class="lead-green">GLP-1で最も多い不安「吐き気」に、処方時点から先回りして備えます</p>
+</section>
+
+<section>
+  <div class="tag">10｜FAQ</div>
+  <h2>よくあるご質問</h2>
+  <div class="faq-card">Q. 男性でも利用できますか？ → はい。性別を問わず処方可能です</div>
+  <div class="faq-card">Q. どの用量から始めればいい？ → 初めての方は2.5mgから。医師が診察で提案します</div>
+  <div class="faq-card">Q. 注射は痛くないですか？ → 極細針＋無料の麻酔シートで痛みに配慮しています</div>
+  <div class="faq-card">Q. 途中でやめられますか？ → 縛りなし。休薬・解約はいつでもLINEで完結します</div>
+  <div class="faq-card">Q. 薬が合わなかったら？ → 初回は全額返金保証の対象です。薬剤の変更も可能</div>
+</section>
+
+<section class="alt">
+  <div class="tag">11｜運営者情報</div>
+  <h2 style="font-size:14px;">運営：Salus, Inc.（プライム上場グループ）</h2>
+  <p style="font-size:12px; line-height:1.6;">累計ユーザー18万人／処方実績90万件／提携医療機関によるオンライン診療。国内正規流通品のみ取扱い・個人輸入品は扱いません</p>
+</section>
+
+<section class="final">
+  <div class="tag" style="color:#7fa78c;">12｜最終CTA</div>
+  <div class="band">全額返金保証つきだから、試して損しない</div>
+  <h2>まずはLINEで無料問診から</h2>
+  <p>診察料0円・送料0円・処方確定まで料金は一切かかりません</p>
+  <a class="cta" href="#">LINEで問診票を入力する（無料）</a>
+</section>
+
+</div>
+</body>
+</html>
