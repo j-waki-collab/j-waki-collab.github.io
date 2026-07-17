@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>HeatShift｜サービス紹介スライド</title>
+<style>
+:root{
+  --navy:#0B1F3A; --navy-2:#12305a; --cyan:#2BB7C8; --orange:#E8743B;
+  --ink:#0B1F3A; --sub:#5b6b80; --line:#dbe3ec; --bg:#eef2f7; --white:#fff;
+  --warm:#fff6f1; --cool:#f0fafc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:-apple-system,"Segoe UI","Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,sans-serif;
+  line-height:1.7; -webkit-font-smoothing:antialiased;
+}
+/* ---- topbar ---- */
+.topbar{
+  position:fixed; top:0; left:0; right:0; height:52px; z-index:50;
+  background:var(--navy); color:#fff; display:flex; align-items:center;
+  padding:0 20px; gap:16px; box-shadow:0 2px 12px rgba(11,31,58,.2);
+}
+.brand{font-weight:700; letter-spacing:.06em; font-size:15px; display:flex; align-items:center; gap:8px}
+.brand i{width:9px;height:9px;border-radius:50%;background:var(--cyan);display:inline-block}
+.topbar .spacer{flex:1}
+.btn{
+  background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.22); color:#fff;
+  padding:6px 14px; border-radius:6px; font-size:13px; cursor:pointer; transition:.15s;
+}
+.btn:hover{background:rgba(255,255,255,.2)}
+.btn.on{background:var(--cyan); border-color:var(--cyan); color:var(--navy); font-weight:700}
+.counter{font-size:13px; color:rgba(255,255,255,.75); min-width:56px; text-align:center}
+/* ---- deck ---- */
+.deck{padding:76px 20px 90px; max-width:1120px; margin:0 auto}
+.slide{
+  background:var(--white); border:1px solid var(--line); border-radius:14px;
+  aspect-ratio:16/9; padding:44px 52px; position:relative; overflow:hidden;
+  box-shadow:0 8px 30px rgba(11,31,58,.10); display:none; flex-direction:column;
+}
+.slide.active{display:flex}
+.slide .no{position:absolute; right:22px; bottom:16px; font-size:12px; color:#a8b4c4}
+.slide .tag{position:absolute; left:52px; top:22px; font-size:11px; letter-spacing:.14em; color:var(--cyan); font-weight:700}
+h2{font-size:30px; line-height:1.35; margin:38px 0 6px; letter-spacing:-.01em}
+h2 em{font-style:normal; color:var(--cyan)}
+h2 b{color:var(--orange)}
+.lead{color:var(--sub); font-size:15px; margin-bottom:22px}
+.cap{
+  position:absolute; left:52px; right:52px; bottom:44px; font-size:12.5px; color:#7c8ba0;
+  border-top:1px dashed var(--line); padding-top:10px;
+}
+/* ---- cover ---- */
+.cover{background:linear-gradient(150deg,#081729 0%,#0B1F3A 45%,#173a63 100%); border:none; color:#fff; justify-content:center}
+.cover:before{
+  content:""; position:absolute; right:-90px; top:-90px; width:420px; height:420px; border-radius:50%;
+  background:radial-gradient(circle,rgba(43,183,200,.28),transparent 68%);
+}
+.cover:after{
+  content:""; position:absolute; left:-60px; bottom:-120px; width:360px; height:360px; border-radius:50%;
+  background:radial-gradient(circle,rgba(232,116,59,.22),transparent 68%);
+}
+.cover .logo{font-size:56px; font-weight:800; letter-spacing:-.02em; position:relative; z-index:2}
+.cover .logo span{color:var(--cyan)}
+.cover .tagline{font-size:26px; margin:14px 0 8px; font-weight:600; position:relative; z-index:2}
+.cover .sub{color:rgba(255,255,255,.7); font-size:15px; position:relative; z-index:2; max-width:640px}
+.cover .provider{position:absolute; left:52px; bottom:40px; font-size:13px; color:rgba(255,255,255,.6); z-index:2}
+/* ---- parts ---- */
+.cols{display:grid; gap:18px; flex:1; align-content:start}
+.c3{grid-template-columns:repeat(3,1fr)}
+.c2{grid-template-columns:1fr 1fr}
+.card{border:1px solid var(--line); border-radius:11px; padding:20px; background:#fbfcfe}
+.card .h{font-weight:700; font-size:16px; margin-bottom:8px; display:flex; align-items:center; gap:9px}
+.card .t{font-size:13.5px; color:var(--sub); line-height:1.75}
+.num{
+  width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex:none
+}
+.cool{background:var(--cool); border-color:#c9e9ef}
+.warm{background:var(--warm); border-color:#f6d6c5}
+.cool .num{background:var(--cyan)} .warm .num{background:var(--orange)}
+.big{font-size:34px; font-weight:800; letter-spacing:-.02em; line-height:1.25}
+.big.cy{color:var(--cyan)} .big.og{color:var(--orange)}
+.unit{font-size:14px; font-weight:600; color:var(--sub); margin-left:3px}
+.flow{display:flex; align-items:center; gap:12px; flex:1}
+.step{
+  flex:1; border:1px solid var(--line); border-radius:11px; padding:20px 16px; background:#fbfcfe; text-align:center;
+}
+.step .sn{font-size:11px; letter-spacing:.1em; color:var(--cyan); font-weight:700; margin-bottom:8px}
+.step .st{font-weight:700; font-size:15px; margin-bottom:6px}
+.step .sd{font-size:12.5px; color:var(--sub); line-height:1.7}
+.arrow{color:var(--cyan); font-size:22px; flex:none}
+.chk{list-style:none; display:flex; flex-direction:column; gap:9px; margin-top:6px}
+.chk li{display:flex; gap:9px; font-size:14px; align-items:flex-start}
+.chk li:before{content:"✔"; color:var(--cyan); font-weight:800; flex:none}
+table{width:100%; border-collapse:collapse; font-size:13.5px}
+th,td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line)}
+th{background:#f4f7fb; font-size:12px; color:var(--sub); letter-spacing:.04em; font-weight:700}
+td.lv{font-weight:700}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+.note{
+  margin-top:12px; background:#f4f7fb; border-left:3px solid var(--navy); padding:11px 14px;
+  font-size:12.5px; color:var(--sub); border-radius:0 6px 6px 0;
+}
+.bar-row{display:flex; align-items:center; gap:10px; margin-bottom:7px; font-size:13px}
+.bar-row .lb{width:150px; flex:none; color:var(--ink)}
+.bar-track{flex:1; height:16px; background:#eef2f7; border-radius:8px; overflow:hidden}
+.bar-fill{height:100%; border-radius:8px; background:var(--cyan); opacity:.45}
+.bar-fill.top{opacity:1}
+.bar-fill.og{background:var(--orange)}
+.bar-row .vl{width:44px; text-align:right; font-weight:700; font-size:12.5px; color:var(--sub); flex:none}
+.tl{display:flex; gap:0; flex:1; align-items:stretch; margin-top:8px}
+.tl-item{flex:1; position:relative; padding:26px 14px 0; text-align:center}
+.tl-item:before{content:""; position:absolute; top:8px; left:0; right:0; height:2px; background:var(--line)}
+.tl-item:after{
+  content:""; position:absolute; top:2px; left:50%; transform:translateX(-50%);
+  width:13px;height:13px;border-radius:50%;background:var(--cyan); border:3px solid #fff; box-shadow:0 0 0 1px var(--cyan)
+}
+.tl-item:last-child:after{background:var(--orange); box-shadow:0 0 0 1px var(--orange)}
+.tl-item .when{font-size:11.5px; color:var(--cyan); font-weight:700; margin-bottom:5px}
+.tl-item:last-child .when{color:var(--orange)}
+.tl-item .what{font-weight:700; font-size:14px; margin-bottom:5px}
+.tl-item .dsc{font-size:11.5px; color:var(--sub); line-height:1.65}
+.split{display:grid; grid-template-columns:1fr 1fr; gap:20px; flex:1}
+.panel{border-radius:11px; padding:20px; border:1px solid var(--line)}
+.panel .ph{font-weight:700; font-size:17px; margin-bottom:12px; display:flex; align-items:center; gap:8px}
+.panel ul{list-style:none; display:flex; flex-direction:column; gap:10px}
+.panel li{font-size:13.5px; line-height:1.6; padding-left:14px; position:relative; color:var(--sub)}
+.panel li:before{content:"・"; position:absolute; left:0; color:var(--cyan)}
+.warm li:before{color:var(--orange)}
+.mono{font-variant-numeric:tabular-nums}
+.pill{display:inline-block; padding:2px 10px; border-radius:999px; font-size:11px; font-weight:700}
+.pill.now{background:#e3f7fa; color:#12707e}
+.pill.next{background:#fdeee6; color:#a8471e}
+.dash{border-style:dashed !important; opacity:.9}
+.cta{
+  background:var(--orange); color:#fff; border-radius:10px; padding:16px 26px; font-weight:700; font-size:17px;
+  display:inline-flex; align-items:center; gap:10px; margin-top:8px;
+}
+/* ---- grid view ---- */
+.grid-view{display:none; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px}
+.grid-view.on{display:grid}
+.deck.hide-slide .slide{display:none !important}
+.thumb{
+  background:#fff; border:1px solid var(--line); border-radius:9px; aspect-ratio:16/9; cursor:pointer;
+  padding:14px; overflow:hidden; position:relative; transition:.15s; display:flex; flex-direction:column; justify-content:center;
+}
+.thumb:hover{border-color:var(--cyan); transform:translateY(-2px); box-shadow:0 6px 18px rgba(11,31,58,.12)}
+.thumb .tn{position:absolute; top:8px; left:10px; font-size:10px; color:#a8b4c4; font-weight:700}
+.thumb .tt{font-size:14px; font-weight:700; line-height:1.45}
+.thumb .td{font-size:11px; color:var(--sub); margin-top:5px; line-height:1.5}
+.thumb.cv{background:var(--navy); border-color:var(--navy)}
+.thumb.cv .tt{color:#fff} .thumb.cv .td{color:rgba(255,255,255,.6)} .thumb.cv .tn{color:rgba(255,255,255,.4)}
+/* ---- nav ---- */
+.nav{
+  position:fixed; bottom:0; left:0; right:0; height:64px; background:rgba(255,255,255,.94);
+  backdrop-filter:blur(8px); border-top:1px solid var(--line); display:flex; align-items:center;
+  justify-content:center; gap:14px; z-index:50;
+}
+.nav button{
+  background:var(--navy); color:#fff; border:none; width:40px; height:40px; border-radius:8px;
+  font-size:17px; cursor:pointer; transition:.15s;
+}
+.nav button:hover{background:var(--navy-2)}
+.nav button:disabled{opacity:.28; cursor:default}
+.prog{width:280px; height:5px; background:#e3e9f1; border-radius:3px; overflow:hidden}
+.prog i{display:block; height:100%; background:var(--cyan); transition:width .25s}
+.hint{position:fixed; right:20px; bottom:74px; font-size:11px; color:#93a2b5; z-index:40}
+@media(max-width:880px){
+  .slide{aspect-ratio:auto; min-height:70vh; padding:34px 26px}
+  h2{font-size:22px} .cover .logo{font-size:38px} .cover .tagline{font-size:19px}
+  .cols.c3,.cols.c2,.split{grid-template-columns:1fr}
+  .flow{flex-direction:column} .arrow{transform:rotate(90deg)}
+  .cap{position:static; margin-top:18px} .slide .tag{left:26px}
+  .tl{flex-direction:column; gap:14px} .tl-item:before{display:none} .tl-item:after{left:8px}
+  .tl-item{text-align:left; padding:0 0 0 30px}
+  .hint{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><i></i>HeatShift ／ サービス紹介</div>
+  <div class="spacer"></div>
+  <button class="btn" id="gridBtn">一覧で見る</button>
+  <div class="counter"><span id="cur">1</span> / 15</div>
+</div>
+
+<div class="deck" id="deck">
+
+<!-- 1 -->
+<section class="slide cover active">
+  <div class="logo">Heat<span>Shift</span></div>
+  <div class="tagline">気象を、葬儀広告の味方に。</div>
+  <div class="sub">― 気象連動 CPC自動最適化ツール ―<br>気象庁・環境省データ × 医学的知見で、葬儀需要のピークを先読みする</div>
+  <div class="provider">提供：株式会社セレス</div>
+  <div class="no">01</div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <div class="tag">ISSUE</div>
+  <h2>葬儀広告の「需要の波」、<b>後手</b>に回っていませんか？</h2>
+  <p class="lead">気象に左右される需要を、人手で追いかけ続けるのには限界があります。</p>
+  <div class="cols c3">
+    <div class="card">
+      <div class="h"><span class="num">1</span>需要が読めない</div>
+      <div class="t">寒波・猛暑など、葬儀需要は気象に大きく左右される。でも「いつ伸びるか」は事前に見えない。</div>
+    </div>
+    <div class="card">
+      <div class="h"><span class="num">2</span>手動運用の限界</div>
+      <div class="t">全エリア・全キーワードの入札を人手で調整するのは、非効率で属人的。担当者が変われば精度も変わる。</div>
+    </div>
+    <div class="card">
+      <div class="h"><span class="num">3</span>ピークの取りこぼし</div>
+      <div class="t">需要が立ち上がる数日を逃すと、上位表示を競合に奪われ、獲得単価（CPA）が悪化する。</div>
+    </div>
+  </div>
+  <div class="cap">葬儀需要は気象と強く連動しますが、そのピークを人手で先読みし続けるのは困難です。HeatShiftはこの3つの課題を、データで解決します。</div>
+  <div class="no">02</div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <div class="tag">OVERVIEW</div>
+  <h2>HeatShift＝気象データを<em>「広告入札の判断」</em>に変えるツール</h2>
+  <p class="lead">気象庁・環境省のデータを 0〜120点 のリスクスコアに変換し、葬儀需要が高まる数日前から、広告入札（CPC）を自動で最適化します。</p>
+  <div class="flow">
+    <div class="step"><div class="sn">INPUT</div><div class="st">気象データ</div><div class="sd">気象庁・環境省<br>全国151地点</div></div>
+    <div class="arrow">→</div>
+    <div class="step" style="border-color:var(--cyan);background:var(--cool)"><div class="sn">SCORE</div><div class="st">リスクスコア化</div><div class="sd"><span class="big cy mono">0-120</span><span class="unit">点</span></div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="sn">ACTION</div><div class="st">入札を自動調整</div><div class="sd">需要日は強化<br>平常日は抑制</div></div>
+  </div>
+  <ul class="chk" style="margin-top:18px">
+    <li>冬＝ヒートショック（気温低下）／夏＝熱中症（暑さ指数WBGT）の通年対応</li>
+    <li>医学論文 ＋ 公的統計に基づく設計（仮説ではない）</li>
+    <li>全国151地点の気象データに対応</li>
+  </ul>
+  <div class="no">03</div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <div class="tag">EVIDENCE</div>
+  <h2>気温の変化は、人の生死に直結する<br>― だから<b>葬儀需要</b>に直結する</h2>
+  <div class="split" style="margin-top:14px">
+    <div class="panel cool">
+      <div class="ph">❄ 冬｜ヒートショック</div>
+      <div style="margin-bottom:14px"><span class="big cy mono">+1.6</span><span class="unit">%</span><div style="font-size:12.5px;color:var(--sub)">気温が1℃下がるごとの心血管系 死亡リスク上昇</div></div>
+      <div style="margin-bottom:14px"><span class="big cy mono">1.32</span><span class="unit">倍</span><div style="font-size:12.5px;color:var(--sub)">寒波時の死亡リスク（平常時比）</div></div>
+      <div><span class="big cy mono">5-8</span><span class="unit">日後</span><div style="font-size:12.5px;color:var(--sub)">気温急降下から死亡がピークを迎えるまで</div></div>
+    </div>
+    <div class="panel warm">
+      <div class="ph">☀ 夏｜熱中症・暑熱</div>
+      <div style="margin-bottom:14px"><span class="big og mono">2,160</span><span class="unit">人</span><div style="font-size:12.5px;color:var(--sub)">令和6年 熱中症による死亡者数</div></div>
+      <div style="margin-bottom:14px"><span class="big og mono">83.3</span><span class="unit">%</span><div style="font-size:12.5px;color:var(--sub)">うち65歳以上が占める割合</div></div>
+      <div><span class="big og mono">0.94</span><span class="unit">R²</span><div style="font-size:12.5px;color:var(--sub)">暑さ指数（WBGT）と救急搬送数の相関</div></div>
+    </div>
+  </div>
+  <div class="note">出典：厚生労働省 人口動態統計／消防庁 熱中症搬送データ／環境省 暑さ指数／気温と心血管死亡に関する査読論文 ほか</div>
+  <div class="no">04</div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <div class="tag">HOW IT WORKS</div>
+  <h2>仕組み｜気象 → スコア → 入札</h2>
+  <p class="lead">データ取得からスコア化、入札調整までを一貫した仕組みで運用します。</p>
+  <div class="flow">
+    <div class="step">
+      <div class="sn">STEP 1</div><div class="st">気象データを取得</div>
+      <div class="sd">気象庁の2週間気温予報・過去気象データ、環境省の暑さ指数（WBGT）を取得。全国151地点に対応。</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="sn">STEP 2</div><div class="st">リスクスコアに変換</div>
+      <div class="sd">複数のシグナルを重みづけして0〜120点で点数化。「この地域は今、どれだけ需要が高まるか」を数値化。</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="sn">STEP 3</div><div class="st">入札（CPC）を最適化</div>
+      <div class="sd">スコアに応じて入札率を自動調整。需要日は強化、平常日は抑制してムダ打ちを防ぐ。</div>
+    </div>
+  </div>
+  <div class="cap">需要日は攻め、平常日は守る ― これがムダのない配信につながります。</div>
+  <div class="no">05</div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <div class="tag">SEASON</div>
+  <h2>1年を通じて、季節の要因に合わせて<em>切り替わる</em></h2>
+  <div class="split" style="margin-top:14px">
+    <div class="panel cool">
+      <div class="ph">❄ 冬モード｜ヒートショック対策</div>
+      <ul>
+        <li><b>着目</b>：絶対気温の低さ・前日からの急な冷え込み</li>
+        <li><b>入札強化のきっかけ</b>：寒波・気温急降下</li>
+      </ul>
+    </div>
+    <div class="panel warm">
+      <div class="ph">☀ 夏モード｜熱中症対策</div>
+      <ul>
+        <li><b>着目</b>：暑さ指数（WBGT）・連続猛暑日・熱中症警戒</li>
+        <li><b>入札強化のきっかけ</b>：危険レベルの暑さ・急な気温上昇</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note">モードの切替は<b>手動</b>。毎年シフトする寒暖の時期に、運用者の判断で確実に対応します。</div>
+  <div class="cap">冬と夏では、需要を押し上げる気象要因が異なります。HeatShiftは季節に応じてモードを切り替え、通年で葬儀需要に対応します。</div>
+  <div class="no">06</div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <div class="tag">SCORING</div>
+  <h2>複数の気象シグナルを重みづけし、<em>需要リスクを点数化</em></h2>
+  <div class="split" style="margin-top:6px">
+    <div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:12px;color:#12707e">❄ 冬モード｜120点満点</div>
+      <div class="bar-row"><span class="lb">① 絶対気温</span><span class="bar-track"><i class="bar-fill" style="width:78%"></i></span><span class="vl">35点</span></div>
+      <div class="bar-row"><span class="lb">② 気温変化幅</span><span class="bar-track"><i class="bar-fill top" style="width:100%"></i></span><span class="vl">45点</span></div>
+      <div class="bar-row"><span class="lb">③ 気圧の低下</span><span class="bar-track"><i class="bar-fill" style="width:33%"></i></span><span class="vl">15点</span></div>
+      <div class="bar-row"><span class="lb">④ 寒波・大雪警報</span><span class="bar-track"><i class="bar-fill" style="width:33%"></i></span><span class="vl">15点</span></div>
+      <div class="bar-row"><span class="lb">⑤ 複合シグナル</span><span class="bar-track"><i class="bar-fill" style="width:22%"></i></span><span class="vl">10点</span></div>
+      <div style="font-size:11.5px;color:var(--sub);margin-top:8px">↑ 最重視＝<b>気温変化幅</b>（急な冷え込みほど高加点）</div>
+    </div>
+    <div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:12px;color:#a8471e">☀ 夏モード｜120点満点</div>
+      <div class="bar-row"><span class="lb">⑥ 暑さ指数 WBGT</span><span class="bar-track"><i class="bar-fill og top" style="width:100%"></i></span><span class="vl">40点</span></div>
+      <div class="bar-row"><span class="lb">⑦ 連続猛暑日数</span><span class="bar-track"><i class="bar-fill og" style="width:87%"></i></span><span class="vl">35点</span></div>
+      <div class="bar-row"><span class="lb">⑧ 熱中症警戒</span><span class="bar-track"><i class="bar-fill og" style="width:75%"></i></span><span class="vl">30点</span></div>
+      <div class="bar-row"><span class="lb">⑨ 気温の急上昇</span><span class="bar-track"><i class="bar-fill og" style="width:37%"></i></span><span class="vl">15点</span></div>
+      <div style="font-size:11.5px;color:var(--sub);margin-top:8px">↑ 最重視＝<b>暑さ指数WBGT</b>（搬送との相関R²=0.94）</div>
+    </div>
+  </div>
+  <div class="note">各配点の閾値・重みは、医学データに基づき自社で設計・検証しています（本資料では構造のみ公開）。</div>
+  <div class="no">07</div>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <div class="tag">CORE ADVANTAGE</div>
+  <h2>「気温が動いた日」ではなく、<br><b>「需要が顕在化する数日後」</b>に向けて入札する</h2>
+  <p class="lead">気温の急降下から心血管系の死亡がピークを迎えるまでには 5〜8日のタイムラグがある（医学的知見）。</p>
+  <div style="flex:1;display:flex;align-items:center">
+  <svg viewBox="0 0 900 250" style="width:100%;height:auto">
+    <defs>
+      <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#2BB7C8" stop-opacity=".38"/>
+        <stop offset="100%" stop-color="#2BB7C8" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <line x1="60" y1="210" x2="870" y2="210" stroke="#dbe3ec" stroke-width="1.5"/>
+    <line x1="60" y1="30" x2="60" y2="210" stroke="#dbe3ec" stroke-width="1.5"/>
+    <text x="8" y="40" font-size="11" fill="#7c8ba0">入札強度</text>
+    <text x="820" y="234" font-size="11" fill="#7c8ba0">日付 →</text>
+    <!-- HeatShift curve -->
+    <path d="M60,200 C140,196 180,150 250,110 C320,70 360,46 430,46 C500,46 540,74 610,116 C690,164 780,192 870,200"
+          fill="url(#g1)" stroke="#2BB7C8" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- competitor curve -->
+    <path d="M60,206 C240,206 330,204 430,200 C500,196 545,120 620,96 C700,72 780,150 870,190"
+          fill="none" stroke="#9aa8ba" stroke-width="2.2" stroke-dasharray="7 6"/>
+    <!-- markers -->
+    <line x1="250" y1="30" x2="250" y2="210" stroke="#E8743B" stroke-width="1.4" stroke-dasharray="4 4"/>
+    <circle cx="250" cy="110" r="6" fill="#E8743B"/>
+    <text x="196" y="24" font-size="12" font-weight="700" fill="#E8743B">Day 0 気温急降下</text>
+    <line x1="430" y1="30" x2="430" y2="210" stroke="#0B1F3A" stroke-width="1.4" stroke-dasharray="4 4"/>
+    <circle cx="430" cy="46" r="7" fill="#0B1F3A"/>
+    <text x="386" y="24" font-size="12" font-weight="700" fill="#0B1F3A">Day 5 需要ピーク</text>
+    <text x="86" y="150" font-size="12" font-weight="700" fill="#2BB7C8">先行して</text>
+    <text x="86" y="166" font-size="12" font-weight="700" fill="#2BB7C8">上げ始める</text>
+    <text x="700" y="150" font-size="12" fill="#2BB7C8">ゆるやかに減衰</text>
+    <text x="640" y="86" font-size="11.5" fill="#9aa8ba">競合＝需要が増えてから動く（後追い）</text>
+    <rect x="252" y="36" width="178" height="180" fill="#2BB7C8" opacity=".05"/>
+  </svg>
+  </div>
+  <div class="note">競合が「需要が増えてから」動く中、HeatShiftは<b>一歩先に上位表示を押さえる</b>。これが最も重要な特徴です。</div>
+  <div class="no">08</div>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <div class="tag">SCORE TABLE</div>
+  <h2>気象 → スコア → <em>入札調整</em> の対応イメージ</h2>
+  <table style="margin-top:10px">
+    <tr><th style="width:150px">リスクレベル</th><th style="width:110px">スコア</th><th style="width:130px">入札調整</th><th>運用の動き</th></tr>
+    <tr><td class="lv"><span class="dot" style="background:#e5484d"></span>緊急</td><td class="mono">90点〜</td><td class="mono" style="color:#e5484d;font-weight:700">+25〜30%</td><td>需要ピークに全力で上位確保</td></tr>
+    <tr><td class="lv"><span class="dot" style="background:#E8743B"></span>高</td><td class="mono">60〜89点</td><td class="mono" style="color:#E8743B;font-weight:700">+15〜20%</td><td>強化して取りこぼし防止</td></tr>
+    <tr><td class="lv"><span class="dot" style="background:#e5b800"></span>中</td><td class="mono">30〜59点</td><td class="mono" style="font-weight:700">+10%</td><td>やや強化</td></tr>
+    <tr><td class="lv"><span class="dot" style="background:#2BB7C8"></span>低</td><td class="mono">10〜29点</td><td class="mono" style="font-weight:700">±0%</td><td>通常運用</td></tr>
+    <tr><td class="lv"><span class="dot" style="background:#b8c2ce"></span>平常</td><td class="mono">〜9点</td><td class="mono" style="color:var(--sub);font-weight:700">▲5〜8%</td><td>抑制してムダ打ち防止</td></tr>
+  </table>
+  <div class="note">🔒 <b>安全装置</b>：入札の上げ幅は最大 +30% まで／予算消化が90%を超えたら自動的に抑制。過剰な入札にはなりません。</div>
+  <div class="cap">スコアは必ず具体的な入札アクションに対応します。</div>
+  <div class="no">09</div>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+  <div class="tag">HISTORY</div>
+  <h2>HeatShiftは、<em>3年間</em>の実運用と検証から生まれた</h2>
+  <p class="lead">一度に完成したものではなく、実運用とPDCAを重ねて現在の形に到達しました。</p>
+  <div class="tl">
+    <div class="tl-item">
+      <div class="when">約3年前</div><div class="what">初期開発</div>
+      <div class="dsc">ヒートショック対応として、気温変動に応じた入札調整を開発（ルールベース）</div>
+    </div>
+    <div class="tl-item">
+      <div class="when">約2年前</div><div class="what">スコアリング設計</div>
+      <div class="dsc">学術論文・運用実績・気象データを加味し、独自スコアリングを設計・ローンチ</div>
+    </div>
+    <div class="tl-item">
+      <div class="when">直近2年間</div><div class="what">検証・改善（PDCA）</div>
+      <div class="dsc">葬儀社クライアントの過去データで、予測精度を継続的に検証・チューニング</div>
+    </div>
+    <div class="tl-item">
+      <div class="when">現在</div><div class="what">通年対応へ拡張</div>
+      <div class="dsc">冬のヒートショックに加え、夏の熱中症（WBGT）に対応。地域別カスタマイズも展開</div>
+    </div>
+  </div>
+  <div class="note">進化の軌跡：<b>「気温変動の単純ルール」→「多シグナル × リードタイム連動のスコアリング」</b></div>
+  <div class="no">10</div>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+  <div class="tag">PROOF & PoC</div>
+  <h2>「効くかどうか」は、<b>御社のデータ</b>で一緒に確かめます</h2>
+  <div class="cols c3" style="margin-top:8px">
+    <div class="card cool">
+      <div class="h"><span class="num">1</span>データをご提供</div>
+      <div class="t">御社の過去の訃報件数・問い合わせデータ（日次）をご提供いただきます。</div>
+    </div>
+    <div class="card cool">
+      <div class="h"><span class="num">2</span>気象スコアと突合</div>
+      <div class="t">気象スコアと突き合わせ、相関を可視化。<b>本当に効くかを導入前に検証</b>します。</div>
+    </div>
+    <div class="card warm">
+      <div class="h"><span class="num">3</span>納得してから導入</div>
+      <div class="t">効果が確認できてから、本格導入をご判断いただけます。</div>
+    </div>
+  </div>
+  <div class="note" style="border-left-color:var(--orange);background:var(--warm);margin-top:20px">
+    <b style="color:var(--ink);font-size:14px">「導入してみないと分からない」をなくす。</b><br>
+    これまでも葬儀社クライアントの過去3年分のデータ（媒体CV・電話CV・気象データ）を突合し、「気象スコアが高い日」と「実際に需要が増えた日」の一致度を検証してきました。同じ手法を、御社のデータでも導入前に実施します。
+  </div>
+  <div class="cap">HeatShiftの効果は、御社の実データとの突合で事前に検証できます。まず小さく試し、効果を確認してから本格導入いただけます。</div>
+  <div class="no">11</div>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+  <div class="tag">ROADMAP</div>
+  <h2>HeatShiftは、<em>進化し続けています</em></h2>
+  <div class="split" style="margin-top:10px">
+    <div class="panel cool">
+      <div class="ph"><span class="pill now">現在 提供中</span></div>
+      <ul class="chk">
+        <li>気象庁2週間予報・過去気象データの取得（全国151地点）</li>
+        <li>気温シグナル（絶対値・変化幅）によるスコアリング</li>
+        <li>リードタイムを考慮した入札設計</li>
+        <li>冬モード／夏モード（WBGT）の通年対応</li>
+        <li>過去実測データによるリスク日検出の検証</li>
+      </ul>
+    </div>
+    <div class="panel dash warm">
+      <div class="ph"><span class="pill next">開発・拡張中</span></div>
+      <ul>
+        <li>気圧／複合シグナルの追加</li>
+        <li>寒波・大雪警報との自動連動</li>
+        <li>キーワード単位での入札最適化</li>
+        <li>広告管理画面との自動入札連携</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note">導入いただいた後も、機能は継続的にアップデートされます。</div>
+  <div class="no">12</div>
+</section>
+
+<!-- 13 -->
+<section class="slide">
+  <div class="tag">ONBOARDING</div>
+  <h2>導入は<em>4ステップ</em>。運用の手間は最小限。</h2>
+  <div class="flow" style="gap:8px">
+    <div class="step"><div class="sn">STEP 1</div><div class="st">ヒアリング</div><div class="sd">配信エリア・商材・現状の運用体制を確認</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="sn">STEP 2</div><div class="st">エリア紐付け</div><div class="sd">配信エリアを、最寄りの気象観測地点に対応づけ</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="sn">STEP 3</div><div class="st">初期チューニング</div><div class="sd">御社の配信データを見ながら、シグナルの重みを最適化</div></div>
+    <div class="arrow">→</div>
+    <div class="step" style="border-color:var(--orange);background:var(--warm)"><div class="sn" style="color:var(--orange)">STEP 4</div><div class="st">運用開始</div><div class="sd">気象スコアに基づく入札最適化をスタート。月次で効果を測定・レポート</div></div>
+  </div>
+  <div class="cap">運用後は月次で効果を可視化し、継続的に改善します。</div>
+  <div class="no">13</div>
+</section>
+
+<!-- 14 -->
+<section class="slide">
+  <div class="tag">COVERAGE</div>
+  <h2>全国対応。<em>地域特性</em>に合わせて最適化</h2>
+  <div class="cols c3" style="margin-top:8px">
+    <div class="card">
+      <div class="h">📍 対応エリア</div>
+      <div class="t"><span class="big cy mono">151</span><span class="unit">地点</span><br>全国の気象観測地点に対応。首都圏・近畿をはじめ、全国の配信エリアをカバー。</div>
+    </div>
+    <div class="card">
+      <div class="h">⚙ 地域カスタマイズ</div>
+      <div class="t">地域によって気温の変動幅や傾向は異なります。配信エリアに合わせてシグナルの重みを調整できます。</div>
+    </div>
+    <div class="card">
+      <div class="h">🤝 提供体制</div>
+      <div class="t">ツール提供だけでなく、広告運用のプロフェッショナルが<b>設計・チューニング・月次改善まで伴走</b>します。</div>
+    </div>
+  </div>
+  <div class="note">※ 料金プランは別途お見積りにてご案内します。</div>
+  <div class="cap">ツールの提供にとどまらず、運用改善まで伴走します。</div>
+  <div class="no">14</div>
+</section>
+
+<!-- 15 -->
+<section class="slide cover">
+  <div class="logo" style="font-size:40px">Heat<span>Shift</span></div>
+  <div class="tagline" style="font-size:22px">気象を、葬儀広告の味方に。</div>
+  <ul class="chk" style="margin:22px 0 4px;position:relative;z-index:2;color:rgba(255,255,255,.92);font-size:14px">
+    <li>医学論文・公的統計に基づく、データドリブンな入札最適化</li>
+    <li>気温が動く「数日先の需要」を先読みするリードタイム設計</li>
+    <li>冬・夏の通年対応／全国151地点対応</li>
+    <li>御社データでのPoCで、効果を確かめてから導入できる</li>
+  </ul>
+  <div class="cta" style="position:relative;z-index:2">まずは「効果検証（PoC）」から始めませんか？</div>
+  <div class="provider">株式会社セレス｜お問い合わせ・お見積りはお気軽にご相談ください</div>
+  <div class="no">15</div>
+</section>
+
+<div class="grid-view" id="gridView"></div>
+</div>
+
+<div class="nav">
+  <button id="prev">‹</button>
+  <div class="prog"><i id="progBar" style="width:6.6%"></i></div>
+  <button id="next">›</button>
+</div>
+<div class="hint">← → キーでも移動できます</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+const total=slides.length;
+let idx=0, gridOn=false;
+const cur=document.getElementById('cur'), bar=document.getElementById('progBar');
+const deck=document.getElementById('deck'), gridView=document.getElementById('gridView');
+const gridBtn=document.getElementById('gridBtn');
+const titles=[
+ ['表紙','HeatShift｜気象を、葬儀広告の味方に。'],
+ ['課題','葬儀広告の「需要の波」、後手に回っていませんか？'],
+ ['概要','気象データを「広告入札の判断」に変えるツール'],
+ ['医学的根拠','気温の変化は、人の生死に直結する'],
+ ['仕組み','気象 → スコア → 入札の3ステップ'],
+ ['季節対応','冬モード／夏モードで通年対応'],
+ ['スコアリング','複数シグナルを重みづけして点数化'],
+ ['最大の差別化','需要が顕在化する数日後に向けて入札する'],
+ ['早見表','気象 → スコア → 入札調整の対応'],
+ ['開発ストーリー','3年間の実運用と検証から生まれた'],
+ ['実証・PoC','効くかどうかは御社のデータで確かめる'],
+ ['ロードマップ','現在提供中の機能と拡張中の機能'],
+ ['導入フロー','導入は4ステップ'],
+ ['対応エリア','全国151地点対応・地域カスタマイズ'],
+ ['クロージング','まずはPoCから始めませんか？']
+];
+function show(i){
+  idx=Math.max(0,Math.min(total-1,i));
+  slides.forEach((s,n)=>s.classList.toggle('active',n===idx));
+  cur.textContent=idx+1;
+  bar.style.width=((idx+1)/total*100)+'%';
+  document.getElementById('prev').disabled=idx===0;
+  document.getElementById('next').disabled=idx===total-1;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('prev').onclick=()=>show(idx-1);
+document.getElementById('next').onclick=()=>show(idx+1);
+document.addEventListener('keydown',e=>{
+  if(gridOn) return;
+  if(e.key==='ArrowRight'||e.key===' ') show(idx+1);
+  if(e.key==='ArrowLeft') show(idx-1);
+});
+// build grid
+titles.forEach((t,i)=>{
+  const d=document.createElement('div');
+  d.className='thumb'+((i===0||i===14)?' cv':'');
+  d.innerHTML=`<div class="tn">${String(i+1).padStart(2,'0')}</div><div class="tt">${t[0]}</div><div class="td">${t[1]}</div>`;
+  d.onclick=()=>{toggleGrid(false); show(i);};
+  gridView.appendChild(d);
+});
+function toggleGrid(on){
+  gridOn=on;
+  gridView.classList.toggle('on',on);
+  deck.classList.toggle('hide-slide',on);
+  gridBtn.classList.toggle('on',on);
+  gridBtn.textContent=on?'スライドに戻る':'一覧で見る';
+  if(!on) show(idx);
+}
+gridBtn.onclick=()=>toggleGrid(!gridOn);
+show(0);
+</script>
+</body>
+</html>
