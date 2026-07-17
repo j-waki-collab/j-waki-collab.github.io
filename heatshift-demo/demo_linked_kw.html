@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>【NEW v3】HeatShift KW単位 指標 & 気象連動設定</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif; font-size: 13px;
+       background: #f0f2f5; color: #1a2437; }
+.topbar {
+  background: #0f1929; color: #fff; height: 48px;
+  display: flex; align-items: center; padding: 0 20px;
+  justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  border-bottom: 2px solid #00b4c8;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-logo { font-size: 15px; font-weight: 700; color: #00b4c8; }
+.topbar-meta { font-size: 11px; color: #8fa3bc; display: flex; align-items: center; gap: 16px; }
+.topbar-meta .badge { background: #1a4a3a; color: #00e5a0; font-size: 10px; padding: 2px 8px;
+                      border-radius: 10px; border: 1px solid #00b47830; }
+.topbar-right { font-size: 11px; color: #8fa3bc; }
+.topbar-right .account { color: #c8d8e8; font-weight: 600; }
+.layout { display: flex; margin-top: 48px; min-height: calc(100vh - 48px); }
+nav.sidebar { width: 200px; background: #131f32; color: #8fa3bc; flex-shrink: 0;
+              position: fixed; top: 48px; left: 0; bottom: 0; overflow-y: auto;
+              border-right: 1px solid #1e2f47; }
+nav.sidebar .section-label { font-size: 10px; color: #4a6070; text-transform: uppercase;
+                               letter-spacing: 1px; padding: 16px 18px 6px; }
+nav.sidebar a { display: flex; align-items: center; gap: 10px; padding: 9px 18px;
+                color: #8fa3bc; text-decoration: none; font-size: 12px;
+                border-left: 3px solid transparent; }
+nav.sidebar a.active { color: #00b4c8; background: #0d2035; border-left-color: #00b4c8; font-weight: 600; }
+main { margin-left: 200px; flex: 1; padding: 24px; }
+.breadcrumb { font-size: 11px; color: #6b8090; margin-bottom: 16px; }
+.breadcrumb span { margin: 0 5px; }
+.breadcrumb .current { color: #1a2437; font-weight: 600; }
+.page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.page-subtitle { font-size: 12px; color: #6b8090; margin-bottom: 16px; }
+
+/* 選択パネル */
+.selector-panel {
+  background: #fff; border: 1px solid #dde4ef; border-radius: 8px;
+  padding: 18px 20px; margin-bottom: 18px;
+  display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap;
+}
+.selector-field { display: flex; flex-direction: column; gap: 5px; }
+.selector-field label { font-size: 11px; color: #6b8090; font-weight: 600; }
+.selector-field select {
+  font-size: 13px; padding: 8px 12px; border: 1px solid #c8d0da;
+  border-radius: 6px; background: #fff; color: #1a2437; min-width: 230px;
+  cursor: pointer; font-family: inherit;
+}
+.selector-field select:focus { outline: none; border-color: #00b4c8; }
+.weather-toggle {
+  display: flex; align-items: center; gap: 10px; margin-left: auto;
+  padding: 10px 16px; background: #f8fafd; border: 1px solid #e0e6f0; border-radius: 6px;
+}
+.weather-toggle .wt-label { font-size: 12px; color: #4a6080; font-weight: 600; }
+.switch { position: relative; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; inset: 0; background: #c8d0da;
+  border-radius: 24px; transition: 0.2s;
+}
+.slider::before {
+  content: ''; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px;
+  background: #fff; border-radius: 50%; transition: 0.2s;
+}
+.switch input:checked + .slider { background: #00b4c8; }
+.switch input:checked + .slider::before { transform: translateX(20px); }
+.wt-state { font-size: 11px; font-weight: 700; color: #00709d; }
+
+/* サマリーカード */
+.kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 18px; }
+.kpi-card { background: #fff; border: 1px solid #dde4ef; border-radius: 8px; padding: 14px 16px;
+            position: relative; overflow: hidden; }
+.kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:#00b4c8; }
+.kpi-card.score::before { background:#f57c00; }
+.kpi-card .kpi-label { font-size: 10.5px; color: #6b8090; font-weight: 600; margin-bottom: 6px; }
+.kpi-card .kpi-value { font-size: 24px; font-weight: 700; line-height: 1; }
+.kpi-card .kpi-value .u { font-size: 12px; font-weight: 400; color: #6b8090; margin-left: 3px; }
+.kpi-card.score .kpi-value { color: #f57c00; }
+.kpi-card .kpi-sub { font-size: 10px; color: #94a3b8; margin-top: 4px; }
+
+/* テーブル */
+.panel { background: #fff; border: 1px solid #dde4ef; border-radius: 8px; padding: 18px 20px; }
+.panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.panel-title { font-size: 14px; font-weight: 700; }
+.panel-subtitle { font-size: 11px; color: #6b8090; margin-top: 2px; }
+.table-scroll { overflow-x: auto; }
+table.kw-table { width: 100%; border-collapse: collapse; font-size: 12px; white-space: nowrap; }
+table.kw-table th {
+  background: #f4f6fa; padding: 9px 10px; text-align: right;
+  font-size: 10.5px; color: #4a6080; font-weight: 700;
+  border-bottom: 2px solid #dde4ef; cursor: pointer; user-select: none;
+  position: relative;
+}
+table.kw-table th.txt { text-align: left; }
+table.kw-table th:hover { background: #e8edf5; color: #00709d; }
+table.kw-table th .arrow { font-size: 9px; margin-left: 3px; opacity: 0.4; }
+table.kw-table th.sorted .arrow { opacity: 1; color: #00b4c8; }
+table.kw-table td { padding: 9px 10px; border-bottom: 1px solid #edf0f6; text-align: right;
+                    font-variant-numeric: tabular-nums; }
+table.kw-table td.txt { text-align: left; }
+table.kw-table tr:hover td { background: #f8fafd; }
+.kw-name { font-weight: 600; color: #1a2437; }
+.type-tag { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 9.5px;
+            font-weight: 600; margin-left: 6px; }
+.type-tag.shimei { background: #eff6ff; color: #1d4ed8; }
+.type-tag.ippan  { background: #fffaf0; color: #b45309; }
+.is-bar-wrap { display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.is-bar { width: 46px; height: 5px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+.is-fill { height: 100%; border-radius: 3px; }
+.is-fill.hi { background: #16a34a; }
+.is-fill.mid { background: #f59e0b; }
+.is-fill.lo { background: #ef4444; }
+.cost-strong { font-weight: 600; }
+.note-bar { font-size: 11px; color: #6b8090; margin-top: 12px; padding: 10px 14px;
+            background: #fafbfc; border: 1px solid #e2e8f0; border-radius: 4px; }
+body.embed .topbar, body.embed nav.sidebar { display: none !important; }
+body.embed .layout { margin-top: 0 !important; }
+body.embed main { margin-left: 0 !important; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">HeatShift</div>
+    <div class="topbar-meta"><span class="badge">● Google Ads API 連携中</span></div>
+  </div>
+  <div class="topbar-right"><span class="account">サンプル典礼株式会社（デモ用サンプルデータ）</span></div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="section-label">メイン</div>
+    <a href="../jissoku/dashboard_top.html">ダッシュボード</a>
+    <a href="demo_linked_bid.html">入札連動</a>
+    <a href="demo_linked_kw.html" class="active">KWグループ管理</a>
+    <div class="section-label">レポート</div>
+    <a href="demo_linked_report.html">月次効果測定レポート</a>
+  </nav>
+
+  <main>
+    <div class="breadcrumb">
+      ダッシュボード <span>›</span> 入札連動 <span>›</span> <span class="current">キャンペーン / 広告グループ / KW別 指標</span>
+    </div>
+    <div class="page-title">キャンペーン / 広告グループ / KW別 指標 &amp; 気象連動設定</div>
+    <div class="page-subtitle">
+      通常はキャンペーン×エリアで一括調整。ここでは <strong>広告グループ・キーワード単位</strong> で指標を確認し、個別に気象連動CPC調整の対象にできます（Google Ads API連携・実数値）
+    </div>
+
+    <!-- 選択パネル -->
+    <div class="selector-panel">
+      <div class="selector-field">
+        <label>キャンペーン</label>
+        <select id="sel-campaign" onchange="onCampaignChange()">
+          <optgroup label="関西">
+            <option value="kansai|【関西】会館別_枚方中央">【関西】会館別_枚方中央</option>
+            <option value="kansai|【関西】会館別_吹田南">【関西】会館別_吹田南</option>
+            <option value="kansai|【関西】会館別_豊中中央">【関西】会館別_豊中中央</option>
+            <option value="kansai|【関西】会館別_吹田中央">【関西】会館別_吹田中央</option>
+            <option value="kansai|【関西】会館別_西宮中央">【関西】会館別_西宮中央</option>
+          </optgroup>
+          <optgroup label="首都圏">
+            <option value="shutoken|【首都圏】会館別_横浜南">【首都圏】会館別_横浜南</option>
+            <option value="shutoken|【首都圏】会館別_横浜北">【首都圏】会館別_横浜北</option>
+            <option value="shutoken|【首都圏】会館別_練馬中央">【首都圏】会館別_練馬中央</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="selector-field">
+        <label>広告グループ</label>
+        <select id="sel-adgroup" onchange="render()">
+          <option value="all">すべての広告グループ</option>
+          <option value="shimei">指名KW（サンプル典礼○○）</option>
+          <option value="ippan">一般・競合KW</option>
+        </select>
+      </div>
+      <div class="weather-toggle">
+        <span class="wt-label">この広告グループを気象連動対象にする</span>
+        <label class="switch"><input type="checkbox" id="wt-switch" checked onchange="onToggle()"><span class="slider"></span></label>
+        <span class="wt-state" id="wt-state">ON</span>
+      </div>
+    </div>
+
+    <!-- サマリーカード -->
+    <div class="kpi-row">
+      <div class="kpi-card"><div class="kpi-label">合計IMP</div><div class="kpi-value" id="sum-imp">-</div><div class="kpi-sub">選択グループ計</div></div>
+      <div class="kpi-card"><div class="kpi-label">合計CV（媒体）</div><div class="kpi-value" id="sum-cv">-</div><div class="kpi-sub">媒体CVベース</div></div>
+      <div class="kpi-card"><div class="kpi-label">平均CPC</div><div class="kpi-value" id="avg-cpc">-</div><div class="kpi-sub">加重平均</div></div>
+      <div class="kpi-card"><div class="kpi-label">平均CPA（媒体）</div><div class="kpi-value" id="avg-cpa">-</div><div class="kpi-sub">媒体CVベース</div></div>
+      <div class="kpi-card score"><div class="kpi-label">現在の気象スコア</div><div class="kpi-value" id="cur-score">-</div><div class="kpi-sub" id="cur-action">-</div></div>
+    </div>
+
+    <!-- KWテーブル -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">キーワード別 指標一覧</div>
+          <div class="panel-subtitle">列ヘッダクリックで並び替え（▼降順 / ▲昇順）｜ 初期表示：配信ボリューム（IMP）順</div>
+        </div>
+        <span style="font-size:11px; color:#6b8090;" id="kw-count">-</span>
+      </div>
+      <div class="table-scroll">
+        <table class="kw-table">
+          <thead>
+            <tr>
+              <th class="txt" onclick="sortBy('name')">キーワード<span class="arrow">↕</span></th>
+              <th onclick="sortBy('imp')">IMP<span class="arrow">↕</span></th>
+              <th onclick="sortBy('click')">Click<span class="arrow">↕</span></th>
+              <th onclick="sortBy('ctr')">CTR<span class="arrow">↕</span></th>
+              <th onclick="sortBy('cpc')">CPC<span class="arrow">↕</span></th>
+              <th onclick="sortBy('cv')">CV(媒体)<span class="arrow">↕</span></th>
+              <th onclick="sortBy('cvr')">CVR<span class="arrow">↕</span></th>
+              <th onclick="sortBy('cpa')">CPA<span class="arrow">↕</span></th>
+              <th onclick="sortBy('cost')">Cost<span class="arrow">↕</span></th>
+              <th onclick="sortBy('is')">IS<span class="arrow">↕</span></th>
+              <th onclick="sortBy('topis')">上部IS<span class="arrow">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="kw-tbody"></tbody>
+        </table>
+      </div>
+      <div class="note-bar">
+        <strong>IS＝インプレッションシェア / 上部IS＝上部インプレッションシェア。</strong>
+        IS・上部ISが低いKW（赤）は表示機会を取りこぼし中 → 気象需要日に優先的にCPC引き上げ対象。
+        指名KW（青）は高IS維持できているため、気象連動は控えめ設定が定石。
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// 列: [name, type, imp, click, ctr, cpc, cv, cvr, cpa, cost, is, topis]
+var KW = {
+  kansai: [
+    ["サンプル典礼 枚方中央 会館","shimei",9171,2463,26.86,385,147.7,6.0,6412,947216,92,85],
+    ["サンプル典礼 吹田南 会館","shimei",13457,2990,22.22,357,129.2,4.32,8268,1067998,90,83],
+    ["吹田南 会館","ippan",12151,2775,22.84,605,119.1,4.29,14094,1679014,68,55],
+    ["サンプル典礼 豊中中央 会館","shimei",6645,1755,26.41,423,99.5,5.67,7460,742502,88,80],
+    ["サンプル典礼 吹田中央 会館","shimei",6546,1621,24.76,306,78.2,4.82,6342,495920,87,79],
+    ["サンプル典礼 高槻中央 会館","shimei",4325,1187,27.45,510,62.1,5.23,9734,604784,85,76],
+    ["枚方中央 会館","ippan",4623,1062,22.97,666,58.0,5.46,12202,707735,65,52],
+    ["茨木市 斎場","ippan",6712,1315,19.59,1789,49.7,3.78,47373,2353002,42,30],
+    ["サンプル典礼 西宮中央 会館","shimei",5073,1221,24.07,319,47.5,3.89,8196,389072,86,78],
+    ["箕面中央 聖苑","ippan",7586,1427,18.81,1941,46.0,3.22,60229,2769352,38,28],
+    ["サンプル典礼 奈良","shimei",2233,642,28.75,518,44.8,6.98,7412,332289,84,75],
+    ["堺市立 斎場","ippan",21857,3271,14.97,1717,39.3,1.20,142806,5616564,33,22],
+    ["瓜破 斎場","ippan",24183,3038,12.56,2194,36.5,1.20,182557,6665140,30,20],
+    ["サンプル典礼 大阪","shimei",1859,541,29.10,540,35.0,6.46,8361,292315,83,74],
+    ["サンプル典礼 箕面中央","shimei",1009,301,29.83,679,33.3,11.07,6133,204422,82,72]
+  ],
+  shutoken: [
+    ["サンプル典礼 横浜南","shimei",3972,1136,28.60,433,89.3,7.86,5511,491886,91,84],
+    ["臨海 斎場","ippan",58864,6733,11.44,879,85.3,1.27,69409,5920598,35,25],
+    ["南多摩 斎場","ippan",40740,6081,14.93,782,66.9,1.10,71057,4754392,37,26],
+    ["サンプル典礼 横浜北 会館","shimei",4664,1198,25.69,352,46.9,3.92,9001,422232,89,81],
+    ["戸田 斎場","ippan",32784,4708,14.36,696,46.0,0.98,71194,3275650,40,29],
+    ["サンプル典礼 大田中央 会館","shimei",2660,714,26.84,345,33.5,4.69,7365,246580,87,78],
+    ["川崎北部 斎苑","ippan",23027,3821,16.59,704,29.0,0.76,92778,2690556,36,25],
+    ["横浜南 サンプル典礼","shimei",1839,572,31.10,449,27.5,4.81,9337,256756,85,76],
+    ["川崎南部 斎苑","ippan",11872,2303,19.40,570,26.7,1.16,49225,1312824,44,32],
+    ["サンプル典礼 練馬中央 会館","shimei",2690,650,24.16,373,19.9,3.06,12189,242676,86,77],
+    ["サンプル典礼 世田谷北 会館","shimei",1150,298,25.91,460,17.5,5.87,7829,137011,84,74],
+    ["サンプル典礼 調布中央 会館","shimei",1943,507,26.09,424,15.5,3.05,13888,214845,83,73],
+    ["築地本願寺 葬儀","ippan",1297,386,29.76,616,13.9,3.61,17074,237842,52,38],
+    ["立川 斎場","ippan",3724,756,20.30,936,12.0,1.59,58972,707661,41,30],
+    ["サンプル典礼 横浜北","shimei",639,180,28.17,357,11.3,6.29,5678,64328,82,72]
+  ]
+};
+// キャンペーン → スコア・推奨（demo_linked_bidと整合）
+var CAMP_SCORE = {
+  "kansai": {score: 35, action: "中リスク → CPC +10%"},
+  "shutoken": {score: 55, action: "中リスク → CPC +10%"}
+};
+
+var curArea = "kansai";
+var sortKey = "imp";
+var sortAsc = false;
+
+function onCampaignChange() {
+  var v = document.getElementById('sel-campaign').value;
+  curArea = v.split('|')[0];
+  sortKey = "imp"; sortAsc = false;
+  render();
+}
+function onToggle() {
+  var on = document.getElementById('wt-switch').checked;
+  document.getElementById('wt-state').textContent = on ? "ON" : "OFF";
+  document.getElementById('wt-state').style.color = on ? "#00709d" : "#94a3b8";
+}
+function sortBy(key) {
+  if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = false; }
+  render();
+}
+var COLIDX = {name:0,type:1,imp:2,click:3,ctr:4,cpc:5,cv:6,cvr:7,cpa:8,cost:9,is:10,topis:11};
+function fmt(n){ return n.toLocaleString('ja-JP'); }
+function render() {
+  var ag = document.getElementById('sel-adgroup').value;
+  var rows = KW[curArea].slice();
+  if (ag !== 'all') rows = rows.filter(function(r){ return r[1] === ag; });
+  // ソート
+  var idx = COLIDX[sortKey];
+  rows.sort(function(a,b){
+    if (sortKey === 'name') return sortAsc ? (a[0]<b[0]?-1:1) : (a[0]>b[0]?-1:1);
+    return sortAsc ? a[idx]-b[idx] : b[idx]-a[idx];
+  });
+  // テーブル描画
+  var tb = document.getElementById('kw-tbody'); tb.innerHTML = '';
+  var sImp=0,sClick=0,sCost=0,sCv=0;
+  rows.forEach(function(r){
+    sImp+=r[2]; sClick+=r[3]; sCost+=r[9]; sCv+=r[6];
+    var isCls = r[10]>=70?'hi':(r[10]>=45?'mid':'lo');
+    var topCls = r[11]>=65?'hi':(r[11]>=40?'mid':'lo');
+    var tt = r[1]==='shimei' ? '<span class="type-tag shimei">指名</span>' : '<span class="type-tag ippan">一般</span>';
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td class="txt"><span class="kw-name">'+r[0]+'</span>'+tt+'</td>'+
+      '<td>'+fmt(r[2])+'</td>'+
+      '<td>'+fmt(r[3])+'</td>'+
+      '<td>'+r[4].toFixed(1)+'%</td>'+
+      '<td>¥'+fmt(r[5])+'</td>'+
+      '<td>'+r[6].toFixed(1)+'</td>'+
+      '<td>'+r[7].toFixed(2)+'%</td>'+
+      '<td>¥'+fmt(r[8])+'</td>'+
+      '<td class="cost-strong">¥'+fmt(r[9])+'</td>'+
+      '<td><span class="is-bar-wrap"><span class="is-bar"><span class="is-fill '+isCls+'" style="width:'+r[10]+'%"></span></span>'+r[10]+'%</span></td>'+
+      '<td><span class="is-bar-wrap"><span class="is-bar"><span class="is-fill '+topCls+'" style="width:'+r[11]+'%"></span></span>'+r[11]+'%</span></td>';
+    tb.appendChild(tr);
+  });
+  // サマリー
+  document.getElementById('sum-imp').innerHTML = fmt(sImp)+'<span class="u">imp</span>';
+  document.getElementById('sum-cv').innerHTML = sCv.toFixed(1)+'<span class="u">件</span>';
+  document.getElementById('avg-cpc').innerHTML = '¥'+fmt(Math.round(sCost/sClick));
+  document.getElementById('avg-cpa').innerHTML = '¥'+fmt(Math.round(sCost/sCv));
+  var sc = CAMP_SCORE[curArea];
+  document.getElementById('cur-score').textContent = sc.score+' / 100';
+  document.getElementById('cur-action').textContent = sc.action;
+  document.getElementById('kw-count').textContent = rows.length+'KW表示中';
+  // ソート矢印
+  document.querySelectorAll('.kw-table th').forEach(function(th){ th.classList.remove('sorted'); var a=th.querySelector('.arrow'); if(a) a.textContent='↕'; });
+  var ths = document.querySelectorAll('.kw-table th');
+  var order = ['name','imp','click','ctr','cpc','cv','cvr','cpa','cost','is','topis'];
+  var pos = order.indexOf(sortKey);
+  if (pos>=0 && ths[pos]) { ths[pos].classList.add('sorted'); ths[pos].querySelector('.arrow').textContent = sortAsc?'▲':'▼'; }
+}
+if (location.hash.indexOf('embed') !== -1) document.body.classList.add('embed');
+render();
+</script>
+</body>
+</html>

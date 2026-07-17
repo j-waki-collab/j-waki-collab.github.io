@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>【NEW v3】HeatShift 全国エリア気象モニター</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
+<script src="japan_topo.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif; font-size: 13px;
+       background: #f0f2f5; color: #1a2437; }
+.topbar {
+  background: #0f1929; color: #fff; height: 48px;
+  display: flex; align-items: center; padding: 0 20px;
+  justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  border-bottom: 2px solid #00b4c8;
+}
+.topbar-logo { font-size: 15px; font-weight: 700; color: #00b4c8; }
+.topbar-meta { font-size: 11px; color: #8fa3bc; display: flex; align-items: center; gap: 16px; }
+.topbar-meta .badge { background: #1a4a3a; color: #00e5a0; font-size: 10px; padding: 2px 8px;
+                      border-radius: 10px; border: 1px solid #00b47830; }
+.topbar-right { font-size: 11px; color: #c8d8e8; font-weight: 600; }
+.layout { display: flex; margin-top: 48px; }
+nav.sidebar { width: 200px; background: #131f32; flex-shrink: 0;
+              position: fixed; top: 48px; left: 0; bottom: 0; }
+main { margin-left: 200px; flex: 1; padding: 24px; }
+.breadcrumb { font-size: 11px; color: #6b8090; margin-bottom: 16px; }
+.breadcrumb .current { color: #1a2437; font-weight: 600; }
+.page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.page-subtitle { font-size: 12px; color: #6b8090; margin-bottom: 16px; }
+
+/* KPI */
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
+.kpi-card { background: #fff; border: 1px solid #dde4ef; border-radius: 8px; padding: 16px 18px;
+            position: relative; overflow: hidden; }
+.kpi-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+.kpi-card.high::before { background:#d32f2f; }
+.kpi-card.mid::before  { background:#f57c00; }
+.kpi-card.info::before { background:#00b4c8; }
+.kpi-card.neu::before  { background:#8090a0; }
+.kpi-card .kpi-label { font-size: 11px; color: #6b8090; font-weight: 600; margin-bottom: 6px; }
+.kpi-card .kpi-value { font-size: 28px; font-weight: 700; line-height: 1; }
+.kpi-card .kpi-value .u { font-size: 12px; font-weight: 400; color: #6b8090; margin-left: 3px; }
+.kpi-card.high .kpi-value { color: #d32f2f; }
+.kpi-card.mid  .kpi-value { color: #f57c00; }
+.kpi-card.info .kpi-value { color: #00b4c8; }
+.kpi-card.neu  .kpi-value { color: #475569; }
+.kpi-card .kpi-sub { font-size: 10.5px; color: #94a3b8; margin-top: 5px; }
+
+/* グリッド：左=地図（大きめ）、右=2段予報 */
+.row-main { display: grid; grid-template-columns: 1.55fr 1fr; gap: 18px; margin-bottom: 18px; }
+/* 右：首都圏/近畿の2段予報スタック */
+.fc-stack { display: flex; flex-direction: column; gap: 14px; }
+.fc-panel { padding: 14px 16px; }
+.fc-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.fc-head .fc-region { font-size: 15px; font-weight: 700; color: #0f172a; }
+.fc-head .fc-base { font-size: 11px; color: #6b8090; }
+.fc-head .fc-score { margin-left: auto; font-size: 22px; font-weight: 700; color: #f57c00; }
+.fc-head .fc-score.hi { color: #d32f2f; }
+.fc-action { margin-top: 10px; padding: 8px 10px; border-radius: 3px;
+             font-size: 10.5px; line-height: 1.5; }
+.fc-action.hi { background: #fef2f2; border-left: 3px solid #d32f2f; color: #7f1d1d; }
+.fc-action.mi { background: #fffaf0; border-left: 3px solid #f57c00; color: #7c4a03; }
+.fc-panel .mini-chart { height: 88px; }
+.fc-panel .mini-score { font-size: 8.5px; }
+.panel { background: #fff; border: 1px solid #dde4ef; border-radius: 8px;
+         padding: 18px 20px; }
+.panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.panel-title { font-size: 14px; font-weight: 700; }
+.panel-subtitle { font-size: 11px; color: #6b8090; margin-top: 2px; }
+
+/* 地図（明るい地図トーン） */
+.map-wrap {
+  background: linear-gradient(180deg, #dceaf5 0%, #cfe0ee 100%); /* 海＝薄い水色 */
+  border-radius: 6px; position: relative;
+  height: 560px; overflow: hidden;
+  border: 1px solid #c0d2e2;
+}
+.map-svg { width: 100%; height: 100%; display: block; position: relative; z-index: 1; }
+/* 陸地（県）＝ベージュグレー・県境くっきり（コントラスト改善） */
+.jp-pref { fill: #dde4dc; stroke: #93a3b2; stroke-width: 0.9; stroke-linejoin: round;
+           transition: fill 0.15s; }
+.jp-pref.clickable { cursor: pointer; }
+.jp-pref.clickable:hover { fill: #cfe0ef; }
+.jp-pref.focus { fill: #e8e3d4; }
+.pin-circle { cursor: pointer; transition: r 0.15s; }
+.pin-circle:hover { stroke: #fff; stroke-width: 2.5; }
+.pin-circle.selected { stroke: #fff; stroke-width: 3; }
+.pin-label { fill: #1a2437; font-size: 12px; font-weight: 700; pointer-events: none;
+             letter-spacing: 0.4px;
+             paint-order: stroke; stroke: #ffffff; stroke-width: 3.5; stroke-linejoin: round; }
+.pin-pulse-ring {
+  fill: none; stroke-width: 2; opacity: 0.6;
+  animation: pulseRing 2.4s infinite;
+}
+@keyframes pulseRing {
+  0% { r: 14; opacity: 0.7; }
+  100% { r: 36; opacity: 0; }
+}
+.map-hint {
+  position: absolute; left: 14px; bottom: 10px; z-index: 2;
+  font-size: 11px; color: #5a6b7d; background: rgba(255,255,255,0.85);
+  padding: 4px 10px; border-radius: 4px; pointer-events: none;
+}
+
+/* 詳細パネル */
+.detail-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.detail-area { font-size: 18px; font-weight: 700; color: #0f172a; }
+.detail-stat { font-size: 11px; color: #6b7280; }
+.score-big {
+  background: #f8fafd; border: 1px solid #e2e8f0; border-radius: 6px;
+  padding: 12px 14px; margin-bottom: 14px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+.score-big .sb-item .sb-label { font-size: 10px; color: #6b7280; }
+.score-big .sb-item .sb-val { font-size: 20px; font-weight: 700; color: #0f172a; }
+.score-big .sb-item .sb-val.hi { color: #d32f2f; }
+.score-big .sb-item .sb-val.mi { color: #f57c00; }
+.score-big .sb-item .sb-val.lo { color: #1565c0; }
+
+.mini-chart-wrap { padding: 8px 0 0; }
+.mini-chart { display: flex; align-items: flex-end; gap: 3px; height: 110px;
+              border-bottom: 1px solid #e2e8f0; padding: 0 0 4px 0; }
+.mini-col { flex: 1; display: flex; flex-direction: column; align-items: center;
+            justify-content: flex-end; gap: 2px; height: 100%; }
+.mini-bar { width: 78%; border-radius: 2px 2px 0 0; }
+.mini-bar.hi { background: #d32f2f; }
+.mini-bar.mi { background: #f57c00; }
+.mini-bar.lo { background: #5090c0; }
+.mini-bar.pl { background: #c8d0da; }
+.mini-score { font-size: 9px; font-weight: 700; color: #475569; line-height: 1; }
+.mini-score.hi { color: #b91c1c; }
+.mini-score.mi { color: #b45309; }
+.mini-score.lo { color: #1565c0; }
+.mini-dates { display: flex; gap: 3px; padding: 4px 0 0; }
+.mini-dates .mini-date { flex: 1; text-align: center; font-size: 9px;
+                          color: #94a3b8; font-weight: 500; }
+.mini-dates .mini-date.today { color: #b91c1c; font-weight: 700; }
+
+/* 県内市区町村スコアリングカード */
+.city-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+.city-card {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+  padding: 14px 14px 12px; position: relative; overflow: hidden;
+  transition: transform 0.12s, box-shadow 0.12s; cursor: pointer;
+}
+/* 会館名アコーディオン */
+.cc-toggle { font-size: 10.5px; color: #00709d; font-weight: 600;
+  margin-top: 10px; padding-top: 8px; border-top: 1px dashed #e2e8f0; }
+.cc-halls { display: none; margin-top: 6px; }
+.city-card.open .cc-halls { display: block; }
+.city-card.open .cc-toggle { color: #94a3b8; }
+.cc-halls .hall { font-size: 11px; color: #334155; padding: 2px 0;
+  display: flex; align-items: center; gap: 6px; }
+.cc-halls .hall::before { content: ''; width: 6px; height: 6px;
+  background: #00b4c8; border-radius: 1px; flex-shrink: 0; }
+.city-card:hover {
+  transform: translateY(-2px); box-shadow: 0 4px 12px rgba(15,23,42,0.08);
+  border-color: #cbd5e1;
+}
+.city-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.city-card.hi::before { background: #d32f2f; }
+.city-card.mi::before { background: #f57c00; }
+.city-card.lo::before { background: #5090c0; }
+.city-card .cc-rank {
+  position: absolute; top: 8px; right: 10px;
+  font-size: 9.5px; color: #94a3b8; font-weight: 600;
+}
+.city-card .cc-rank.hi { color: #b91c1c; }
+.city-card .cc-name {
+  font-size: 13px; font-weight: 700; color: #1a2437;
+  margin-bottom: 8px; line-height: 1.2;
+}
+.city-card .cc-score-row {
+  display: flex; align-items: baseline; gap: 4px; margin-bottom: 10px;
+}
+.city-card .cc-score {
+  font-size: 26px; font-weight: 700; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.city-card .cc-score-max { font-size: 11px; color: #94a3b8; font-weight: 500; }
+.city-card.hi .cc-score { color: #d32f2f; }
+.city-card.mi .cc-score { color: #f57c00; }
+.city-card.lo .cc-score { color: #5090c0; }
+.city-card .cc-badge {
+  display: inline-block; padding: 1px 7px; border-radius: 3px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+  margin-left: 4px;
+}
+.city-card.hi .cc-badge { background: #fef2f2; color: #b91c1c; }
+.city-card.mi .cc-badge { background: #fffaf0; color: #b45309; }
+.city-card.lo .cc-badge { background: #eff6ff; color: #1d4ed8; }
+.city-card .cc-meta {
+  font-size: 10.5px; color: #6b7280; line-height: 1.5;
+  padding-top: 8px; border-top: 1px dashed #e2e8f0;
+}
+.city-card .cc-meta .m-row {
+  display: flex; justify-content: space-between; gap: 4px;
+}
+.city-card .cc-meta .m-label { color: #94a3b8; }
+.city-card .cc-meta .m-val { color: #475569; font-weight: 600; }
+.city-card .cc-meta .m-val.peak { color: #b45309; }
+.cs-empty {
+  grid-column: 1 / -1; padding: 20px; text-align: center;
+  color: #94a3b8; font-size: 12px;
+  background: #fafbfc; border: 1px dashed #e2e8f0; border-radius: 6px;
+}
+
+/* スコア推移バーチャート（横長） */
+.bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 130px;
+             padding: 0 2px; position: relative; }
+.bar-chart::before { content: ''; position: absolute; left: 0; right: 0;
+                     top: calc(100% - 78px); border-top: 1px dashed #d32f2f; opacity: 0.5; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.bar-wrap { width: 100%; display: flex; align-items: flex-end; height: 100px; }
+.bar { width: 100%; border-radius: 3px 3px 0 0; min-height: 3px; }
+.bar.high { background: #d32f2f; }
+.bar.mid  { background: #f57c00; }
+.bar.low  { background: #5090c0; }
+.bar-col .bar-date  { font-size: 8.5px; color: #94a3b8; }
+.bar-col .bar-score { font-size: 9px; font-weight: 700; color: #475569; }
+
+/* ヒートマップテーブル */
+.heatmap-wrap { overflow-x: auto; }
+table.heatmap { width: 100%; border-collapse: collapse; font-size: 11.5px; white-space: nowrap; }
+table.heatmap th { background: #f4f6fa; padding: 6px 4px; text-align: center;
+                   font-size: 10px; color: #4a6080; font-weight: 600; border-bottom: 1px solid #dde4ef; }
+table.heatmap th:first-child { text-align: left; padding-left: 12px; }
+table.heatmap td { padding: 7px 4px; text-align: center; font-weight: 600;
+                   border-bottom: 1px solid #f0f2f5; font-variant-numeric: tabular-nums; }
+table.heatmap td:first-child { text-align: left; padding-left: 12px; font-weight: 700; color: #1a2437; background: #fafbfc; }
+.hc-h { background: #fde8e8; color: #b91c1c; }
+.hc-m { background: #fff3e0; color: #b45309; }
+.hc-l { background: #e3f0fb; color: #1565c0; }
+.hc-p { background: #f3f4f6; color: #6b7280; }
+.legend { display: flex; gap: 14px; font-size: 11px; color: #6b8090; padding: 10px 0 6px; }
+.legend .sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 5px; vertical-align: middle; }
+
+/* アラート */
+.alert-list { display: flex; flex-direction: column; gap: 8px; }
+.alert-item {
+  display: grid; grid-template-columns: 80px 80px 120px 1fr;
+  align-items: center; gap: 12px;
+  padding: 10px 14px; background: #fafbfd; border: 1px solid #e2e8f0; border-radius: 4px;
+  font-size: 12px;
+}
+.alert-item.h { border-left: 4px solid #d32f2f; background: #fef7f7; }
+.alert-item.m { border-left: 4px solid #f57c00; }
+.alert-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px; border-radius: 3px; font-size: 10.5px; font-weight: 700;
+}
+.alert-tag.h { background: #fef2f2; color: #b91c1c; }
+.alert-tag.m { background: #fffaf0; color: #b45309; }
+.alert-date { color: #475569; font-weight: 600; }
+.alert-loc { font-weight: 700; color: #0f172a; }
+.alert-meta { color: #6b7280; font-size: 11px; }
+
+body.embed .topbar, body.embed nav.sidebar { display:none !important; }
+body.embed .layout { margin-top:0 !important; }
+body.embed main { margin-left:0 !important; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="topbar-logo">HeatShift</div>
+    <div class="topbar-meta"><span>2026年1月｜全国7地点モニタリング</span><span class="badge">● 気象庁API 連携中</span></div>
+  </div>
+  <div class="topbar-right">サンプル典礼株式会社（デモ用サンプルデータ）</div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar"></nav>
+  <main>
+    <div class="breadcrumb">ダッシュボード › <span class="current">全国エリア気象モニター</span></div>
+    <div class="page-title">全国エリア気象モニター</div>
+    <div class="page-subtitle">気象庁実測データに基づく、全国7地点のヒートショックリスクスコア＆14日先予報を1画面で観測</div>
+
+    <!-- KPI -->
+    <div class="kpi-row">
+      <div class="kpi-card high"><div class="kpi-label">高リスク日（≥60）</div><div class="kpi-value">1<span class="u">日</span></div><div class="kpi-sub">東京基準 ｜ 全31日中</div></div>
+      <div class="kpi-card mid"><div class="kpi-label">中リスク日（30-59）</div><div class="kpi-value">28<span class="u">日</span></div><div class="kpi-sub">大半が中リスク帯</div></div>
+      <div class="kpi-card high"><div class="kpi-label">月間最大スコア</div><div class="kpi-value">85<span class="u">pt</span></div><div class="kpi-sub">1/12（月）｜ 東京</div></div>
+      <div class="kpi-card info"><div class="kpi-label">高リスク発生地点数（最多日）</div><div class="kpi-value">7<span class="u">地点</span></div><div class="kpi-sub">1/12 スコア≥30 の地点数</div></div>
+    </div>
+
+    <!-- 地図 + 詳細 -->
+    <div class="row-main">
+
+      <!-- 左：地図 -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">全国リスクマップ（1/12 月間最大スコア日）</div>
+            <div class="panel-subtitle">マーカーをクリックで詳細表示｜サイズ＝スコア / 色＝リスクレベル</div>
+          </div>
+        </div>
+        <div class="map-wrap">
+          <svg class="map-svg" id="japan-map" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div class="map-hint" id="map-hint">地点をクリックでエリアへ</div>
+        </div>
+        <div class="legend" style="margin-top:10px;">
+          <span><span class="sw" style="background:#d32f2f"></span>高リスク（≥60）</span>
+          <span><span class="sw" style="background:#f57c00"></span>中リスク（30-59）</span>
+          <span><span class="sw" style="background:#5090c0"></span>低リスク（10-29）</span>
+        </div>
+      </div>
+
+      <!-- 右：選択地点の詳細 -->
+      <div class="fc-stack">
+        <!-- 首都圏 -->
+        <div class="panel fc-panel">
+          <div class="fc-head">
+            <span class="fc-region">首都圏</span>
+            <span class="fc-base" id="fc-base-tokyo">東京基点（47662）</span>
+            <span class="fc-score hi" id="fc-score-tokyo">85</span>
+          </div>
+          <div class="mini-chart-wrap">
+            <div class="mini-chart" id="mini-chart-tokyo"></div>
+            <div class="mini-dates" id="mini-dates-tokyo"></div>
+          </div>
+          <div class="fc-action" id="fc-action-tokyo"></div>
+        </div>
+        <!-- 近畿 -->
+        <div class="panel fc-panel">
+          <div class="fc-head">
+            <span class="fc-region">近畿</span>
+            <span class="fc-base" id="fc-base-osaka">大阪基点（47772）</span>
+            <span class="fc-score" id="fc-score-osaka">52</span>
+          </div>
+          <div class="mini-chart-wrap">
+            <div class="mini-chart" id="mini-chart-osaka"></div>
+            <div class="mini-dates" id="mini-dates-osaka"></div>
+          </div>
+          <div class="fc-action" id="fc-action-osaka"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 県内市区町村スコアリングカード（全幅） -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title" id="city-list-title">配下市区町村スコアリング（緊急度順）</div>
+          <div class="panel-subtitle" id="city-list-sub">マップ上の地点マーカークリックでエリア切替｜サンプル典礼の会館がある市区町村のみ表示・本日スコア高い順</div>
+        </div>
+        <div style="display:flex; gap:14px; font-size:11px; color:#6b8090;">
+          <span><span style="display:inline-block;width:10px;height:10px;background:#d32f2f;border-radius:2px;margin-right:5px;vertical-align:middle;"></span>高(≥60)</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#f57c00;border-radius:2px;margin-right:5px;vertical-align:middle;"></span>中(30-59)</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#5090c0;border-radius:2px;margin-right:5px;vertical-align:middle;"></span>低(10-29)</span>
+        </div>
+      </div>
+      <div class="city-grid" id="city-grid"></div>
+    </div>
+
+    <!-- 月次スコア推移バー（横長） -->
+    <div class="panel" style="margin-bottom:18px;">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">月次リスクスコア推移（東京・2026年1月）</div>
+          <div class="panel-subtitle">★＝月間最大スコア日（1/12） ---- 高リスク閾値（60pt）</div>
+        </div>
+      </div>
+      <div class="bar-chart" id="bar-month"></div>
+    </div>
+
+    <!-- 地点別ヒートマップ -->
+    <div class="panel" style="margin-bottom:18px;">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">地点別 × 日次リスクヒートマップ</div>
+          <div class="panel-subtitle">全7地点 × 31日｜濃い赤＝高リスク・橙＝中・青＝低</div>
+        </div>
+      </div>
+      <div class="heatmap-wrap">
+        <table class="heatmap" id="heatmap"></table>
+      </div>
+    </div>
+
+    <!-- アラート一覧 -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">アラート一覧（スコア上位10件）</div>
+          <div class="panel-subtitle">スコア60以上の高リスク日｜全地点対象</div>
+        </div>
+      </div>
+      <div class="alert-list" id="alert-list"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// 7地点 × 31日のスコアデータ（モック・スクショ準拠）
+var LOC = {
+  sapporo:  {name:'札幌', id:'47412', avg:'-2.1', delta:'-4.5', today:85, lat:43.06, lng:141.35},
+  sendai:   {name:'仙台', id:'47590', avg:'2.8',  delta:'-3.6', today:70, lat:38.27, lng:140.87},
+  tokyo:    {name:'東京', id:'47662', avg:'4.7',  delta:'-6.3', today:85, lat:35.69, lng:139.69},
+  nagoya:   {name:'名古屋', id:'47636', avg:'5.2', delta:'-4.1', today:70, lat:35.18, lng:136.91},
+  osaka:    {name:'大阪', id:'47772', avg:'5.4',  delta:'-3.8', today:55, lat:34.69, lng:135.50},
+  hiroshima:{name:'広島', id:'47765', avg:'5.9',  delta:'-3.2', today:85, lat:34.40, lng:132.46},
+  fukuoka:  {name:'福岡', id:'47807', avg:'6.8',  delta:'-2.9', today:85, lat:33.59, lng:130.40}
+};
+// 14日予報スコア（地点別）
+var FORECAST = {
+  tokyo:    [85,30,35,30,10,35,30,30,35,55,55,50,50,50],
+  osaka:    [55,30,35,30,10,35,30,30,35,70,50,50,50,55],
+  nagoya:   [70,30,30,30,35,30,30,30,30,70,55,50,50,50],
+  fukuoka:  [85,30,10,35,10,35,10,50,70,30,55,30,55,30],
+  sapporo:  [85,50,70,50,50,50,55,50,50,50,55,55,55,50],
+  sendai:   [70,50,70,30,55,55,55,50,50,55,55,55,55,55],
+  hiroshima:[85,50,30,35,30,30,30,10,50,70,55,30,50,55]
+};
+// 月次推移（東京）31日
+var MONTH = [30,55,55,30,30,30,55,50,30,30,10,85,30,35,30,10,35,30,30,35,55,55,50,50,55,30,30,50,50,50,50];
+// ヒートマップ全7地点 × 31日
+var HM = {
+  '東京': [30,55,55,30,30,30,55,50,30,30,10,85,30,35,30,10,35,30,30,35,55,55,50,50,55,30,30,50,50,50,50],
+  '大阪': [30,30,55,35,30,30,30,30,30,30,50,55,30,35,30,10,35,30,10,50,70,50,50,50,30,30,30,50,30,55,50],
+  '名古屋':[50,30,50,50,50,30,55,50,50,50,30,70,50,50,50,30,30,50,30,35,70,55,50,50,50,50,50,55,50,50,50],
+  '福岡': [30,55,55,30,30,35,30,35,30,10,85,30,10,35,10,10,10,35,10,50,70,30,55,30,55,30,35,30,30,30,50],
+  '札幌': [50,50,50,55,70,50,50,50,50,50,50,85,50,70,50,50,50,50,55,50,55,50,50,50,55,50,50,50,50,50,50],
+  '仙台': [50,50,50,50,50,55,30,35,50,50,35,70,50,70,30,55,55,55,55,50,55,30,55,55,30,30,55,30,55,30,50],
+  '広島': [50,55,50,50,30,35,30,35,30,30,85,50,30,35,30,30,30,30,10,50,70,55,50,50,55,30,30,50,55,50,50]
+};
+// アラート上位10
+var ALERTS = [
+  {date:'1/12（月）', loc:'東京', score:85, lvl:'h', meta:'平均4.7℃ / 前日比-6.3℃｜絶対50+変化35'},
+  {date:'1/12（月）', loc:'札幌', score:85, lvl:'h', meta:'平均-2.1℃ / 前日比-4.5℃｜絶対50+変化35'},
+  {date:'1/12（月）', loc:'福岡', score:85, lvl:'h', meta:'平均6.8℃ / 前日比-2.9℃｜絶対30+変化55'},
+  {date:'1/11（日）', loc:'広島', score:85, lvl:'h', meta:'平均6.0℃ / 前日比-5.7℃｜絶対30+変化55'},
+  {date:'1/12（月）', loc:'名古屋', score:70, lvl:'h', meta:'平均5.2℃ / 前日比-4.1℃｜絶対35+変化35'},
+  {date:'1/12（月）', loc:'仙台', score:70, lvl:'h', meta:'平均2.8℃ / 前日比-3.6℃｜絶対50+変化20'},
+  {date:'1/14（水）', loc:'仙台', score:70, lvl:'h', meta:'平均3.5℃ / 前日比-3.8℃｜絶対50+変化20'},
+  {date:'1/21（水）', loc:'大阪', score:70, lvl:'h', meta:'平均6.9℃ / 前日比-3.2℃｜絶対30+変化40'},
+  {date:'1/21（水）', loc:'名古屋', score:70, lvl:'h', meta:'平均6.5℃ / 前日比-3.9℃｜絶対30+変化40'},
+  {date:'1/05（月）', loc:'札幌', score:70, lvl:'h', meta:'平均-1.5℃ / 前日比-3.4℃｜絶対50+変化20'}
+];
+
+// 都道府県 配下市区町村データ（サンプル典礼の会館エリア準拠）+ 緯度経度
+var CITIES = {
+  tokyo: [
+    // 東京都
+    {city:'練馬区',   kaikan:['練馬中央'], stn:'47662', today:62, peak:'1/12', avg:42, geo:'内陸北部', lat:35.738, lng:139.652},
+    {city:'板橋区',   kaikan:['板橋中央'], stn:'47662', today:60, peak:'1/12', avg:41, geo:'内陸北部', lat:35.751, lng:139.709},
+    {city:'町田市',   kaikan:['町田中央','町田北'], stn:'47662', today:60, peak:'1/12', avg:41, geo:'内陸丘陵', lat:35.546, lng:139.439},
+    {city:'東久留米市', kaikan:['東久留米中央'], stn:'47662', today:59, peak:'1/12', avg:41, geo:'多摩内陸', lat:35.748, lng:139.529},
+    {city:'国分寺市', kaikan:['国分寺中央'], stn:'47662', today:58, peak:'1/12', avg:40, geo:'多摩内陸', lat:35.711, lng:139.462},
+    {city:'杉並区',   kaikan:['杉並中央'], stn:'47662', today:58, peak:'1/12', avg:40, geo:'内陸', lat:35.700, lng:139.636},
+    {city:'武蔵野市', kaikan:['武蔵野中央'], stn:'47662', today:56, peak:'1/12', avg:39, geo:'多摩', lat:35.718, lng:139.566},
+    {city:'調布市',   kaikan:['調布中央'], stn:'47662', today:56, peak:'1/12', avg:39, geo:'多摩', lat:35.650, lng:139.563},
+    {city:'世田谷区', kaikan:['世田谷中央','世田谷北','世田谷南','世田谷東'], stn:'47662', today:55, peak:'1/12', avg:38, geo:'都市部', lat:35.646, lng:139.653},
+    {city:'葛飾区',   kaikan:['葛飾中央','葛飾北'], stn:'47662', today:52, peak:'1/12', avg:37, geo:'低地', lat:35.743, lng:139.847},
+    {city:'江戸川区', kaikan:['江戸川中央'], stn:'47662', today:50, peak:'1/12', avg:36, geo:'湾岸低地', lat:35.683, lng:139.868},
+    {city:'大田区',   kaikan:['大田中央','大田北'], stn:'47662', today:48, peak:'1/12', avg:35, geo:'湾岸', lat:35.561, lng:139.716},
+    {city:'港区',     kaikan:['港中央'], stn:'47662', today:46, peak:'1/12', avg:34, geo:'ヒートアイランド', lat:35.658, lng:139.751},
+    // 神奈川県
+    {city:'相模原市', kaikan:['相模原北','相模原南'], stn:'47670', today:58, peak:'1/12', avg:40, geo:'内陸', lat:35.571, lng:139.373},
+    {city:'大和市',   kaikan:['大和中央'], stn:'47670', today:55, peak:'1/12', avg:39, geo:'内陸', lat:35.479, lng:139.458},
+    {city:'川崎市',   kaikan:['川崎中央'], stn:'47670', today:53, peak:'1/12', avg:37, geo:'内陸', lat:35.600, lng:139.580},
+    {city:'横浜市',   kaikan:['横浜中央','横浜北','横浜南','横浜東'], stn:'47670', today:50, peak:'1/12', avg:36, geo:'沿岸都市', lat:35.466, lng:139.622},
+    // 千葉県
+    {city:'松戸市',   kaikan:['松戸中央'], stn:'47682', today:52, peak:'1/12', avg:37, geo:'内陸', lat:35.804, lng:139.900},
+    {city:'市川市',   kaikan:['市川中央','市川北'], stn:'47682', today:50, peak:'1/12', avg:36, geo:'湾岸', lat:35.722, lng:139.931},
+    {city:'船橋市',   kaikan:['船橋中央'], stn:'47682', today:50, peak:'1/12', avg:36, geo:'湾岸', lat:35.700, lng:139.985}
+  ],
+  osaka: [
+    // 大阪市内
+    {city:'大阪市', kaikan:['大阪中央','大阪北','大阪南','大阪東','大阪西','大阪本町','大阪駅前','大阪緑','大阪桜','大阪第2','大阪第3'], stn:'47772', today:52, peak:'1/21', avg:40, geo:'都市部', lat:34.694, lng:135.502},
+    // 大阪府下
+    {city:'箕面市', kaikan:['箕面中央'], stn:'47772', today:60, peak:'1/21', avg:45, geo:'北摂内陸', lat:34.827, lng:135.471},
+    {city:'高槻市', kaikan:['高槻中央'], stn:'47772', today:58, peak:'1/21', avg:44, geo:'北摂', lat:34.846, lng:135.617},
+    {city:'豊中市', kaikan:['豊中中央','豊中北'], stn:'47772', today:57, peak:'1/21', avg:43, geo:'北摂', lat:34.782, lng:135.470},
+    {city:'吹田市', kaikan:['吹田中央','吹田北','吹田南','吹田東'], stn:'47772', today:55, peak:'1/21', avg:42, geo:'北摂', lat:34.761, lng:135.516},
+    {city:'守口市', kaikan:['守口中央'], stn:'47772', today:50, peak:'1/21', avg:39, geo:'中河内', lat:34.738, lng:135.566},
+    {city:'大東市', kaikan:['大東中央'], stn:'47772', today:50, peak:'1/21', avg:39, geo:'中河内', lat:34.712, lng:135.622},
+    {city:'東大阪市', kaikan:['東大阪中央','東大阪北','東大阪南','東大阪東'], stn:'47772', today:51, peak:'1/21', avg:40, geo:'中河内', lat:34.679, lng:135.601},
+    {city:'八尾市', kaikan:['八尾中央'], stn:'47772', today:50, peak:'1/21', avg:39, geo:'中河内', lat:34.627, lng:135.601},
+    {city:'寝屋川市', kaikan:['寝屋川中央','寝屋川北'], stn:'47772', today:48, peak:'1/21', avg:38, geo:'北河内', lat:34.766, lng:135.628},
+    {city:'枚方市', kaikan:['枚方中央','枚方北','枚方南','枚方東'], stn:'47780', today:38, peak:'1/14', avg:46, geo:'北河内/奈良観測', lat:34.815, lng:135.651},
+    {city:'羽曳野市', kaikan:['羽曳野中央'], stn:'47772', today:46, peak:'1/21', avg:37, geo:'南河内', lat:34.558, lng:135.606},
+    {city:'堺市',   kaikan:['堺中央','堺北','堺南','堺東'], stn:'47772', today:48, peak:'1/21', avg:38, geo:'湾岸', lat:34.573, lng:135.482},
+    {city:'岸和田市', kaikan:['岸和田中央'], stn:'47772', today:42, peak:'1/21', avg:36, geo:'泉南沿岸', lat:34.460, lng:135.371},
+    // 兵庫県
+    {city:'宝塚市', kaikan:['宝塚中央'], stn:'47770', today:58, peak:'1/21', avg:43, geo:'内陸', lat:34.799, lng:135.360},
+    {city:'川西市', kaikan:['川西中央'], stn:'47770', today:58, peak:'1/21', avg:43, geo:'内陸', lat:34.830, lng:135.417},
+    {city:'西宮市', kaikan:['西宮中央','西宮北'], stn:'47770', today:55, peak:'1/21', avg:42, geo:'内陸寄り', lat:34.737, lng:135.341},
+    {city:'神戸市', kaikan:['神戸中央','神戸北','神戸南'], stn:'47770', today:54, peak:'1/21', avg:41, geo:'沿岸都市', lat:34.690, lng:135.195},
+    {city:'尼崎市', kaikan:['尼崎中央'], stn:'47770', today:52, peak:'1/21', avg:40, geo:'湾岸', lat:34.728, lng:135.406},
+    // 奈良県
+    {city:'生駒市', kaikan:['生駒中央'], stn:'47780', today:40, peak:'1/14', avg:45, geo:'内陸', lat:34.691, lng:135.700},
+    {city:'奈良市', kaikan:['奈良中央','奈良北','奈良南'], stn:'47780', today:38, peak:'1/14', avg:46, geo:'内陸盆地', lat:34.685, lng:135.805}
+  ],
+  nagoya: [
+    {city:'名古屋市', kaikan:['名古屋中央'], stn:'47636', today:70, peak:'1/12', avg:48, geo:'都市部', lat:35.180, lng:136.907},
+    {city:'豊田市',   kaikan:['豊田中央'], stn:'47636', today:72, peak:'1/12', avg:50, geo:'内陸', lat:35.083, lng:137.156},
+    {city:'岡崎市',   kaikan:['岡崎中央'], stn:'47636', today:68, peak:'1/12', avg:47, geo:'内陸', lat:34.954, lng:137.174}
+  ],
+  fukuoka: [
+    {city:'福岡市',   kaikan:['福岡中央'], stn:'47807', today:85, peak:'1/12', avg:42, geo:'沿岸都市', lat:33.590, lng:130.402},
+    {city:'北九州市', kaikan:['北九州中央'], stn:'47807', today:80, peak:'1/12', avg:40, geo:'沿岸', lat:33.884, lng:130.875},
+    {city:'久留米市', kaikan:['久留米中央'], stn:'47807', today:78, peak:'1/12', avg:45, geo:'内陸', lat:33.318, lng:130.508}
+  ],
+  sapporo: [
+    {city:'札幌市',   kaikan:['札幌中央'], stn:'47412', today:88, peak:'1/12', avg:58, geo:'都市部', lat:43.062, lng:141.354},
+    {city:'旭川市',   kaikan:['旭川中央'], stn:'47407', today:95, peak:'1/12', avg:65, geo:'内陸豪雪', lat:43.770, lng:142.365},
+    {city:'函館市',   kaikan:['函館中央'], stn:'47430', today:82, peak:'1/12', avg:52, geo:'沿岸', lat:41.768, lng:140.729}
+  ],
+  sendai: [
+    {city:'仙台市',   kaikan:['仙台中央'], stn:'47590', today:70, peak:'1/12', avg:48, geo:'都市部', lat:38.268, lng:140.872},
+    {city:'石巻市',   kaikan:['石巻中央'], stn:'47592', today:68, peak:'1/12', avg:45, geo:'沿岸', lat:38.434, lng:141.302}
+  ],
+  hiroshima: [
+    {city:'広島市',   kaikan:['広島中央'], stn:'47765', today:85, peak:'1/11', avg:45, geo:'都市部', lat:34.396, lng:132.460},
+    {city:'福山市',   kaikan:['福山中央'], stn:'47767', today:78, peak:'1/11', avg:42, geo:'沿岸', lat:34.486, lng:133.362}
+  ]
+};
+
+// 都道府県マッピング（topojsonのproperties.namに合わせる）
+var PREF_NAM = {
+  tokyo:    ['Tokyo To','Kanagawa Ken','Chiba Ken'],
+  osaka:    ['Osaka Fu','Hyogo Ken','Nara Ken'],
+  nagoya:   ['Aichi Ken','Gifu Ken','Mie Ken','Shizuoka Ken'],
+  fukuoka:  ['Fukuoka Ken','Saga Ken','Kumamoto Ken','Oita Ken'],
+  sapporo:  ['Hokkai Do'],
+  sendai:   ['Miyagi Ken','Iwate Ken','Yamagata Ken','Fukushima Ken'],
+  hiroshima:['Hiroshima Ken','Okayama Ken','Yamaguchi Ken','Shimane Ken']
+};
+var PREF_TITLE = {
+  tokyo:'東京都・神奈川（首都圏）', osaka:'大阪府', nagoya:'愛知県',
+  fukuoka:'福岡県', sapporo:'北海道', sendai:'宮城県', hiroshima:'広島県'
+};
+// ドリルダウン用タイトル
+var AREA_TITLE = {
+  tokyo:'首都圏エリア（東京・神奈川・千葉）', osaka:'近畿エリア（大阪・兵庫・奈良）', nagoya:'東海エリア',
+  fukuoka:'九州北部エリア', sapporo:'北海道', sendai:'東北エリア', hiroshima:'中国エリア'
+};
+var SINGLE_TITLE = {
+  tokyo:'東京都', osaka:'大阪府', nagoya:'愛知県',
+  fukuoka:'福岡県', sapporo:'北海道', sendai:'宮城県', hiroshima:'広島県'
+};
+
+function cls(v){ return v>=60?'hi':(v>=30?'mi':(v>=10?'lo':'pl')); }
+function hcCls(v){ return v>=60?'hc-h':(v>=30?'hc-m':(v>=10?'hc-l':'hc-p')); }
+
+// 地図クリック時の互換用（カード制御は drawJapanMap 側）
+function selectLoc(key) { /* 2段予報は固定表示のため何もしない */ }
+
+// 首都圏・近畿の14日予報を2段描画
+var DATES = ['1/12','1/13','1/14','1/15','1/16','1/17','1/18','1/19','1/20','1/21','1/22','1/23','1/24','1/25'];
+function renderForecast(key) {
+  var F = FORECAST[key]; if (!F) return;
+  var today = F[0];
+  var sc = document.getElementById('fc-score-'+key);
+  sc.textContent = today;
+  sc.className = 'fc-score ' + (today>=60?'hi':'');
+  // チャート
+  var mc = document.getElementById('mini-chart-'+key); mc.innerHTML='';
+  F.forEach(function(v){
+    var col=document.createElement('div'); col.className='mini-col';
+    var s=document.createElement('div'); s.className='mini-score '+cls(v); s.textContent=v;
+    var bar=document.createElement('div'); bar.className='mini-bar '+cls(v);
+    bar.style.height=Math.max(v*0.72,4)+'px';
+    col.appendChild(s); col.appendChild(bar); mc.appendChild(col);
+  });
+  // 日付
+  var dt=document.getElementById('mini-dates-'+key); dt.innerHTML='';
+  DATES.forEach(function(d,i){
+    var sp=document.createElement('span'); sp.className='mini-date'+(i===0?' today':''); sp.textContent=d;
+    dt.appendChild(sp);
+  });
+  // アクション
+  var act=document.getElementById('fc-action-'+key);
+  if (today>=60){ act.className='fc-action hi';
+    act.innerHTML='<strong>高リスク日。</strong>手動CPC +15〜20% 引き上げ推奨。需要ピークは数日後（経路C：心不全悪化）。'; }
+  else { act.className='fc-action mi';
+    act.innerHTML='<strong>中リスク。</strong>手動CPC +10% 目安。連続する場合はリードタイムで先行調整。'; }
+}
+
+function updateCityList(key) {
+  // 緊急度順ソート（today降順、同点なら14日平均降順）
+  var cities = (CITIES[key] || []).slice().sort(function(a,b){
+    if (b.today !== a.today) return b.today - a.today;
+    return b.avg - a.avg;
+  });
+  var L = LOC[key];
+  document.getElementById('city-list-title').textContent =
+    (PREF_TITLE[key] || L.name) + ' 配下市区町村スコアリング（緊急度順）';
+  document.getElementById('city-list-sub').textContent =
+    cities.length + '市区町村｜マップ上の地点マーカークリックでエリア切替｜本日スコア高い順';
+  var g = document.getElementById('city-grid');
+  g.innerHTML = '';
+  if (!cities.length) {
+    g.innerHTML = '<div class="cs-empty">配下市区町村データなし</div>';
+    return;
+  }
+  cities.forEach(function(c, i){
+    var cls = c.today>=60?'hi':(c.today>=30?'mi':'lo');
+    var label = c.today>=60?'緊急':(c.today>=30?'要注意':'平常');
+    var rankCls = i === 0 && c.today >= 60 ? 'hi' : '';
+    var card = document.createElement('div');
+    card.className = 'city-card '+cls;
+    var halls = c.kaikan.map(function(h){ return '<div class="hall">'+h+'</div>'; }).join('');
+    card.innerHTML =
+      '<div class="cc-rank '+rankCls+'">#'+(i+1)+'</div>'+
+      '<div class="cc-name">'+c.city+'</div>'+
+      '<div class="cc-score-row">'+
+        '<span class="cc-score">'+c.today+'</span>'+
+        '<span class="cc-score-max">/100</span>'+
+        '<span class="cc-badge">'+label+'</span>'+
+      '</div>'+
+      '<div class="cc-meta">'+
+        '<div class="m-row"><span class="m-label">会館</span><span class="m-val">'+c.kaikan.length+'館</span></div>'+
+        '<div class="m-row"><span class="m-label">14日先ピーク</span><span class="m-val peak">'+c.peak+'</span></div>'+
+        '<div class="m-row"><span class="m-label">14日平均</span><span class="m-val">'+c.avg+'</span></div>'+
+        '<div class="m-row"><span class="m-label">地理特性</span><span class="m-val">'+(c.geo||'-')+'</span></div>'+
+        '<div class="m-row"><span class="m-label">観測地点</span><span class="m-val">'+c.stn+'</span></div>'+
+      '</div>'+
+      '<div class="cc-toggle">▼ 会館名を見る（'+c.kaikan.length+'館）</div>'+
+      '<div class="cc-halls">'+halls+'</div>';
+    card.addEventListener('click', function(){
+      var op = card.classList.toggle('open');
+      card.querySelector('.cc-toggle').textContent =
+        op ? '▲ 閉じる' : ('▼ 会館名を見る（'+c.kaikan.length+'館）');
+    });
+    g.appendChild(card);
+  });
+}
+
+// 月次バーチャート
+(function(){
+  var b = document.getElementById('bar-month'); b.innerHTML='';
+  MONTH.forEach(function(v, i){
+    var col = document.createElement('div'); col.className='bar-col';
+    var wrap = document.createElement('div'); wrap.className='bar-wrap';
+    var bar = document.createElement('div'); bar.className='bar '+cls(v); bar.style.height=(v*1.0)+'%';
+    wrap.appendChild(bar);
+    var d = document.createElement('div'); d.className='bar-date'; d.textContent='1/'+(i+1);
+    var s = document.createElement('div'); s.className='bar-score'; s.textContent=v;
+    col.appendChild(wrap); col.appendChild(d); col.appendChild(s); b.appendChild(col);
+  });
+})();
+
+// ヒートマップ
+(function(){
+  var t = document.getElementById('heatmap');
+  var thead = '<thead><tr><th>地点</th>';
+  for(var i=1;i<=31;i++) thead += '<th>1/'+i+'</th>';
+  thead += '</tr></thead><tbody>';
+  Object.keys(HM).forEach(function(loc){
+    thead += '<tr><td>'+loc+'</td>';
+    HM[loc].forEach(function(v){ thead += '<td class="'+hcCls(v)+'">'+v+'</td>'; });
+    thead += '</tr>';
+  });
+  t.innerHTML = thead + '</tbody>';
+})();
+
+// アラート一覧
+(function(){
+  var a = document.getElementById('alert-list');
+  ALERTS.forEach(function(al){
+    var div = document.createElement('div');
+    div.className = 'alert-item '+al.lvl;
+    div.innerHTML = '<span class="alert-tag '+al.lvl+'">'+(al.lvl==='h'?'高':'中')+' '+al.score+'</span>'+
+                    '<span class="alert-date">'+al.date+'</span>'+
+                    '<span class="alert-loc">'+al.loc+'</span>'+
+                    '<span class="alert-meta">'+al.meta+'</span>';
+    a.appendChild(div);
+  });
+})();
+
+// ── 日本地図 描画（d3 + TopoJSON: dataofjapan/land 都道府県境界） ──
+// 3段階ドリルダウン: 'all' (全国) → 'area' (エリア=隣接県含む) → 'pref' (単独県)
+var currentMapMode = 'all';
+var currentFocus = null;
+
+function colorByScore(s) {
+  return s >= 80 ? '#b91c1c'
+       : s >= 60 ? '#d32f2f'
+       : s >= 45 ? '#f57c00'
+       : s >= 30 ? '#fb923c'
+       : s >= 10 ? '#5090c0'
+       : '#94a3b8';
+}
+// 県の薄塗り（地図上で危険度をうっすら表現）
+function scoreTint(s) {
+  return s >= 60 ? '#f3cdcd'
+       : s >= 45 ? '#fbdebc'
+       : s >= 30 ? '#fde3c8'
+       : s >= 10 ? '#d6e4f1'
+       : '#e7ebe6';
+}
+
+function drawJapanMap(level, focusKey) {
+  level = level || 'all';
+  currentMapMode = level;
+  currentFocus = focusKey || null;
+  var width = 720, height = 560;
+  var svg = d3.select('#japan-map').attr('viewBox', '0 0 ' + width + ' ' + height);
+  svg.selectAll('*').remove();
+
+  var fullGeo = topojson.feature(japanData, japanData.objects.japan);
+  var displayGeo;
+  if (level === 'all') {
+    displayGeo = fullGeo;
+  } else if (level === 'area') {
+    var nams = PREF_NAM[focusKey] || [];
+    displayGeo = {type:'FeatureCollection',
+      features: fullGeo.features.filter(function(f){ return nams.indexOf(f.properties.nam) >= 0; })};
+  } else { // 'pref'
+    var prefNam = (PREF_NAM[focusKey] || [])[0];
+    displayGeo = {type:'FeatureCollection',
+      features: fullGeo.features.filter(function(f){ return f.properties.nam === prefNam; })};
+  }
+  var pad = level === 'all' ? 12 : 42;
+  var projection = d3.geoMercator();
+  if (level === 'area' && CITIES[focusKey] && CITIES[focusKey].length) {
+    // 会館拠点群でズーム（東京都の島嶼などを避け、本土の会館エリアにフィット）
+    var fitPts = {type:'MultiPoint', coordinates: CITIES[focusKey].map(function(c){ return [c.lng, c.lat]; })};
+    projection.fitExtent([[pad, pad+8],[width-pad, height-pad]], fitPts);
+  } else {
+    projection.fitExtent([[pad, pad],[width-pad, height-pad]], displayGeo);
+  }
+  var pathGen = d3.geoPath().projection(projection);
+
+  // 県パス描画（エリア内の県を地図トーンで表示）
+  svg.append('g')
+    .selectAll('path')
+    .data(displayGeo.features)
+    .enter().append('path')
+    .attr('d', pathGen)
+    .attr('class', 'jp-pref');
+
+  drawBreadcrumb(svg, width, level, focusKey);
+
+  var markers = svg.append('g');
+  if (level === 'all') {
+    drawCountryMarkers(markers, projection);
+  } else {
+    // area：会館がある市区町村マーカーを全部描画
+    drawCityMarkers(markers, projection, focusKey, 'area');
+  }
+  setMapHint(level, focusKey);
+  toggleCitySection(level, focusKey);
+}
+
+// 地図下のヒント文言
+function setMapHint(level, focusKey) {
+  var el = document.getElementById('map-hint');
+  if (!el) return;
+  if (level === 'all') el.textContent = '地点をクリックでエリアへ';
+  else el.textContent = (AREA_TITLE[focusKey]||'') + '：会館のある市区町村の危険度';
+}
+
+// 市区町村カードセクションの表示制御
+function toggleCitySection(level, focusKey) {
+  var g = document.getElementById('city-grid');
+  var title = document.getElementById('city-list-title');
+  var sub = document.getElementById('city-list-sub');
+  if (level !== 'all' && CITIES[focusKey]) {
+    updateCityList(focusKey);
+  } else {
+    title.textContent = '配下市区町村スコアリング';
+    sub.textContent = '地図で地点（エリア）をクリックすると、会館のある市区町村別スコアが表示されます';
+    g.innerHTML = '<div class="cs-empty">地図上のマーカーをクリックしてエリアを選択してください</div>';
+  }
+}
+
+function drawBreadcrumb(svg, width, level, focusKey) {
+  var bc = svg.append('g');
+  // パンくず（全国 › エリア名）— 背景白で読みやすく
+  var crumb = (level === 'all') ? '全国' : ('全国  ›  ' + (AREA_TITLE[focusKey] || focusKey));
+  bc.append('rect').attr('x', 8).attr('y', 8).attr('width', crumb.length*8.5+16).attr('height', 24)
+    .attr('rx', 4).attr('fill', 'rgba(255,255,255,0.9)').attr('stroke', '#c0d2e2');
+  var bt = bc.append('text').attr('x', 18).attr('y', 24)
+    .attr('font-size', 12).attr('font-weight', 600).attr('fill', '#1a2437').text(crumb);
+  if (level !== 'all') {
+    bt.style('cursor','pointer').on('click', function(){ drawJapanMap('all'); });
+    // 右上：全国に戻るボタン
+    var btn = svg.append('g').style('cursor', 'pointer').on('click', function(){ drawJapanMap('all'); });
+    btn.append('rect').attr('x', width-130).attr('y', 8).attr('width', 120).attr('height', 24)
+       .attr('rx', 4).attr('fill', '#0f1929');
+    btn.append('text').attr('x', width-70).attr('y', 24).attr('text-anchor', 'middle')
+       .attr('fill', '#00b4c8').attr('font-size', 11).attr('font-weight', 600)
+       .text('◂ 全国に戻る');
+  }
+}
+
+function drawCountryMarkers(markers, projection) {
+  Object.keys(LOC).forEach(function(key) {
+    var L = LOC[key];
+    var coord = projection([L.lng, L.lat]);
+    if (!coord) return;
+    var color = colorByScore(L.today);
+    var r = L.today >= 60 ? 11 : (L.today >= 30 ? 9 : 7);
+    markers.append('circle').attr('cx', coord[0]).attr('cy', coord[1])
+      .attr('fill', 'none').attr('stroke', color).attr('class', 'pin-pulse-ring');
+    markers.append('circle').attr('cx', coord[0]).attr('cy', coord[1]).attr('r', r)
+      .attr('fill', color).attr('class', 'pin-circle').style('cursor', 'pointer')
+      .on('click', function() {
+        drawJapanMap('area', key);  // 1回目=エリアにズーム
+        selectLoc(key);
+      });
+    var labelDy = (key === 'sapporo') ? 26 : -16;
+    markers.append('text').attr('x', coord[0]).attr('y', coord[1] + labelDy)
+      .attr('text-anchor', 'middle').attr('class', 'pin-label')
+      .text(L.name + ' ' + L.today);
+  });
+}
+
+function drawCityMarkers(markers, projection, focusKey, level) {
+  var cities = (CITIES[focusKey] || []).slice().sort(function(a,b){ return a.today - b.today; }); // 低い順に描画→高いリスクが上に重なる
+  cities.forEach(function(c) {
+    if (c.lat == null || c.lng == null) return;
+    var coord = projection([c.lng, c.lat]);
+    if (!coord) return;
+    var color = colorByScore(c.today);
+    var r = 9 + c.today/12; // スコアで半径（9〜19）
+    // ハロー
+    markers.append('circle').attr('cx', coord[0]).attr('cy', coord[1])
+      .attr('r', r + 5).attr('fill', color).attr('opacity', 0.18);
+    // 本体
+    markers.append('circle').attr('cx', coord[0]).attr('cy', coord[1]).attr('r', r)
+      .attr('fill', color).attr('class', 'pin-circle')
+      .attr('stroke', '#fff').attr('stroke-width', 1.2).attr('data-city', c.city);
+    // 円内にスコア数字
+    markers.append('text').attr('x', coord[0]).attr('y', coord[1])
+      .attr('text-anchor', 'middle').attr('dominant-baseline', 'central')
+      .attr('fill', '#fff').attr('font-size', 10).attr('font-weight', 700)
+      .style('pointer-events', 'none').text(c.today);
+    // 市名（円の下・小さく白フチ）
+    markers.append('text').attr('x', coord[0]).attr('y', coord[1] + r + 11)
+      .attr('text-anchor', 'middle').attr('class', 'pin-label')
+      .style('font-size', '10px').text(c.city);
+  });
+}
+
+drawJapanMap('all');
+
+// 右パネル：首都圏・近畿の2段予報を初期描画
+renderForecast('tokyo');
+renderForecast('osaka');
+
+if (location.hash.indexOf('embed') !== -1) document.body.classList.add('embed');
+</script>
+</body>
+</html>

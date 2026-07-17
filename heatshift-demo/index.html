@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>HeatShift｜気象連動CPC自動ツール（統合版）</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif; font-size: 13px;
+       background: #f0f2f5; color: #1a2437; overflow: hidden; }
+
+/* topbar */
+.topbar {
+  background: #0f1929; color: #fff; height: 48px;
+  display: flex; align-items: center; padding: 0 20px;
+  justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  border-bottom: 2px solid #00b4c8;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-logo { display: flex; align-items: center; gap: 10px; letter-spacing: 0.3px; }
+.topbar-logo .logo-mark { display: block; width: 32px; height: 32px; flex-shrink: 0; }
+.topbar-logo .logo-text { display: flex; flex-direction: column; line-height: 1; gap: 2px; }
+.topbar-logo .logo-text .l-main { font-size: 15px; font-weight: 700; letter-spacing: 0.2px; }
+.topbar-logo .logo-text .l-main .heat  { color: #fff; }
+.topbar-logo .logo-text .l-main .shift { color: #60a5fa; font-style: italic; font-weight: 800; }
+.topbar-logo .logo-text .l-sub { font-size: 9px; color: #8fa3bc; letter-spacing: 1.5px; margin-left: 2px; }
+.topbar-meta { font-size: 11px; color: #8fa3bc; display: flex; align-items: center; gap: 16px; }
+.topbar-meta .l-tagline { color: #8fa3bc; font-size: 11px; }
+.topbar-meta .badge {
+  background: #1a4a3a; color: #00e5a0; font-size: 10px; padding: 2px 8px; border-radius: 10px;
+  border: 1px solid #00b47830;
+}
+.topbar-right { display: flex; align-items: center; gap: 12px; font-size: 11px; color: #8fa3bc; }
+.topbar-right .account { color: #c8d8e8; font-weight: 600; }
+
+/* layout */
+.layout { display: flex; height: 100%; padding-top: 48px; }
+nav.sidebar {
+  width: 200px; background: #131f32; color: #8fa3bc; flex-shrink: 0;
+  position: fixed; top: 48px; left: 0; bottom: 0; overflow-y: auto;
+  border-right: 1px solid #1e2f47;
+}
+nav.sidebar .section-label {
+  font-size: 10px; color: #4a6070; text-transform: uppercase; letter-spacing: 1px;
+  padding: 16px 18px 6px;
+}
+nav.sidebar a {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  padding: 9px 18px; color: #8fa3bc; text-decoration: none; font-size: 12px;
+  border-left: 3px solid transparent;
+}
+nav.sidebar a:hover { background: #1a2d45; color: #c8d8e8; }
+nav.sidebar a.active { color: #00b4c8; background: #0d2035; border-left-color: #00b4c8; font-weight: 600; }
+nav.sidebar a .icon { width: 16px; text-align: center; opacity: 0.7; }
+nav.sidebar a.disabled { opacity: 0.4; cursor: default; }
+nav.sidebar a.disabled:hover { background: transparent; color: #8fa3bc; }
+nav.sidebar .sidebar-footer {
+  position: absolute; bottom: 0; width: 100%; padding: 14px 18px;
+  border-top: 1px solid #1e2f47; background: #131f32;
+  font-size: 11px; color: #4a6070;
+}
+nav.sidebar .sidebar-footer .client-name { color: #8fa3bc; font-weight: 600; margin-bottom: 2px; }
+
+/* iframe area */
+.content { margin-left: 200px; flex: 1; height: calc(100vh - 48px); }
+.content iframe { width: 100%; height: 100%; border: none; display: block; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">
+      <svg class="logo-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="hsBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#1a2c5e"/><stop offset="100%" stop-color="#0a1c4a"/>
+          </linearGradient>
+          <linearGradient id="hsSky" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1d4ed8"/>
+          </linearGradient>
+          <linearGradient id="hsArrow" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ea580c"/><stop offset="100%" stop-color="#f97316"/>
+          </linearGradient>
+        </defs>
+        <path d="M12 18 L12 88 L26 88 L26 60 L48 60 L48 88 L62 88 L62 18 L48 18 L48 46 L26 46 L26 18 Z"
+              fill="url(#hsBlue)" transform="skewX(-8)"/>
+        <path d="M82 38 Q82 22 64 22 L48 22 Q34 22 34 36 Q34 50 48 50 L68 50 Q82 50 82 64 Q82 80 64 80 L40 80"
+              stroke="url(#hsSky)" stroke-width="13" fill="none"
+              stroke-linecap="round" stroke-linejoin="round" transform="skewX(-8)"/>
+        <path d="M30 60 L70 22" stroke="url(#hsArrow)" stroke-width="7" stroke-linecap="round" fill="none"/>
+        <path d="M70 22 L58 22 L70 22 L70 34" stroke="url(#hsArrow)" stroke-width="7"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <div class="logo-text">
+        <div class="l-main"><span class="heat">Heat</span><span class="shift">Shift</span></div>
+        <div class="l-sub">ヒートシフト</div>
+      </div>
+    </div>
+    <div class="topbar-meta">
+      <span class="l-tagline">葬儀特化CPC自動ツール</span>
+      <span class="badge">● Google Ads API 連携中</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span>HeatShift デモ</span>
+    <span class="account">サンプル典礼株式会社（デモ用サンプルデータ）</span>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="section-label">メイン</div>
+    <a onclick="switchTo(this,'../jissoku/dashboard_top.html')"><span class="icon">◻</span>ダッシュボード</a>
+    <a class="active" onclick="switchTo(this,'demo_linked_bid.html')"><span class="icon">↑</span>入札連動</a>
+    <a onclick="switchTo(this,'demo_linked_areamap.html')"><span class="icon">⊙</span>全国エリア気象モニター</a>
+    <a onclick="switchTo(this,'demo_linked_kw.html')"><span class="icon">☰</span>KWグループ管理</a>
+    <div class="section-label">レポート</div>
+    <a onclick="switchTo(this,'demo_linked_report.html')"><span class="icon">▤</span>月次効果測定レポート</a>
+    <a onclick="switchTo(this,'../jissoku/dashboard_assets.html')"><span class="icon">✦</span>アセット設定</a>
+    <div class="section-label">設定</div>
+    <a onclick="switchTo(this,'../jissoku/dashboard_area.html')"><span class="icon">⊞</span>全媒体エリア設定</a>
+    <a onclick="switchTo(this,'../jissoku/dashboard_api.html')"><span class="icon">⚙</span>API連携</a>
+    <a onclick="switchTo(this,'../jissoku/dashboard_help.html')"><span class="icon">?</span>ヘルプ・サポート</a>
+    <div class="sidebar-footer">
+      <div class="client-name">サンプル典礼様</div>
+      <div>プラン: プロフェッショナル</div>
+      <div style="margin-top:4px; color:#2a5040;">会館数: 63会館</div>
+    </div>
+  </nav>
+
+  <div class="content">
+    <iframe id="frame" src="demo_linked_bid.html#embed"></iframe>
+  </div>
+</div>
+
+<script>
+function switchTo(el, src) {
+  document.getElementById('frame').src = src + '#embed';
+  var links = document.querySelectorAll('nav.sidebar a');
+  for (var i = 0; i < links.length; i++) links[i].classList.remove('active');
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>

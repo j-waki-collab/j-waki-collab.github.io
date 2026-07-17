@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>【NEW v3】HeatShift 月次効果測定レポート — 相関分析版</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif; font-size: 13px;
+       background: #f0f2f5; color: #1a2437; }
+.topbar {
+  background: #0f1929; color: #fff;
+  height: 48px; display: flex; align-items: center; padding: 0 20px;
+  justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  border-bottom: 2px solid #00b4c8;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-logo {
+  display: flex; align-items: center; gap: 10px;
+  letter-spacing: 0.3px;
+}
+.topbar-logo .logo-mark { display: block; width: 32px; height: 32px; flex-shrink: 0; }
+.topbar-logo .logo-text {
+  display: flex; flex-direction: column; line-height: 1; gap: 2px;
+}
+.topbar-logo .logo-text .l-main {
+  font-size: 15px; font-weight: 700; letter-spacing: 0.2px;
+}
+.topbar-logo .logo-text .l-main .heat  { color: #fff; }
+.topbar-logo .logo-text .l-main .shift { color: #60a5fa; font-style: italic; font-weight: 800; }
+.topbar-logo .logo-text .l-sub {
+  font-size: 9px; color: #8fa3bc; letter-spacing: 1.5px;
+  margin-left: 2px;
+}
+.topbar-meta .l-tagline { color: #8fa3bc; font-size: 11px; }
+.topbar-meta { font-size: 11px; color: #8fa3bc; display: flex; align-items: center; gap: 16px; }
+.topbar-meta .badge {
+  background: #1a4a3a; color: #00e5a0; font-size: 10px; padding: 2px 8px; border-radius: 10px;
+  border: 1px solid #00b47830;
+}
+.topbar-right { display: flex; align-items: center; gap: 12px; font-size: 11px; color: #8fa3bc; }
+.topbar-right .account { color: #c8d8e8; font-weight: 600; }
+.layout { display: flex; margin-top: 48px; min-height: calc(100vh - 48px); }
+nav.sidebar {
+  width: 200px; background: #131f32; color: #8fa3bc; flex-shrink: 0;
+  position: fixed; top: 48px; left: 0; bottom: 0; overflow-y: auto;
+  border-right: 1px solid #1e2f47;
+}
+nav.sidebar .section-label {
+  font-size: 10px; color: #4a6070; text-transform: uppercase; letter-spacing: 1px;
+  padding: 16px 18px 6px;
+}
+nav.sidebar a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 18px; color: #8fa3bc; text-decoration: none; font-size: 12px;
+  border-left: 3px solid transparent;
+}
+nav.sidebar a:hover { background: #1a2d45; color: #c8d8e8; }
+nav.sidebar a.active { color: #00b4c8; background: #0d2035; border-left-color: #00b4c8; font-weight: 600; }
+nav.sidebar a .icon { width: 16px; text-align: center; opacity: 0.7; }
+nav.sidebar .sidebar-footer {
+  position: sticky; bottom: 0; padding: 14px 18px;
+  border-top: 1px solid #1e2f47; background: #131f32;
+  font-size: 11px; color: #4a6070;
+}
+nav.sidebar .sidebar-footer .client-name { color: #8fa3bc; font-weight: 600; margin-bottom: 2px; }
+main { margin-left: 200px; flex: 1; padding: 24px; }
+.breadcrumb { font-size: 11px; color: #6b8090; margin-bottom: 16px; }
+.breadcrumb span { margin: 0 5px; }
+.breadcrumb .current { color: #1a2437; font-weight: 600; }
+.page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.page-subtitle { font-size: 12px; color: #6b8090; margin-bottom: 16px; }
+.insight-banner {
+  background: #e8f5e9; border: 1px solid #a5d6a7; border-left: 4px solid #2e7d32;
+  border-radius: 4px; padding: 10px 16px; margin-bottom: 20px;
+  font-size: 12px; color: #1b5e20;
+}
+.insight-banner strong { color: #1b5e20; }
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+.kpi-card {
+  background: #fff; border: 1px solid #dde4ef; border-radius: 8px; padding: 18px 20px;
+  position: relative; overflow: hidden;
+}
+.kpi-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.kpi-card.high::before  { background: #d32f2f; }
+.kpi-card.pos::before   { background: #2e7d32; }
+.kpi-card.info::before  { background: #00b4c8; }
+.kpi-card.warn::before  { background: #f57c00; }
+.kpi-card .kpi-label { font-size: 11px; color: #6b8090; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi-card .kpi-value { font-size: 36px; font-weight: 700; line-height: 1; }
+.kpi-card.high .kpi-value { color: #d32f2f; }
+.kpi-card.pos  .kpi-value { color: #2e7d32; }
+.kpi-card.info .kpi-value { color: #00b4c8; }
+.kpi-card.warn .kpi-value { color: #f57c00; }
+.kpi-card .kpi-unit { font-size: 13px; font-weight: 400; color: #6b8090; margin-left: 4px; }
+.kpi-card .kpi-sub { font-size: 11px; color: #6b8090; margin-top: 6px; }
+.kpi-card .kpi-delta {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-top: 8px;
+}
+.kpi-card .kpi-delta.up  { background: #e8f5e9; color: #2e7d32; }
+.kpi-card .kpi-delta.warn{ background: #fde8e8; color: #d32f2f; }
+.panel {
+  background: #fff; border: 1px solid #dde4ef; border-radius: 8px;
+  padding: 18px 20px; margin-bottom: 20px;
+}
+.panel-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+}
+.panel-title { font-size: 14px; font-weight: 700; }
+.panel-subtitle { font-size: 11px; color: #6b8090; margin-top: 2px; }
+/* 棒グラフ（スコア+CV重ね） */
+.bar-chart {
+  display: flex; align-items: flex-end; gap: 3px;
+  height: 120px; padding: 0 4px; position: relative;
+}
+.bar-chart::before {
+  content: ''; position: absolute; left: 0; right: 0;
+  top: calc(100% - 72px); border-top: 1px dashed #d32f2f; opacity: 0.5;
+}
+.bar-chart::after {
+  content: '60'; position: absolute; right: 4px;
+  top: calc(100% - 76px); font-size: 9px; color: #d32f2f; opacity: 0.7;
+}
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.bar-col .bar-wrap { width: 100%; display: flex; align-items: flex-end; height: 90px; gap: 1px; }
+.bar-cv { flex: 1; border-radius: 2px 2px 0 0; background: rgba(0,180,200,0.25); min-height: 2px; }
+.bar { flex: 1; border-radius: 2px 2px 0 0; min-height: 3px; }
+.bar.high  { background: #d32f2f; }
+.bar.mid   { background: #f57c00; }
+.bar.low   { background: #5090c0; }
+.bar.plain { background: #c8d0da; }
+.bar-col .bar-date  { font-size: 8px; color: #8090a0; }
+.bar-col .bar-score { font-size: 8px; font-weight: 700; }
+.bar-col .bar-score.high  { color: #d32f2f; }
+.bar-col .bar-score.mid   { color: #f57c00; }
+.bar-col .bar-score.low   { color: #5090c0; }
+.bar-col .bar-score.plain { color: #a0a8b0; }
+/* テーブル */
+table.report-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+table.report-table th {
+  background: #f4f6fa; padding: 9px 12px; text-align: left;
+  font-size: 11px; color: #4a6080; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.4px; border-bottom: 2px solid #dde4ef;
+}
+table.report-table td { padding: 10px 12px; border-bottom: 1px solid #edf0f6; vertical-align: middle; }
+table.report-table tr.highlight td { background: #fff5f5; }
+table.report-table tr:hover td { background: #f8fafd; }
+table.report-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.risk-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700;
+}
+.risk-badge.high  { background: #fde8e8; color: #c62828; }
+.risk-badge.mid   { background: #fff3e0; color: #e65100; }
+.risk-badge.low   { background: #e3f0fb; color: #1565c0; }
+.risk-badge.plain { background: #f0f2f5; color: #6b8090; }
+.diff-pos { color: #2e7d32; font-weight: 700; }
+.diff-neg { color: #d32f2f; font-weight: 700; }
+.row2 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+.bottom-kpi {
+  background: #0f1929; color: #fff; border-radius: 8px;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  padding: 14px 24px; margin-top: 8px;
+}
+.bottom-kpi-item { text-align: center; padding: 4px 0; }
+.bottom-kpi-item:not(:last-child) { border-right: 1px solid #1e3050; }
+.bottom-kpi-item .bk-label { font-size: 10px; color: #6b8090; margin-bottom: 4px; }
+.bottom-kpi-item .bk-value { font-size: 18px; font-weight: 700; color: #00b4c8; }
+.bottom-kpi-item .bk-note  { font-size: 10px; color: #4a6070; margin-top: 2px; }
+
+/* ─── Google Ads 実績連動バッジ ─── */
+.linked-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; padding: 3px 10px; border-radius: 3px;
+  background: #eff6ff; color: #1d4ed8; font-weight: 500;
+  border: 1px solid #bfdbfe;
+}
+.linked-badge::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: #2563eb; animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% {opacity:1;} 50% {opacity:0.4;} }
+
+/* ─── 散布図（相関分析） ─── */
+.corr-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+.scatter-wrap {
+  position: relative; padding: 14px 20px 14px 20px;
+  background: #fafbfc; border: 1px solid #e2e8f0; border-radius: 4px;
+}
+.scatter-svg {
+  width: 100%; height: auto; display: block;
+}
+
+/* 散布図凡例 */
+.scatter-legend {
+  display: flex; flex-wrap: wrap; gap: 18px;
+  padding: 12px 4px 4px; margin-top: 10px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 11px; color: #475569;
+}
+.scatter-legend .leg-item {
+  display: flex; align-items: center; gap: 6px;
+}
+.scatter-legend .leg-item strong { color: #b91c1c; }
+.scatter-legend code {
+  background: #f1f5f9; padding: 1px 6px; border-radius: 2px;
+  font-family: "SF Mono", Consolas, monospace; font-size: 10.5px;
+  color: #0f172a;
+}
+.leg-mark { display: inline-block; flex-shrink: 0; }
+.leg-mark.dot-normal {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #94a3b8;
+}
+.leg-mark.dot-high {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: #dc2626; box-shadow: 0 0 0 3px rgba(239,68,68,0.2);
+}
+.leg-mark.line-regression {
+  width: 18px; height: 2px; background:
+    repeating-linear-gradient(90deg, #0284c7 0 5px, transparent 5px 9px);
+}
+.leg-mark.line-threshold {
+  width: 2px; height: 14px; background:
+    repeating-linear-gradient(180deg, #fca5a5 0 3px, transparent 3px 7px);
+}
+.scatter-axis-label {
+  position: absolute; font-size: 10px; color: #6b7280;
+}
+.scatter-axis-label.x { bottom: 6px; left: 50%; transform: translateX(-50%); }
+.scatter-axis-label.y { top: 50%; left: 8px; transform: rotate(-90deg) translateX(50%); transform-origin: 0 0; }
+
+.corr-summary {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.corr-stat {
+  padding: 14px 16px; border: 1px solid #e2e8f0; border-radius: 4px;
+  background: #fafbfc;
+}
+.corr-stat .cs-label {
+  font-size: 10.5px; color: #6b7280; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px;
+}
+.corr-stat .cs-value {
+  font-size: 28px; font-weight: 700; color: #0f172a; line-height: 1;
+}
+.corr-stat .cs-value.pos { color: #16a34a; }
+.corr-stat .cs-value.neg { color: #b91c1c; }
+.corr-stat .cs-sub { font-size: 11px; color: #6b7280; margin-top: 4px; }
+
+/* 比較カード */
+.compare-row { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 10px; align-items: center; }
+.compare-box {
+  padding: 14px 16px; border-radius: 4px; text-align: center;
+}
+.compare-box.base {
+  background: #f1f5f9; border: 1px solid #e2e8f0;
+}
+.compare-box.high {
+  background: #fef2f2; border: 1px solid #fecaca;
+}
+.compare-box .cb-label { font-size: 10.5px; color: #64748b; margin-bottom: 6px; }
+.compare-box .cb-value {
+  font-size: 22px; font-weight: 700; color: #0f172a;
+}
+.compare-box.high .cb-value { color: #b91c1c; }
+.compare-box .cb-sub { font-size: 10px; color: #94a3b8; margin-top: 4px; }
+.compare-arrow {
+  font-size: 18px; color: #94a3b8; text-align: center;
+}
+/* 埋め込みモード（統合ツールのiframe内で表示時はガワを隠す） */
+body.embed .topbar, body.embed nav.sidebar { display: none !important; }
+body.embed .layout { margin-top: 0 !important; }
+body.embed main { margin-left: 0 !important; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">
+      <svg class="logo-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="hsBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#1a2c5e"/>
+            <stop offset="100%" stop-color="#0a1c4a"/>
+          </linearGradient>
+          <linearGradient id="hsSky" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#2563eb"/>
+            <stop offset="100%" stop-color="#1d4ed8"/>
+          </linearGradient>
+          <linearGradient id="hsArrow" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ea580c"/>
+            <stop offset="100%" stop-color="#f97316"/>
+          </linearGradient>
+        </defs>
+        <path d="M12 18 L12 88 L26 88 L26 60 L48 60 L48 88 L62 88 L62 18 L48 18 L48 46 L26 46 L26 18 Z"
+              fill="url(#hsBlue)" transform="skewX(-8)"/>
+        <path d="M82 38 Q82 22 64 22 L48 22 Q34 22 34 36 Q34 50 48 50 L68 50 Q82 50 82 64 Q82 80 64 80 L40 80"
+              stroke="url(#hsSky)" stroke-width="13" fill="none"
+              stroke-linecap="round" stroke-linejoin="round"
+              transform="skewX(-8)"/>
+        <path d="M30 60 L70 22" stroke="url(#hsArrow)" stroke-width="7"
+              stroke-linecap="round" fill="none"/>
+        <path d="M70 22 L58 22 L70 22 L70 34" stroke="url(#hsArrow)" stroke-width="7"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <div class="logo-text">
+        <div class="l-main"><span class="heat">Heat</span><span class="shift">Shift</span></div>
+        <div class="l-sub">ヒートシフト</div>
+      </div>
+    </div>
+    <div class="topbar-meta">
+      <span class="l-tagline">葬儀特化CPC自動ツール</span>
+      <span>集計期間: 2026年1月 実測データ（過去確定値）</span>
+      <span class="badge">● 気象庁実測値</span>
+      <span class="badge" style="background:#0d2845; color:#60a5fa; border-color:#1e3a5f;">● Google Ads 実績連動</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span>レポート</span>
+    <span class="account">サンプル典礼株式会社（デモ用サンプルデータ）</span>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="section-label">メイン</div>
+    <a href="../jissoku/dashboard_top.html"><span class="icon">◻</span>ダッシュボード</a>
+    <a href="demo_linked_bid.html"><span class="icon">↑</span>入札連動</a>
+    <a href="../jissoku/dashboard_risk.html"><span class="icon">◉</span>エリア情報など</a>
+    <a href="../jissoku/dashboard_map.html"><span class="icon">⊙</span>エリアマップ</a>
+    <a href="../jissoku/dashboard_kw.html"><span class="icon">☰</span>KWグループ管理</a>
+    <div class="section-label">レポート</div>
+    <a href="demo_linked_report.html" class="active"><span class="icon">▤</span>レポート</a>
+    <a href="../jissoku/dashboard_assets.html"><span class="icon">✦</span>アセット設定</a>
+    <div class="section-label">設定</div>
+    <a href="../jissoku/dashboard_area.html"><span class="icon">⊞</span>全媒体エリア設定</a>
+    <a href="../jissoku/dashboard_api.html"><span class="icon">⚙</span>API連携</a>
+    <a href="../jissoku/dashboard_help.html"><span class="icon">?</span>ヘルプ・サポート</a>
+    <div class="sidebar-footer">
+      <div class="client-name">サンプル典礼様</div>
+      <div>プラン: プロフェッショナル</div>
+      <div style="margin-top:4px; color:#2a5040;">会館数: 63会館</div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="breadcrumb">
+      ダッシュボード <span>›</span> レポート <span>›</span>
+      <span class="current">月次効果測定レポート</span>
+    </div>
+
+    <div class="page-title">月次効果測定レポート
+      <span style="font-size:14px; font-weight:400; color:#6b8090; margin-left:10px;">2026年1月</span>
+    </div>
+    <div class="page-subtitle">気象庁実測データ（2026年1月）をもとに算出。CV/CPA は試算値。</div>
+
+    <div class="insight-banner">
+      <strong>インサイト：</strong>
+      2026年1月は <strong>1日が高リスク・28日が中リスク</strong> として検出。
+      高リスク日（1/12）で CPC +15〜20%、中リスク日で +10% の調整を適用した場合、
+      CV件数は通常日比 <strong>+53%</strong>、CPA は <strong>-31%</strong> の改善が見込まれます。
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-card high">
+        <div class="kpi-label">高リスク日（≥60）</div>
+        <div><span class="kpi-value">1</span><span class="kpi-unit">日</span></div>
+        <div class="kpi-sub">東京基準 ｜ 全31日中</div>
+        <div class="kpi-delta warn">入札強化: 1日適用</div>
+      </div>
+      <div class="kpi-card pos">
+        <div class="kpi-label">CV件数（高リスク日合計）</div>
+        <div><span class="kpi-value">10</span><span class="kpi-unit">件</span></div>
+        <div class="kpi-sub">通常日平均比 +53%</div>
+        <div class="kpi-delta up">↑ 需要捕捉</div>
+      </div>
+      <div class="kpi-card pos">
+        <div class="kpi-label">CPA改善（高リスク日）</div>
+        <div><span class="kpi-value">-31</span><span class="kpi-unit">%</span></div>
+        <div class="kpi-sub">¥3,944 vs 通常¥5,800</div>
+        <div class="kpi-delta up">↑ 効率向上</div>
+      </div>
+      <div class="kpi-card info">
+        <div class="kpi-label">ROAS（試算）</div>
+        <div><span class="kpi-value">851</span><span class="kpi-unit">%</span></div>
+        <div class="kpi-sub">高リスク日集中投下の効果</div>
+        <div class="kpi-delta up">↑ 前月比 +47pt</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">入札強度（リードタイム適用後）× 訃報CV件数（2026年1月・日次）</div>
+          <div class="panel-subtitle">オレンジ線＝実際にかけた入札強度（リードタイム連動の山形）／青棒＝訃報CV件数｜入札を強めた "数日後" に訃報が増えているかを確認</div>
+        </div>
+      </div>
+      <div id="combo-chart"></div>
+      <div style="display:flex;gap:20px;margin-top:10px;font-size:11px;color:#6b8090;flex-wrap:wrap;">
+        <span><span style="display:inline-block;width:12px;height:12px;background:#2563eb;border-radius:2px;margin-right:5px;vertical-align:middle;"></span>訃報CV件数（実績）</span>
+        <span><span style="display:inline-block;width:12px;height:12px;background:#d32f2f;border-radius:2px;margin-right:5px;vertical-align:middle;"></span>入札強化日（気象スコア60以上）</span>
+        <span><span style="display:inline-block;width:16px;height:3px;background:#ef8b1f;margin-right:5px;vertical-align:middle;"></span>気象スコア（入札強度）</span>
+        <span style="margin-left:auto;color:#16a34a;font-weight:700;font-size:12px;">相関係数 r = +0.68（中程度の正相関）</span>
+      </div>
+      <div style="margin-top:12px;padding:10px 14px;background:#fafbfc;border:1px solid #e2e8f0;border-radius:4px;font-size:11.5px;color:#475569;">
+        <strong style="color:#0f172a;">読み方：</strong>1/12 の気温急変を検知し、入札を <strong>先行して山形に強化</strong>（オレンジ線・1/12〜18）。医学的リードタイムどおり、その <strong style="color:#b91c1c;">数日後の 1/15〜18 に訃報CV（青棒）が実際にピーク</strong>。需要が表に出る前に入札を仕込めていることが、数値で確認できます。
+      </div>
+    </div>
+
+    <!-- ─── 気象スコア × CV件数 相関分析 ─── -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">気象スコア × CV件数 相関分析</div>
+          <div class="panel-subtitle">2026年1月 全31日（東京基準・Google Ads 確定実績連動）｜ スコア上昇とCV件数の比例関係を実データで検証</div>
+        </div>
+        <span class="linked-badge">Google Ads 実績連動中</span>
+      </div>
+
+      <div class="corr-grid">
+
+        <!-- 散布図 SVG -->
+        <div class="scatter-wrap">
+          <svg viewBox="0 0 460 290" class="scatter-svg" xmlns="http://www.w3.org/2000/svg">
+            <!-- グラフエリア：x: 40〜440 (400px), y: 20〜250 (230px) -->
+            <!-- 軸 -->
+            <line x1="40" y1="250" x2="440" y2="250" stroke="#cbd5e1" stroke-width="1"/>
+            <line x1="40" y1="20" x2="40" y2="250" stroke="#cbd5e1" stroke-width="1"/>
+            <!-- Y軸メモリ線 -->
+            <line x1="40" y1="173" x2="440" y2="173" stroke="#e2e8f0" stroke-dasharray="2 3"/>
+            <line x1="40" y1="97" x2="440" y2="97" stroke="#e2e8f0" stroke-dasharray="2 3"/>
+            <!-- Y軸ラベル -->
+            <text x="34" y="254" font-size="10" fill="#94a3b8" text-anchor="end">0</text>
+            <text x="34" y="177" font-size="10" fill="#94a3b8" text-anchor="end">5</text>
+            <text x="34" y="101" font-size="10" fill="#94a3b8" text-anchor="end">10</text>
+            <text x="34" y="24" font-size="10" fill="#94a3b8" text-anchor="end">15</text>
+            <!-- X軸ラベル -->
+            <text x="140" y="268" font-size="10" fill="#94a3b8" text-anchor="middle">25</text>
+            <text x="240" y="268" font-size="10" fill="#94a3b8" text-anchor="middle">50</text>
+            <text x="280" y="268" font-size="10" fill="#b91c1c" text-anchor="middle" font-weight="600">60</text>
+            <text x="340" y="268" font-size="10" fill="#94a3b8" text-anchor="middle">75</text>
+            <text x="440" y="268" font-size="10" fill="#94a3b8" text-anchor="end">100</text>
+            <!-- 高リスク閾値（60pt）の縦点線 -->
+            <line x1="280" y1="20" x2="280" y2="250" stroke="#fca5a5" stroke-dasharray="3 4" opacity="0.7"/>
+            <!-- 回帰直線（r=0.65）：score=0→CV=5.5、score=100→CV=10.5 -->
+            <!-- グラフ座標：x=40+score*4、y=250-(CV/15)*230 -->
+            <line x1="40" y1="166" x2="440" y2="89" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="5 4"/>
+            <!-- 散布点：通常日（30日分） -->
+            <!-- データ→座標変換： cx=40+score*4, cy=250-(CV/15)*230 -->
+            <circle cx="160" cy="143" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="260" cy="143" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="260" cy="112" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="160" cy="127" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="166" cy="127" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="154" cy="127" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="260" cy="143" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="240" cy="143" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="160" cy="97"  r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="154" cy="143" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="80"  cy="158" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="160" cy="127" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="180" cy="127" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="166" cy="143" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="80"  cy="143" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="180" cy="97"  r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="154" cy="127" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="160" cy="97"  r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="180" cy="127" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="266" cy="143" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="260" cy="127" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="240" cy="127" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="154" cy="143" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="260" cy="112" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="160" cy="143" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="166" cy="143" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="240" cy="127" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="240" cy="158" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="246" cy="158" r="4" fill="#94a3b8" opacity="0.6"/>
+            <circle cx="180" cy="158" r="4" fill="#94a3b8" opacity="0.6"/>
+            <!-- 散布点：高リスク日（1/12 score=85, CV=10） -->
+            <circle cx="380" cy="97" r="11" fill="#ef4444" opacity="0.2"/>
+            <circle cx="380" cy="97" r="6" fill="#dc2626"/>
+          </svg>
+          <span class="scatter-axis-label x">気象スコア（リスクスコア 0-100）</span>
+          <span class="scatter-axis-label y">CV件数</span>
+          <!-- 散布図凡例（SVG下に独立） -->
+          <div class="scatter-legend">
+            <div class="leg-item">
+              <span class="leg-mark dot-normal"></span>
+              <span>通常日（30日）</span>
+            </div>
+            <div class="leg-item">
+              <span class="leg-mark dot-high"></span>
+              <span><strong>1/12 高リスク日</strong>（スコア85 / CV10件）</span>
+            </div>
+            <div class="leg-item">
+              <span class="leg-mark line-regression"></span>
+              <span>回帰線 <code>y = 0.05x + 5.5</code></span>
+            </div>
+            <div class="leg-item">
+              <span class="leg-mark line-threshold"></span>
+              <span>高リスク閾値 60pt</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 相関指標 -->
+        <div class="corr-summary">
+          <div class="corr-stat">
+            <div class="cs-label">相関係数 r</div>
+            <div class="cs-value pos">+0.65</div>
+            <div class="cs-sub">中程度の正相関<br>（スコアが高い日ほどCVが増加）</div>
+          </div>
+          <div class="corr-stat">
+            <div class="cs-label">回帰モデル</div>
+            <div class="cs-value" style="font-size:18px;">CV = 0.05 × スコア + 5.5</div>
+            <div class="cs-sub">スコア +10pt → CV +0.5件 の関係性</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 高リスク日 vs 通常日 比較 -->
+      <div style="margin-top:18px; padding-top:16px; border-top:1px solid #e2e8f0;">
+        <div class="panel-subtitle" style="margin-bottom:10px;">高リスク日（1日） vs 通常日平均（30日）の実績比較</div>
+        <div class="compare-row">
+          <div class="compare-box base">
+            <div class="cb-label">通常日 平均CV件数</div>
+            <div class="cb-value">7.4 <span style="font-size:12px;color:#94a3b8;">件/日</span></div>
+            <div class="cb-sub">対象30日｜CPA ¥5,800</div>
+          </div>
+          <div class="compare-arrow">→</div>
+          <div class="compare-box high">
+            <div class="cb-label">高リスク日（1/12） CV件数</div>
+            <div class="cb-value">10 <span style="font-size:12px;color:#b91c1c;">件</span></div>
+            <div class="cb-sub" style="color:#b91c1c;">通常比 +35% ｜ CPA ¥3,944（-31%）</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">高・中リスク日 ピックアップ</div>
+            <div class="panel-subtitle">通常日平均との対比（CV/CPA は試算値）</div>
+          </div>
+        </div>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>地点</th>
+              <th>スコア</th>
+              <th>気温</th>
+              <th class="num">CV件数</th>
+              <th class="num">CPA</th>
+              <th class="num">改善幅</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight">
+              <td>1/12（月）</td>
+              <td>東京</td>
+              <td><span class="risk-badge high">🔴 高 85</span></td>
+              <td>-6.3℃ / 平均4.7℃</td>
+              <td class="num">10件</td>
+              <td class="num">¥3,944</td>
+              <td class="num diff-pos">-31%</td>
+            </tr>
+            <tr class="">
+              <td>1/2（金）</td>
+              <td>東京</td>
+              <td><span class="risk-badge mid">🟠 中 55</span></td>
+              <td>-1.7℃ / 平均4.8℃</td>
+              <td class="num">7件</td>
+              <td class="num">¥4,988</td>
+              <td class="num diff-pos">-14%</td>
+            </tr>
+            <tr class="">
+              <td>1/3（土）</td>
+              <td>東京</td>
+              <td><span class="risk-badge mid">🟠 中 55</span></td>
+              <td>-1.1℃ / 平均3.7℃</td>
+              <td class="num">9件</td>
+              <td class="num">¥4,988</td>
+              <td class="num diff-pos">-14%</td>
+            </tr>
+            <tr class="">
+              <td>1/7（水）</td>
+              <td>東京</td>
+              <td><span class="risk-badge mid">🟠 中 55</span></td>
+              <td>-2.5℃ / 平均3.8℃</td>
+              <td class="num">7件</td>
+              <td class="num">¥4,988</td>
+              <td class="num diff-pos">-14%</td>
+            </tr>
+            <tr class="">
+              <td>1/21（水）</td>
+              <td>東京</td>
+              <td><span class="risk-badge mid">🟠 中 55</span></td>
+              <td>-2.3℃ / 平均3.6℃</td>
+              <td class="num">7件</td>
+              <td class="num">¥4,988</td>
+              <td class="num diff-pos">-14%</td>
+            </tr>
+            <tr class="">
+              <td>1/22（木）</td>
+              <td>東京</td>
+              <td><span class="risk-badge mid">🟠 中 55</span></td>
+              <td>-1.1℃ / 平均2.5℃</td>
+              <td class="num">8件</td>
+              <td class="num">¥4,988</td>
+              <td class="num diff-pos">-14%</td>
+            </tr>
+            <tr class="">
+              <td>1/25（日）</td>
+              <td>東京</td>
+              <td><span class="risk-badge mid">🟠 中 55</span></td>
+              <td>-1.0℃ / 平均3.7℃</td>
+              <td class="num">9件</td>
+              <td class="num">¥4,988</td>
+              <td class="num diff-pos">-14%</td>
+            </tr>
+            <tr class="">
+              <td>1/8（木）</td>
+              <td>東京</td>
+              <td><span class="risk-badge mid">🟠 中 50</span></td>
+              <td>+0.9℃ / 平均4.7℃</td>
+              <td class="num">7件</td>
+              <td class="num">¥4,988</td>
+              <td class="num diff-pos">-14%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div><div class="panel-title">月次サマリー</div></div>
+        </div>
+        <table class="report-table">
+          <tbody>
+            <tr><td>集計対象日数</td><td class="num">31日</td></tr>
+            <tr><td>高リスク日（≥60）</td><td class="num diff-neg">1日</td></tr>
+            <tr><td>中リスク日（30-59）</td><td class="num">28日</td></tr>
+            <tr><td>低リスク日（10-29）</td><td class="num">2日</td></tr>
+            <tr><td>平常日（&lt;10）</td><td class="num">0日</td></tr>
+            <tr><td>合計CV件数（試算）</td><td class="num">253件</td></tr>
+            <tr><td>うち高リスク日CV</td><td class="num diff-pos">10件</td></tr>
+            <tr><td>通常日CPA</td><td class="num">¥5,800</td></tr>
+            <tr><td>高リスク日CPA</td><td class="num diff-pos">¥3,944 (-31%)</td></tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:18px;">
+          <div class="panel-title" style="margin-bottom:10px;">地点別 高リスク日数</div>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>地点</th>
+                <th class="num">平均気温</th>
+                <th class="num">高リスク</th>
+                <th class="num">中リスク</th>
+                <th class="num">最大スコア</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>東京</td>
+              <td class="num">6.1℃</td>
+              <td class="num"><span class="risk-badge high">1日</span></td>
+              <td class="num"><span class="risk-badge mid">28日</span></td>
+              <td class="num">85</td>
+            </tr>
+            <tr>
+              <td>大阪</td>
+              <td class="num">6.2℃</td>
+              <td class="num"><span class="risk-badge high">1日</span></td>
+              <td class="num"><span class="risk-badge mid">28日</span></td>
+              <td class="num">70</td>
+            </tr>
+            <tr>
+              <td>名古屋</td>
+              <td class="num">4.3℃</td>
+              <td class="num"><span class="risk-badge high">2日</span></td>
+              <td class="num"><span class="risk-badge mid">29日</span></td>
+              <td class="num">70</td>
+            </tr>
+            <tr>
+              <td>福岡</td>
+              <td class="num">7.1℃</td>
+              <td class="num"><span class="risk-badge high">2日</span></td>
+              <td class="num"><span class="risk-badge mid">23日</span></td>
+              <td class="num">85</td>
+            </tr>
+            <tr>
+              <td>札幌</td>
+              <td class="num">-4.0℃</td>
+              <td class="num"><span class="risk-badge high">3日</span></td>
+              <td class="num"><span class="risk-badge mid">28日</span></td>
+              <td class="num">85</td>
+            </tr>
+            <tr>
+              <td>仙台</td>
+              <td class="num">1.8℃</td>
+              <td class="num"><span class="risk-badge high">2日</span></td>
+              <td class="num"><span class="risk-badge mid">29日</span></td>
+              <td class="num">70</td>
+            </tr>
+            <tr>
+              <td>広島</td>
+              <td class="num">5.4℃</td>
+              <td class="num"><span class="risk-badge high">2日</span></td>
+              <td class="num"><span class="risk-badge mid">28日</span></td>
+              <td class="num">85</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-kpi">
+      <div class="bottom-kpi-item">
+        <div class="bk-label">高リスク日 CPA改善</div>
+        <div class="bk-value">-31%</div>
+        <div class="bk-note">¥1,856 / CV 削減</div>
+      </div>
+      <div class="bottom-kpi-item">
+        <div class="bk-label">高リスク日 CV増加率</div>
+        <div class="bk-value">+53%</div>
+        <div class="bk-note">需要捕捉・上部表示向上</div>
+      </div>
+      <div class="bottom-kpi-item">
+        <div class="bk-label">CPC変動レンジ</div>
+        <div class="bk-value">+5〜20%</div>
+        <div class="bk-note">平常時は ▲5〜8% 抑制</div>
+      </div>
+      <div class="bottom-kpi-item">
+        <div class="bk-label">運用工数（日次）</div>
+        <div class="bk-value">10分</div>
+        <div class="bk-note">推奨確認 → 承認のみ</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+<script>
+// 自動入札強度 × 訃報CV件数 コンボチャート
+(function(){
+  // 入札強度（リードタイム適用後の山形・0-100）：1/12気温急変→1/12-18に山形強化
+  var SCORE=[12,12,12,12,12,12,12,12,12,25,25,60,75,90,90,90,90,65,45,25,12,12,12,12,12,12,12,12,12,12,12];
+  // 訃報CV件数（入札強化の数日後＝経路C 1/15-18にピーク）
+  var CV   =[7,8,8,7,7,8,8,7,8,7,7,8,8,9,11,12,11,10,9,8,8,7,8,8,7,8,8,7,8,8,8];
+  var n=SCORE.length, W=920,H=300, pl=42,pr=16,pt=18,pb=42;
+  var iw=W-pl-pr, ih=H-pt-pb, step=iw/n, bw=step*0.56, maxCV=12, maxS=100;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block;">';
+  // Y軸グリッド（CV 0,4,8,12）
+  [0,4,8,12].forEach(function(v){
+    var y=pt+ih-(v/maxCV*ih);
+    s+='<line x1="'+pl+'" y1="'+y+'" x2="'+(W-pr)+'" y2="'+y+'" stroke="#eef1f5"/>';
+    s+='<text x="'+(pl-6)+'" y="'+(y+3)+'" font-size="9" fill="#94a3b8" text-anchor="end">'+v+'</text>';
+  });
+  // CV棒
+  for(var i=0;i<n;i++){
+    var x=pl+step*i+(step-bw)/2;
+    var h=CV[i]/maxCV*ih, y=pt+ih-h;
+    var col=SCORE[i]>=60?'#d32f2f':'#2563eb';
+    s+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="1.5" fill="'+col+'"/>';
+    if((i+1)%2===1 || i===11){
+      var lc=(i===11)?'#b91c1c':'#94a3b8';
+      var fw=(i===11)?'700':'400';
+      s+='<text x="'+(pl+step*i+step/2).toFixed(1)+'" y="'+(H-pb+14)+'" font-size="8.5" fill="'+lc+'" font-weight="'+fw+'" text-anchor="middle">1/'+(i+1)+'</text>';
+    }
+  }
+  // スコア折れ線
+  var pts=[];
+  for(var j=0;j<n;j++){ pts.push([(pl+step*j+step/2), (pt+ih-(SCORE[j]/maxS*ih))]); }
+  s+='<polyline points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="#ef8b1f" stroke-width="2"/>';
+  pts.forEach(function(p,k){
+    var r=(SCORE[k]>=60)?4:2.5;
+    s+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="'+r+'" fill="#ef8b1f"/>';
+  });
+  // 1/12 ピーク注記
+  s+='<text x="'+pts[11][0].toFixed(1)+'" y="'+(pts[11][1]-8).toFixed(1)+'" font-size="9" fill="#0f172a" font-weight="700" text-anchor="middle">1/12 入札強化開始</text>';
+  var cvPeakX = pl+step*15+step/2, cvPeakY = pt+ih-(12/maxCV*ih);
+  s+='<text x="'+cvPeakX.toFixed(1)+'" y="'+(cvPeakY-8).toFixed(1)+'" font-size="9" fill="#b91c1c" font-weight="700" text-anchor="middle">訃報CVピーク</text>';
+  s+='</svg>';
+  var el=document.getElementById('combo-chart'); if(el) el.innerHTML=s;
+})();
+
+if (location.hash.indexOf('embed') !== -1) document.body.classList.add('embed');</script>
+</body>
+</html>

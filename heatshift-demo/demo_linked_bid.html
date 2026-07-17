@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>【NEW v3】HeatShift キャンペーン紐付け版 — 入札連動デモ</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif; font-size: 13px;
+       background: #f0f2f5; color: #1a2437; }
+.topbar {
+  background: #0f1929; color: #fff;
+  height: 48px; display: flex; align-items: center; padding: 0 20px;
+  justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  border-bottom: 2px solid #00b4c8;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-logo {
+  display: flex; align-items: center; gap: 10px;
+  letter-spacing: 0.3px;
+}
+.topbar-logo .logo-mark { display: block; width: 32px; height: 32px; flex-shrink: 0; }
+.topbar-logo .logo-text {
+  display: flex; flex-direction: column; line-height: 1; gap: 2px;
+}
+.topbar-logo .logo-text .l-main {
+  font-size: 15px; font-weight: 700; letter-spacing: 0.2px;
+}
+.topbar-logo .logo-text .l-main .heat  { color: #fff; }
+.topbar-logo .logo-text .l-main .shift { color: #60a5fa; font-style: italic; font-weight: 800; }
+.topbar-logo .logo-text .l-sub {
+  font-size: 9px; color: #8fa3bc; letter-spacing: 1.5px;
+  margin-left: 2px;
+}
+.topbar-meta .l-tagline { color: #8fa3bc; font-size: 11px; }
+.topbar-meta { font-size: 11px; color: #8fa3bc; display: flex; align-items: center; gap: 16px; }
+.topbar-meta .badge {
+  background: #1a4a3a; color: #00e5a0; font-size: 10px; padding: 2px 8px; border-radius: 10px;
+  border: 1px solid #00b47830;
+}
+.topbar-right { display: flex; align-items: center; gap: 12px; font-size: 11px; color: #8fa3bc; }
+.topbar-right .account { color: #c8d8e8; font-weight: 600; }
+.layout { display: flex; margin-top: 48px; min-height: calc(100vh - 48px); }
+nav.sidebar {
+  width: 200px; background: #131f32; color: #8fa3bc; flex-shrink: 0;
+  position: fixed; top: 48px; left: 0; bottom: 0; overflow-y: auto;
+  border-right: 1px solid #1e2f47;
+}
+nav.sidebar .section-label {
+  font-size: 10px; color: #4a6070; text-transform: uppercase; letter-spacing: 1px;
+  padding: 16px 18px 6px;
+}
+nav.sidebar a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 18px; color: #8fa3bc; text-decoration: none; font-size: 12px;
+  border-left: 3px solid transparent;
+}
+nav.sidebar a:hover { background: #1a2d45; color: #c8d8e8; }
+nav.sidebar a.active { color: #00b4c8; background: #0d2035; border-left-color: #00b4c8; font-weight: 600; }
+nav.sidebar a .icon { width: 16px; text-align: center; opacity: 0.7; }
+nav.sidebar .sidebar-footer {
+  position: sticky; bottom: 0; padding: 14px 18px;
+  border-top: 1px solid #1e2f47; background: #131f32;
+  font-size: 11px; color: #4a6070;
+}
+nav.sidebar .sidebar-footer .client-name { color: #8fa3bc; font-weight: 600; margin-bottom: 2px; }
+main { margin-left: 200px; flex: 1; padding: 24px; position: relative; }
+.breadcrumb { font-size: 11px; color: #6b8090; margin-bottom: 16px; }
+.breadcrumb span { margin: 0 5px; }
+.breadcrumb .current { color: #1a2437; font-weight: 600; }
+.page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+/* 季節モード切替トグル */
+.mode-toggle-wrap { position: absolute; top: 70px; right: 24px; text-align: right; z-index: 5; }
+.mode-toggle {
+  display: inline-flex; align-items: center; background: #e8edf2;
+  border: 1px solid #d0dae4; border-radius: 22px; padding: 3px; cursor: pointer;
+  user-select: none; font-size: 12px; font-weight: 700;
+}
+.mode-toggle .seg {
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: 18px; color: #8090a0; transition: 0.15s;
+}
+.mode-toggle .seg.active.winter { background: #0f1929; color: #fff; }
+.mode-toggle .seg.active.summer { background: #ef8b1f; color: #fff; }
+.mode-sig { font-size: 11px; color: #6b8090; margin-top: 6px; }
+.mode-sig b { color: #1a2437; }
+/* モード切替 確認モーダル */
+.modal-overlay { position: fixed; inset: 0; background: rgba(15,25,41,0.55);
+  display: none; align-items: center; justify-content: center; z-index: 1000; }
+.modal-overlay.show { display: flex; }
+.modal-box { background: #fff; border-radius: 10px; width: 440px; max-width: 90%;
+  padding: 24px 26px; box-shadow: 0 16px 48px rgba(0,0,0,.3); text-align: left; }
+.modal-box h3 { font-size: 16px; font-weight: 700; color: #0f1929; margin-bottom: 14px; }
+.modal-box .m-body { font-size: 13px; color: #1a2437; line-height: 1.7; }
+.modal-box .m-body b { color: #b45309; }
+.modal-box .m-note { font-size: 11.5px; color: #4a6080; background: #f4f6fa;
+  border-left: 3px solid #00b4c8; border-radius: 4px; padding: 11px 13px;
+  margin: 14px 0 20px; line-height: 1.7; }
+.modal-box .m-note b { color: #0f1929; }
+.modal-box .m-btns { display: flex; gap: 10px; justify-content: flex-end; }
+.modal-box button { padding: 9px 20px; border-radius: 6px; font-size: 13px;
+  font-weight: 700; cursor: pointer; border: none; }
+.m-cancel { background: #eceff3; color: #4a6080; }
+.m-ok { background: #ef8b1f; color: #fff; }
+.m-ok.winter { background: #0f1929; }
+.page-subtitle { font-size: 12px; color: #6b8090; margin-bottom: 16px; }
+.alert-banner {
+  background: #e8f7fa; border: 1px solid #b0e0ea; border-left: 4px solid #00b4c8;
+  border-radius: 4px; padding: 10px 16px; margin-bottom: 20px;
+  font-size: 12px; color: #1a6070; display: flex; align-items: flex-start; gap: 8px;
+}
+.alert-banner .icon { color: #00b4c8; font-size: 14px; margin-top: 1px; }
+.kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+.kpi-card {
+  background: #fff; border: 1px solid #dde4ef; border-radius: 8px; padding: 18px 20px;
+  position: relative; overflow: hidden;
+}
+.kpi-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.kpi-card.high::before { background: #d32f2f; }
+.kpi-card.mid::before  { background: #f57c00; }
+.kpi-card.low::before  { background: #5090c0; }
+.kpi-card.warn::before { background: #f57c00; }
+.kpi-card.info::before { background: #00b4c8; }
+.kpi-card .kpi-label { font-size: 11px; color: #6b8090; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.kpi-card .kpi-value { font-size: 36px; font-weight: 700; line-height: 1; }
+.kpi-card.high .kpi-value { color: #d32f2f; }
+.kpi-card.mid  .kpi-value { color: #f57c00; }
+.kpi-card.low  .kpi-value { color: #5090c0; }
+.kpi-card.warn .kpi-value { color: #f57c00; }
+.kpi-card.info .kpi-value { color: #00b4c8; }
+.kpi-card .kpi-unit { font-size: 13px; font-weight: 400; color: #6b8090; margin-left: 4px; }
+.kpi-card .kpi-sub { font-size: 11px; color: #6b8090; margin-top: 6px; }
+.kpi-card .kpi-delta {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-top: 8px;
+}
+.kpi-card .kpi-delta.up      { background: #fde8e8; color: #d32f2f; }
+.kpi-card .kpi-delta.up-warn { background: #fff3e0; color: #f57c00; }
+.kpi-card .kpi-delta.neutral { background: #e8f7fa; color: #00b4c8; }
+.panel {
+  background: #fff; border: 1px solid #dde4ef; border-radius: 8px;
+  padding: 18px 20px; margin-bottom: 20px;
+}
+.panel-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+}
+.panel-title { font-size: 14px; font-weight: 700; }
+.panel-subtitle { font-size: 11px; color: #6b8090; margin-top: 2px; }
+.panel-action {
+  background: #00b4c8; color: #fff; border: none; border-radius: 4px;
+  padding: 6px 14px; font-size: 12px; cursor: pointer; font-weight: 600;
+}
+.bar-chart {
+  display: flex; align-items: flex-end; gap: 4px;
+  height: 120px; padding: 0 4px; position: relative;
+}
+.bar-chart::before {
+  content: ''; position: absolute; left: 0; right: 0;
+  top: calc(100% - 72px); border-top: 1px dashed #d32f2f; opacity: 0.5;
+}
+.bar-chart::after {
+  content: '60'; position: absolute; right: 4px;
+  top: calc(100% - 76px); font-size: 9px; color: #d32f2f; opacity: 0.7;
+}
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.bar-col .bar-wrap { width: 100%; display: flex; align-items: flex-end; height: 90px; }
+.bar { width: 100%; border-radius: 3px 3px 0 0; min-height: 3px; }
+.bar.high  { background: #d32f2f; }
+.bar.mid   { background: #f57c00; }
+.bar.low   { background: #5090c0; }
+.bar.plain { background: #c8d0da; }
+.bar.today { outline: 2px solid #0f1929; outline-offset: 1px; }
+.bar-col .bar-date  { font-size: 9px; color: #8090a0; }
+.bar-col .bar-score { font-size: 9px; font-weight: 700; }
+.bar-col .bar-score.high  { color: #d32f2f; }
+.bar-col .bar-score.mid   { color: #f57c00; }
+.bar-col .bar-score.low   { color: #5090c0; }
+.bar-col .bar-score.plain { color: #a0a8b0; }
+table.area-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+table.area-table th {
+  background: #f4f6fa; padding: 9px 12px; text-align: left;
+  font-size: 11px; color: #4a6080; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.4px; border-bottom: 2px solid #dde4ef;
+}
+table.area-table td {
+  padding: 10px 12px; border-bottom: 1px solid #edf0f6; vertical-align: middle;
+}
+table.area-table tr:hover td { background: #f8fafd; }
+.risk-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px; border-radius: 3px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+}
+.risk-badge::before {
+  content: ''; display: inline-block; width: 6px; height: 6px;
+  border-radius: 50%;
+}
+.risk-badge.high  { background: #fef2f2; color: #b91c1c; }
+.risk-badge.high::before  { background: #b91c1c; }
+.risk-badge.mid   { background: #fffaf0; color: #b45309; }
+.risk-badge.mid::before   { background: #d97706; }
+.risk-badge.low   { background: #eff6ff; color: #1d4ed8; }
+.risk-badge.low::before   { background: #2563eb; }
+.risk-badge.plain { background: #f3f4f6; color: #6b7280; }
+.risk-badge.plain::before { background: #9ca3af; }
+.cpc-adjust { font-weight: 700; color: #c62828; }
+.action-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 11px;
+  background: #fff8e0; color: #c67800; border: 1px solid #f5c842; font-weight: 600;
+}
+.action-badge.done { background: #e8f5e9; color: #2e7d32; border-color: #80c784; }
+.forecast-mini { display: flex; gap: 2px; align-items: center; }
+.forecast-dot { width: 8px; height: 8px; border-radius: 50%; }
+.forecast-dot.high  { background: #d32f2f; }
+.forecast-dot.mid   { background: #f57c00; }
+.forecast-dot.low   { background: #5090c0; }
+.forecast-dot.plain { background: #c8d0da; }
+.area-tag {
+  display: inline-block; padding: 2px 8px; border-radius: 3px;
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.4px;
+}
+.tag-kansai   { background: #fffaf0; color: #b45309; }
+.tag-shutoken { background: #eff6ff; color: #1d4ed8; }
+.match-tag {
+  font-size: 9.5px; padding: 1px 6px; border-radius: 2px;
+  background: transparent; color: #94a3b8; font-weight: 500;
+  border: 1px solid #e2e8f0; margin-left: 4px;
+}
+
+/* 予算メーター */
+.budget-cell { line-height: 1.4; }
+.budget-cell .b-amount { font-weight: 600; color: #1a2437; font-size: 12px; }
+.budget-cell .b-sub { font-size: 10px; color: #6b7280; }
+
+.spend-meter {
+  display: flex; align-items: center; gap: 8px;
+}
+.spend-meter .meter-bar {
+  flex: 1; height: 6px; background: #e2e8f0;
+  border-radius: 3px; overflow: hidden; min-width: 60px; max-width: 90px;
+}
+.spend-meter .meter-fill {
+  height: 100%; border-radius: 3px;
+}
+.spend-meter .meter-fill.safe { background: #22c55e; }
+.spend-meter .meter-fill.warn { background: #f59e0b; }
+.spend-meter .meter-fill.danger { background: #ef4444; }
+.spend-meter .meter-pct {
+  font-size: 11px; font-weight: 600; min-width: 36px;
+  text-align: right;
+}
+.spend-meter .meter-pct.safe { color: #16a34a; }
+.spend-meter .meter-pct.warn { color: #b45309; }
+.spend-meter .meter-pct.danger { color: #b91c1c; }
+
+.judge-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10.5px; font-weight: 600;
+  padding: 2px 8px; border-radius: 3px;
+  letter-spacing: 0.3px;
+}
+.judge-tag::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+}
+.judge-tag.safe   { background: #f0fdf4; color: #15803d; }
+.judge-tag.safe::before   { background: #16a34a; }
+.judge-tag.warn   { background: #fffbeb; color: #b45309; }
+.judge-tag.warn::before   { background: #f59e0b; }
+.judge-tag.danger { background: #fef2f2; color: #b91c1c; }
+.judge-tag.danger::before { background: #ef4444; }
+/* ─── リードタイム連動入札スケジュール（リファイン版） ─── */
+.leadtime-wrap { margin-top: 8px; position: relative; }
+
+/* ピーク帯ラベル：パネル右上に独立配置（タイムラインに被らない） */
+.lt-peak-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; color: #6b7280; font-weight: 500;
+}
+.lt-peak-tag .swatch {
+  display: inline-block; width: 12px; height: 12px;
+  background: #fef3e8; border: 1px solid #f0c08a; border-radius: 2px;
+}
+
+.lt-row {
+  display: grid; grid-template-columns: 130px 1fr;
+  align-items: center; margin-bottom: 2px;
+}
+.lt-label {
+  font-size: 10.5px; color: #6b7280; font-weight: 500;
+  padding-right: 14px; text-align: right; line-height: 1.4;
+}
+.lt-track {
+  display: grid; grid-template-columns: repeat(14, 1fr);
+  gap: 2px; position: relative;
+}
+/* 需要ピーク帯（Day +3〜+6）— 薄いハイライト */
+.lt-track .peak-band {
+  position: absolute; top: -3px; bottom: -3px;
+  left: calc((100% / 14) * 8); width: calc((100% / 14) * 4);
+  background: #fef3e8;
+  border-left: 1px solid #e5a572; border-right: 1px solid #e5a572;
+  z-index: 0;
+}
+
+.lt-cell {
+  position: relative; z-index: 1;
+  text-align: center; font-size: 10.5px;
+  padding: 5px 2px;
+}
+.lt-cell.date {
+  color: #94a3b8; font-weight: 500; background: transparent;
+  font-size: 10px; letter-spacing: 0.3px;
+}
+.lt-cell.date.event { color: #0f172a; font-weight: 600; }
+.lt-cell.date.peak { color: #b86b2a; font-weight: 500; }
+
+.lt-cell.day-rel {
+  color: #cbd5e1; background: transparent; font-size: 9.5px;
+  font-weight: 500; letter-spacing: 0.3px;
+}
+.lt-cell.day-rel.event { color: #0f172a; font-weight: 600; }
+.lt-cell.day-rel.peak { color: #b86b2a; font-weight: 600; }
+
+/* 気温シグナルバー — シンプル＆控えめ */
+.lt-temp-bar {
+  display: flex; align-items: flex-end; justify-content: center;
+  height: 44px; padding: 0;
+}
+.lt-temp-bar .b {
+  width: 60%; border-radius: 1px;
+  background: #94a3b8;
+}
+.lt-temp-bar .b.mid   { background: #cbd5e1; }
+.lt-temp-bar .b.low   { background: #e2e8f0; }
+.lt-temp-bar .b.event { background: #0f172a; }
+
+/* 経路セル — 罫線で繋がる感を出す */
+.lt-route-row {
+  background: transparent;
+  border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;
+  padding: 6px 2px; font-size: 9.5px;
+  color: #94a3b8; text-align: center; font-weight: 500;
+  letter-spacing: 0.2px;
+}
+.lt-route-row.has { color: #475569; }
+.lt-route-row.peak {
+  color: #b86b2a; font-weight: 600;
+  background: rgba(254, 243, 232, 0.5);
+}
+
+/* CPC調整セル — グラデーション的に色強度を上げる */
+.lt-cpc {
+  font-size: 10.5px; font-weight: 600;
+  padding: 7px 2px; border-radius: 2px;
+  background: #f1f5f9; color: #94a3b8;
+}
+.lt-cpc.zero  { background: #f8fafc; color: #cbd5e1; }
+.lt-cpc.small { background: #e0f2fe; color: #0369a1; }
+.lt-cpc.mid   { background: #bae6fd; color: #075985; }
+.lt-cpc.high  { background: #0284c7; color: #fff; }
+.lt-cpc.peak  { background: #0f172a; color: #fff; }
+
+.leadtime-explain {
+  margin-top: 16px; padding: 14px 18px;
+  background: #fafbfc;
+  border: 1px solid #e2e8f0; border-radius: 4px;
+  font-size: 11.5px; color: #475569; line-height: 1.7;
+}
+.leadtime-explain strong { color: #0f172a; font-weight: 600; }
+.leadtime-explain .num {
+  display: inline-block; width: 16px; height: 16px; line-height: 16px;
+  font-size: 10px; text-align: center; border-radius: 50%;
+  background: #0f172a; color: #fff; font-weight: 600;
+  margin-right: 4px;
+}
+
+.bottom-kpi {
+  background: #0f1929; color: #fff; border-radius: 8px;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  padding: 14px 24px; margin-top: 8px;
+}
+.bottom-kpi-item { text-align: center; padding: 4px 0; }
+.bottom-kpi-item:not(:last-child) { border-right: 1px solid #1e3050; }
+.bottom-kpi-item .bk-label { font-size: 10px; color: #6b8090; margin-bottom: 4px; }
+.bottom-kpi-item .bk-value { font-size: 18px; font-weight: 700; color: #00b4c8; }
+.bottom-kpi-item .bk-note  { font-size: 10px; color: #4a6070; margin-top: 2px; }
+input[type=checkbox] { accent-color: #00b4c8; width: 14px; height: 14px; cursor: pointer; }
+/* 埋め込みモード（統合ツールのiframe内で表示時はガワを隠す） */
+body.embed .topbar, body.embed nav.sidebar { display: none !important; }
+body.embed .layout { margin-top: 0 !important; }
+body.embed main { margin-left: 0 !important; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">
+      <svg class="logo-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="hsBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#1a2c5e"/>
+            <stop offset="100%" stop-color="#0a1c4a"/>
+          </linearGradient>
+          <linearGradient id="hsSky" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#2563eb"/>
+            <stop offset="100%" stop-color="#1d4ed8"/>
+          </linearGradient>
+          <linearGradient id="hsArrow" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ea580c"/>
+            <stop offset="100%" stop-color="#f97316"/>
+          </linearGradient>
+        </defs>
+        <!-- H 形（左上） -->
+        <path d="M12 18 L12 88 L26 88 L26 60 L48 60 L48 88 L62 88 L62 18 L48 18 L48 46 L26 46 L26 18 Z"
+              fill="url(#hsBlue)" transform="skewX(-8)"/>
+        <!-- S 形（右下、青グラデ） -->
+        <path d="M82 38 Q82 22 64 22 L48 22 Q34 22 34 36 Q34 50 48 50 L68 50 Q82 50 82 64 Q82 80 64 80 L40 80"
+              stroke="url(#hsSky)" stroke-width="13" fill="none"
+              stroke-linecap="round" stroke-linejoin="round"
+              transform="skewX(-8)"/>
+        <!-- 矢印（オレンジ） -->
+        <path d="M30 60 L70 22" stroke="url(#hsArrow)" stroke-width="7"
+              stroke-linecap="round" fill="none"/>
+        <path d="M70 22 L58 22 L70 22 L70 34" stroke="url(#hsArrow)" stroke-width="7"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <div class="logo-text">
+        <div class="l-main"><span class="heat">Heat</span><span class="shift">Shift</span></div>
+        <div class="l-sub">ヒートシフト</div>
+      </div>
+    </div>
+    <div class="topbar-meta">
+      <span class="l-tagline">葬儀特化CPC自動ツール</span>
+      <span>最終更新: 2026-01-07 05:00 JST</span>
+      <span class="badge">● Google Ads API 連携中</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span>API連携</span>
+    <span class="account">サンプル典礼株式会社（デモ用サンプルデータ）</span>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <div class="section-label">メイン</div>
+    <a href="../jissoku/dashboard_top.html"><span class="icon">◻</span>ダッシュボード</a>
+    <a href="demo_linked_bid.html" class="active"><span class="icon">↑</span>入札連動</a>
+    <a href="../jissoku/dashboard_risk.html"><span class="icon">◉</span>エリア情報など</a>
+    <a href="../jissoku/dashboard_map.html"><span class="icon">⊙</span>エリアマップ</a>
+    <a href="../jissoku/dashboard_kw.html"><span class="icon">☰</span>KWグループ管理</a>
+    <div class="section-label">レポート</div>
+    <a href="../jissoku/dashboard_report.html"><span class="icon">▤</span>レポート</a>
+    <a href="../jissoku/dashboard_assets.html"><span class="icon">✦</span>アセット設定</a>
+    <div class="section-label">設定</div>
+    <a href="../jissoku/dashboard_area.html"><span class="icon">⊞</span>全媒体エリア設定</a>
+    <a href="../jissoku/dashboard_api.html"><span class="icon">⚙</span>API連携</a>
+    <a href="../jissoku/dashboard_help.html"><span class="icon">?</span>ヘルプ・サポート</a>
+    <div class="sidebar-footer">
+      <div class="client-name">サンプル典礼様</div>
+      <div>プラン: プロフェッショナル</div>
+      <div style="margin-top:4px; color:#2a5040;">会館数: 63会館</div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="breadcrumb">
+      ダッシュボード <span>›</span> 入札連動 <span>›</span> <span class="current">キャンペーン別推奨アクション</span>
+    </div>
+
+    <div class="mode-toggle-wrap">
+      <div class="mode-toggle" id="mode-toggle" onclick="toggleSeason()">
+        <span class="seg winter active" id="seg-winter">❄ 冬モード</span>
+        <span class="seg summer" id="seg-summer">☀ 夏モード</span>
+      </div>
+      <div class="mode-sig" id="mode-sig">使用シグナル：<b>気温・気圧・寒波警報・複合</b></div>
+    </div>
+
+    <div class="page-title">キャンペーン別 入札推奨アクション
+      <span style="font-size:14px; font-weight:400; color:#6b8090; margin-left:10px;">2026-01-07</span>
+    </div>
+    <div class="page-subtitle">気象庁データ × 手動CPC運用キャンペーンを自動紐付け（個別クリック単価のみ対象 / 全15件）</div>
+
+    <div class="alert-banner">
+      <span class="icon">●</span>
+      <div><strong>5日後（1/12）に寒波最大値（スコア85）が予測されています。</strong>該当エリアの手動CPCキャンペーン15本に早めの入札引上げを推奨します。</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-card mid">
+        <div class="kpi-label">現在リスクスコア（首都圏／東京基点）</div>
+        <div><span class="kpi-value">55</span><span class="kpi-unit">/ 100</span></div>
+        <div class="kpi-sub">前日比 -2.5℃ | 平均気温 3.8℃</div>
+        <div class="kpi-delta up-warn">+10%</div>
+      </div>
+      <div class="kpi-card warn">
+        <div class="kpi-label">14日間 高リスク予測日数</div>
+        <div><span class="kpi-value">1</span><span class="kpi-unit">日</span></div>
+        <div class="kpi-sub">高(≥60): 1/12 | 最大スコア 85（1/12）</div>
+        <div class="kpi-delta up-warn">★ 5日後にピーク</div>
+      </div>
+      <div class="kpi-card info">
+        <div class="kpi-label">対象キャンペーン件数</div>
+        <div><span class="kpi-value">15</span><span class="kpi-unit">件</span></div>
+        <div class="kpi-sub">手動CPC運用 ｜ 関西 8 / 首都圏 7</div>
+        <div class="kpi-delta neutral">→ 承認でAds API反映</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">入札（CPC調整率）の推移 — リードタイム連動（14日間）</div>
+          <div class="panel-subtitle">東京（47662）ベース ｜ 1/12 の気温急変を起点に、需要ピーク（1/14〜1/17）へ向け +20% を維持する山形調整</div>
+        </div>
+        <button class="panel-action">他観測地点で見る</button>
+      </div>
+      <div class="bar-chart">
+        <div class="bar-col"><div class="bar-wrap"><div class="bar plain" style="height:4px;"></div></div><div class="bar-date">1/7</div><div class="bar-score plain">±0</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar plain" style="height:4px;"></div></div><div class="bar-date">1/8</div><div class="bar-score plain">±0</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar plain" style="height:4px;"></div></div><div class="bar-date">1/9</div><div class="bar-score plain">±0</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar mid" style="height:22px;"></div></div><div class="bar-date">1/10</div><div class="bar-score mid">+5</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar mid" style="height:22px;"></div></div><div class="bar-date">1/11</div><div class="bar-score mid">+5</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar high today" style="height:66px;"></div></div><div class="bar-date" style="color:#d32f2f;font-weight:700;">1/12</div><div class="bar-score high">+15</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar high" style="height:80px;"></div></div><div class="bar-date">1/13</div><div class="bar-score high">+18</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar high" style="height:88px;"></div></div><div class="bar-date">1/14</div><div class="bar-score high">+20</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar high" style="height:88px;"></div></div><div class="bar-date">1/15</div><div class="bar-score high">+20</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar high" style="height:88px;"></div></div><div class="bar-date">1/16</div><div class="bar-score high">+20</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar high" style="height:88px;"></div></div><div class="bar-date">1/17</div><div class="bar-score high">+20</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar high" style="height:66px;"></div></div><div class="bar-date">1/18</div><div class="bar-score high">+15</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar mid" style="height:44px;"></div></div><div class="bar-date">1/19</div><div class="bar-score mid">+10</div></div>
+        <div class="bar-col"><div class="bar-wrap"><div class="bar mid" style="height:22px;"></div></div><div class="bar-date">1/20</div><div class="bar-score mid">+5</div></div>
+      </div>
+      <div style="display:flex; gap:16px; margin-top:12px; font-size:11px; color:#6b8090; flex-wrap:wrap;">
+        <span><span style="display:inline-block;width:10px;height:10px;background:#d32f2f;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>CPC +15〜20%（立ち上げ〜ピーク維持）</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:#f57c00;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>CPC +5〜10%（先行・減衰）</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:#c8d0da;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>±0%（平常）</span>
+        <span style="margin-left:auto; color:#d32f2f; font-weight:700;">★ 1/12 気温急変（起点）</span>
+      </div>
+    </div>
+
+    <!-- ─── リードタイム連動 入札スケジュール ─── -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">リードタイム連動｜気温シグナル → CPC調整スケジュール</div>
+          <div class="panel-subtitle">気温急変日 1/12 を起点に、医学的リードタイムに沿って入札を先行・継続調整</div>
+        </div>
+        <div class="lt-peak-tag">
+          <span class="swatch"></span>
+          <span>需要ピーク帯（Day +3〜+6）</span>
+        </div>
+      </div>
+
+      <div class="leadtime-wrap">
+
+        <!-- 日付ヘッダ -->
+        <div class="lt-row">
+          <div class="lt-label">日付</div>
+          <div class="lt-track">
+            <div class="lt-cell date">1/7</div>
+            <div class="lt-cell date">1/8</div>
+            <div class="lt-cell date">1/9</div>
+            <div class="lt-cell date">1/10</div>
+            <div class="lt-cell date">1/11</div>
+            <div class="lt-cell date event">1/12</div>
+            <div class="lt-cell date">1/13</div>
+            <div class="lt-cell date">1/14</div>
+            <div class="lt-cell date peak">1/15</div>
+            <div class="lt-cell date peak">1/16</div>
+            <div class="lt-cell date peak">1/17</div>
+            <div class="lt-cell date peak">1/18</div>
+            <div class="lt-cell date">1/19</div>
+            <div class="lt-cell date">1/20</div>
+          </div>
+        </div>
+
+        <!-- 相対日 -->
+        <div class="lt-row">
+          <div class="lt-label">気温急変からの<br>相対日</div>
+          <div class="lt-track">
+            <div class="lt-cell day-rel">D−5</div>
+            <div class="lt-cell day-rel">D−4</div>
+            <div class="lt-cell day-rel">D−3</div>
+            <div class="lt-cell day-rel">D−2</div>
+            <div class="lt-cell day-rel">D−1</div>
+            <div class="lt-cell day-rel event">Day 0</div>
+            <div class="lt-cell day-rel">D+1</div>
+            <div class="lt-cell day-rel">D+2</div>
+            <div class="lt-cell day-rel peak">D+3</div>
+            <div class="lt-cell day-rel peak">D+4</div>
+            <div class="lt-cell day-rel peak">D+5</div>
+            <div class="lt-cell day-rel peak">D+6</div>
+            <div class="lt-cell day-rel">D+7</div>
+            <div class="lt-cell day-rel">D+8</div>
+          </div>
+        </div>
+
+        <!-- 気温シグナル -->
+        <div class="lt-row" style="margin-top:6px;">
+          <div class="lt-label">気温スコア<br>（シグナル）</div>
+          <div class="lt-track">
+            <div class="lt-cell lt-temp-bar"><div class="b mid" style="height:55%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b mid" style="height:50%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b low" style="height:30%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b low" style="height:30%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b low" style="height:10%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b event" style="height:90%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b low" style="height:30%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b mid" style="height:35%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b low" style="height:30%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b low" style="height:10%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b mid" style="height:35%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b low" style="height:30%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b low" style="height:30%;"></div></div>
+            <div class="lt-cell lt-temp-bar"><div class="b mid" style="height:35%;"></div></div>
+          </div>
+        </div>
+
+        <!-- 需要経路（医学的根拠） -->
+        <div class="lt-row" style="margin-top:6px;">
+          <div class="lt-label">需要発生経路<br>（医学根拠）</div>
+          <div class="lt-track" style="position:relative;">
+            <div class="peak-band"></div>
+            <div class="lt-cell lt-route-row">—</div>
+            <div class="lt-cell lt-route-row">—</div>
+            <div class="lt-cell lt-route-row">—</div>
+            <div class="lt-cell lt-route-row">—</div>
+            <div class="lt-cell lt-route-row">—</div>
+            <div class="lt-cell lt-route-row has">A 即死</div>
+            <div class="lt-cell lt-route-row has">A→B</div>
+            <div class="lt-cell lt-route-row has">B 心筋</div>
+            <div class="lt-cell lt-route-row peak">C 心不全</div>
+            <div class="lt-cell lt-route-row peak">C 心不全</div>
+            <div class="lt-cell lt-route-row peak">C 心不全</div>
+            <div class="lt-cell lt-route-row peak">C→D</div>
+            <div class="lt-cell lt-route-row has">D 肺炎</div>
+            <div class="lt-cell lt-route-row has">D 肺炎</div>
+          </div>
+        </div>
+
+        <!-- CPC調整スケジュール -->
+        <div class="lt-row" style="margin-top:6px;">
+          <div class="lt-label">CPC調整推奨<br>（先行→維持→減衰）</div>
+          <div class="lt-track">
+            <div class="lt-cell lt-cpc zero">±0</div>
+            <div class="lt-cell lt-cpc zero">±0</div>
+            <div class="lt-cell lt-cpc zero">±0</div>
+            <div class="lt-cell lt-cpc small">+5</div>
+            <div class="lt-cell lt-cpc small">+5</div>
+            <div class="lt-cell lt-cpc high">+15</div>
+            <div class="lt-cell lt-cpc high">+18</div>
+            <div class="lt-cell lt-cpc peak">+20</div>
+            <div class="lt-cell lt-cpc peak">+20</div>
+            <div class="lt-cell lt-cpc peak">+20</div>
+            <div class="lt-cell lt-cpc peak">+20</div>
+            <div class="lt-cell lt-cpc high">+15</div>
+            <div class="lt-cell lt-cpc mid">+10</div>
+            <div class="lt-cell lt-cpc small">+5</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="leadtime-explain">
+        <span class="num">1</span>気温は <strong>1/12（Day 0）に単発で急降下</strong>（スコア85）。<br>
+        <span class="num">2</span>需要は <strong>1/15〜1/18（Day +3〜+6）</strong>の経路C「心不全悪化」で最大ボリューム化（気温降下→心血管死亡 5〜8日後ピークの医学相関）。<br>
+        <span class="num">3</span>CPC は <strong>D−2 で +5% から先行 → Day 0 で +15% → D+2〜D+5 で +20% を4日維持 → D+8 で +5% に減衰</strong>。気温シグナル単発に対し、入札は10日間かけて山形に変動。
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">キャンペーン別 入札推奨アクション一覧</div>
+          <div class="panel-subtitle">承認後、Google Ads APIで即時反映 | 全15件 承認待ち（手動CPC運用キャンペーンのみ抽出）</div>
+        </div>
+      </div>
+      <table class="area-table">
+        <thead>
+          <tr>
+            <th style="width:32px;"><input type="checkbox"></th>
+            <th style="width:62px;">エリア</th>
+            <th>キャンペーン名</th>
+            <th style="width:90px;">観測地点</th>
+            <th style="width:80px;">スコア</th>
+            <th style="width:70px;">推奨CPC</th>
+            <th style="width:90px;">日次予算</th>
+            <th style="width:180px;">昨日消化（前日実績）</th>
+            <th style="width:96px;">予算余裕度</th>
+            <th style="width:90px;">対応状況</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 関西エリア -->
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-kansai">関西</span></td>
+            <td>【関西】会館別_枚方中央</td>
+            <td>奈良 <span style="color:#94a3b8; font-size:10px;">47780</span></td>
+            <td><span class="risk-badge mid">中 35</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥25,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill warn" style="width:86%;"></div></div><span class="meter-pct warn">86%</span><span style="font-size:10px;color:#6b7280;">¥21,400</span></div></td>
+            <td><span class="judge-tag warn">注意</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-kansai">関西</span></td>
+            <td>【関西】会館別_吹田南</td>
+            <td>大阪 <span style="color:#94a3b8; font-size:10px;">47772</span></td>
+            <td><span class="risk-badge mid">中 30</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥25,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill danger" style="width:95%;"></div></div><span class="meter-pct danger">95%</span><span style="font-size:10px;color:#6b7280;">¥23,800</span></div></td>
+            <td><span class="judge-tag danger">危険</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-kansai">関西</span></td>
+            <td>【関西】会館別_豊中中央</td>
+            <td>大阪 <span style="color:#94a3b8; font-size:10px;">47772</span></td>
+            <td><span class="risk-badge mid">中 30</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥24,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill warn" style="width:81%;"></div></div><span class="meter-pct warn">81%</span><span style="font-size:10px;color:#6b7280;">¥19,500</span></div></td>
+            <td><span class="judge-tag warn">注意</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-kansai">関西</span></td>
+            <td>【関西】会館別_吹田中央</td>
+            <td>大阪 <span style="color:#94a3b8; font-size:10px;">47772</span></td>
+            <td><span class="risk-badge mid">中 30</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥18,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill warn" style="width:73%;"></div></div><span class="meter-pct warn">73%</span><span style="font-size:10px;color:#6b7280;">¥13,200</span></div></td>
+            <td><span class="judge-tag warn">注意</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-kansai">関西</span></td>
+            <td>【関西】会館別_堺南</td>
+            <td>大阪 <span style="color:#94a3b8; font-size:10px;">47772</span></td>
+            <td><span class="risk-badge mid">中 30</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥18,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill safe" style="width:66%;"></div></div><span class="meter-pct safe">66%</span><span style="font-size:10px;color:#6b7280;">¥11,800</span></div></td>
+            <td><span class="judge-tag safe">余裕</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-kansai">関西</span></td>
+            <td>【関西】会館別_西宮中央</td>
+            <td>神戸 <span style="color:#94a3b8; font-size:10px;">47770</span></td>
+            <td><span class="risk-badge mid">中 35</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥15,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill safe" style="width:69%;"></div></div><span class="meter-pct safe">69%</span><span style="font-size:10px;color:#6b7280;">¥10,400</span></div></td>
+            <td><span class="judge-tag safe">余裕</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-kansai">関西</span></td>
+            <td>【関西】会館別_大阪東</td>
+            <td>大阪 <span style="color:#94a3b8; font-size:10px;">47772</span></td>
+            <td><span class="risk-badge mid">中 30</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥15,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill danger" style="width:99%;"></div></div><span class="meter-pct danger">99%</span><span style="font-size:10px;color:#6b7280;">¥14,900</span></div></td>
+            <td><span class="judge-tag danger">危険</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-kansai">関西</span></td>
+            <td>【関西・病院強化】兵庫医大</td>
+            <td>神戸 <span style="color:#94a3b8; font-size:10px;">47770</span></td>
+            <td><span class="risk-badge mid">中 35</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥1,500</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill safe" style="width:53%;"></div></div><span class="meter-pct safe">53%</span><span style="font-size:10px;color:#6b7280;">¥800</span></div></td>
+            <td><span class="judge-tag safe">余裕</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <!-- 首都圏エリア -->
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-shutoken">首都圏</span></td>
+            <td>【首都圏】会館別_川崎中央</td>
+            <td>東京 <span style="color:#94a3b8; font-size:10px;">47662</span></td>
+            <td><span class="risk-badge mid">中 55</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥18,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill warn" style="width:86%;"></div></div><span class="meter-pct warn">86%</span><span style="font-size:10px;color:#6b7280;">¥15,400</span></div></td>
+            <td><span class="judge-tag warn">注意</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-shutoken">首都圏</span></td>
+            <td>【首都圏】会館別_世田谷南</td>
+            <td>東京 <span style="color:#94a3b8; font-size:10px;">47662</span></td>
+            <td><span class="risk-badge mid">中 55</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥18,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill warn" style="width:72%;"></div></div><span class="meter-pct warn">72%</span><span style="font-size:10px;color:#6b7280;">¥12,900</span></div></td>
+            <td><span class="judge-tag warn">注意</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-shutoken">首都圏</span></td>
+            <td>【首都圏】会館別_武蔵野中央</td>
+            <td>東京 <span style="color:#94a3b8; font-size:10px;">47662</span></td>
+            <td><span class="risk-badge mid">中 55</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥15,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill warn" style="width:88%;"></div></div><span class="meter-pct warn">88%</span><span style="font-size:10px;color:#6b7280;">¥13,200</span></div></td>
+            <td><span class="judge-tag warn">注意</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-shutoken">首都圏</span></td>
+            <td>【首都圏】会館別_横浜北</td>
+            <td>東京 <span style="color:#94a3b8; font-size:10px;">47662</span></td>
+            <td><span class="risk-badge mid">中 55</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥14,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill warn" style="width:75%;"></div></div><span class="meter-pct warn">75%</span><span style="font-size:10px;color:#6b7280;">¥10,500</span></div></td>
+            <td><span class="judge-tag warn">注意</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-shutoken">首都圏</span></td>
+            <td>【首都圏】会館別_横浜南</td>
+            <td>東京 <span style="color:#94a3b8; font-size:10px;">47662</span></td>
+            <td><span class="risk-badge mid">中 55</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥12,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill danger" style="width:98%;"></div></div><span class="meter-pct danger">98%</span><span style="font-size:10px;color:#6b7280;">¥11,800</span></div></td>
+            <td><span class="judge-tag danger">危険</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-shutoken">首都圏</span></td>
+            <td>【首都圏】会館別_世田谷中央</td>
+            <td>東京 <span style="color:#94a3b8; font-size:10px;">47662</span></td>
+            <td><span class="risk-badge mid">中 55</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥9,000</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill safe" style="width:58%;"></div></div><span class="meter-pct safe">58%</span><span style="font-size:10px;color:#6b7280;">¥5,200</span></div></td>
+            <td><span class="judge-tag safe">余裕</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox" checked></td>
+            <td><span class="area-tag tag-shutoken">首都圏</span></td>
+            <td>【首都圏・病院強化】篠原病院</td>
+            <td>東京 <span style="color:#94a3b8; font-size:10px;">47662</span></td>
+            <td><span class="risk-badge mid">中 55</span></td>
+            <td><span class="cpc-adjust">+10%</span></td>
+            <td class="budget-cell"><span class="b-amount">¥2,500</span></td>
+            <td><div class="spend-meter"><div class="meter-bar"><div class="meter-fill safe" style="width:66%;"></div></div><span class="meter-pct safe">66%</span><span style="font-size:10px;color:#6b7280;">¥1,650</span></div></td>
+            <td><span class="judge-tag safe">余裕</span></td>
+            <td><span class="action-badge">承認待ち</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px; padding:10px 14px; background:#fafbfc; border:1px solid #e2e8f0; border-radius:4px; font-size:11px; color:#475569;">
+        <strong style="color:#0f172a;">💡 予算余裕度の読み方：</strong>
+        <span style="margin-left:8px;"><span class="judge-tag safe" style="vertical-align:middle;">余裕</span> 消化70%未満：CPC引き上げ余地あり</span>
+        <span style="margin-left:12px;"><span class="judge-tag warn" style="vertical-align:middle;">注意</span> 70〜90%：CPC引き上げ＋予算追加を検討</span>
+        <span style="margin-left:12px;"><span class="judge-tag danger" style="vertical-align:middle;">危険</span> 90%以上：先に予算増額が必要</span>
+      </div>
+      <div style="margin-top:14px; display:flex; gap:10px; align-items:center;">
+        <button style="background:#d32f2f; color:#fff; border:none; border-radius:4px; padding:8px 20px; font-size:13px; font-weight:700; cursor:pointer;">
+          チェック済み（15件）を承認 → Ads API 反映
+        </button>
+        <span style="font-size:11px; color:#6b8090;">承認後: Google Ads API 経由で即時反映されます（GAQL: bidding_strategy_type = MANUAL_CPC）</span>
+      </div>
+    </div>
+
+    <div class="bottom-kpi">
+      <div class="bottom-kpi-item">
+        <div class="bk-label">平均CPC改善（高リスク日）</div>
+        <div class="bk-value">▲8.5%</div>
+        <div class="bk-note">¥500〜800円 / クリック削減</div>
+      </div>
+      <div class="bottom-kpi-item">
+        <div class="bk-label">需要日 上部表示率向上</div>
+        <div class="bk-value">+20 pt</div>
+        <div class="bk-note">競合比 先読み5〜10日</div>
+      </div>
+      <div class="bottom-kpi-item">
+        <div class="bk-label">CPC変動レンジ</div>
+        <div class="bk-value">+5〜10%</div>
+        <div class="bk-note">平常時は▲5〜8%に抑制</div>
+      </div>
+      <div class="bottom-kpi-item">
+        <div class="bk-label">運用工数（日次）</div>
+        <div class="bk-value">10分</div>
+        <div class="bk-note">推奨確認 → 承認のみ</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- モード切替 確認モーダル -->
+<div class="modal-overlay" id="mode-modal">
+  <div class="modal-box">
+    <h3 id="m-title">モード切替の確認</h3>
+    <div class="m-body" id="m-body"></div>
+    <div class="m-note" id="m-note"></div>
+    <div class="m-btns">
+      <button class="m-cancel" onclick="cancelToggle()">キャンセル</button>
+      <button class="m-ok" id="m-ok-btn" onclick="confirmToggle()">切り替える</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var season = 'winter';
+var pendingSeason = null;
+var SIG  = { winter:'気温・気圧・寒波警報・複合', summer:'WBGT・連続猛暑日・熱中症警戒アラート' };
+var MNAME= { winter:'❄ 冬モード', summer:'☀ 夏モード' };
+
+// トグルクリック → 確認モーダルを出す
+function toggleSeason() {
+  pendingSeason = (season === 'winter') ? 'summer' : 'winter';
+  document.getElementById('m-title').textContent = '【確認】' + MNAME[pendingSeason] + ' に切り替えます';
+  document.getElementById('m-body').innerHTML =
+    'これ以降の自動入札は <b>' + MNAME[pendingSeason] + '</b>（' + SIG[pendingSeason] + '）で実行されます。';
+  document.getElementById('m-note').innerHTML =
+    '※ 切り替えた時点（2026-01-07 以降）の自動入札に新モードを適用します。<br>' +
+    '※ それまでに実行済みの自動入札は <b>' + MNAME[season] + '</b> での適用結果として保持され、遡って変更されません。';
+  var ok = document.getElementById('m-ok-btn');
+  ok.className = 'm-ok' + (pendingSeason === 'winter' ? ' winter' : '');
+  document.getElementById('mode-modal').classList.add('show');
+}
+function cancelToggle() {
+  pendingSeason = null;
+  document.getElementById('mode-modal').classList.remove('show');
+}
+function confirmToggle() {
+  if (!pendingSeason) return;
+  season = pendingSeason; pendingSeason = null;
+  var w = document.getElementById('seg-winter'), s = document.getElementById('seg-summer');
+  var sig = document.getElementById('mode-sig');
+  if (season === 'winter') {
+    w.classList.add('active'); s.classList.remove('active');
+    sig.innerHTML = '使用シグナル：<b>気温・気圧・寒波警報・複合</b>';
+  } else {
+    s.classList.add('active'); w.classList.remove('active');
+    sig.innerHTML = '使用シグナル：<b>WBGT・連続猛暑日・熱中症警戒アラート</b>';
+  }
+  document.getElementById('mode-modal').classList.remove('show');
+}
+if (location.hash.indexOf('embed') !== -1) document.body.classList.add('embed');
+</script>
+</body>
+</html>
