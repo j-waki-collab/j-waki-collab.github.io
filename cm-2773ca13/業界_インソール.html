@@ -1,0 +1,649 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜インソール</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>インソール業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">2社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2025-12-15</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥225,576</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥164</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">7.9〜9.4</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="HBLインソール" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</button><button class="achip" data-t="カモシカソール" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2025-12-15（期間 2025年10月1日 - 2025年12月15日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td data-v="20709">¥20,709</td><td data-v="221">221</td><td data-v="0.1075">10.7%</td><td data-v="93.7">¥94</td><td data-v="9.45">9.45</td><td data-v="0.0">--</td><td data-v="0.5235">52.3%</td><td><div class="bar"><div class="mt-i" style="width:95.1%" title="インテント マッチ 95.1%"></div><div class="mt-p" style="width:4.3%" title="フレーズ一致 4.3%"></div><div class="mt-e" style="width:0.7%" title="完全一致 0.7%"></div></div></td><td class="cv sep" data-v="46">46</td><td class="cv" data-v="0.2081">20.8%</td><td class="cv" data-v="450.2">¥450</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td data-v="204867">¥204,867</td><td data-v="1155">1,155</td><td data-v="0.2070">20.7%</td><td data-v="177.4">¥177</td><td data-v="7.94">7.94</td><td data-v="0.0">--</td><td data-v="1.0000">100.0%</td><td><div class="bar"><div class="mt-p" style="width:9.4%" title="フレーズ一致 9.4%"></div><div class="mt-e" style="width:90.6%" title="完全一致 90.6%"></div></div></td><td class="cv sep" data-v="36">36</td><td class="cv" data-v="0.0312">3.1%</td><td class="cv" data-v="5690.8">¥5,691</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: Dr.Scholl</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td data-v="202510">2025-10</td><td data-v="285">285</td><td data-v="41">41</td><td data-v="0.1439">14.4%</td><td data-v="124.8">¥125</td><td data-v="5118">¥5,118</td><td class="cv sep" data-v="7">7</td><td class="cv" data-v="0.1707">17.1%</td><td class="cv" data-v="731.1">¥731</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td data-v="202511">2025-11</td><td data-v="477">477</td><td data-v="54">54</td><td data-v="0.1132">11.3%</td><td data-v="152.1">¥152</td><td data-v="8214">¥8,214</td><td class="cv sep" data-v="18">18</td><td class="cv" data-v="0.3333">33.3%</td><td class="cv" data-v="456.3">¥456</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td data-v="202512">2025-12 ⚠</td><td data-v="1294">1,294</td><td data-v="126">126</td><td data-v="0.0974">9.7%</td><td data-v="58.5">¥59</td><td data-v="7377">¥7,377</td><td class="cv sep" data-v="21">21</td><td class="cv" data-v="0.1667">16.7%</td><td class="cv" data-v="351.3">¥351</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td data-v="202510">2025-10</td><td data-v="2004">2,004</td><td data-v="497">497</td><td data-v="0.2480">24.8%</td><td data-v="224.4">¥224</td><td data-v="111525">¥111,525</td><td class="cv sep" data-v="17">17</td><td class="cv" data-v="0.0342">3.4%</td><td class="cv" data-v="6560.3">¥6,560</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td data-v="202511">2025-11</td><td data-v="2288">2,288</td><td data-v="448">448</td><td data-v="0.1958">19.6%</td><td data-v="135.6">¥136</td><td data-v="60756">¥60,756</td><td class="cv sep" data-v="14">14</td><td class="cv" data-v="0.0312">3.1%</td><td class="cv" data-v="4339.7">¥4,340</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td data-v="202512">2025-12 ⚠</td><td data-v="1288">1,288</td><td data-v="210">210</td><td data-v="0.1630">16.3%</td><td data-v="155.2">¥155</td><td data-v="32586">¥32,586</td><td class="cv sep" data-v="5">5</td><td class="cv" data-v="0.0238">2.4%</td><td class="cv" data-v="6517.2">¥6,517</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="HBLインソール">
+<h3 class="adv" id="struct-HBLインソール" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール <span class="badge">取得 2025-12-15</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</span><span class="st">📁 CPN <b>4</b></span><span class="st">📂 ADG <b>4</b></span><span class="st">🔑 KW <b>30</b></span><span class="st">✏️ 広告 <b>1</b></span><span class="st">🔗 LP <b>1</b></span><span class="st">💰 <b>¥20,709</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="検索広告">検索広告</span><span class="share"><div style="width:95%"></div></span><span class="st">95.1%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥19,686</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="広告グループ 1 個">広告グループ 1 個</span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥19,686</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="20250816 Search-HBL">20250816 Search-HBL</span><span class="share"><div style="width:5%"></div></span><span class="st">4.9%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥1,023</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="広告グループ 1 個">広告グループ 1 個</span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥1,023</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="BRAND_HBL_200yen">BRAND_HBL_200yen</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="広告グループ 1 個">広告グループ 1 個</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="HBL指名KW　20250707">HBL指名KW　20250707</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="広告グループ 1 個">広告グループ 1 個</span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="カモシカソール">
+<h3 class="adv" id="struct-カモシカソール" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール <span class="badge">取得 2025-12-15</span></h3>
+<div class="tree" style="--ac:var(--adv-1)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</span><span class="st">📁 CPN <b>2</b></span><span class="st">📂 ADG <b>2</b></span><span class="st">🔑 KW <b>3</b></span><span class="st">✏️ 広告 <b>1</b></span><span class="st">🔗 LP <b>1</b></span><span class="st">💰 <b>¥204,867</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="【直LP】指名セール用">【直LP】指名セール用</span><span class="share"><div style="width:100%"></div></span><span class="st">99.5%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥203,875</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【直LP】指名">【直LP】指名</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥203,875</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="【直LP】指名">【直LP】指名</span><span class="share"><div style="width:0%"></div></span><span class="st">0.5%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥992</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【直LP】指名">【直LP】指名</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥992</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:100.0%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="HBLインソール｜HBLインソール / QS10 / CPC¥208 / COST¥10,841"></span>
+<span class="dot" style="left:66.4%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="カモシカソール｜[カモシカ インソール] / QS7 / CPC¥138 / COST¥12,459"></span>
+<span class="dot" style="left:91.9%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="カモシカソール｜[カモシカソール] / QS8 / CPC¥192 / COST¥173,135"></span>
+<span class="dot" style="left:57.4%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="カモシカソール｜カモシカソール / QS8 / CPC¥120 / COST¥19,273"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥52</span>
+<span class="ax" style="left:50%;bottom:-22px">¥104</span>
+<span class="ax" style="left:75%;bottom:-22px">¥156</span>
+<span class="ax" style="left:100%;bottom:-22px">¥208</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>HBLインソール</span><span><i style="background:var(--adv-1)"></i>カモシカソール</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l">カモシカソール</td><td data-v="8">8</td><td data-v="120">¥120</td><td data-v="161">161</td><td data-v="19273">¥19,273</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l">[カモシカ インソール]</td><td data-v="7">7</td><td data-v="138">¥138</td><td data-v="90">90</td><td data-v="12459">¥12,459</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l">[カモシカソール]</td><td data-v="8">8</td><td data-v="192">¥192</td><td data-v="904">904</td><td data-v="173135">¥173,135</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l">HBLインソール</td><td data-v="10">10</td><td data-v="208">¥208</td><td data-v="52">52</td><td data-v="10841">¥10,841</td></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td data-v="9.45">9.45</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td><td data-v="2.0"><b>2.0%</b></td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td data-v="7.94">7.94</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="HBLインソール">
+<h3 class="adv" id="kwqs-HBLインソール" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール <span class="badge">取得 2025-12-15</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>9.45</b></span><span class="chip">関連性↓<b>0.0%</b></span><span class="chip">推定CTR↓<b>0.0%</b></span><span class="chip">LP利便性↓<b>2.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="HBLインソール"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">HBLインソール</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="287">287</td><td data-v="52">52</td><td data-v="0.1812">18.1%</td><td data-v="208.5">¥208</td><td data-v="10841">¥10,841</td><td class="cv sep" data-v="26.0">26.0</td><td class="cv" data-v="417.0">¥417</td><td class="l">検索広告</td></tr>
+<tr><td class="l">足 痛い</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1167">1,167</td><td data-v="116">116</td><td data-v="0.0994">9.9%</td><td data-v="58.4">¥58</td><td data-v="6773">¥6,773</td><td class="cv sep" data-v="19.0">19.0</td><td class="cv" data-v="356.5">¥356</td><td class="l">検索広告</td></tr>
+<tr><td class="l">横アーチ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="395">395</td><td data-v="31">31</td><td data-v="0.0785">7.8%</td><td data-v="66.8">¥67</td><td data-v="2072">¥2,072</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2072.0">¥2,072</td><td class="l">検索広告</td></tr>
+<tr><td class="l">インソール 足 疲れ</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="81">81</td><td data-v="10">10</td><td data-v="0.1235">12.3%</td><td data-v="49.9">¥50</td><td data-v="499">¥499</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">20250816 Search-HBL</td></tr>
+<tr><td class="l">外反母趾 インソール</td><td>フレーズ</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="41">41</td><td data-v="5">5</td><td data-v="0.1220">12.2%</td><td data-v="44.0">¥44</td><td data-v="220">¥220</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">20250816 Search-HBL</td></tr>
+<tr><td class="l">インソール 姿勢 改善</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="45">45</td><td data-v="4">4</td><td data-v="0.0889">8.9%</td><td data-v="40.8">¥41</td><td data-v="163">¥163</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">20250816 Search-HBL</td></tr>
+<tr><td class="l">[偏平足 インソール]</td><td>完全</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="34">34</td><td data-v="3">3</td><td data-v="0.0882">8.8%</td><td data-v="47.0">¥47</td><td data-v="141">¥141</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">20250816 Search-HBL</td></tr>
+<tr><td class="l">足の指 痛い</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1">1</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">検索広告</td></tr>
+<tr><td class="l">足 疲れる</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1">1</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">検索広告</td></tr>
+<tr><td class="l">マメ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">検索広告</td></tr>
+<tr><td class="l">タコ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1">1</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">検索広告</td></tr>
+<tr><td class="l">通勤 足 重い インソール</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">20250816 Search-HBL</td></tr>
+<tr><td class="l">偏平足 インソール 女性</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">20250816 Search-HBL</td></tr>
+<tr><td class="l">立ち仕事 疲れ インソール</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">20250816 Search-HBL</td></tr>
+<tr><td class="l">美姿勢 インソール</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="1">1</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">20250816 Search-HBL</td></tr>
+<tr><td class="l">体幹 インソール</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">20250816 Search-HBL</td></tr>
+<tr><td class="l">O脚 インソール</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="2">2</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">20250816 Search-HBL</td></tr>
+<tr><td class="l">HBLインソール</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">BRAND_HBL_200yen</td></tr>
+<tr><td class="l">HBL インソール 公式</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">BRAND_HBL_200yen</td></tr>
+<tr><td class="l">[HBLINSOLE]</td><td>完全</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">BRAND_HBL_200yen</td></tr>
+<tr><td class="l">[エイチビーエル インソール]</td><td>完全</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">BRAND_HBL_200yen</td></tr>
+<tr><td class="l">インソール 履き心地 良くなる</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">HBL指名KW　20250707</td></tr>
+<tr><td class="l">HBL インソール</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">HBL指名KW　20250707</td></tr>
+<tr><td class="l">HBLインソール 公式</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">HBL指名KW　20250707</td></tr>
+<tr><td class="l">エイチビーエルインソール</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">HBL指名KW　20250707</td></tr>
+<tr><td class="l">高機能 インソール</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">HBL指名KW　20250707</td></tr>
+<tr><td class="l">高級 インソール</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">HBL指名KW　20250707</td></tr>
+<tr><td class="l">インソール おすすめ 立ち 仕事</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">HBL指名KW　20250707</td></tr>
+<tr><td class="l">インソール 疲れない</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">HBL指名KW　20250707</td></tr>
+<tr><td class="l">HBL</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">HBL指名KW　20250707</td></tr>
+<tr><td class="l">hb l</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">HBL指名KW　20250707</td></tr>
+<tr><td class="l">アーチサポート インソール</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">HBL指名KW　20250707</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="カモシカソール">
+<h3 class="adv" id="kwqs-カモシカソール" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール <span class="badge">取得 2025-12-15</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>7.94</b></span><span class="chip">関連性↓<b>0.0%</b></span><span class="chip">推定CTR↓<b>0.0%</b></span><span class="chip">LP利便性↓<b>0.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="カモシカソール"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">[カモシカソール]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="3875">3,875</td><td data-v="904">904</td><td data-v="0.2333">23.3%</td><td data-v="191.5">¥192</td><td data-v="173135">¥173,135</td><td class="cv sep" data-v="28.0">28.0</td><td class="cv" data-v="6183.4">¥6,183</td><td class="l">【直LP】指名</td></tr>
+<tr><td class="l">カモシカソール</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="1360">1,360</td><td data-v="161">161</td><td data-v="0.1184">11.8%</td><td data-v="119.7">¥120</td><td data-v="19273">¥19,273</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="3854.6">¥3,855</td><td class="l">【直LP】指名セール用</td></tr>
+<tr><td class="l">[カモシカ インソール]</td><td>完全</td><td data-v="7">7</td><td>平均</td><td>平均より上</td><td>平均</td><td class="sep" data-v="345">345</td><td data-v="90">90</td><td data-v="0.2609">26.1%</td><td data-v="138.4">¥138</td><td data-v="12459">¥12,459</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="4153.0">¥4,153</td><td class="l">【直LP】指名セール用</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="HBLインソール" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">hblinsole.jp<br><span>hblinsole.jp</span></div><div class="t">HBLインソール - HBLインソール 美姿勢を支える - 見た目年齢−5歳の歩き方</div><div class="d">いつもの靴に入れるだけ。内転筋を刺激し、歩くほど姿勢が整うHBLインソール。 40・50代の体型ケアに。体幹を支え、美しい歩き方へ。専門家も推奨。初めてでも安心の30日保証。</div><div class="meta2">IMP 1,852 ／ CTR 10.7% ／ COST ¥19,687<br>検索広告</div></div>
+</div>
+<div class="serp-col advblk" data-a="カモシカソール" style="--ac:var(--adv-1)"><h4><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">prienet.online<br><span>prienet.online › lp</span></div><div class="t">【公式】カモシカソール - 履いて歩くだけでー6kg - 世界特許取得</div><div class="d">カモシカソールに変えるだけで歩きながら筋トレ出来て、脚がすらっと美ボディーを目指せる！ 3つの特許技術で体の土台となる足元を支え、 体全体のコンディショニングを整えてくれます!</div><div class="meta2">IMP 5,544 ／ CTR 20.7% ／ COST ¥203,875<br>【直LP】指名セール用</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">高耐久で長く使える</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">旅行や通勤をもっとラクに</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">夕方の重だるさを軽減</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">30日返金保証で安心</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">姿勢・美脚・歩行をサポート</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">インソール 姿勢 改善</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">見た目年齢−5歳の歩き方</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">HBLインソール</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">歩くたびに姿勢サポート</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">40・50代の体型ケアに</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">専門家も推奨のインソール</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">立ち仕事でも足が軽いインソール</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">立ちっぱなしでも快適な足元</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">美姿勢 インソール</td><td data-v="1">1</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l wrap">HBLインソール 美姿勢を支える</td><td data-v="1">1</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l wrap">累計販売数289万足</td><td data-v="1">1</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l wrap">靴に入れるだけで姿勢改善！</td><td data-v="1">1</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l wrap">ゲリラセール開催中</td><td data-v="1">1</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l wrap">履いて歩くだけでー6kg</td><td data-v="1">1</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l wrap">SNSでも話題のインソール</td><td data-v="1">1</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l wrap">世界特許取得</td><td data-v="1">1</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l wrap">7日間限定キャンペーン実施中</td><td data-v="1">1</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l wrap">【公式】カモシカソール</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="HBLインソール">
+<h3 class="adv" id="adlib-HBLインソール" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール <span class="badge">取得 2025-12-15</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>1本</b></span><span class="chip">CPN<b>1個</b></span><span class="chip">ADG<b>1個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>1本</b></span></div>
+<p class="note">主要LP: <span title="https://hblinsole.jp/">https://hblinsole.jp/（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="HBLインソール"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">高耐久で長く使える</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">旅行や通勤をもっとラクに</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">夕方の重だるさを軽減</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">30日返金保証で安心</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">姿勢・美脚・歩行をサポート</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">インソール 姿勢 改善</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">見た目年齢−5歳の歩き方</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">HBLインソール</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">歩くたびに姿勢サポート</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">40・50代の体型ケアに</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">専門家も推奨のインソール</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">立ち仕事でも足が軽いインソール</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">立ちっぱなしでも快適な足元</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">美姿勢 インソール</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">HBLインソール 美姿勢を支える</td><td data-v="1">1</td></tr>
+</table></div></div><div>
+<table data-adv="HBLインソール"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">いつもの靴に入れるだけ。内転筋を刺激し、歩くほど姿勢が整うHBLインソール。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">40・50代の体型ケアに。体幹を支え、美しい歩き方へ。専門家も推奨。初めてでも安心の30日保証。</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="カモシカソール">
+<h3 class="adv" id="adlib-カモシカソール" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール <span class="badge">取得 2025-12-15</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>1本</b></span><span class="chip">CPN<b>1個</b></span><span class="chip">ADG<b>1個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>1本</b></span></div>
+<p class="note">主要LP: <span title="https://prienet.online/lp?u=KS_012_gsho_04_akiundo_028">https://prienet.online/lp?u=KS_012_gsho_04_akiundo_028（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="カモシカソール"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">累計販売数289万足</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">靴に入れるだけで姿勢改善！</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">ゲリラセール開催中</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">履いて歩くだけでー6kg</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">SNSでも話題のインソール</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">世界特許取得</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">7日間限定キャンペーン実施中</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【公式】カモシカソール</td><td data-v="1">1</td></tr>
+</table></div></div><div>
+<table data-adv="カモシカソール"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">カモシカソールに変えるだけで歩きながら筋トレ出来て、脚がすらっと美ボディーを目指せる！</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">3つの特許技術で体の土台となる足元を支え、 体全体のコンディショニングを整えてくれます!</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">累計販売数289万足 人気雑誌でも取り上げられているカモシカソール</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">カモシカソールを履くだけで、重心をまっすぐにし美しい姿勢になり憧れていたモデル体型へ</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="HBLインソール">
+<h3 class="adv" id="query-HBLインソール" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール <span class="badge">取得 2025-12-15</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜なし</td><td data-v="107">107</td><td data-v="126">126</td><td data-v="9663">¥9,663</td><td data-v="0.6338">63.4%</td><td class="cv sep" data-v="17.0">17.0</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="4">4</td><td data-v="37">37</td><td data-v="5583">¥5,583</td><td data-v="0.3662">36.6%</td><td class="cv sep" data-v="19.0">19.0</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="HBLインソール"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">hbl インソール</td><td>追加済み</td><td>検索</td><td data-v="36">36</td><td data-v="5535">¥5,535</td><td class="cv sep" data-v="19.0">19.0</td><td class="cv" data-v="291.3">¥291</td></tr>
+<tr><td class="l">インソール おすすめ</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="393">¥393</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="131.0">¥131</td></tr>
+<tr><td class="l">土踏まず インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="50">¥50</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="25.0">¥25</td></tr>
+<tr><td class="l">インソール オーダー メイド</td><td>なし</td><td>検索</td><td data-v="10">10</td><td data-v="576">¥576</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="288.0">¥288</td></tr>
+<tr><td class="l">かかと インソール 最強</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="34">¥34</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="34.0">¥34</td></tr>
+<tr><td class="l">扁平足 インソール</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="243">¥243</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="243.0">¥243</td></tr>
+<tr><td class="l">インソール</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="423">¥423</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="423.0">¥423</td></tr>
+<tr><td class="l">hbbt インソール</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="98">¥98</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="98.0">¥98</td></tr>
+<tr><td class="l">姿勢 改善 インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="84">¥84</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="84.0">¥84</td></tr>
+<tr><td class="l">靴 の 中敷き おすすめ</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="60">¥60</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="60.0">¥60</td></tr>
+<tr><td class="l">アーチ サポート インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="792">¥792</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="792.0">¥792</td></tr>
+<tr><td class="l">足 底 筋 膜 炎 インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="228">¥228</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="228.0">¥228</td></tr>
+<tr><td class="l">立ち 仕事 疲れ ない インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="47">¥47</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="47.0">¥47</td></tr>
+<tr><td class="l">中敷き スニーカー</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="119">¥119</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="119.0">¥119</td></tr>
+<tr><td class="l">姿勢 改善 靴</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="212">¥212</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">インソール の 選び方</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="63">¥63</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">アーチス ボーン スポーツ</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="105">¥105</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">ビオプラス インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="44">¥44</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">インソール アーチ サポート</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="58">¥58</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">外反母趾 インソール 医療 用</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="226">¥226</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">足 の 長 さ 調整 インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="65">¥65</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">インソール の 値段</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="39">¥39</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">ムテキ インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="181">¥181</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">インソール 疲れ ない</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="481">¥481</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">fbsl インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="66">¥66</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">ランウェイ キュア ソール 外反母趾</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="47">¥47</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">外反母趾</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="14">¥14</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">ウォーキング インソール おすすめ</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="90">¥90</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">インソール 衝撃 吸収 最強</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="258">¥258</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">オーダー インソール 値段</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="51">¥51</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">ランウェイ キュア ソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="28">¥28</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">外反母趾 インソール オーダー メイド</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="62">¥62</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">柔らかい インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="72">¥72</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">インソール 静岡</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="67">¥67</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">足 の 裏 が 歩く と 痛い</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="42">¥42</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">アーチス ボーン</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="106">¥106</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">膝 痛 インソール 効果</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="73">¥73</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">中 足 骨 骨 頭痛 インソール ワークマン</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="36">¥36</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">足 に 合っ た インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="61">¥61</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">インソール 比較</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="55">¥55</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">bmz インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="38">¥38</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">立ち 仕事 インソール 最強</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="61">¥61</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">外反母趾 インソール</td><td>追加済み</td><td>検索</td><td data-v="1">1</td><td data-v="48">¥48</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">かかと が 高い インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="58">¥58</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">靴 の 中 敷</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="49">¥49</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">疲れ にくい インソール おすすめ</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="178">¥178</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">nasyu インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="59">¥59</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">楽 歩 堂 インソール 値段</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="38">¥38</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">足 底 腱 膜 炎 ソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="121">¥121</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">ドンキホーテ 靴 の 中敷き</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="73">¥73</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">インソール おすすめ 立ち 仕事</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="703">¥703</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">ユニソル インソール 価格</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="123">¥123</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">インソール 長崎</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="100">¥100</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">体 幹 インソール</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="130">¥130</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">バネ インソール ベーシック</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="38">¥38</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">疲れ ない インソール おすすめ</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="225">¥225</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">オーダー インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="88">¥88</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">姿勢 矯正 インソール オーダー メイド</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="33">¥33</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">インソール おすすめ スニーカー</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="67">¥67</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">自衛隊 インソール おすすめ</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="65">¥65</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">足 底 筋 膜 炎 インソール オーダー メイド</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="73">¥73</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">オーダー メイド インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="83">¥83</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">足 が 疲れ ない インソール</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="100">¥100</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">疲れ ない 中敷き</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="105">¥105</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">インソール 専門 店 東京</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="68">¥68</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">あし ぞ こ 筋 膜 炎 インソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="67">¥67</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">インナー ソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="60">¥60</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">靴 中敷き おすすめ</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="123">¥123</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">pitsole</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="74">¥74</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">スペンコ トータル サポート</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="59">¥59</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（70行）。</p></div>
+<div class="advblk" data-a="カモシカソール">
+<h3 class="adv" id="query-カモシカソール" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール <span class="badge">取得 2025-12-15</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="8">8</td><td data-v="920">920</td><td data-v="169594">¥169,594</td><td data-v="0.8878">88.8%</td><td class="cv sep" data-v="29.0">29.0</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="43">43</td><td data-v="161">161</td><td data-v="21424">¥21,424</td><td data-v="0.1122">11.2%</td><td class="cv sep" data-v="6.0">6.0</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="カモシカソール"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">カモシカ ソール</td><td>追加済み</td><td>検索</td><td data-v="765">765</td><td data-v="141443">¥141,443</td><td class="cv sep" data-v="23.0">23.0</td><td class="cv" data-v="6149.7">¥6,150</td></tr>
+<tr><td class="l">カモシカ インソール</td><td>追加済み</td><td>検索</td><td data-v="157">157</td><td data-v="28375">¥28,375</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="4729.2">¥4,729</td></tr>
+<tr><td class="l">カモシカ ソール 販売 店</td><td>なし</td><td>検索</td><td data-v="27">27</td><td data-v="2949">¥2,949</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2949.0">¥2,949</td></tr>
+<tr><td class="l">かもしか ソール</td><td>なし</td><td>検索</td><td data-v="23">23</td><td data-v="4498">¥4,498</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4498.0">¥4,498</td></tr>
+<tr><td class="l">カモシカ ソール 公式</td><td>なし</td><td>検索</td><td data-v="22">22</td><td data-v="2696">¥2,696</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2696.0">¥2,696</td></tr>
+<tr><td class="l">カモシカ ソール 口コミ</td><td>なし</td><td>検索</td><td data-v="35">35</td><td data-v="5337">¥5,337</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="5337.0">¥5,337</td></tr>
+<tr><td class="l">カモシカ ソール 効果</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="1156">¥1,156</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1156.0">¥1,156</td></tr>
+<tr><td class="l">カモシカ ソール 楽天</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="428">¥428</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="428.0">¥428</td></tr>
+<tr><td class="l">カモシカ ソール と は</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="471">¥471</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">カモシカ ソール ドンキ</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="792">¥792</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">楽天 カモシカ ソール</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="179">¥179</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">ピット ソール と カモシカ ソール</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="421">¥421</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">カモシカ ソール 痩せる</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="133">¥133</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">カモシカ ソール 会社</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="89">¥89</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">カモシカ ソール 痩せ ない</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="90">¥90</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">ピット ソール カモシカ ソール 比較</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="193">¥193</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">カモシカ ソール 最 安値</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="572">¥572</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">ピット ソール カモシカ ソール</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="170">¥170</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">カモシカ ソール 偽物</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="354">¥354</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">カモシカ ソール と ピット ソール の 違い</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="89">¥89</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">カモシカ ソール ピット ソール 違い</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="376">¥376</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">カモシカ ソール 痩せ た</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="207">¥207</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（22行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2025-12-15 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l">指名</td><td data-v="287">287</td><td data-v="52">52</td><td data-v="0.1812">18.1%</td><td data-v="208.5">¥208</td><td data-v="10841">¥10,841</td><td data-v="0.5235">52.3%</td><td class="cv sep" data-v="26">26</td><td class="cv" data-v="0.5000">50.0%</td><td class="cv" data-v="417.0">¥417</td></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td class="l">一般</td><td data-v="1769">1,769</td><td data-v="169">169</td><td data-v="0.0955">9.6%</td><td data-v="58.4">¥58</td><td data-v="9868">¥9,868</td><td data-v="0.4765">47.7%</td><td class="cv sep" data-v="20">20</td><td class="cv" data-v="0.1183">11.8%</td><td class="cv" data-v="493.4">¥493</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l">指名</td><td data-v="5580">5,580</td><td data-v="1155">1,155</td><td data-v="0.2070">20.7%</td><td data-v="177.4">¥177</td><td data-v="204867">¥204,867</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="36">36</td><td class="cv" data-v="0.0312">3.1%</td><td class="cv" data-v="5690.8">¥5,691</td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td class="l">一般</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2025-12-15</th></tr>
+<tr data-a="HBLインソール"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール</td><td><div class="bar"><div class="mt-i" style="width:95.1%" title="インテント マッチ 95.1%"></div><div class="mt-p" style="width:4.3%" title="フレーズ一致 4.3%"></div><div class="mt-e" style="width:0.7%" title="完全一致 0.7%"></div></div><div class="note">インテント95% / フレーズ4% / 完全1%</div></td></tr>
+<tr data-a="カモシカソール"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール</td><td><div class="bar"><div class="mt-p" style="width:9.4%" title="フレーズ一致 9.4%"></div><div class="mt-e" style="width:90.6%" title="完全一致 90.6%"></div></div><div class="note">フレーズ9% / 完全91%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2025-12-15</b>（20251215_レポート依頼用(インソール)_セレス様__19OKo0Rl.xlsx）<br>取得不可（空タブ）: Dr.Scholl<br>端数月: 2025-12（15日まで）<br>CV0クエリが90件あり（ムダ打ち分析が可能なデータ）</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

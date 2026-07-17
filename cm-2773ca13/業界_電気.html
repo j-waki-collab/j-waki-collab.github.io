@@ -1,0 +1,693 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜電気</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>電気業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">2社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2026-02-26</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥0</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">--</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">--</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="このまち電気" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</button><button class="achip" data-t="タダ電" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2026-02-26（期間 2025年12月1日 - 2026年2月26日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td data-v="0">¥0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0.00">--</td><td data-v="0.0">--</td><td data-v="-1">--</td><td><span class="note" title="このバッチのスプレッドシートに不在">--</span></td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td data-v="0">¥0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0.00">--</td><td data-v="0.0">--</td><td data-v="-1">--</td><td><span class="note" title="このバッチのスプレッドシートに不在">--</span></td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: シン・エナジー・TERASELでんき</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td data-v="202512">2025-12</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td data-v="202601">2026-01</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td data-v="202602">2026-02 ⚠</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td data-v="202512">2025-12</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td data-v="202601">2026-01</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td data-v="202602">2026-02 ⚠</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="このまち電気">
+<h3 class="adv" id="struct-このまち電気" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気 <span class="badge">取得 2026-02-26</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</span><span class="st">📁 CPN <b>4</b></span><span class="st">📂 ADG <b>4</b></span><span class="st">🔑 KW <b>19</b></span><span class="st">✏️ 広告 <b>6</b></span><span class="st">🔗 LP <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="02NN_SCH_B02(その他エリア 一般)-【250801～】">02NN_SCH_B02(その他エリア 一般)-【250801～】</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="KWD_ALL_AL_B02(その他エリア 一般)">KWD_ALL_AL_B02(その他エリア 一般)</span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="02NN_SCH_A02(広島エリア 一般)-【250801～】">02NN_SCH_A02(広島エリア 一般)-【250801～】</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="KWD_ALL_AL_A02(広島エリア 一般)">KWD_ALL_AL_A02(広島エリア 一般)</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="01NQ_SCH_B01(その他エリア 指名)-【250801～】">01NQ_SCH_B01(その他エリア 指名)-【250801～】</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="KWD_ALL_AL_B01(その他エリア 指名)">KWD_ALL_AL_B01(その他エリア 指名)</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="01NQ_SCH_A01(広島エリア 指名)-【250801～】">01NQ_SCH_A01(広島エリア 指名)-【250801～】</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="KWD_ALL_AL_A01(広島エリア 指名)">KWD_ALL_AL_A01(広島エリア 指名)</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="タダ電">
+<h3 class="adv" id="struct-タダ電" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電 <span class="badge">取得 2026-02-26</span></h3>
+<div class="tree" style="--ac:var(--adv-1)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</span><span class="st">📁 CPN <b>3</b></span><span class="st">📂 ADG <b>6</b></span><span class="st">🔑 KW <b>23</b></span><span class="st">✏️ 広告 <b>8</b></span><span class="st">🔗 LP <b>6</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="フレーズ一致">フレーズ一致</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>3</b></span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="一人暮らし">一人暮らし</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="電力">電力</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="値段">値段</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="LP配信">LP配信</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>15</b></span><span class="st">✏️ <b>4</b></span><span class="st">🔗 <b>4</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="LP配信">LP配信</span><span class="st">🔑 <b>14</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>3</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="競合">競合</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="LP_指名">LP_指名</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="LP_指名">LP_指名</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<p class="note">クリック30以上のQS付きKWがありません。</p>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td data-v="0.00">--</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td data-v="0.00">--</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="このまち電気">
+<h3 class="adv" id="kwqs-このまち電気" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気 <span class="badge">取得 2026-02-26</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>0.00</b></span><span class="chip">関連性↓<b>0.0%</b></span><span class="chip">推定CTR↓<b>0.0%</b></span><span class="chip">LP利便性↓<b>0.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="このまち電気"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">東北電力 シミュレーション</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_B02(その他エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">電気代 比較</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_B02(その他エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">東北電力 プラン見直し</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_B02(その他エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">電気料金 見直し</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_B02(その他エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">電力会社 比較</td><td>インテント</td><td data-v="5">5</td><td>平均より下</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_B02(その他エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">東京電力 契約</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_B02(その他エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">電気料金 比較</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_B02(その他エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">東京 電気</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_B02(その他エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">電力会社 乗り換え</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_A02(広島エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">[電力会社 乗り換え]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_B02(その他エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">[電気料金 見直し]</td><td>完全</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_B02(その他エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">電気 契約</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_A02(広島エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">このまち電気</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">01NQ_SCH_A01(広島エリア 指名)-【250801～】</td></tr>
+<tr><td class="l">[このまち電気]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">01NQ_SCH_A01(広島エリア 指名)-【250801～】</td></tr>
+<tr><td class="l">中国電力 契約</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_A02(広島エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">電気代 安い</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_A02(広島エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">中国電力 引っ越し</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_A02(広島エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">電気代 節約</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">02NN_SCH_A02(広島エリア 一般)-【250801～】</td></tr>
+<tr><td class="l">[広島ガス 電気]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">01NQ_SCH_A01(広島エリア 指名)-【250801～】</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="タダ電">
+<h3 class="adv" id="kwqs-タダ電" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電 <span class="badge">取得 2026-02-26</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>0.00</b></span><span class="chip">関連性↓<b>0.0%</b></span><span class="chip">推定CTR↓<b>0.0%</b></span><span class="chip">LP利便性↓<b>0.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="タダ電"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">一人暮らし 電気代</td><td>フレーズ</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">フレーズ一致</td></tr>
+<tr><td class="l">電気 代 が 安い 会社</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">電力 会社 料金 比較</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">電力 会社</td><td>フレーズ</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">フレーズ一致</td></tr>
+<tr><td class="l">電気 代 を 節約 する 方法</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">電気 料金 削減</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">電気 代 安く</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">フレーズ一致</td></tr>
+<tr><td class="l">東京 電気 代 一人暮らし</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">[タダ電]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP_指名</td></tr>
+<tr><td class="l">電力 料金</td><td>フレーズ</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">フレーズ一致</td></tr>
+<tr><td class="l">電気 料金</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">フレーズ一致</td></tr>
+<tr><td class="l">タダ電</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP_指名</td></tr>
+<tr><td class="l">タダ電</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP_指名</td></tr>
+<tr><td class="l">電気代 無料</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">電気 安い 会社</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">電気代0円</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">japan 電力</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">電気代 削減</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">電気代 節約</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">電力 会社 乗り換え おすすめ</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均より上</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">電気代</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">電気 代 安く したい</td><td>インテント</td><td data-v="6">6</td><td>平均より下</td><td>平均より上</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+<tr><td class="l">電気 安い</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LP配信</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="このまち電気" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">konomachidenki.hiroshima-gas.co.jp<br><span>konomachidenki.hiroshima-gas.co.jp › cp › f</span></div><div class="t">お住まいの地域で電気代を見直し - このまち電気への乗り換えがお得 - 大手ガス会社が電気もご提供</div><div class="d">納得！料金の変動がゆるやかで安心できる「このまち電気」自分らしく工夫して電気を使える。 電気で変わる、暮らし心地。このまち電気なら、暮らしに寄り添った料金メニューをご提案</div><div class="meta2">IMP 105,525 ／ CTR 8.9% ／ COST ¥2,550,445<br>02NN_SCH_B02(その他エリア 一般)-【250801～】</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">konomachidenki.hiroshima-gas.co.jp<br><span>konomachidenki.hiroshima-gas.co.jp › cp › f</span></div><div class="t">広島ガスこのまち電気で料金比較 - 今すぐ料金シミュレーション - このまち電気で料金メニュー確認</div><div class="d">今の電気代と「このまち電気」の電気代を比較！より納得の料金プランへ。 月々の料金をWebで簡単シミュレーション！クリアで納得のいく料金をご提供します。</div><div class="meta2">IMP 34,700 ／ CTR 7.7% ／ COST ¥1,488,206<br>02NN_SCH_A02(広島エリア 一般)-【250801～】</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">konomachidenki.hiroshima-gas.co.jp<br><span>konomachidenki.hiroshima-gas.co.jp › cp › f</span></div><div class="t">このまち電気への乗り換えがお得 - 毎月の電気代を見直し - 簡単シミュレーションで他社比較</div><div class="d">気になる料金メニューはWEBでチェック！ご家庭のライフスタイルに合わせて最適な電気メニューを 今すぐ料金シミュレーション！「このまち電気」で電気料金を見える化。</div><div class="meta2">IMP 17,725 ／ CTR 7.8% ／ COST ¥592,481<br>02NN_SCH_B02(その他エリア 一般)-【250801～】</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">konomachidenki.hiroshima-gas.co.jp<br><span>konomachidenki.hiroshima-gas.co.jp › cp › f</span></div><div class="t">【公式】このまち電気 - このまち電気で電気を見直し - 市場連動型で電気料金が見える</div><div class="d">納得！料金の変動がゆるやかで安心できる「このまち電気」自分らしく工夫して電気を使える。 電気で変わる、暮らし心地。このまち電気なら、暮らしに寄り添った料金メニューをご提案</div><div class="meta2">IMP 4,069 ／ CTR 22.4% ／ COST ¥390,108<br>01NQ_SCH_B01(その他エリア 指名)-【250801～】</div></div>
+</div>
+<div class="serp-col advblk" data-a="タダ電" style="--ac:var(--adv-1)"><h4><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">tadaden.jp<br><span>tadaden.jp › lp02 › b</span></div><div class="t">毎月5,000円まで無料 - 【タダ電】電気代が毎月無料に - もタダ電で電気代無料</div><div class="d">電気代が5,000円まで誰でも無料になるサービス！お支払い0円の月は手数料も不要です。 年間で最大6万円分も電気代がタダ。今お使いの電力会社に解約手続きも不要です。詳細はこちら！</div><div class="meta2">IMP 104,265 ／ CTR 7.9% ／ COST ¥1,902,763<br>LP配信</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">tadaden.jp<br><span>tadaden.jp › lp02 › vc</span></div><div class="t">毎月5,000円まで無料 - 【タダ電】電気代が毎月無料に - もタダ電で電気代無料</div><div class="d">電気代が5,000円まで誰でも無料になるサービス！お支払い0円の月は手数料も不要です。 年間で最大6万円分も電気代がタダ。今お使いの電力会社に解約手続きも不要です。詳細はこちら！</div><div class="meta2">IMP 77,792 ／ CTR 23.8% ／ COST ¥1,934,588<br>LP_指名</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">tadaden.jp<br><span>tadaden.jp › lp02</span></div><div class="t">毎月5,000円まで無料 - 【タダ電】電気代が毎月無料に - もタダ電で電気代無料</div><div class="d">電気代が5,000円まで誰でも無料になるサービス！お支払い0円の月は手数料も不要です。 年間で最大6万円分も電気代がタダ。今お使いの電力会社に解約手続きも不要です。詳細はこちら！</div><div class="meta2">IMP 16,247 ／ CTR 7.3% ／ COST ¥232,341<br>フレーズ一致</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">tadaden.jp<br><span>tadaden.jp › lp02</span></div><div class="t">毎月5,000円まで無料 - 【タダ電】電気代が毎月無料に - もタダ電で電気代無料</div><div class="d">電気代が5,000円まで誰でも無料になるサービス！お支払い0円の月は手数料も不要です。 年間で最大6万円分も電気代がタダ。今お使いの電力会社に解約手続きも不要です。詳細はこちら！</div><div class="meta2">IMP 14,385 ／ CTR 3.6% ／ COST ¥102,786<br>フレーズ一致</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">電気代を安くしたいならタダ電</td><td data-v="8">8</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">電力会社の切り替えで電気代無料</td><td data-v="8">8</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">電気料金を節約するには</td><td data-v="8">8</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">年間で最大6万円分の電気代タダ</td><td data-v="8">8</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">電気代はタダ電で節約</td><td data-v="8">8</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">電気代が0円になる電力会社</td><td data-v="8">8</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">毎月5,000円まで無料</td><td data-v="8">8</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">【タダ電】電気代が毎月無料に</td><td data-v="8">8</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">{LOCATION(City)}もタダ電で電気代無料</td><td data-v="8">8</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">【公式】タダ電</td><td data-v="8">8</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">電気代が¥5,000タダになる</td><td data-v="8">8</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">簡単シミュレーションで他社比較</td><td data-v="6">6</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">あなたの電気代、払いすぎかも</td><td data-v="6">6</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">毎月5000円分の電気代タダになる</td><td data-v="6">6</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">基本料金もずーっと無料</td><td data-v="6">6</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">タダ電なら電気代が0円に</td><td data-v="6">6</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">値引きキャンペーン実施中</td><td data-v="4">4</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">乗り換え手続きもかんたん・安心</td><td data-v="4">4</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">3STEPでWEBから簡単お申込み</td><td data-v="3">3</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">このまち電気で電気代を賢く節約</td><td data-v="3">3</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">【納得の料金メニュー】</td><td data-v="3">3</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">電気料金を比較して納得の料金に</td><td data-v="3">3</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">市場連動型で電気料金が見える</td><td data-v="2">2</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">このまち電気への乗り換えがお得</td><td data-v="2">2</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">毎月の電気代を見直し</td><td data-v="2">2</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">【広島ガス】このまち電気</td><td data-v="2">2</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">このまち電気でコストカット</td><td data-v="2">2</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">ご家庭に合わせた料金メニュー</td><td data-v="2">2</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">内訳が見える、クリアな電気料金</td><td data-v="2">2</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">オール電化のお客様も申込可能</td><td data-v="2">2</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">切り替えるだけで電気代をタダに</td><td data-v="2">2</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">電気代が高すぎるあなたへ</td><td data-v="2">2</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">電気代が激安になるチャンス</td><td data-v="2">2</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l wrap">電気代を減らす方法</td><td data-v="2">2</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">世帯人数で料金シミュレーション</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">スマホ一つで簡単に電気代を節約</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">オール電化もこのまち電気で</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">電力会社の乗り換えを検討の方</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">電気料金の安い時間帯を狙える</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">広島ガスこのまち電気で料金比較</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">今すぐ料金シミュレーション</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">広島ガスで電気も納得のプランへ</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">今まで通り使ってコストカット</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">このまち電気で料金メニュー確認</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">{LOCATION(State):お住まいの地域}で電気代を見直し</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">大手ガス会社が電気もご提供</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">まずは料金シミュレーション</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">家計にやさしい料金メニュー</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">このまち電気で電気を見直し</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">【公式】このまち電気</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">【公式】広島ガスのこのまち電気</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">くらしに寄り添う、このまち電気</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">電気もガスもまとめて広島ガスで</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">引越しの機会に電気も見直し</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">電気代の見直しは広島ガスで</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">家庭に合わせた料金メニュー</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">地域密着広島ガスが電気をお届け</td><td data-v="1">1</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l wrap">広島で電気を選ぶなら広島ガス</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="このまち電気">
+<h3 class="adv" id="adlib-このまち電気" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気 <span class="badge">取得 2026-02-26</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>6本</b></span><span class="chip">CPN<b>4個</b></span><span class="chip">ADG<b>4個</b></span><span class="chip">ピン留め<b>33%</b></span><span class="chip">LP使い分け<b>1本</b></span></div>
+<p class="note">主要LP: <span title="https://konomachidenki.hiroshima-gas.co.jp/cp/f/index.html">https://konomachidenki.hiroshima-gas.co.jp/cp/f/index.html（6本）</span></p>
+<p class="note">カスタマイザ: {LOCATION}×1</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="このまち電気"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">簡単シミュレーションで他社比較</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">値引きキャンペーン実施中</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">乗り換え手続きもかんたん・安心</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">3STEPでWEBから簡単お申込み</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">このまち電気で電気代を賢く節約</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">【納得の料金メニュー】</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">電気料金を比較して納得の料金に</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">市場連動型で電気料金が見える</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">このまち電気への乗り換えがお得</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">毎月の電気代を見直し</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【広島ガス】このまち電気</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">このまち電気でコストカット</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">ご家庭に合わせた料金メニュー</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">内訳が見える、クリアな電気料金</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">オール電化のお客様も申込可能</td><td data-v="2">2</td></tr>
+</table></div></div><div>
+<table data-adv="このまち電気"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">気になる料金メニューはWEBでチェック！ご家庭のライフスタイルに合わせて最適な電気メニューを</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">今すぐ料金シミュレーション！「このまち電気」で電気料金を見える化。</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">今すぐ料金シミュレーション！広島ガスの「このまち電気」で電気料金を見える化。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">納得！料金の変動がゆるやかで安心できる「このまち電気」自分らしく工夫して電気を使える。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">電気で変わる、暮らし心地。このまち電気なら、暮らしに寄り添った料金メニューをご提案</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">月々の料金をWebで簡単シミュレーション！クリアで納得のいく料金をご提供します。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">今の電気代と「このまち電気」の電気代を比較！より納得の料金プランへ。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">市場連動型の料金プランで毎月のお支払いをバランスよく安定化できるメニューをご紹介。</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="タダ電">
+<h3 class="adv" id="adlib-タダ電" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電 <span class="badge">取得 2026-02-26</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>8本</b></span><span class="chip">CPN<b>3個</b></span><span class="chip">ADG<b>6個</b></span><span class="chip">ピン留め<b>12%</b></span><span class="chip">LP使い分け<b>6本</b></span></div>
+<p class="note">主要LP: <span title="https://tadaden.jp/lp02?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=phrase_lp02">https://tadaden.jp/lp02?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=phrase_lp0（3本）</span> ／ <span title="https://tadaden.jp/lp02/b?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=general_lp02b">https://tadaden.jp/lp02/b?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=general_（1本）</span> ／ <span title="https://tadaden.jp/lp02/vc?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=general_vc_lp02">https://tadaden.jp/lp02/vc?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=general（1本）</span> ／ <span title="https://tadaden.jp/lp02/vc?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=brand_vc_lp02">https://tadaden.jp/lp02/vc?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=brand_v（1本）</span> ／ <span title="https://tadaden.jp/lp02?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=general_lp02">https://tadaden.jp/lp02?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=general_lp（1本）</span></p>
+<p class="note">カスタマイザ: {LOCATION}×8</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="タダ電"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">電気代を安くしたいならタダ電</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">電力会社の切り替えで電気代無料</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">電気料金を節約するには</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">年間で最大6万円分の電気代タダ</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">電気代はタダ電で節約</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">電気代が0円になる電力会社</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">毎月5,000円まで無料</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">【タダ電】電気代が毎月無料に</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">{LOCATION(City)}もタダ電で電気代無料</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">【公式】タダ電</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">電気代が¥5,000タダになる</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">あなたの電気代、払いすぎかも</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">毎月5000円分の電気代タダになる</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">基本料金もずーっと無料</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">タダ電なら電気代が0円に</td><td data-v="6">6</td></tr>
+</table></div></div><div>
+<table data-adv="タダ電"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">カンタン乗り換えで電気代がタダに！入会料・切替費用・手数料など追加費用は一切かかりません。</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">年間で最大6万円分も電気代がタダ。今お使いの電力会社に解約手続きも不要です。詳細はこちら！</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">電気代が5,000円まで誰でも無料になるサービス！お支払い0円の月は手数料も不要です。</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">Webから5分で切り替え申請が完了！今すぐ必要事項を記入して電気代が無料の生活を送りませんか？</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">Webから2分で切り替え申請が完了！今すぐ必要事項を記入して電気代が無料の生活を送りませんか？</td><td data-v="3">3</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="このまち電気">
+<h3 class="adv" id="query-このまち電気" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気 <span class="badge">取得 2026-02-26</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="30">30</td><td data-v="1943">1,943</td><td data-v="542005">¥542,005</td><td data-v="0.6560">65.6%</td><td class="cv sep" data-v="441.6">441.6</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="144">144</td><td data-v="1236">1,236</td><td data-v="235396">¥235,396</td><td data-v="0.2849">28.5%</td><td class="cv sep" data-v="645.5">645.5</td></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="9">9</td><td data-v="213">213</td><td data-v="42259">¥42,259</td><td data-v="0.0512">5.1%</td><td class="cv sep" data-v="84.5">84.5</td></tr>
+<tr><td class="l">検索｜除外済み</td><td data-v="5">5</td><td data-v="49">49</td><td data-v="6511">¥6,511</td><td data-v="0.0079">0.8%</td><td class="cv sep" data-v="23.5">23.5</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="このまち電気"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">電気 料金 比較</td><td>追加済み</td><td>検索</td><td data-v="483">483</td><td data-v="98270">¥98,270</td><td class="cv sep" data-v="221.5">221.5</td><td class="cv" data-v="443.7">¥444</td></tr>
+<tr><td class="l">電力 会社 比較</td><td>追加済み</td><td>検索</td><td data-v="177">177</td><td data-v="45817">¥45,817</td><td class="cv sep" data-v="72.3">72.3</td><td class="cv" data-v="633.4">¥633</td></tr>
+<tr><td class="l">この まち 電気</td><td>追加済み</td><td>検索</td><td data-v="1150">1,150</td><td data-v="369587">¥369,587</td><td class="cv sep" data-v="70.8">70.8</td><td class="cv" data-v="5220.9">¥5,221</td></tr>
+<tr><td class="l">電気 料金</td><td>なし</td><td>検索</td><td data-v="117">117</td><td data-v="20483">¥20,483</td><td class="cv sep" data-v="57.0">57.0</td><td class="cv" data-v="359.4">¥359</td></tr>
+<tr><td class="l">ドコモ でんき</td><td>なし</td><td>検索</td><td data-v="104">104</td><td data-v="15724">¥15,724</td><td class="cv sep" data-v="51.0">51.0</td><td class="cv" data-v="308.3">¥308</td></tr>
+<tr><td class="l">電気 会社 おすすめ</td><td>なし</td><td>検索</td><td data-v="71">71</td><td data-v="18675">¥18,675</td><td class="cv sep" data-v="45.5">45.5</td><td class="cv" data-v="410.4">¥410</td></tr>
+<tr><td class="l">ドコモ 電気 料金</td><td>なし</td><td>検索</td><td data-v="82">82</td><td data-v="10533">¥10,533</td><td class="cv sep" data-v="39.5">39.5</td><td class="cv" data-v="266.7">¥267</td></tr>
+<tr><td class="l">電気 代 安い 会社</td><td>なし</td><td>検索</td><td data-v="58">58</td><td data-v="13340">¥13,340</td><td class="cv sep" data-v="34.0">34.0</td><td class="cv" data-v="392.4">¥392</td></tr>
+<tr><td class="l">楽天 でんき</td><td>なし</td><td>検索</td><td data-v="58">58</td><td data-v="15489">¥15,489</td><td class="cv sep" data-v="31.5">31.5</td><td class="cv" data-v="491.7">¥492</td></tr>
+<tr><td class="l">電力 会社 おすすめ</td><td>追加済み</td><td>検索</td><td data-v="42">42</td><td data-v="7373">¥7,373</td><td class="cv sep" data-v="27.0">27.0</td><td class="cv" data-v="273.1">¥273</td></tr>
+<tr><td class="l">電気 代 比較</td><td>追加済み</td><td>検索</td><td data-v="62">62</td><td data-v="14951">¥14,951</td><td class="cv sep" data-v="24.0">24.0</td><td class="cv" data-v="623.0">¥623</td></tr>
+<tr><td class="l">電気 代 安く する 方法</td><td>なし</td><td>検索</td><td data-v="45">45</td><td data-v="8407">¥8,407</td><td class="cv sep" data-v="24.0">24.0</td><td class="cv" data-v="350.3">¥350</td></tr>
+<tr><td class="l">電気 代</td><td>除外済み</td><td>検索</td><td data-v="49">49</td><td data-v="6511">¥6,511</td><td class="cv sep" data-v="23.5">23.5</td><td class="cv" data-v="277.1">¥277</td></tr>
+<tr><td class="l">電気 代 安く したい</td><td>なし</td><td>検索</td><td data-v="39">39</td><td data-v="7652">¥7,652</td><td class="cv sep" data-v="21.0">21.0</td><td class="cv" data-v="364.4">¥364</td></tr>
+<tr><td class="l">ソフトバンク 電気</td><td>なし</td><td>検索</td><td data-v="29">29</td><td data-v="5464">¥5,464</td><td class="cv sep" data-v="20.5">20.5</td><td class="cv" data-v="266.5">¥267</td></tr>
+<tr><td class="l">エネ チェンジ</td><td>なし</td><td>P-MAX</td><td data-v="90">90</td><td data-v="20169">¥20,169</td><td class="cv sep" data-v="20.0">20.0</td><td class="cv" data-v="1008.5">¥1,008</td></tr>
+<tr><td class="l">電気 代 見直し</td><td>追加済み</td><td>検索</td><td data-v="34">34</td><td data-v="6325">¥6,325</td><td class="cv sep" data-v="18.0">18.0</td><td class="cv" data-v="351.4">¥351</td></tr>
+<tr><td class="l">電気 代 平均</td><td>なし</td><td>検索</td><td data-v="40">40</td><td data-v="5720">¥5,720</td><td class="cv sep" data-v="18.0">18.0</td><td class="cv" data-v="317.8">¥318</td></tr>
+<tr><td class="l">電気 代 計算 シミュレーター</td><td>なし</td><td>検索</td><td data-v="43">43</td><td data-v="3783">¥3,783</td><td class="cv sep" data-v="17.5">17.5</td><td class="cv" data-v="216.2">¥216</td></tr>
+<tr><td class="l">電気 代 シュミレーション</td><td>なし</td><td>検索</td><td data-v="37">37</td><td data-v="6124">¥6,124</td><td class="cv sep" data-v="16.0">16.0</td><td class="cv" data-v="382.8">¥383</td></tr>
+<tr><td class="l">ドコモ 電気 シミュレーション</td><td>なし</td><td>検索</td><td data-v="34">34</td><td data-v="4712">¥4,712</td><td class="cv sep" data-v="16.0">16.0</td><td class="cv" data-v="294.5">¥294</td></tr>
+<tr><td class="l">楽天 電気 料金</td><td>なし</td><td>検索</td><td data-v="31">31</td><td data-v="4953">¥4,953</td><td class="cv sep" data-v="16.0">16.0</td><td class="cv" data-v="309.6">¥310</td></tr>
+<tr><td class="l">電力 会社 比較 シミュレーション</td><td>なし</td><td>検索</td><td data-v="31">31</td><td data-v="6107">¥6,107</td><td class="cv sep" data-v="15.0">15.0</td><td class="cv" data-v="407.1">¥407</td></tr>
+<tr><td class="l">電気 ガス おすすめ</td><td>なし</td><td>検索</td><td data-v="25">25</td><td data-v="4723">¥4,723</td><td class="cv sep" data-v="14.0">14.0</td><td class="cv" data-v="337.4">¥337</td></tr>
+<tr><td class="l">電気 料金 見直し</td><td>追加済み</td><td>検索</td><td data-v="23">23</td><td data-v="9250">¥9,250</td><td class="cv sep" data-v="14.0">14.0</td><td class="cv" data-v="660.7">¥661</td></tr>
+<tr><td class="l">楽天 でんき 評判</td><td>なし</td><td>検索</td><td data-v="19">19</td><td data-v="4643">¥4,643</td><td class="cv sep" data-v="14.0">14.0</td><td class="cv" data-v="331.6">¥332</td></tr>
+<tr><td class="l">電気 代 どこが 安い</td><td>なし</td><td>検索</td><td data-v="19">19</td><td data-v="3776">¥3,776</td><td class="cv sep" data-v="14.0">14.0</td><td class="cv" data-v="269.7">¥270</td></tr>
+<tr><td class="l">ドコモ 電気 高い</td><td>なし</td><td>検索</td><td data-v="18">18</td><td data-v="2731">¥2,731</td><td class="cv sep" data-v="12.0">12.0</td><td class="cv" data-v="227.6">¥228</td></tr>
+<tr><td class="l">安い 電気 会社 ランキング</td><td>なし</td><td>検索</td><td data-v="18">18</td><td data-v="8889">¥8,889</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="808.1">¥808</td></tr>
+<tr><td class="l">ソフトバンク 電気 高い</td><td>なし</td><td>検索</td><td data-v="25">25</td><td data-v="3968">¥3,968</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="360.7">¥361</td></tr>
+<tr><td class="l">電気 契約 おすすめ</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="2016">¥2,016</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="183.3">¥183</td></tr>
+<tr><td class="l">電気 どこが 安い</td><td>なし</td><td>検索</td><td data-v="23">23</td><td data-v="3985">¥3,985</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="362.3">¥362</td></tr>
+<tr><td class="l">電気 料金 シミュレーション</td><td>なし</td><td>P-MAX</td><td data-v="24">24</td><td data-v="4859">¥4,859</td><td class="cv sep" data-v="10.5">10.5</td><td class="cv" data-v="462.8">¥463</td></tr>
+<tr><td class="l">オール 電化 電気 代</td><td>なし</td><td>P-MAX</td><td data-v="28">28</td><td data-v="5153">¥5,153</td><td class="cv sep" data-v="10.0">10.0</td><td class="cv" data-v="515.3">¥515</td></tr>
+<tr><td class="l">電気 会社</td><td>なし</td><td>検索</td><td data-v="14">14</td><td data-v="2796">¥2,796</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="310.7">¥311</td></tr>
+<tr><td class="l">東北 電力 プラン 見直し</td><td>追加済み</td><td>検索</td><td data-v="19">19</td><td data-v="2615">¥2,615</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="290.6">¥291</td></tr>
+<tr><td class="l">電気 シュミレーション</td><td>なし</td><td>検索</td><td data-v="13">13</td><td data-v="2473">¥2,473</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="274.8">¥275</td></tr>
+<tr><td class="l">中国 電力 電気 料金</td><td>なし</td><td>P-MAX</td><td data-v="23">23</td><td data-v="3776">¥3,776</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="472.0">¥472</td></tr>
+<tr><td class="l">ドコモ 電気 東北 電力 比較</td><td>なし</td><td>検索</td><td data-v="19">19</td><td data-v="2985">¥2,985</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="373.1">¥373</td></tr>
+<tr><td class="l">安い 電気 会社</td><td>なし</td><td>検索</td><td data-v="14">14</td><td data-v="5627">¥5,627</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="703.4">¥703</td></tr>
+<tr><td class="l">au 電気 料金</td><td>なし</td><td>検索</td><td data-v="23">23</td><td data-v="3682">¥3,682</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="460.2">¥460</td></tr>
+<tr><td class="l">電気 代 計算</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="1531">¥1,531</td><td class="cv sep" data-v="7.5">7.5</td><td class="cv" data-v="204.1">¥204</td></tr>
+<tr><td class="l">電気 代 見直し 方法</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="1387">¥1,387</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="198.1">¥198</td></tr>
+<tr><td class="l">電気 代 高 すぎる</td><td>なし</td><td>検索</td><td data-v="10">10</td><td data-v="1713">¥1,713</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="244.7">¥245</td></tr>
+<tr><td class="l">ドコモ 電気 シュミレーション</td><td>なし</td><td>検索</td><td data-v="10">10</td><td data-v="1542">¥1,542</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="220.3">¥220</td></tr>
+<tr><td class="l">東北 電力 シュミレーション</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="991">¥991</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="141.6">¥142</td></tr>
+<tr><td class="l">ドコモ 電気</td><td>なし</td><td>P-MAX</td><td data-v="13">13</td><td data-v="2201">¥2,201</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="314.4">¥314</td></tr>
+<tr><td class="l">電気 ガス セット 比較</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="1511">¥1,511</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="215.9">¥216</td></tr>
+<tr><td class="l">ドコモ 電気 メリット</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="2215">¥2,215</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="316.4">¥316</td></tr>
+<tr><td class="l">電気 代 比較 サイト</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="1733">¥1,733</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="288.8">¥289</td></tr>
+<tr><td class="l">この まち でんき</td><td>なし</td><td>検索</td><td data-v="25">25</td><td data-v="5543">¥5,543</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="923.8">¥924</td></tr>
+<tr><td class="l">電気 代 安い ところ</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="4754">¥4,754</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="792.3">¥792</td></tr>
+<tr><td class="l">電気 料金 比較 シミュレーション</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="1917">¥1,917</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="319.5">¥320</td></tr>
+<tr><td class="l">東北 電力 電気 料金</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="1739">¥1,739</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="289.8">¥290</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（54行）。</p></div>
+<div class="advblk" data-a="タダ電">
+<h3 class="adv" id="query-タダ電" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電 <span class="badge">取得 2026-02-26</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="15">15</td><td data-v="9286">9,286</td><td data-v="950438">¥950,438</td><td data-v="0.5502">55.0%</td><td class="cv sep" data-v="451.4">451.4</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="88">88</td><td data-v="7001">7,001</td><td data-v="776203">¥776,203</td><td data-v="0.4494">44.9%</td><td class="cv sep" data-v="258.6">258.6</td></tr>
+<tr><td class="l">検索｜除外済み</td><td data-v="1">1</td><td data-v="4">4</td><td data-v="738">¥738</td><td data-v="0.0004">0.0%</td><td class="cv sep" data-v="2.0">2.0</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="タダ電"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">タダ 電</td><td>追加済み</td><td>検索</td><td data-v="9169">9,169</td><td data-v="924424">¥924,424</td><td class="cv sep" data-v="445.7">445.7</td><td class="cv" data-v="2074.1">¥2,074</td></tr>
+<tr><td class="l">ただ 電</td><td>なし</td><td>検索</td><td data-v="1304">1,304</td><td data-v="129226">¥129,226</td><td class="cv sep" data-v="49.8">49.8</td><td class="cv" data-v="2596.5">¥2,596</td></tr>
+<tr><td class="l">タダ 電 と は</td><td>なし</td><td>検索</td><td data-v="1681">1,681</td><td data-v="187646">¥187,646</td><td class="cv sep" data-v="38.1">38.1</td><td class="cv" data-v="4921.2">¥4,921</td></tr>
+<tr><td class="l">ただ で ん</td><td>なし</td><td>検索</td><td data-v="1009">1,009</td><td data-v="99318">¥99,318</td><td class="cv sep" data-v="27.3">27.3</td><td class="cv" data-v="3636.7">¥3,637</td></tr>
+<tr><td class="l">ただ 電気</td><td>なし</td><td>検索</td><td data-v="423">423</td><td data-v="42512">¥42,512</td><td class="cv sep" data-v="22.1">22.1</td><td class="cv" data-v="1923.6">¥1,924</td></tr>
+<tr><td class="l">タダ 電 口コミ</td><td>なし</td><td>検索</td><td data-v="914">914</td><td data-v="107205">¥107,205</td><td class="cv sep" data-v="18.8">18.8</td><td class="cv" data-v="5708.5">¥5,708</td></tr>
+<tr><td class="l">タダ 電 北海道</td><td>なし</td><td>検索</td><td data-v="259">259</td><td data-v="27763">¥27,763</td><td class="cv sep" data-v="12.9">12.9</td><td class="cv" data-v="2157.2">¥2,157</td></tr>
+<tr><td class="l">ダダ 電</td><td>なし</td><td>検索</td><td data-v="16">16</td><td data-v="1814">¥1,814</td><td class="cv sep" data-v="8.5">8.5</td><td class="cv" data-v="213.4">¥213</td></tr>
+<tr><td class="l">タダ 電気</td><td>なし</td><td>検索</td><td data-v="135">135</td><td data-v="14645">¥14,645</td><td class="cv sep" data-v="7.4">7.4</td><td class="cv" data-v="1976.4">¥1,976</td></tr>
+<tr><td class="l">タダ 電 デメリット</td><td>なし</td><td>検索</td><td data-v="228">228</td><td data-v="26952">¥26,952</td><td class="cv sep" data-v="6.8">6.8</td><td class="cv" data-v="3975.2">¥3,975</td></tr>
+<tr><td class="l">ただ 電気 口コミ</td><td>なし</td><td>検索</td><td data-v="75">75</td><td data-v="8798">¥8,798</td><td class="cv sep" data-v="6.4">6.4</td><td class="cv" data-v="1383.3">¥1,383</td></tr>
+<tr><td class="l">タダ 電 申し込み</td><td>なし</td><td>検索</td><td data-v="47">47</td><td data-v="4750">¥4,750</td><td class="cv sep" data-v="5.9">5.9</td><td class="cv" data-v="799.7">¥800</td></tr>
+<tr><td class="l">タダ 電 電話 問い合わせ</td><td>なし</td><td>検索</td><td data-v="95">95</td><td data-v="11033">¥11,033</td><td class="cv sep" data-v="4.7">4.7</td><td class="cv" data-v="2372.7">¥2,373</td></tr>
+<tr><td class="l">タダ 電 一人暮らし</td><td>なし</td><td>検索</td><td data-v="54">54</td><td data-v="6205">¥6,205</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="1551.2">¥1,551</td></tr>
+<tr><td class="l">一 番 安い 電気 会社</td><td>なし</td><td>検索</td><td data-v="14">14</td><td data-v="4065">¥4,065</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="1016.2">¥1,016</td></tr>
+<tr><td class="l">タダ 電 単価</td><td>なし</td><td>検索</td><td data-v="150">150</td><td data-v="16591">¥16,591</td><td class="cv sep" data-v="3.8">3.8</td><td class="cv" data-v="4354.6">¥4,355</td></tr>
+<tr><td class="l">タダ 電 申し込み 停止</td><td>なし</td><td>検索</td><td data-v="69">69</td><td data-v="8137">¥8,137</td><td class="cv sep" data-v="3.1">3.1</td><td class="cv" data-v="2633.3">¥2,633</td></tr>
+<tr><td class="l">タダ 電 支払い 方法</td><td>なし</td><td>検索</td><td data-v="17">17</td><td data-v="1955">¥1,955</td><td class="cv sep" data-v="2.2">2.2</td><td class="cv" data-v="884.6">¥885</td></tr>
+<tr><td class="l">電気 代 5000 円 まで 無料</td><td>なし</td><td>検索</td><td data-v="29">29</td><td data-v="4167">¥4,167</td><td class="cv sep" data-v="2.1">2.1</td><td class="cv" data-v="1938.1">¥1,938</td></tr>
+<tr><td class="l">ジャパン 電力</td><td>なし</td><td>検索</td><td data-v="17">17</td><td data-v="4364">¥4,364</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2182.0">¥2,182</td></tr>
+<tr><td class="l">九州 電力 新規 申し込み</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="349">¥349</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="174.5">¥174</td></tr>
+<tr><td class="l">一人暮らし 電気 代 おかしい</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="591">¥591</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="295.5">¥296</td></tr>
+<tr><td class="l">電気 安く なる</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="296">¥296</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="148.0">¥148</td></tr>
+<tr><td class="l">タダ 電 電気 代 口コミ</td><td>なし</td><td>検索</td><td data-v="37">37</td><td data-v="4384">¥4,384</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2192.0">¥2,192</td></tr>
+<tr><td class="l">低 所得 者 エアコン 給付 金</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="324">¥324</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="162.0">¥162</td></tr>
+<tr><td class="l">楽々 でんき</td><td>なし</td><td>検索</td><td data-v="20">20</td><td data-v="6347">¥6,347</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3173.5">¥3,174</td></tr>
+<tr><td class="l">電気 切り替え キャンペーン</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="3207">¥3,207</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1603.5">¥1,604</td></tr>
+<tr><td class="l">カテエネ</td><td>除外済み</td><td>検索</td><td data-v="4">4</td><td data-v="738">¥738</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="369.0">¥369</td></tr>
+<tr><td class="l">電気 乗り換え キャッシュ バック</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="449">¥449</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="224.5">¥224</td></tr>
+<tr><td class="l">検針 票 電気</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="388">¥388</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="194.0">¥194</td></tr>
+<tr><td class="l">株式 会社 エス エナジー タダ 電</td><td>なし</td><td>検索</td><td data-v="61">61</td><td data-v="6761">¥6,761</td><td class="cv sep" data-v="1.8">1.8</td><td class="cv" data-v="3735.4">¥3,735</td></tr>
+<tr><td class="l">タダ 電 とは</td><td>なし</td><td>検索</td><td data-v="23">23</td><td data-v="2326">¥2,326</td><td class="cv sep" data-v="1.7">1.7</td><td class="cv" data-v="1368.2">¥1,368</td></tr>
+<tr><td class="l">電気 代 を 安く する 方法</td><td>追加済み</td><td>検索</td><td data-v="40">40</td><td data-v="9305">¥9,305</td><td class="cv sep" data-v="1.7">1.7</td><td class="cv" data-v="5571.9">¥5,572</td></tr>
+<tr><td class="l">タダ 電 仕組み</td><td>なし</td><td>検索</td><td data-v="275">275</td><td data-v="31250">¥31,250</td><td class="cv sep" data-v="1.6">1.6</td><td class="cv" data-v="19409.9">¥19,410</td></tr>
+<tr><td class="l">5000 円 まで 無料 電気</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="3619">¥3,619</td><td class="cv sep" data-v="1.6">1.6</td><td class="cv" data-v="2305.1">¥2,305</td></tr>
+<tr><td class="l">電気 会社</td><td>なし</td><td>検索</td><td data-v="16">16</td><td data-v="6556">¥6,556</td><td class="cv sep" data-v="1.6">1.6</td><td class="cv" data-v="4202.6">¥4,203</td></tr>
+<tr><td class="l">電気 無料</td><td>追加済み</td><td>検索</td><td data-v="29">29</td><td data-v="7650">¥7,650</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="5100.0">¥5,100</td></tr>
+<tr><td class="l">お 手軽 電気</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="1839">¥1,839</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="1382.7">¥1,383</td></tr>
+<tr><td class="l">電気 代 安く したい</td><td>追加済み</td><td>検索</td><td data-v="42">42</td><td data-v="7060">¥7,060</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="5389.3">¥5,389</td></tr>
+<tr><td class="l">電力 会社 乗り換え おすすめ</td><td>追加済み</td><td>検索</td><td data-v="6">6</td><td data-v="1999">¥1,999</td><td class="cv sep" data-v="1.2">1.2</td><td class="cv" data-v="1599.2">¥1,599</td></tr>
+<tr><td class="l">九州 電力 ナイト セレクト 22</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="371">¥371</td><td class="cv sep" data-v="1.2">1.2</td><td class="cv" data-v="317.1">¥317</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（41行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2026-02-26 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="-1">--</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td class="l">一般</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="-1">--</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="-1">--</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td class="l">一般</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="-1">--</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2026-02-26</th></tr>
+<tr data-a="このまち電気"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>このまち電気</td><td><span class="note" title="このバッチのスプレッドシートに不在">--</span><div class="note">--</div></td></tr>
+<tr data-a="タダ電"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>タダ電</td><td><span class="note" title="このバッチのスプレッドシートに不在">--</span><div class="note">--</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2026-02-26</b>（260226_レポート依頼用【電気】_セレス様__1ZjJY6Ky.xlsx）<br>取得不可（空タブ）: シン・エナジー・TERASELでんき<br>端数月: 2026-02（26日まで）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

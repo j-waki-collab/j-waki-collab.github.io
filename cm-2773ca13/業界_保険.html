@@ -1,0 +1,796 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜保険</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>保険業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">1社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2026-07-02</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥1,587,541</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥197</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">5.8〜5.8</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="アントプロダクション(オリコ)" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2026-07-02（期間 2026年4月1日 - 2026年6月30日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td data-v="1587541">¥1,587,541</td><td data-v="8077">8,077</td><td data-v="0.0513">5.1%</td><td data-v="196.6">¥197</td><td data-v="5.85">5.85</td><td data-v="36.6">36.6%</td><td data-v="0.0000">0.0%</td><td><div class="bar"><div class="mt-i" style="width:0.8%" title="インテント マッチ 0.8%"></div><div class="mt-p" style="width:57.4%" title="フレーズ一致 57.4%"></div><div class="mt-e" style="width:41.8%" title="完全一致 41.8%"></div></div></td><td class="cv sep" data-v="3137">3,137</td><td class="cv" data-v="0.3884">38.8%</td><td class="cv" data-v="506.0">¥506</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: エコスマート（オリックス）・ザイオニクス（オリックス）</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td data-v="202604">2026-04</td><td data-v="46123">46,123</td><td data-v="2148">2,148</td><td data-v="0.0466">4.7%</td><td data-v="206.4">¥206</td><td data-v="443333">¥443,333</td><td class="cv sep" data-v="914">914</td><td class="cv" data-v="0.4257">42.6%</td><td class="cv" data-v="484.8">¥485</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td data-v="202605">2026-05</td><td data-v="51168">51,168</td><td data-v="2794">2,794</td><td data-v="0.0546">5.5%</td><td data-v="204.6">¥205</td><td data-v="571644">¥571,644</td><td class="cv sep" data-v="1222">1,222</td><td class="cv" data-v="0.4375">43.8%</td><td class="cv" data-v="467.6">¥468</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td data-v="202606">2026-06</td><td data-v="60060">60,060</td><td data-v="3135">3,135</td><td data-v="0.0522">5.2%</td><td data-v="182.6">¥183</td><td data-v="572564">¥572,564</td><td class="cv sep" data-v="1000">1,000</td><td class="cv" data-v="0.3191">31.9%</td><td class="cv" data-v="572.3">¥572</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="アントプロダクション(オリコ)">
+<h3 class="adv" id="struct-アントプロダクションオリコ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ) <span class="badge">取得 2026-07-02</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</span><span class="st">📁 CPN <b>8</b></span><span class="st">📂 ADG <b>24</b></span><span class="st">🔑 KW <b>156</b></span><span class="st">✏️ 広告 <b>25</b></span><span class="st">🔗 LP <b>23</b></span><span class="st">💰 <b>¥1,587,541</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="GC-オリックス生命-GAD">GC-オリックス生命-GAD</span><span class="share"><div style="width:83%"></div></span><span class="st">83.3%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>38</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,322,592</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="GC-オリックス生命-完全一致">GC-オリックス生命-完全一致</span><span class="st">🔑 <b>38</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,322,592</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="GC-メディケア生命-GAD">GC-メディケア生命-GAD</span><span class="share"><div style="width:13%"></div></span><span class="st">12.9%</span><span class="st">📂 <b>5</b></span><span class="st">🔑 <b>21</b></span><span class="st">✏️ <b>6</b></span><span class="st">🔗 <b>5</b></span><span class="st">💰 <b>¥204,756</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="GC-新メディフィットＡ">GC-新メディフィットＡ</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥62,078</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-メディケア生命-完全一致">GC-メディケア生命-完全一致</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥53,344</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-新メディフィットRe">GC-新メディフィットRe</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥43,791</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-メディフィットがん保険">GC-メディフィットがん保険</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥23,237</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-新メディフィットPlus">GC-新メディフィットPlus</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥22,306</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="GC-アクサ生命ユニットリンク-GAD">GC-アクサ生命ユニットリンク-GAD</span><span class="share"><div style="width:3%"></div></span><span class="st">2.5%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥40,140</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="GC-アクサ生命ユニットリンク-完全一致">GC-アクサ生命ユニットリンク-完全一致</span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥40,140</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="GC-引受緩和型-GAD">GC-引受緩和型-GAD</span><span class="share"><div style="width:0%"></div></span><span class="st">0.5%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>35</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥7,637</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="GC-保険-【引受緩和型】">GC-保険-【引受緩和型】</span><span class="st">🔑 <b>26</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥5,188</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-保険-【疾病名】">GC-保険-【疾病名】</span><span class="st">🔑 <b>9</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥2,449</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="GC-がん保険-GAD">GC-がん保険-GAD</span><span class="share"><div style="width:0%"></div></span><span class="st">0.3%</span><span class="st">📂 <b>8</b></span><span class="st">🔑 <b>21</b></span><span class="st">✏️ <b>8</b></span><span class="st">🔗 <b>8</b></span><span class="st">💰 <b>¥5,309</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="GC-保険-【がん保険】">GC-保険-【がん保険】</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥3,940</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-保険-【がん保険-70代】">GC-保険-【がん保険-70代】</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥462</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-保険-【がん保険-50代】">GC-保険-【がん保険-50代】</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥359</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-保険-【がん保険-10代】">GC-保険-【がん保険-10代】</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥218</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-保険-【がん保険-20代】">GC-保険-【がん保険-20代】</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥170</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-保険-【がん保険-60代】">GC-保険-【がん保険-60代】</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥160</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-保険-【がん保険-40代】">GC-保険-【がん保険-40代】</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-保険-【がん保険-30代】">GC-保険-【がん保険-30代】</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="GC-医療保険-GAD">GC-医療保険-GAD</span><span class="share"><div style="width:0%"></div></span><span class="st">0.2%</span><span class="st">📂 <b>5</b></span><span class="st">🔑 <b>26</b></span><span class="st">✏️ <b>5</b></span><span class="st">🔗 <b>5</b></span><span class="st">💰 <b>¥3,774</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="GC-保険-【医療保険-60代】">GC-保険-【医療保険-60代】</span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,457</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-保険-【医療保険】">GC-保険-【医療保険】</span><span class="st">🔑 <b>8</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,410</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-保険-【医療保険-70代】">GC-保険-【医療保険-70代】</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥576</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-保険-【医療保険-10代】">GC-保険-【医療保険-10代】</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥244</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="GC-保険-【医療保険-50代】">GC-保険-【医療保険-50代】</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥87</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="GC-就業不能保険-GAD">GC-就業不能保険-GAD</span><span class="share"><div style="width:0%"></div></span><span class="st">0.2%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥3,333</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="GC-保険-就業不能保険">GC-保険-就業不能保険</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥3,333</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="GC-収入保障保険-GAD">GC-収入保障保険-GAD</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="GC-保険-【収入保障保険】">GC-保険-【収入保障保険】</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:51.5%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜メディケア生命 がん保険 / QS8 / CPC¥126 / COST¥5,023"></span>
+<span class="dot" style="left:52.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜メディケア生命 医療保険 / QS7 / CPC¥127 / COST¥46,911"></span>
+<span class="dot" style="left:100.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜新メディフィットリリーフ / QS7 / CPC¥244 / COST¥20,000"></span>
+<span class="dot" style="left:99.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜新メディフィットRe / QS7 / CPC¥244 / COST¥9,256"></span>
+<span class="dot" style="left:99.4%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜[新メディフィットリリーフ] / QS7 / CPC¥243 / COST¥9,948"></span>
+<span class="dot" style="left:98.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜[新メディフィットPlus] / QS7 / CPC¥241 / COST¥8,195"></span>
+<span class="dot" style="left:100.0%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜新メディフィットプラス / QS8 / CPC¥245 / COST¥12,251"></span>
+<span class="dot" style="left:98.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜[メディフィット がん保険] / QS7 / CPC¥240 / COST¥23,237"></span>
+<span class="dot" style="left:100.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜[新メディフィットＡ] / QS7 / CPC¥244 / COST¥26,107"></span>
+<span class="dot" style="left:99.9%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜新メディフィットＡ / QS7 / CPC¥244 / COST¥17,303"></span>
+<span class="dot" style="left:87.1%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜ライズ サポート プラス / QS8 / CPC¥213 / COST¥13,392"></span>
+<span class="dot" style="left:87.7%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜[ライズ サポート プラス] / QS8 / CPC¥214 / COST¥27,618"></span>
+<span class="dot" style="left:87.3%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜[オリックス 生命 死亡 保険] / QS8 / CPC¥213 / COST¥56,221"></span>
+<span class="dot" style="left:86.9%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜[オリックス生命 がん保険] / QS8 / CPC¥212 / COST¥64,888"></span>
+<span class="dot" style="left:32.1%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜アクサ ユニット・リンク / QS8 / CPC¥78 / COST¥5,717"></span>
+<span class="dot" style="left:40.4%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜アクサ 変額保険 / QS8 / CPC¥98 / COST¥7,189"></span>
+<span class="dot" style="left:87.1%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜医療保険キュア・ネクスト / QS7 / CPC¥213 / COST¥10,204"></span>
+<span class="dot" style="left:88.2%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜オリックス生命 緩和型 / QS6 / CPC¥215 / COST¥23,027"></span>
+<span class="dot" style="left:87.9%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜がん保険ビリーブ / QS7 / CPC¥215 / COST¥11,155"></span>
+<span class="dot" style="left:84.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜[オリックス生命保険] / QS7 / CPC¥205 / COST¥116,364"></span>
+<span class="dot" style="left:78.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜オリックス生命保険 / QS7 / CPC¥192 / COST¥13,460"></span>
+<span class="dot" style="left:86.3%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜[オリックス 生命 医療 保険] / QS7 / CPC¥211 / COST¥88,419"></span>
+<span class="dot" style="left:86.5%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜オリックス生命 終身保険 / QS7 / CPC¥211 / COST¥18,362"></span>
+<span class="dot" style="left:88.1%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜オリックス生命 収入保障保険 / QS7 / CPC¥215 / COST¥7,305"></span>
+<span class="dot" style="left:81.7%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜オリックス生命 医療保険 / QS7 / CPC¥199 / COST¥20,138"></span>
+<span class="dot" style="left:34.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜アクサ生命 ユニット・リンク / QS7 / CPC¥83 / COST¥14,106"></span>
+<span class="dot" style="left:29.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜ユニットリンク / QS7 / CPC¥71 / COST¥10,823"></span>
+<span class="dot" style="left:84.0%;bottom:44.4%;width:14px;height:14px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜オリックス生命 / QS5 / CPC¥205 / COST¥580,316"></span>
+<span class="dot" style="left:82.5%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="アントプロダクション(オリコ)｜[オリックス生命] / QS5 / CPC¥201 / COST¥229,301"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥61</span>
+<span class="ax" style="left:50%;bottom:-22px">¥122</span>
+<span class="ax" style="left:75%;bottom:-22px">¥183</span>
+<span class="ax" style="left:100%;bottom:-22px">¥244</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>アントプロダクション(オリコ)</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">ユニットリンク</td><td data-v="7">7</td><td data-v="71">¥71</td><td data-v="152">152</td><td data-v="10823">¥10,823</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">アクサ ユニット・リンク</td><td data-v="8">8</td><td data-v="78">¥78</td><td data-v="73">73</td><td data-v="5717">¥5,717</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">アクサ生命 ユニット・リンク</td><td data-v="7">7</td><td data-v="83">¥83</td><td data-v="169">169</td><td data-v="14106">¥14,106</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">アクサ 変額保険</td><td data-v="8">8</td><td data-v="98">¥98</td><td data-v="73">73</td><td data-v="7189">¥7,189</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">メディケア生命 がん保険</td><td data-v="8">8</td><td data-v="126">¥126</td><td data-v="40">40</td><td data-v="5023">¥5,023</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">メディケア生命 医療保険</td><td data-v="7">7</td><td data-v="127">¥127</td><td data-v="368">368</td><td data-v="46911">¥46,911</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">オリックス生命保険</td><td data-v="7">7</td><td data-v="192">¥192</td><td data-v="70">70</td><td data-v="13460">¥13,460</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">オリックス生命 医療保険</td><td data-v="7">7</td><td data-v="199">¥199</td><td data-v="101">101</td><td data-v="20138">¥20,138</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">[オリックス生命保険]</td><td data-v="7">7</td><td data-v="205">¥205</td><td data-v="568">568</td><td data-v="116364">¥116,364</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">[オリックス 生命 医療 保険]</td><td data-v="7">7</td><td data-v="211">¥211</td><td data-v="420">420</td><td data-v="88419">¥88,419</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">オリックス生命 終身保険</td><td data-v="7">7</td><td data-v="211">¥211</td><td data-v="87">87</td><td data-v="18362">¥18,362</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">[オリックス生命 がん保険]</td><td data-v="8">8</td><td data-v="212">¥212</td><td data-v="306">306</td><td data-v="64888">¥64,888</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">ライズ サポート プラス</td><td data-v="8">8</td><td data-v="213">¥213</td><td data-v="63">63</td><td data-v="13392">¥13,392</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">医療保険キュア・ネクスト</td><td data-v="7">7</td><td data-v="213">¥213</td><td data-v="48">48</td><td data-v="10204">¥10,204</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">[オリックス 生命 死亡 保険]</td><td data-v="8">8</td><td data-v="213">¥213</td><td data-v="264">264</td><td data-v="56221">¥56,221</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">[ライズ サポート プラス]</td><td data-v="8">8</td><td data-v="214">¥214</td><td data-v="129">129</td><td data-v="27618">¥27,618</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">がん保険ビリーブ</td><td data-v="7">7</td><td data-v="215">¥215</td><td data-v="52">52</td><td data-v="11155">¥11,155</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">オリックス生命 収入保障保険</td><td data-v="7">7</td><td data-v="215">¥215</td><td data-v="34">34</td><td data-v="7305">¥7,305</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">[メディフィット がん保険]</td><td data-v="7">7</td><td data-v="240">¥240</td><td data-v="97">97</td><td data-v="23237">¥23,237</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">[新メディフィットPlus]</td><td data-v="7">7</td><td data-v="241">¥241</td><td data-v="34">34</td><td data-v="8195">¥8,195</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">[新メディフィットリリーフ]</td><td data-v="7">7</td><td data-v="243">¥243</td><td data-v="41">41</td><td data-v="9948">¥9,948</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">新メディフィットRe</td><td data-v="7">7</td><td data-v="244">¥244</td><td data-v="38">38</td><td data-v="9256">¥9,256</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">新メディフィットＡ</td><td data-v="7">7</td><td data-v="244">¥244</td><td data-v="71">71</td><td data-v="17303">¥17,303</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">新メディフィットリリーフ</td><td data-v="7">7</td><td data-v="244">¥244</td><td data-v="82">82</td><td data-v="20000">¥20,000</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">[新メディフィットＡ]</td><td data-v="7">7</td><td data-v="244">¥244</td><td data-v="107">107</td><td data-v="26107">¥26,107</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">新メディフィットプラス</td><td data-v="8">8</td><td data-v="245">¥245</td><td data-v="50">50</td><td data-v="12251">¥12,251</td></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td data-v="5.85">5.85</td><td data-v="2.3"><b>2.3%</b></td><td data-v="51.6"><b>51.6%</b></td><td data-v="0.8"><b>0.8%</b></td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="アントプロダクション(オリコ)">
+<h3 class="adv" id="kwqs-アントプロダクションオリコ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ) <span class="badge">取得 2026-07-02</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>5.85</b></span><span class="chip">関連性↓<b>2.3%</b></span><span class="chip bad">推定CTR↓<b>51.6%</b></span><span class="chip">LP利便性↓<b>0.8%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="アントプロダクション(オリコ)"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">オリックス生命</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="37406">37,406</td><td data-v="2832">2,832</td><td data-v="0.0757">7.6%</td><td data-v="204.9">¥205</td><td data-v="580316">¥580,316</td><td class="cv sep" data-v="1163.5">1,163.5</td><td class="cv" data-v="498.8">¥499</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">[オリックス生命]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="54992">54,992</td><td data-v="1139">1,139</td><td data-v="0.0207">2.1%</td><td data-v="201.3">¥201</td><td data-v="229301">¥229,301</td><td class="cv sep" data-v="426.9">426.9</td><td class="cv" data-v="537.2">¥537</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">[オリックス生命保険]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="16814">16,814</td><td data-v="568">568</td><td data-v="0.0338">3.4%</td><td data-v="204.9">¥205</td><td data-v="116364">¥116,364</td><td class="cv sep" data-v="230.4">230.4</td><td class="cv" data-v="505.1">¥505</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">[オリックス 生命 医療 保険]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="5259">5,259</td><td data-v="420">420</td><td data-v="0.0799">8.0%</td><td data-v="210.5">¥211</td><td data-v="88419">¥88,419</td><td class="cv sep" data-v="245.2">245.2</td><td class="cv" data-v="360.7">¥361</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">[オリックス生命 がん保険]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="2598">2,598</td><td data-v="306">306</td><td data-v="0.1178">11.8%</td><td data-v="212.1">¥212</td><td data-v="64888">¥64,888</td><td class="cv sep" data-v="194.3">194.3</td><td class="cv" data-v="333.9">¥334</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">[オリックス 生命 死亡 保険]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="3948">3,948</td><td data-v="264">264</td><td data-v="0.0669">6.7%</td><td data-v="213.0">¥213</td><td data-v="56221">¥56,221</td><td class="cv sep" data-v="149.4">149.4</td><td class="cv" data-v="376.3">¥376</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">メディケア生命 医療保険</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="7073">7,073</td><td data-v="368">368</td><td data-v="0.0520">5.2%</td><td data-v="127.5">¥127</td><td data-v="46911">¥46,911</td><td class="cv sep" data-v="199.0">199.0</td><td class="cv" data-v="235.7">¥236</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">[ライズ サポート プラス]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="1453">1,453</td><td data-v="129">129</td><td data-v="0.0888">8.9%</td><td data-v="214.1">¥214</td><td data-v="27618">¥27,618</td><td class="cv sep" data-v="86.0">86.0</td><td class="cv" data-v="321.1">¥321</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">[新メディフィットＡ]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="2416">2,416</td><td data-v="107">107</td><td data-v="0.0443">4.4%</td><td data-v="244.0">¥244</td><td data-v="26107">¥26,107</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="3263.4">¥3,263</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">[メディフィット がん保険]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1032">1,032</td><td data-v="97">97</td><td data-v="0.0940">9.4%</td><td data-v="239.6">¥240</td><td data-v="23237">¥23,237</td><td class="cv sep" data-v="11.3">11.3</td><td class="cv" data-v="2050.9">¥2,051</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">オリックス生命 緩和型</td><td>フレーズ</td><td data-v="6">6</td><td>平均より下</td><td>平均より上</td><td>平均</td><td class="sep" data-v="980">980</td><td data-v="107">107</td><td data-v="0.1092">10.9%</td><td data-v="215.2">¥215</td><td data-v="23027">¥23,027</td><td class="cv sep" data-v="56.5">56.5</td><td class="cv" data-v="407.6">¥408</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">オリックス生命 医療保険</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1136">1,136</td><td data-v="101">101</td><td data-v="0.0889">8.9%</td><td data-v="199.4">¥199</td><td data-v="20138">¥20,138</td><td class="cv sep" data-v="35.8">35.8</td><td class="cv" data-v="562.0">¥562</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">新メディフィットリリーフ</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="470">470</td><td data-v="82">82</td><td data-v="0.1745">17.4%</td><td data-v="243.9">¥244</td><td data-v="20000">¥20,000</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="2857.1">¥2,857</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">オリックス生命 終身保険</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1328">1,328</td><td data-v="87">87</td><td data-v="0.0655">6.6%</td><td data-v="211.1">¥211</td><td data-v="18362">¥18,362</td><td class="cv sep" data-v="46.0">46.0</td><td class="cv" data-v="399.1">¥399</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">新メディフィットＡ</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1542">1,542</td><td data-v="71">71</td><td data-v="0.0460">4.6%</td><td data-v="243.7">¥244</td><td data-v="17303">¥17,303</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="17303.0">¥17,303</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">アクサ生命 ユニット・リンク</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1170">1,170</td><td data-v="169">169</td><td data-v="0.1444">14.4%</td><td data-v="83.5">¥83</td><td data-v="14106">¥14,106</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">GC-アクサ生命ユニットリンク-GAD</td></tr>
+<tr><td class="l">オリックス生命保険</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="891">891</td><td data-v="70">70</td><td data-v="0.0786">7.9%</td><td data-v="192.3">¥192</td><td data-v="13460">¥13,460</td><td class="cv sep" data-v="18.0">18.0</td><td class="cv" data-v="747.8">¥748</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">ライズ サポート プラス</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="572">572</td><td data-v="63">63</td><td data-v="0.1101">11.0%</td><td data-v="212.6">¥213</td><td data-v="13392">¥13,392</td><td class="cv sep" data-v="28.5">28.5</td><td class="cv" data-v="469.9">¥470</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">新メディフィットプラス</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="519">519</td><td data-v="50">50</td><td data-v="0.0963">9.6%</td><td data-v="245.0">¥245</td><td data-v="12251">¥12,251</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="3062.8">¥3,063</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">がん保険ビリーブ</td><td>フレーズ</td><td data-v="7">7</td><td>平均</td><td>平均</td><td>平均より上</td><td class="sep" data-v="696">696</td><td data-v="52">52</td><td data-v="0.0747">7.5%</td><td data-v="214.5">¥215</td><td data-v="11155">¥11,155</td><td class="cv sep" data-v="32.0">32.0</td><td class="cv" data-v="348.6">¥349</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">ユニットリンク</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1345">1,345</td><td data-v="152">152</td><td data-v="0.1130">11.3%</td><td data-v="71.2">¥71</td><td data-v="10823">¥10,823</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">GC-アクサ生命ユニットリンク-GAD</td></tr>
+<tr><td class="l">医療保険キュア・ネクスト</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1261">1,261</td><td data-v="48">48</td><td data-v="0.0381">3.8%</td><td data-v="212.6">¥213</td><td data-v="10204">¥10,204</td><td class="cv sep" data-v="29.0">29.0</td><td class="cv" data-v="351.9">¥352</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">[新メディフィットリリーフ]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="538">538</td><td data-v="41">41</td><td data-v="0.0762">7.6%</td><td data-v="242.6">¥243</td><td data-v="9948">¥9,948</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="9948.0">¥9,948</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">新メディフィットRe</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="339">339</td><td data-v="38">38</td><td data-v="0.1121">11.2%</td><td data-v="243.6">¥244</td><td data-v="9256">¥9,256</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="9256.0">¥9,256</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">[新メディフィットPlus]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="331">331</td><td data-v="34">34</td><td data-v="0.1027">10.3%</td><td data-v="241.0">¥241</td><td data-v="8195">¥8,195</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="8195.0">¥8,195</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">オリックス生命 収入保障保険</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1485">1,485</td><td data-v="34">34</td><td data-v="0.0229">2.3%</td><td data-v="214.9">¥215</td><td data-v="7305">¥7,305</td><td class="cv sep" data-v="12.5">12.5</td><td class="cv" data-v="584.4">¥584</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">アクサ 変額保険</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="611">611</td><td data-v="73">73</td><td data-v="0.1195">11.9%</td><td data-v="98.5">¥98</td><td data-v="7189">¥7,189</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">GC-アクサ生命ユニットリンク-GAD</td></tr>
+<tr><td class="l">[新メディフィットエース]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="258">258</td><td data-v="28">28</td><td data-v="0.1085">10.9%</td><td data-v="244.1">¥244</td><td data-v="6834">¥6,834</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3417.0">¥3,417</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">メディケア生命 新メディフィットＡ</td><td>フレーズ</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="523">523</td><td data-v="26">26</td><td data-v="0.0497">5.0%</td><td data-v="244.8">¥245</td><td data-v="6366">¥6,366</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="795.8">¥796</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">アクサ ユニット・リンク</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="515">515</td><td data-v="73">73</td><td data-v="0.1417">14.2%</td><td data-v="78.3">¥78</td><td data-v="5717">¥5,717</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">GC-アクサ生命ユニットリンク-GAD</td></tr>
+<tr><td class="l">死亡保障付医療保険リリーフ・ダブル</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="348">348</td><td data-v="27">27</td><td data-v="0.0776">7.8%</td><td data-v="201.8">¥202</td><td data-v="5449">¥5,449</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2724.5">¥2,724</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">新メディフィットエース</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="341">341</td><td data-v="21">21</td><td data-v="0.0616">6.2%</td><td data-v="242.8">¥243</td><td data-v="5098">¥5,098</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">医療保険キュア・サポート・プラス</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="938">938</td><td data-v="25">25</td><td data-v="0.0267">2.7%</td><td data-v="203.7">¥204</td><td data-v="5093">¥5,093</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="1018.6">¥1,019</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">メディケア生命 がん保険</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="776">776</td><td data-v="40">40</td><td data-v="0.0515">5.2%</td><td data-v="125.6">¥126</td><td data-v="5023">¥5,023</td><td class="cv sep" data-v="34.7">34.7</td><td class="cv" data-v="144.9">¥145</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">定期保険ブリッジ</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="323">323</td><td data-v="18">18</td><td data-v="0.0557">5.6%</td><td data-v="212.3">¥212</td><td data-v="3822">¥3,822</td><td class="cv sep" data-v="15.2">15.2</td><td class="cv" data-v="251.4">¥251</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">[新メディフィットRe]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="269">269</td><td data-v="15">15</td><td data-v="0.0558">5.6%</td><td data-v="242.4">¥242</td><td data-v="3636">¥3,636</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">オリックス生命 定期保険</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="197">197</td><td data-v="15">15</td><td data-v="0.0761">7.6%</td><td data-v="214.9">¥215</td><td data-v="3223">¥3,223</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="460.4">¥460</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">オリックス生命 見積もり</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="273">273</td><td data-v="14">14</td><td data-v="0.0513">5.1%</td><td data-v="215.9">¥216</td><td data-v="3022">¥3,022</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="377.8">¥378</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">オリックス生命 申込</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="276">276</td><td data-v="14">14</td><td data-v="0.0507">5.1%</td><td data-v="205.1">¥205</td><td data-v="2872">¥2,872</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="478.7">¥479</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">オリックス生命 シミュレーション</td><td>フレーズ</td><td data-v="7">7</td><td>平均</td><td>平均より上</td><td>平均</td><td class="sep" data-v="352">352</td><td data-v="13">13</td><td data-v="0.0369">3.7%</td><td data-v="209.5">¥209</td><td data-v="2723">¥2,723</td><td class="cv sep" data-v="5.3">5.3</td><td class="cv" data-v="510.9">¥511</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">収入保障保険キープ</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="411">411</td><td data-v="12">12</td><td data-v="0.0292">2.9%</td><td data-v="211.6">¥212</td><td data-v="2539">¥2,539</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="362.7">¥363</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">がん保険 比較</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="143">143</td><td data-v="13">13</td><td data-v="0.0909">9.1%</td><td data-v="194.2">¥194</td><td data-v="2524">¥2,524</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2524.0">¥2,524</td><td class="l">GC-がん保険-GAD</td></tr>
+<tr><td class="l">オリックス生命 種類</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="245">245</td><td data-v="11">11</td><td data-v="0.0449">4.5%</td><td data-v="204.5">¥204</td><td data-v="2249">¥2,249</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1124.5">¥1,124</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">[新メディフィットプラス]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="69">69</td><td data-v="8">8</td><td data-v="0.1159">11.6%</td><td data-v="232.5">¥232</td><td data-v="1860">¥1,860</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="930.0">¥930</td><td class="l">GC-メディケア生命-GAD</td></tr>
+<tr><td class="l">がん 入れる保険</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="103">103</td><td data-v="11">11</td><td data-v="0.1068">10.7%</td><td data-v="157.9">¥158</td><td data-v="1737">¥1,737</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">GC-引受緩和型-GAD</td></tr>
+<tr><td class="l">オリックス生命 就業不能保険</td><td>フレーズ</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="182">182</td><td data-v="8">8</td><td data-v="0.0440">4.4%</td><td data-v="216.1">¥216</td><td data-v="1729">¥1,729</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="432.2">¥432</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">オリックス生命 試算</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="185">185</td><td data-v="8">8</td><td data-v="0.0432">4.3%</td><td data-v="207.9">¥208</td><td data-v="1663">¥1,663</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="415.8">¥416</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">がん保険ウィッシュ</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="162">162</td><td data-v="8">8</td><td data-v="0.0494">4.9%</td><td data-v="203.1">¥203</td><td data-v="1625">¥1,625</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="325.0">¥325</td><td class="l">GC-オリックス生命-GAD</td></tr>
+<tr><td class="l">就業 不能 保険 加入</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="58">58</td><td data-v="9">9</td><td data-v="0.1552">15.5%</td><td data-v="169.8">¥170</td><td data-v="1528">¥1,528</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">GC-就業不能保険-GAD</td></tr>
+<tr><td class="l">メディケア生命 持病</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="177">177</td><td data-v="11">11</td><td data-v="0.0621">6.2%</td><td data-v="128.2">¥128</td><td data-v="1410">¥1,410</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="201.4">¥201</td><td class="l">GC-メディケア生命-GAD</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="アントプロダクション(オリコ)" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">orilife.goodcoming.jp<br><span>orilife.goodcoming.jp</span></div><div class="t">オリックス生命のがん保険 - オリックス生命の医療保険 - オリックスの保険申込はこちら</div><div class="d">定期保険ブリッジ、医療保険キュア・ネクスト【オリックス生命】への申込・保障の見直しはここ かんたん10秒で毎月の保険料をシミュレーション。毎月の保険料を抑えるならこちら。</div><div class="meta2">IMP 135,683 ／ CTR 4.7% ／ COST ¥1,322,593<br>GC-オリックス生命-GAD</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">medicare.goodcoming.jp<br><span>medicare.goodcoming.jp</span></div><div class="t">メディケア生命の医療保険 - メディケア生命 充実の医療保険 - メディケア生命の申込を検討なら</div><div class="d">住友生命グループの【メディケア生命】医療保険への申込・保障の見直しはこちら。 今すぐカンタン見積もり 10秒で毎月の保険料をシミュレーション。医療/がん保険はメディケア生命</div><div class="meta2">IMP 5,177 ／ CTR 5.7% ／ COST ¥37,889<br>GC-メディケア生命-GAD</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">goodcoming.jp<br><span>goodcoming.jp › medicarelife-medical</span></div><div class="t">メディケア生命の医療終身保険 - 新メディフィットAのご契約は - メディケア生命の申込はこちら</div><div class="d">住友生命グループの【メディケア生命】新メディフィットAのお申込・保障の見直しはこちら まずはかんたん10秒で毎月の保険料をシミュレーション。毎月の保険料を抑えるならこちら。</div><div class="meta2">IMP 5,124 ／ CTR 5.0% ／ COST ¥62,078<br>GC-メディケア生命-GAD</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">goodcoming.jp<br><span>goodcoming.jp › unit-link</span></div><div class="t">アクサ生命のユニットリンク - アクサ資産形成・変額保険 - 【アクサ生命】ネットで見積り</div><div class="d">【アクサ生命のユニットリンク】死亡保障を準備しながら資産形成が期待できる変額保険です 専門アドバイザーとWEB面談で決めれるから安心。高水準な保険のご提案が可能です。</div><div class="meta2">IMP 3,786 ／ CTR 12.8% ／ COST ¥40,141<br>GC-アクサ生命ユニットリンク-GAD</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">保険の人気比較ランキング</td><td data-v="12">12</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">おすすめがん保険TOP3</td><td data-v="8">8</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【{Keyword:がん保険}】ランキング</td><td data-v="8">8</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">月額料金の安い人気のがん保険</td><td data-v="8">8</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【2026年版】がん保険ランキング</td><td data-v="8">8</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">補償が充実のがん保険を選ぶ</td><td data-v="8">8</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">FP厳選のがん保険一覧</td><td data-v="8">8</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">スマホから簡単に医療保険を申込</td><td data-v="7">7</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">おすすめ医療保険TOP3</td><td data-v="7">7</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">ネットで申込める医療保険</td><td data-v="7">7</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">オンラインで完結の医療保険</td><td data-v="7">7</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【2026年版】医療保険ランキング</td><td data-v="7">7</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">医療保険を料金で比較</td><td data-v="7">7</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">ネット完結の医療保険を比較</td><td data-v="7">7</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">ネットで申込めるがん保険</td><td data-v="7">7</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【がん保険】種類から選んで申込</td><td data-v="7">7</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">補償内容で選ぶがん保険</td><td data-v="7">7</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">オンラインで完結のがん保険</td><td data-v="7">7</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">ネット完結のがん保険を比較</td><td data-v="7">7</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【{Keyword:医療保険}】ランキング</td><td data-v="6">6</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">簡単保険料シミュレーション</td><td data-v="6">6</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">がん保険は加入するべきか</td><td data-v="6">6</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">がん保険を料金で比較</td><td data-v="6">6</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">安心の住友生命グループ</td><td data-v="6">6</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【メディケア生命】ネット見積り</td><td data-v="6">6</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">月額料金の安い人気の生命保険</td><td data-v="5">5</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">月額数千円から加入可能</td><td data-v="5">5</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">今すぐカンタンお見積り</td><td data-v="5">5</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">補償内容で選ぶ医療保険</td><td data-v="5">5</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">月額料金の安い人気の医療保険</td><td data-v="5">5</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">医療保険は加入するべきか</td><td data-v="5">5</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">補償が充実の医療保険を選ぶ</td><td data-v="5">5</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">FP厳選の医療保険一覧</td><td data-v="5">5</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディケア生命の申込はこちら</td><td data-v="4">4</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【メディケア生命】ネットお申込</td><td data-v="4">4</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">保険料は一生涯あがりません</td><td data-v="3">3</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">特約でがん自由診療でも給付金</td><td data-v="3">3</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">引受緩和型医療保険を申込</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">持病があっても保険に加入OK</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">過去に保険加入を断られた方</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">通院歴があっても安心</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">保険の審査で断られた方へ</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">簡単な健康告知で入れる保険</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【保険】持病や病歴がある方へ</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">持病のある方も入りやすい保険</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【2026年最新ランキング】</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">安いがん保険を比較</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">いま人気のがん保険はどれ？</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディケア生命の医療終身保険</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">24時間365日の健康相談ダイヤル</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディケア生命の医療保険</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">がんやケガもトータルサポート</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディケア生命のがん保険</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【メディケア生命】ネット申込</td><td data-v="2">2</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">保障を準備しながら資産形成</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">保険料払込免除特約付の保障内容</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">アクサ生命のユニットリンク</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">資産形成が期待できる変額保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">ユニットリンク保険（有期型）</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">オンラインで保険の相談が可能</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">まずは資料請求から。</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">FPと無料で保険相談</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【アクサ生命】Web面談で申込</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">アクサ資産形成・変額保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">死亡保障を準備しながら資産形成</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">ユニットリンク資料請求はこちら</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【アクサ生命】ネットで見積り</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">簡単ネット予約で保険の相談</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">WEB無料面談で契約可能</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">医療保険キュア・ネクストを申込</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">定期保険ブリッジを申込</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">オリックス生命の医療保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">終身保険ライズ･サポート･プラス</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">オリックス生命のがん保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">死亡保障付医療保険を申込</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">終身保険ライズを申込</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">収入保障保険キープを申込</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【オリックス生命】ネット見積り</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【オリックス生命】ネット申込</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">オリックスの保険申込はこちら</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">病気でも入れる保険TOP3</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">{Keyword:持病があっても入れる保険}</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">就業不能保険 無料相談受付中！</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">まずは資料請求からでも！</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">働けなくなった場合の不安を解消</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【おすすめ】働けない時の保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【2026】就労不能保険ランキング</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">補償内容で選ぶ就業不能保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【2026】就業不能保険ランキング</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">毎月の保険料をお見積り可能</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">就業不能保険 まずは資料請求！</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">おすすめの就業不能保険はこちら</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【まずは資料請求】就業不能保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">就業不能保険を徹底比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">WEBで完結でもOK！就業不能保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">働けなくなった時の保険って？</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">急に働けなくなった時の保障は？</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">20代のがん保険を月額料金比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">30代のがん保険を月額料金比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">保険料が安いがん保険はどれ？</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">30代におすすめがん保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">新メディフィットPlusのご契約は</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">ニーズに合った特約を選べる</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディケア生命の三大疾病保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">特定8疾病・特定3疾病に備える</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">新メディフィットプラスはこちら</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">新メディフィットPlusお申し込み</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">新メディフィットリリーフなら</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">保険料がお手頃な医療保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">健康に不安がある方にもおすすめ</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">持病・病歴あっても入れる保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">持病がある方でも入れる保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">新メディフィットReのお申し込み</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">新メディフィットReのご契約は</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">70代のがん保険を月額料金比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">50代のがん保険を月額料金比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">手厚い保障/医療保険のﾊﾟｲｵﾆｱ</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">持病のある方も入りやすい保険は</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディフィット医療終身保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディケア生命 充実の医療保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディケア生命の申込を検討なら</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">月額数千円からでも加入可能</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">こちらから今すぐ簡単お見積り</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">まずは保険料シミュレーション</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">トータルサポートの医療保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">新メディフィットAのお申し込み</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">新メディフィットエースはこちら</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">新メディフィットAのご契約は</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディフィットがん保険ご契約は</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディフィットがん保険はこちら</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディケア生命のお申込はこちら</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディフィットがん保険のお申込</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">70代の医療保険を月額料金比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">10代の医療保険を月額料金比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">60代の医療保険を月額料金比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">ネットで申込める収入保障保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【{Keyword:収入保障保険}】ランキング</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">オンラインで完結の収入保障保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">ネット完結の収入保障保険を比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">おすすめ収入保障保険TOP3</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">補償内容で選ぶ収入保障保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">収入保障保険は加入するべきか</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【2026】収入保障保険ランキング</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">FP厳選の収入保障保険一覧</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">補償が充実の収入保障保険を申込</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">収入保障保険を料金で比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">月額料金の安い収入保障保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【収入保障保険】種類から選ぶ</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">50代の医療保険を月額料金比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">10代のがん保険を月額料金比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">60代のがん保険を月額料金比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【60代にオススメ】人気がん保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">【がん保険】60代向け</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">40代のがん保険を月額料金比較</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">いま選ばれている人気がん保険</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">メディフィットシリーズに申込</td><td data-v="1">1</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l wrap">人気のメディフィット一覧</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="アントプロダクション(オリコ)">
+<h3 class="adv" id="adlib-アントプロダクションオリコ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ) <span class="badge">取得 2026-07-02</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>25本</b></span><span class="chip">CPN<b>8個</b></span><span class="chip">ADG<b>24個</b></span><span class="chip">ピン留め<b>24%</b></span><span class="chip">LP使い分け<b>23本</b></span></div>
+<p class="note">主要LP: <span title="https://goodcoming.jp/category/medical_for_chronic/">https://goodcoming.jp/category/medical_for_chronic/（2本）</span> ／ <span title="https://medicare.goodcoming.jp/">https://medicare.goodcoming.jp/（2本）</span> ／ <span title="https://goodcoming.jp/unit-link/">https://goodcoming.jp/unit-link/（1本）</span> ／ <span title="https://orilife.goodcoming.jp/">https://orilife.goodcoming.jp/（1本）</span> ／ <span title="https://goodcoming.jp/category/disability/">https://goodcoming.jp/category/disability/（1本）</span></p>
+<p class="note">カスタマイザ: {Keyword}×16</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="アントプロダクション(オリコ)"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">保険の人気比較ランキング</td><td data-v="12">12</td></tr>
+<tr><td class="l wrap">おすすめがん保険TOP3</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">【{Keyword:がん保険}】ランキング</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">月額料金の安い人気のがん保険</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">【2026年版】がん保険ランキング</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">補償が充実のがん保険を選ぶ</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">FP厳選のがん保険一覧</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">スマホから簡単に医療保険を申込</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">おすすめ医療保険TOP3</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">ネットで申込める医療保険</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">オンラインで完結の医療保険</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">【2026年版】医療保険ランキング</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">医療保険を料金で比較</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">ネット完結の医療保険を比較</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">ネットで申込めるがん保険</td><td data-v="7">7</td></tr>
+</table></div></div><div>
+<table data-adv="アントプロダクション(オリコ)"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">ネット完結のがん保険ランキング。毎月の保険料が一目でわかるお薦め保険を徹底比較！</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">スマホで簡単お見積もり。気になる保険料を抑えるならネット完結のがん保険がおすすめ。</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">スマホで簡単お見積もり。気になる保険料を抑えるならネット完結の医療保険がおすすめ。</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">ネット完結の医療保険ランキング。毎月の保険料が一目でわかるお薦め保険を徹底比較！</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">まずはかんたん10秒で毎月の保険料をシミュレーション。毎月の保険料を抑えるならこちら。</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">保険料は一生涯あがりません。ニーズに合わせて自由にカスタマイズできる！</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">健康告知不要・診断書なしで申込み可能。過去に保険を断られた方でも加入のチャンスがあります。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">持病がある方でも加入できる、引受緩和型医療保険をご紹介。健康状態に不安のある方におすすめ</td><td data-v="2">2</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="アントプロダクション(オリコ)">
+<h3 class="adv" id="query-アントプロダクションオリコ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ) <span class="badge">取得 2026-07-02</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜なし</td><td data-v="1143">1,143</td><td data-v="2379">2,379</td><td data-v="494995">¥494,995</td><td data-v="0.5097">51.0%</td><td class="cv sep" data-v="1314.8">1,314.8</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="64">64</td><td data-v="2361">2,361</td><td data-v="476247">¥476,247</td><td data-v="0.4903">49.0%</td><td class="cv sep" data-v="1115.0">1,115.0</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="アントプロダクション(オリコ)"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">オリックス 生命</td><td>追加済み</td><td>検索</td><td data-v="1138">1,138</td><td data-v="229084">¥229,084</td><td class="cv sep" data-v="425.9">425.9</td><td class="cv" data-v="537.9">¥538</td></tr>
+<tr><td class="l">オリックス 生命 保険</td><td>追加済み</td><td>検索</td><td data-v="471">471</td><td data-v="96258">¥96,258</td><td class="cv sep" data-v="188.0">188.0</td><td class="cv" data-v="512.0">¥512</td></tr>
+<tr><td class="l">オリックス 生命 医療 保険</td><td>追加済み</td><td>検索</td><td data-v="226">226</td><td data-v="47411">¥47,411</td><td class="cv sep" data-v="142.5">142.5</td><td class="cv" data-v="332.7">¥333</td></tr>
+<tr><td class="l">オリックス 生命 死亡 保険</td><td>追加済み</td><td>検索</td><td data-v="180">180</td><td data-v="38369">¥38,369</td><td class="cv sep" data-v="107.4">107.4</td><td class="cv" data-v="357.2">¥357</td></tr>
+<tr><td class="l">オリックス 生命 が ん 保険</td><td>追加済み</td><td>検索</td><td data-v="138">138</td><td data-v="29154">¥29,154</td><td class="cv sep" data-v="95.2">95.2</td><td class="cv" data-v="306.3">¥306</td></tr>
+<tr><td class="l">オリックス 医療 保険</td><td>なし</td><td>検索</td><td data-v="141">141</td><td data-v="29759">¥29,759</td><td class="cv sep" data-v="78.5">78.5</td><td class="cv" data-v="379.1">¥379</td></tr>
+<tr><td class="l">オリックス が ん 保険</td><td>なし</td><td>検索</td><td data-v="90">90</td><td data-v="19259">¥19,259</td><td class="cv sep" data-v="63.5">63.5</td><td class="cv" data-v="303.3">¥303</td></tr>
+<tr><td class="l">メディケア 生命 医療 保険</td><td>追加済み</td><td>検索</td><td data-v="65">65</td><td data-v="8322">¥8,322</td><td class="cv sep" data-v="50.0">50.0</td><td class="cv" data-v="166.4">¥166</td></tr>
+<tr><td class="l">オリックス 死亡 保険</td><td>なし</td><td>検索</td><td data-v="49">49</td><td data-v="10466">¥10,466</td><td class="cv sep" data-v="33.0">33.0</td><td class="cv" data-v="317.2">¥317</td></tr>
+<tr><td class="l">オリックス キュア</td><td>なし</td><td>検索</td><td data-v="46">46</td><td data-v="9799">¥9,799</td><td class="cv sep" data-v="30.0">30.0</td><td class="cv" data-v="326.6">¥327</td></tr>
+<tr><td class="l">オリックス 生命 一時払い 終身 保険</td><td>なし</td><td>検索</td><td data-v="53">53</td><td data-v="11348">¥11,348</td><td class="cv sep" data-v="26.0">26.0</td><td class="cv" data-v="436.5">¥436</td></tr>
+<tr><td class="l">オリックス 生命 死亡 保険 3000 円</td><td>なし</td><td>検索</td><td data-v="59">59</td><td data-v="12427">¥12,427</td><td class="cv sep" data-v="25.5">25.5</td><td class="cv" data-v="487.3">¥487</td></tr>
+<tr><td class="l">オリックス 生命 持病 が あっ て も 入れる 保険</td><td>なし</td><td>検索</td><td data-v="41">41</td><td data-v="8782">¥8,782</td><td class="cv sep" data-v="24.5">24.5</td><td class="cv" data-v="358.4">¥358</td></tr>
+<tr><td class="l">オリックス 生命 ライズ サポート プラス</td><td>なし</td><td>検索</td><td data-v="32">32</td><td data-v="6885">¥6,885</td><td class="cv sep" data-v="24.0">24.0</td><td class="cv" data-v="286.9">¥287</td></tr>
+<tr><td class="l">メディケア 生命 が ん 保険</td><td>追加済み</td><td>検索</td><td data-v="19">19</td><td data-v="2346">¥2,346</td><td class="cv sep" data-v="23.7">23.7</td><td class="cv" data-v="99.1">¥99</td></tr>
+<tr><td class="l">ライズ サポート プラス</td><td>追加済み</td><td>検索</td><td data-v="33">33</td><td data-v="7022">¥7,022</td><td class="cv sep" data-v="22.0">22.0</td><td class="cv" data-v="319.2">¥319</td></tr>
+<tr><td class="l">オリックス 保険</td><td>なし</td><td>検索</td><td data-v="63">63</td><td data-v="13139">¥13,139</td><td class="cv sep" data-v="20.0">20.0</td><td class="cv" data-v="657.0">¥657</td></tr>
+<tr><td class="l">ライズ サポート プラス 保険 料</td><td>なし</td><td>検索</td><td data-v="28">28</td><td data-v="6018">¥6,018</td><td class="cv sep" data-v="18.0">18.0</td><td class="cv" data-v="334.3">¥334</td></tr>
+<tr><td class="l">オリックス 医療 保険 キュア</td><td>なし</td><td>検索</td><td data-v="20">20</td><td data-v="4286">¥4,286</td><td class="cv sep" data-v="18.0">18.0</td><td class="cv" data-v="238.1">¥238</td></tr>
+<tr><td class="l">オリックス 生命 死亡 保険 60 歳 以上</td><td>なし</td><td>検索</td><td data-v="17">17</td><td data-v="3650">¥3,650</td><td class="cv sep" data-v="14.0">14.0</td><td class="cv" data-v="260.7">¥261</td></tr>
+<tr><td class="l">メディケア 生命 保険 不妊 治療</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="249">¥249</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="22.6">¥23</td></tr>
+<tr><td class="l">新 キュア</td><td>なし</td><td>検索</td><td data-v="23">23</td><td data-v="4808">¥4,808</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="437.1">¥437</td></tr>
+<tr><td class="l">オリックス ライズ サポート プラス 死亡 保険</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="2393">¥2,393</td><td class="cv sep" data-v="10.5">10.5</td><td class="cv" data-v="227.9">¥228</td></tr>
+<tr><td class="l">オリックス 生命 キュア</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="3254">¥3,254</td><td class="cv sep" data-v="10.0">10.0</td><td class="cv" data-v="325.4">¥325</td></tr>
+<tr><td class="l">オリックス 生命 緩和 型</td><td>追加済み</td><td>検索</td><td data-v="8">8</td><td data-v="1702">¥1,702</td><td class="cv sep" data-v="10.0">10.0</td><td class="cv" data-v="170.2">¥170</td></tr>
+<tr><td class="l">が ん 保険 オリックス</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="2324">¥2,324</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="258.2">¥258</td></tr>
+<tr><td class="l">メディケア が ん 保険</td><td>なし</td><td>検索</td><td data-v="34">34</td><td data-v="8248">¥8,248</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="916.4">¥916</td></tr>
+<tr><td class="l">オリックス 生命 入院 保険</td><td>なし</td><td>検索</td><td data-v="14">14</td><td data-v="2825">¥2,825</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="313.9">¥314</td></tr>
+<tr><td class="l">ファイン セーブ オリックス</td><td>なし</td><td>検索</td><td data-v="13">13</td><td data-v="2766">¥2,766</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="345.8">¥346</td></tr>
+<tr><td class="l">オリックス 生命 新 キュア</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="2552">¥2,552</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="319.0">¥319</td></tr>
+<tr><td class="l">医療 保険 新 キュア</td><td>なし</td><td>検索</td><td data-v="16">16</td><td data-v="3420">¥3,420</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="427.5">¥428</td></tr>
+<tr><td class="l">メディケア 女性 医療 特約</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="125">¥125</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="15.6">¥16</td></tr>
+<tr><td class="l">オリックス 死亡 保険 3000 円</td><td>なし</td><td>検索</td><td data-v="25">25</td><td data-v="5319">¥5,319</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="664.9">¥665</td></tr>
+<tr><td class="l">メディケア 生命 女性 特約</td><td>なし</td><td>検索</td><td data-v="10">10</td><td data-v="1282">¥1,282</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="160.2">¥160</td></tr>
+<tr><td class="l">メディ フィット エース</td><td>なし</td><td>検索</td><td data-v="46">46</td><td data-v="11356">¥11,356</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="1419.5">¥1,420</td></tr>
+<tr><td class="l">オリックス 生命 死亡 保険 終身</td><td>なし</td><td>検索</td><td data-v="18">18</td><td data-v="3884">¥3,884</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="485.5">¥486</td></tr>
+<tr><td class="l">オリックス 生命 告知 厳しい</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="1441">¥1,441</td><td class="cv sep" data-v="7.5">7.5</td><td class="cv" data-v="192.1">¥192</td></tr>
+<tr><td class="l">オリックス 生命 貯蓄 型</td><td>なし</td><td>検索</td><td data-v="10">10</td><td data-v="2115">¥2,115</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="302.1">¥302</td></tr>
+<tr><td class="l">オリックス 生命 入院 一時 金</td><td>なし</td><td>検索</td><td data-v="17">17</td><td data-v="3198">¥3,198</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="456.9">¥457</td></tr>
+<tr><td class="l">終身 保険 ライズ サポート プラス</td><td>追加済み</td><td>検索</td><td data-v="7">7</td><td data-v="1489">¥1,489</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="212.7">¥213</td></tr>
+<tr><td class="l">オリックス 生命 積立 保険</td><td>なし</td><td>検索</td><td data-v="24">24</td><td data-v="4982">¥4,982</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="711.7">¥712</td></tr>
+<tr><td class="l">オリックス の 生命 保険</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="638">¥638</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="91.1">¥91</td></tr>
+<tr><td class="l">オリックス 生命 保険 死亡 保険</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="2376">¥2,376</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="339.4">¥339</td></tr>
+<tr><td class="l">オリックス 生命 ガン 保険</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="3125">¥3,125</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="446.4">¥446</td></tr>
+<tr><td class="l">終身 保険 ライズ 告知</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="1463">¥1,463</td><td class="cv sep" data-v="6.7">6.7</td><td class="cv" data-v="219.3">¥219</td></tr>
+<tr><td class="l">メディケア 生命 医療 保険 子供</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="766">¥766</td><td class="cv sep" data-v="6.5">6.5</td><td class="cv" data-v="117.8">¥118</td></tr>
+<tr><td class="l">オリックス 生命 ブリッジ</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="1490">¥1,490</td><td class="cv sep" data-v="6.2">6.2</td><td class="cv" data-v="240.3">¥240</td></tr>
+<tr><td class="l">オリックス 終身 医療 保険</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="1294">¥1,294</td><td class="cv sep" data-v="6.2">6.2</td><td class="cv" data-v="209.7">¥210</td></tr>
+<tr><td class="l">オリックス 生命 終身 保険</td><td>追加済み</td><td>検索</td><td data-v="14">14</td><td data-v="2997">¥2,997</td><td class="cv sep" data-v="6.2">6.2</td><td class="cv" data-v="485.7">¥486</td></tr>
+<tr><td class="l">メディケア 生命 医療 終身 保険</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="637">¥637</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="106.2">¥106</td></tr>
+<tr><td class="l">貯蓄 型 保険 オリックス</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="2593">¥2,593</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="518.6">¥519</td></tr>
+<tr><td class="l">オリックス 緩和 型 告知</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="2374">¥2,374</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="474.8">¥475</td></tr>
+<tr><td class="l">オリックス 生命 死亡 保険 貯蓄 型</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="3192">¥3,192</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="638.4">¥638</td></tr>
+<tr><td class="l">キュア レディ</td><td>なし</td><td>検索</td><td data-v="14">14</td><td data-v="2900">¥2,900</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="580.0">¥580</td></tr>
+<tr><td class="l">キュア サポート プラス</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="2344">¥2,344</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="586.0">¥586</td></tr>
+<tr><td class="l">オリックス 生命 エンキャン シュミレーション</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="2812">¥2,812</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="703.0">¥703</td></tr>
+<tr><td class="l">メディケア 生命 不妊 治療</td><td>なし</td><td>検索</td><td data-v="18">18</td><td data-v="2314">¥2,314</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="771.3">¥771</td></tr>
+<tr><td class="l">オリックス ファイン セーブ</td><td>なし</td><td>検索</td><td data-v="14">14</td><td data-v="2923">¥2,923</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="974.3">¥974</td></tr>
+<tr><td class="l">メディケア リリーフ 告知</td><td>なし</td><td>検索</td><td data-v="25">25</td><td data-v="6017">¥6,017</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3008.5">¥3,008</td></tr>
+<tr><td class="l">メディ フィット プラス パンフレット</td><td>なし</td><td>検索</td><td data-v="10">10</td><td data-v="2440">¥2,440</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1220.0">¥1,220</td></tr>
+<tr><td class="l">メディ フィット リリーフ 告知</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="3698">¥3,698</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3698.0">¥3,698</td></tr>
+<tr><td class="l">メディ フィット re 告知</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="2958">¥2,958</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2958.0">¥2,958</td></tr>
+<tr><td class="l">メディ フィット プラス</td><td>なし</td><td>検索</td><td data-v="21">21</td><td data-v="5096">¥5,096</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="5096.0">¥5,096</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（63行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2026-07-02 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td class="l">一般</td><td data-v="157351">157,351</td><td data-v="8077">8,077</td><td data-v="0.0513">5.1%</td><td data-v="196.6">¥197</td><td data-v="1587541">¥1,587,541</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="3137">3,137</td><td class="cv" data-v="0.3884">38.8%</td><td class="cv" data-v="506.0">¥506</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2026-07-02</th></tr>
+<tr data-a="アントプロダクション(オリコ)"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ)</td><td><div class="bar"><div class="mt-i" style="width:0.8%" title="インテント マッチ 0.8%"></div><div class="mt-p" style="width:57.4%" title="フレーズ一致 57.4%"></div><div class="mt-e" style="width:41.8%" title="完全一致 41.8%"></div></div><div class="note">インテント1% / フレーズ57% / 完全42%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2026-07-02</b>（20260702_レポート依頼用【保険】_セレス様__1aEcUxjt.xlsx）<br>取得不可（空タブ）: エコスマート（オリックス）・ザイオニクス（オリックス）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

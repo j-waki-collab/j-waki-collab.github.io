@@ -1,0 +1,786 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜業界横断トップ</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap"><h1>競合定点観測ダッシュボード</h1>
+<p class="note">ローカル専用・公開禁止（競合アカウント実データ）。正本ルール: 部署/共有/グローバル/競合アカウントデータ/競合アカウントデータ活用ガイド.md ／ 最終生成 2026-07-17 16:42</p>
+<div class="kpis"><div class="kpi"><div class="v">66</div><div class="k">業界</div></div><div class="kpi"><div class="v">99</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">248</div><div class="k">広告主</div></div></div>
+<div class="callout danger">⚠ CV・CVR・CPAは社間比較禁止。詳細は各業界ページ「品質」タブ参照</div>
+</div></div><div class="wrap">
+<h2>業界一覧</h2>
+<input class="flt" style="max-width:420px" placeholder="🔍 業界名で絞り込み…" oninput="var q=this.value.toLowerCase();document.querySelectorAll('.ind-card').forEach(function(c){c.style.display=c.textContent.toLowerCase().indexOf(q)>=0?'':'none';});">
+<div class="ind-cards">
+<div class="ind-card"><h3>AGA治療</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-01-15（<span class="stale">183日前・要更新</span>）<br><span class="note">AGAスキンクリニック・クリニックフォア・銀クリ</span></div><p><a href="業界_AGA治療.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>ASP・保険</h3><div class="meta">広告主 5社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-12-10（<span class="stale">219日前・要更新</span>）<br><span class="note">A8・くらべる保険ナビ・バリューコマース・レントラックス…</span></div><p><a href="業界_ASP・保険.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>EC受注出荷管理</h3><div class="meta">広告主 4社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-01-30（<span class="stale">168日前・要更新</span>）<br><span class="note">オープンロジ・コマースロボ・ロジモプロ・ロジレス</span></div><p><a href="業界_EC受注出荷管理.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>WEBスクール</h3><div class="meta">広告主 4社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-10-23（<span class="stale">267日前・要更新</span>）<br><span class="note">SHElikes・WEBCOACH・sonomama・webfree(ウェブフリ)</span></div><p><a href="業界_WEBスクール.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>WiFi</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-06-18（<span class="">29日前</span>）<br><span class="note">AIRWIFI・にゃんこWIFI・モンスターモバイル</span></div><p><a href="業界_WiFi.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>WiFi・塾・保険</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-12-09（<span class="stale">220日前・要更新</span>）<br><span class="note">Wi-FiBOX・メットライフ生命・武田塾</span></div><p><a href="業界_WiFi・塾・保険.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>eSIM</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-05-18（<span class="">60日前</span>）<br><span class="note">World esim・Xモバイル</span></div><p><a href="業界_eSIM.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>iPhone買取</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-11-18（<span class="stale">241日前・要更新</span>）<br><span class="note">WEBSHOP・コエシル</span></div><p><a href="業界_iPhone買取.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>インソール</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-12-15（<span class="stale">214日前・要更新</span>）<br><span class="note">HBLインソール・カモシカソール</span></div><p><a href="業界_インソール.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>ウォーターサーバー</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-01-23（<span class="stale">175日前・要更新</span>）<br><span class="note">アクアクララ・フレシャス・プレミアムウォーター</span></div><p><a href="業界_ウォーターサーバー.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>オンラインカードゲーム</h3><div class="meta">広告主 4社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-11-25（<span class="stale">234日前・要更新</span>）<br><span class="note">DOPA・オリパワン・カードショップアルファ・ポケパ365</span></div><p><a href="業界_オンラインカードゲーム.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>オンライン個人指導</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-01-30（<span class="stale">168日前・要更新</span>）<br><span class="note">トウコベ・家庭教師の熱血先生・東大先生</span></div><p><a href="業界_オンライン個人指導.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>カドル</h3><div class="meta">広告主 1社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-07-30（<span class="stale">352日前・要更新</span>）<br><span class="note">カドル（Cuddle）</span></div><p><a href="業界_カドル.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>ガラス修理</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-03-24（<span class="stale">115日前・要更新</span>）<br><span class="note">ガラス修理のまもるくん・レスキューサービス24ガラス修理</span></div><p><a href="業界_ガラス修理.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>ギフトカード</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-07-13（<span class="">4日前</span>）<br><span class="note">HYACCA・TANP・ギフトモール</span></div><p><a href="業界_ギフトカード.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>スカウト</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-11-10（<span class="stale">249日前・要更新</span>）<br><span class="note">AIスカウトくん・E4（eeasy）・HEROZ ASK</span></div><p><a href="業界_スカウト.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>スマホ買取＆電験</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-02-26（<span class="stale">141日前・要更新</span>）<br><span class="note">スマホ買取YTH・能セン</span></div><p><a href="業界_スマホ買取＆電験.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>ソーラー発電</h3><div class="meta">広告主 4社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-10-29（<span class="stale">261日前・要更新</span>）<br><span class="note">GATES SOLAR AUCTION・SOLSEL・ソーラー買取王・太陽光買取.com</span></div><p><a href="業界_ソーラー発電.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>ダイエット・家庭教師</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-04-21（<span class="">87日前</span>）<br><span class="note">カモシカソール・キズキ共育塾・家庭教師のゴーイング</span></div><p><a href="業界_ダイエット・家庭教師.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>テレビショッピング・リスティング広告</h3><div class="meta">広告主 1社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-02-16（<span class="stale">151日前・要更新</span>）<br><span class="note">ヴァンテージ</span></div><p><a href="業界_テレビショッピング・リスティング広告.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>デジタルギフト</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-04-21（<span class="">87日前</span>）<br><span class="note">ギフティ・デジコ</span></div><p><a href="業界_デジタルギフト.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>バイク買取＆お葬式</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-02-23（<span class="stale">144日前・要更新</span>）<br><span class="note">ちゃんとしたお葬式・よりそうお葬式</span></div><p><a href="業界_バイク買取＆お葬式.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>パブリックスピーチ</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-01-30（<span class="stale">168日前・要更新</span>）<br><span class="note">Dr.Communication・モチベーション＆コミュニケーションスクール</span></div><p><a href="業界_パブリックスピーチ.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>パーソナルジム</h3><div class="meta">広告主 5社 ／ バッチ 2回 ／ 定点比較可 2社<br>最新取得 2026-06-12（<span class="">35日前</span>）<br><span class="note">BEYOND・GYMS・Space gym・UNDEUX…</span></div><p><a href="業界_パーソナルジム.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>パーソナルトレーニング＆電験</h3><div class="meta">広告主 4社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-02-26（<span class="stale">141日前・要更新</span>）<br><span class="note">Space gym・element・rexer・精神と時のジム</span></div><p><a href="業界_パーソナルトレーニング＆電験.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>ヒールメイト・マリーゴー</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-08-07（<span class="stale">344日前・要更新</span>）<br><span class="note">ヒールメイト・マリーゴー</span></div><p><a href="業界_ヒールメイト・マリーゴー.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>ピラティス&amp;整体</h3><div class="meta">広告主 4社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-02-06（<span class="stale">161日前・要更新</span>）<br><span class="note">Rearis・TADASU・the SILK・ピラティスK</span></div><p><a href="業界_ピラティス&amp;整体.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>ピル</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-04-08（<span class="stale">100日前・要更新</span>）<br><span class="note">クリニックナビゲーション・クリニックフォア</span></div><p><a href="業界_ピル.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>ブライダル</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-12-12（<span class="stale">217日前・要更新</span>）<br><span class="note">T&amp;G WEDDING・ベストブライダル</span></div><p><a href="業界_ブライダル.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>ボクササイズ</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-04-20（<span class="">88日前</span>）<br><span class="note">B-monster・Refinas・ミットネス</span></div><p><a href="業界_ボクササイズ.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>マウスピース矯正</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-01-14（<span class="stale">184日前・要更新</span>）<br><span class="note">キレイライン・スマイルモア・ゼニュム</span></div><p><a href="業界_マウスピース矯正.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>レーシック</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-01-21（<span class="stale">177日前・要更新</span>）<br><span class="note">あおぞらクリニック・先進会眼科・冨田実アイクリニック銀座</span></div><p><a href="業界_レーシック.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>不動産</h3><div class="meta">広告主 8社 ／ バッチ 2回 ／ 定点比較可 0社<br>最新取得 2026-04-10（<span class="stale">98日前・要更新</span>）<br><span class="note">FJネクスト・いえカツLIFE・クリアル・シノケン…</span></div><p><a href="業界_不動産.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>不動産クラファン</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-03-11（<span class="stale">128日前・要更新</span>）<br><span class="note">CAMEL・FunFund・TORCHS</span></div><p><a href="業界_不動産クラファン.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>不動産投資</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-07-10（<span class="">7日前</span>）<br><span class="note">tecrowd・torches・不動産投資クラウドファンディング CAMEL</span></div><p><a href="業界_不動産投資.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>不妊治療＆占い</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-03-05（<span class="stale">134日前・要更新</span>）<br><span class="note">星ひとみ・生殖医療クリニック錦糸町駅前院</span></div><p><a href="業界_不妊治療＆占い.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>予約システム</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-12-12（<span class="stale">217日前・要更新</span>）<br><span class="note">KaruteKun・RE:RE</span></div><p><a href="業界_予約システム.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>保険</h3><div class="meta">広告主 1社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-07-02（<span class="">15日前</span>）<br><span class="note">アントプロダクション(オリコ)</span></div><p><a href="業界_保険.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>健康経営コンサル</h3><div class="meta">広告主 4社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-02-12（<span class="stale">155日前・要更新</span>）<br><span class="note">carely・アドバンテッジ・エムステージ・ドクタートラスト</span></div><p><a href="業界_健康経営コンサル.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>医療ダイエット</h3><div class="meta">広告主 1社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-04-08（<span class="stale">100日前・要更新</span>）<br><span class="note">elife</span></div><p><a href="業界_医療ダイエット.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>卵子凍結</h3><div class="meta">広告主 5社 ／ バッチ 2回 ／ 定点比較可 0社<br>最新取得 2026-05-20（<span class="">58日前</span>）<br><span class="note">Liberty English・さくら・はるねクリニック銀座・オーク会・グレイスグループ…</span></div><p><a href="業界_卵子凍結.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>営業支援サービス</h3><div class="meta">広告主 4社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-12-17（<span class="stale">212日前・要更新</span>）<br><span class="note">Mazrica・ReadyCrew・SalesNow・Speeda</span></div><p><a href="業界_営業支援サービス.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>就活</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-04-24（<span class="">84日前</span>）<br><span class="note">OfferBox（先方の希望）・キャリアパーク（先方の希望）・ジール就職エージェント</span></div><p><a href="業界_就活.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>探偵</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-10-29（<span class="stale">261日前・要更新</span>）<br><span class="note">MR・RCL・アーネット</span></div><p><a href="業界_探偵.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>格安スマホ</h3><div class="meta">広告主 1社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-06-18（<span class="">29日前</span>）<br><span class="note">ロケットモバイル</span></div><p><a href="業界_格安スマホ.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>業界未記載</h3><div class="meta">広告主 57社 ／ バッチ 29回 ／ 定点比較可 0社<br>最新取得 2025-09-01（<span class="stale">319日前・要更新</span>）<br><span class="note">Anemone・BIDAIクレンジング・Direct type・Findy…</span></div><p><a href="業界_業界未記載.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>水道トラブル</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-05-27（<span class="">51日前</span>）<br><span class="note">アクアホームサービス・クリーンライフ・富士水道センター</span></div><p><a href="業界_水道トラブル.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>水道周り</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-04-03（<span class="stale">105日前・要更新</span>）<br><span class="note">交換できるくん・東京水道センター・船戸工業所</span></div><p><a href="業界_水道周り.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>留学支援</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-05-22（<span class="">56日前</span>）<br><span class="note">StudyIn・スマ留</span></div><p><a href="業界_留学支援.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>結婚相談所</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-06-28（<span class="">19日前</span>）<br><span class="note">ムスベル・ランキングサイト①・ランキングサイト②</span></div><p><a href="業界_結婚相談所.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>結婚相談所探偵社</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-11-18（<span class="stale">241日前・要更新</span>）<br><span class="note">サンマリエ・ツヴァイ・リベンジ探偵社</span></div><p><a href="業界_結婚相談所探偵社.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>給湯器</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-03-23（<span class="stale">116日前・要更新</span>）<br><span class="note">GAS-Q・キンライサー・大問屋</span></div><p><a href="業界_給湯器.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>美容クリニック</h3><div class="meta">広告主 6社 ／ バッチ 2回 ／ 定点比較可 0社<br>最新取得 2026-07-10（<span class="">7日前</span>）<br><span class="note">TAクリニック・URARAクリニック・ディオクリニック・リエートクリニック…</span></div><p><a href="業界_美容クリニック.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>英会話サービス</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-11-28（<span class="stale">231日前・要更新</span>）<br><span class="note">イングリード・スパルタ英会話・リバティ・イングリッシュ・アカデミー</span></div><p><a href="業界_英会話サービス.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>英語塾営業促進ツール</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-12-03（<span class="stale">226日前・要更新</span>）<br><span class="note">English Innovations・トフルゼミナール・ホットプロファイル</span></div><p><a href="業界_英語塾営業促進ツール.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>葬儀会館1</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-03-30（<span class="stale">109日前・要更新</span>）<br><span class="note">家族葬のファミーユ・株式会社ティア</span></div><p><a href="業界_葬儀会館1.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>葬儀会館2</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-03-30（<span class="stale">109日前・要更新</span>）<br><span class="note">はないろ・典礼会館</span></div><p><a href="業界_葬儀会館2.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>葬儀社</h3><div class="meta">広告主 4社 ／ バッチ 2回 ／ 定点比較可 0社<br>最新取得 2026-06-25（<span class="">22日前</span>）<br><span class="note">おくりびとのお葬式・公益社・自由な家族葬　千の風・野々村葬儀社</span></div><p><a href="業界_葬儀社.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>記事作成代行</h3><div class="meta">広告主 4社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-11-14（<span class="stale">245日前・要更新</span>）<br><span class="note">CROCO・スマートSEO・バクヤスai・記事作成代行ULTRA</span></div><p><a href="業界_記事作成代行.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>通信販売</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-02-23（<span class="stale">144日前・要更新</span>）<br><span class="note">ダイレクトタイプ・トーカ堂ショッピング・ファミリーライフ</span></div><p><a href="業界_通信販売.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>適性テスト</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-11-27（<span class="stale">232日前・要更新</span>）<br><span class="note">アッテル適性検査・キュービック・ミキワメ適性検査</span></div><p><a href="業界_適性テスト.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>銀行</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-07-08（<span class="">9日前</span>）<br><span class="note">山陽合同銀行・島根銀行・鳥取銀行</span></div><p><a href="業界_銀行.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>電報</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-04-08（<span class="stale">100日前・要更新</span>）<br><span class="note">VERY CARD・e-denpo・ハート電報</span></div><p><a href="業界_電報.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>電気</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2026-02-26（<span class="stale">141日前・要更新</span>）<br><span class="note">このまち電気・タダ電</span></div><p><a href="業界_電気.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>電気会社</h3><div class="meta">広告主 3社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2025-11-14（<span class="stale">245日前・要更新</span>）<br><span class="note">CDエナジー・Loopでんき・idemitsuでんき</span></div><p><a href="業界_電気会社.html">ダッシュボードを開く →</a></p></div>
+<div class="ind-card"><h3>音声ブック</h3><div class="meta">広告主 2社 ／ バッチ 1回 ／ 定点比較可 0社<br>最新取得 2015-11-13（<span class="stale">3899日前・要更新</span>）<br><span class="note">オーディオブック・ゲッツーグ</span></div><p><a href="業界_音声ブック.html">ダッシュボードを開く →</a></p></div>
+</div>
+<h2>業界横断｜ビッグKWのCPC実額相場（直近バッチ・社=列）</h2>
+<details><summary>AGA治療（共通KW 13個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>AGAスキンクリニック</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>クリニックフォア</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>銀クリ</th><th>COST合計</th></tr>
+<tr><td class="l">aga治療</td><td data-v="1596">¥1,596</td><td data-v="2050">¥2,050</td><td data-v="3719">¥3,719</td><td data-v="105221792">¥105,221,792</td></tr>
+<tr><td class="l">agaクリニック</td><td data-v="1946">¥1,946</td><td data-v="1000">¥1,000</td><td data-v="2825">¥2,825</td><td data-v="34763444">¥34,763,444</td></tr>
+<tr><td class="l">aga</td><td data-v="2028">¥2,028</td><td data-v="2532">¥2,532</td><td data-v="3790">¥3,790</td><td data-v="31578307">¥31,578,307</td></tr>
+<tr><td class="l">薄毛治療</td><td data-v="1325">¥1,325</td><td data-v="936">¥936</td><td data-v="-1">--</td><td data-v="8935474">¥8,935,474</td></tr>
+<tr><td class="l">aga薬</td><td data-v="726">¥726</td><td data-v="3563">¥3,563</td><td data-v="1777">¥1,777</td><td data-v="5910120">¥5,910,120</td></tr>
+<tr><td class="l">agaオンライン</td><td data-v="-1">--</td><td data-v="10662">¥10,662</td><td data-v="3180">¥3,180</td><td data-v="3899512">¥3,899,512</td></tr>
+<tr><td class="l">育毛</td><td data-v="891">¥891</td><td data-v="715">¥715</td><td data-v="-1">--</td><td data-v="3304035">¥3,304,035</td></tr>
+<tr><td class="l">薄毛対策</td><td data-v="857">¥857</td><td data-v="753">¥753</td><td data-v="-1">--</td><td data-v="3068204">¥3,068,204</td></tr>
+<tr><td class="l">aga病院</td><td data-v="1406">¥1,406</td><td data-v="1394">¥1,394</td><td data-v="1412">¥1,412</td><td data-v="2790136">¥2,790,136</td></tr>
+<tr><td class="l">aga大阪</td><td data-v="2317">¥2,317</td><td data-v="-1">--</td><td data-v="2432">¥2,432</td><td data-v="2392824">¥2,392,824</td></tr>
+</table></div></details>
+<details><summary>ASP・保険（共通KW 1個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>A8</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>くらべる保険ナビ</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>バリューコマース</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>レントラックス</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>保険市場</th><th>COST合計</th></tr>
+<tr><td class="l">aspアフィリエイト</td><td data-v="788">¥788</td><td data-v="-1">--</td><td data-v="167">¥167</td><td data-v="426">¥426</td><td data-v="-1">--</td><td data-v="263108">¥263,108</td></tr>
+</table></div></details>
+<details><summary>EC受注出荷管理（共通KW 2個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>オープンロジ</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>コマースロボ</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>ロジモプロ</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>ロジレス</th><th>COST合計</th></tr>
+<tr><td class="l">ec物流</td><td data-v="1710">¥1,710</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="2035">¥2,035</td><td data-v="1092091">¥1,092,091</td></tr>
+<tr><td class="l">発送代行</td><td data-v="1617">¥1,617</td><td data-v="-1">--</td><td data-v="603">¥603</td><td data-v="-1">--</td><td data-v="366154">¥366,154</td></tr>
+</table></div></details>
+<details><summary>WEBスクール（共通KW 6個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>SHElikes</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>WEBCOACH</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>sonomama</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>webfree(ウェブフリ)</th><th>COST合計</th></tr>
+<tr><td class="l">webライター</td><td data-v="347">¥347</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="216">¥216</td><td data-v="466179">¥466,179</td></tr>
+<tr><td class="l">webデザイナー</td><td data-v="428">¥428</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="199">¥199</td><td data-v="348712">¥348,712</td></tr>
+<tr><td class="l">webライター未経験</td><td data-v="380">¥380</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="219">¥219</td><td data-v="297186">¥297,186</td></tr>
+<tr><td class="l">webデザイナーとは</td><td data-v="241">¥241</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="170">¥170</td><td data-v="267113">¥267,113</td></tr>
+<tr><td class="l">snsマーケティング講座</td><td data-v="569">¥569</td><td data-v="-1">--</td><td data-v="256">¥256</td><td data-v="-1">--</td><td data-v="130166">¥130,166</td></tr>
+<tr><td class="l">webマーケティングスクール</td><td data-v="414">¥414</td><td data-v="-1">--</td><td data-v="344">¥344</td><td data-v="-1">--</td><td data-v="100241">¥100,241</td></tr>
+</table></div></details>
+<details><summary>WiFi（共通KW 5個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>AIRWIFI</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>にゃんこWIFI</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>モンスターモバイル</th><th>COST合計</th></tr>
+<tr><td class="l">ポケットwifiレンタル</td><td data-v="280">¥280</td><td data-v="286">¥286</td><td data-v="-1">--</td><td data-v="1222457">¥1,222,457</td></tr>
+<tr><td class="l">ポケットwifi</td><td data-v="270">¥270</td><td data-v="197">¥197</td><td data-v="-1">--</td><td data-v="886103">¥886,103</td></tr>
+<tr><td class="l">wifiレンタル</td><td data-v="337">¥337</td><td data-v="301">¥301</td><td data-v="-1">--</td><td data-v="757495">¥757,495</td></tr>
+<tr><td class="l">ポケットワイファイレンタル</td><td data-v="315">¥315</td><td data-v="257">¥257</td><td data-v="-1">--</td><td data-v="402471">¥402,471</td></tr>
+<tr><td class="l">ポケットwifi安い</td><td data-v="221">¥221</td><td data-v="255">¥255</td><td data-v="-1">--</td><td data-v="292746">¥292,746</td></tr>
+</table></div></details>
+<details><summary>iPhone買取（共通KW 13個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>WEBSHOP</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>コエシル</th><th>COST合計</th></tr>
+<tr><td class="l">iphonese買取</td><td data-v="53">¥53</td><td data-v="37">¥37</td><td data-v="105600">¥105,600</td></tr>
+<tr><td class="l">iphone下取りどこがいい</td><td data-v="69">¥69</td><td data-v="94">¥94</td><td data-v="103205">¥103,205</td></tr>
+<tr><td class="l">iphonese第3世代買取</td><td data-v="48">¥48</td><td data-v="36">¥36</td><td data-v="87578">¥87,578</td></tr>
+<tr><td class="l">iphone8買取</td><td data-v="46">¥46</td><td data-v="53">¥53</td><td data-v="84871">¥84,871</td></tr>
+<tr><td class="l">iphone7買取</td><td data-v="37">¥37</td><td data-v="51">¥51</td><td data-v="76617">¥76,617</td></tr>
+<tr><td class="l">iphone12買取価格相場</td><td data-v="56">¥56</td><td data-v="38">¥38</td><td data-v="59776">¥59,776</td></tr>
+<tr><td class="l">iphonese3買取</td><td data-v="45">¥45</td><td data-v="41">¥41</td><td data-v="58514">¥58,514</td></tr>
+<tr><td class="l">iphone12売る</td><td data-v="35">¥35</td><td data-v="45">¥45</td><td data-v="58259">¥58,259</td></tr>
+<tr><td class="l">iphone13買取価格</td><td data-v="48">¥48</td><td data-v="28">¥28</td><td data-v="26673">¥26,673</td></tr>
+<tr><td class="l">iphone12pro買取相場</td><td data-v="54">¥54</td><td data-v="41">¥41</td><td data-v="24054">¥24,054</td></tr>
+</table></div></details>
+<details><summary>オンラインカードゲーム（共通KW 13個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>DOPA</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>オリパワン</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>カードショップアルファ</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>ポケパ365</th><th>COST合計</th></tr>
+<tr><td class="l">オリパ</td><td data-v="770">¥770</td><td data-v="1075">¥1,075</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="49260634">¥49,260,634</td></tr>
+<tr><td class="l">ドーパ</td><td data-v="395">¥395</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="205">¥205</td><td data-v="34746681">¥34,746,681</td></tr>
+<tr><td class="l">オリパワン</td><td data-v="-1">--</td><td data-v="198">¥198</td><td data-v="-1">--</td><td data-v="194">¥194</td><td data-v="27648315">¥27,648,315</td></tr>
+<tr><td class="l">dopa</td><td data-v="365">¥365</td><td data-v="556">¥556</td><td data-v="-1">--</td><td data-v="198">¥198</td><td data-v="26211424">¥26,211,424</td></tr>
+<tr><td class="l">dopaオリパ</td><td data-v="268">¥268</td><td data-v="596">¥596</td><td data-v="-1">--</td><td data-v="198">¥198</td><td data-v="7621414">¥7,621,414</td></tr>
+<tr><td class="l">オンラインオリパ</td><td data-v="664">¥664</td><td data-v="1182">¥1,182</td><td data-v="54">¥54</td><td data-v="-1">--</td><td data-v="6342978">¥6,342,978</td></tr>
+<tr><td class="l">オリパオンライン</td><td data-v="-1">--</td><td data-v="1196">¥1,196</td><td data-v="49">¥49</td><td data-v="-1">--</td><td data-v="5290273">¥5,290,273</td></tr>
+<tr><td class="l">日本トレカ</td><td data-v="-1">--</td><td data-v="611">¥611</td><td data-v="-1">--</td><td data-v="191">¥191</td><td data-v="2185244">¥2,185,244</td></tr>
+<tr><td class="l">エクストレカ</td><td data-v="-1">--</td><td data-v="449">¥449</td><td data-v="-1">--</td><td data-v="195">¥195</td><td data-v="1464497">¥1,464,497</td></tr>
+<tr><td class="l">オリパ無料</td><td data-v="-1">--</td><td data-v="709">¥709</td><td data-v="96">¥96</td><td data-v="-1">--</td><td data-v="456689">¥456,689</td></tr>
+</table></div></details>
+<details><summary>オンライン個人指導（共通KW 6個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>トウコベ</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>家庭教師の熱血先生</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>東大先生</th><th>COST合計</th></tr>
+<tr><td class="l">東大先生</td><td data-v="551">¥551</td><td data-v="-1">--</td><td data-v="532">¥532</td><td data-v="1676352">¥1,676,352</td></tr>
+<tr><td class="l">オンライン家庭教師</td><td data-v="673">¥673</td><td data-v="709">¥709</td><td data-v="792">¥792</td><td data-v="522980">¥522,980</td></tr>
+<tr><td class="l">東大先生料金</td><td data-v="717">¥717</td><td data-v="-1">--</td><td data-v="508">¥508</td><td data-v="446803">¥446,803</td></tr>
+<tr><td class="l">家庭教師</td><td data-v="-1">--</td><td data-v="805">¥805</td><td data-v="487">¥487</td><td data-v="390031">¥390,031</td></tr>
+<tr><td class="l">オンライン塾</td><td data-v="488">¥488</td><td data-v="-1">--</td><td data-v="374">¥374</td><td data-v="268023">¥268,023</td></tr>
+<tr><td class="l">中学受験家庭教師</td><td data-v="298">¥298</td><td data-v="-1">--</td><td data-v="487">¥487</td><td data-v="152788">¥152,788</td></tr>
+</table></div></details>
+<details><summary>ギフトカード（共通KW 200個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>HYACCA</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>TANP</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>ギフトモール</th><th>COST合計</th></tr>
+<tr><td class="l">父の日プレゼント</td><td data-v="-1">--</td><td data-v="38">¥38</td><td data-v="18">¥18</td><td data-v="2451892">¥2,451,892</td></tr>
+<tr><td class="l">母の日ギフト</td><td data-v="-1">--</td><td data-v="45">¥45</td><td data-v="25">¥25</td><td data-v="1237672">¥1,237,672</td></tr>
+<tr><td class="l">父の日ギフト</td><td data-v="-1">--</td><td data-v="57">¥57</td><td data-v="29">¥29</td><td data-v="826243">¥826,243</td></tr>
+<tr><td class="l">ギフト</td><td data-v="-1">--</td><td data-v="60">¥60</td><td data-v="38">¥38</td><td data-v="652185">¥652,185</td></tr>
+<tr><td class="l">結婚祝いプレゼント</td><td data-v="-1">--</td><td data-v="22">¥22</td><td data-v="21">¥21</td><td data-v="632992">¥632,992</td></tr>
+<tr><td class="l">出産祝い</td><td data-v="-1">--</td><td data-v="28">¥28</td><td data-v="17">¥17</td><td data-v="529142">¥529,142</td></tr>
+<tr><td class="l">結婚祝い</td><td data-v="-1">--</td><td data-v="29">¥29</td><td data-v="29">¥29</td><td data-v="452105">¥452,105</td></tr>
+<tr><td class="l">母の日</td><td data-v="-1">--</td><td data-v="42">¥42</td><td data-v="23">¥23</td><td data-v="434497">¥434,497</td></tr>
+<tr><td class="l">父の日</td><td data-v="-1">--</td><td data-v="56">¥56</td><td data-v="26">¥26</td><td data-v="391338">¥391,338</td></tr>
+<tr><td class="l">誕生日プレゼント</td><td data-v="-1">--</td><td data-v="24">¥24</td><td data-v="13">¥13</td><td data-v="375873">¥375,873</td></tr>
+</table></div></details>
+<details><summary>ソーラー発電（共通KW 3個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>GATES SOLAR AUCTION</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>SOLSEL</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>ソーラー買取王</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>太陽光買取.com</th><th>COST合計</th></tr>
+<tr><td class="l">太陽光売却</td><td data-v="-1">--</td><td data-v="1689">¥1,689</td><td data-v="-1">--</td><td data-v="2784">¥2,784</td><td data-v="1204065">¥1,204,065</td></tr>
+<tr><td class="l">太陽光発電買取</td><td data-v="-1">--</td><td data-v="1577">¥1,577</td><td data-v="-1">--</td><td data-v="1585">¥1,585</td><td data-v="313386">¥313,386</td></tr>
+<tr><td class="l">太陽光発電買取価格</td><td data-v="433">¥433</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="789">¥789</td><td data-v="206857">¥206,857</td></tr>
+</table></div></details>
+<details><summary>デジタルギフト（共通KW 4個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>ギフティ</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>デジコ</th><th>COST合計</th></tr>
+<tr><td class="l">デジタルギフト</td><td data-v="404">¥404</td><td data-v="754">¥754</td><td data-v="361062">¥361,062</td></tr>
+<tr><td class="l">ギフトカード</td><td data-v="224">¥224</td><td data-v="179">¥179</td><td data-v="67082">¥67,082</td></tr>
+<tr><td class="l">選べるギフト</td><td data-v="250">¥250</td><td data-v="658">¥658</td><td data-v="62717">¥62,717</td></tr>
+<tr><td class="l">eギフト</td><td data-v="231">¥231</td><td data-v="237">¥237</td><td data-v="52776">¥52,776</td></tr>
+</table></div></details>
+<details><summary>バイク買取＆お葬式（共通KW 2個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>ちゃんとしたお葬式</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>よりそうお葬式</th><th>COST合計</th></tr>
+<tr><td class="l">家族葬</td><td data-v="498">¥498</td><td data-v="1130">¥1,130</td><td data-v="4899031">¥4,899,031</td></tr>
+<tr><td class="l">葬儀屋</td><td data-v="1582">¥1,582</td><td data-v="2188">¥2,188</td><td data-v="3549441">¥3,549,441</td></tr>
+</table></div></details>
+<details><summary>パブリックスピーチ（共通KW 1個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>Dr.Communication</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>モチベーション＆コミュニケーションスクール</th><th>COST合計</th></tr>
+<tr><td class="l">話し方レッスン</td><td data-v="256">¥256</td><td data-v="99">¥99</td><td data-v="104547">¥104,547</td></tr>
+</table></div></details>
+<details><summary>パーソナルジム（共通KW 25個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>BEYOND</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>GYMS</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>Space gym</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>UNDEUX</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>かたぎり塾</th><th>COST合計</th></tr>
+<tr><td class="l">パーソナルジム</td><td data-v="294">¥294</td><td data-v="405">¥405</td><td data-v="596">¥596</td><td data-v="549">¥549</td><td data-v="432">¥432</td><td data-v="34947849">¥34,947,849</td></tr>
+<tr><td class="l">パーソナルトレーニング</td><td data-v="289">¥289</td><td data-v="449">¥449</td><td data-v="634">¥634</td><td data-v="-1">--</td><td data-v="384">¥384</td><td data-v="6764322">¥6,764,322</td></tr>
+<tr><td class="l">マンツーマンジム</td><td data-v="247">¥247</td><td data-v="441">¥441</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="2638982">¥2,638,982</td></tr>
+<tr><td class="l">パーソナルジム安い</td><td data-v="305">¥305</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="465">¥465</td><td data-v="439">¥439</td><td data-v="2181881">¥2,181,881</td></tr>
+<tr><td class="l">ジム</td><td data-v="241">¥241</td><td data-v="368">¥368</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="1657990">¥1,657,990</td></tr>
+<tr><td class="l">プライベートジム</td><td data-v="260">¥260</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="372">¥372</td><td data-v="1560185">¥1,560,185</td></tr>
+<tr><td class="l">パーソナルジム女性</td><td data-v="346">¥346</td><td data-v="576">¥576</td><td data-v="-1">--</td><td data-v="390">¥390</td><td data-v="-1">--</td><td data-v="1511229">¥1,511,229</td></tr>
+<tr><td class="l">ダイエットジム</td><td data-v="168">¥168</td><td data-v="461">¥461</td><td data-v="-1">--</td><td data-v="458">¥458</td><td data-v="-1">--</td><td data-v="1235800">¥1,235,800</td></tr>
+<tr><td class="l">パーソナルジム名古屋</td><td data-v="484">¥484</td><td data-v="593">¥593</td><td data-v="-1">--</td><td data-v="504">¥504</td><td data-v="-1">--</td><td data-v="807224">¥807,224</td></tr>
+<tr><td class="l">パーソナルジム仙台</td><td data-v="263">¥263</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="801">¥801</td><td data-v="-1">--</td><td data-v="796742">¥796,742</td></tr>
+</table></div></details>
+<details><summary>パーソナルトレーニング＆電験（共通KW 2個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>Space gym</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>element</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>rexer</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>精神と時のジム</th><th>COST合計</th></tr>
+<tr><td class="l">パーソナルジム</td><td data-v="622">¥622</td><td data-v="328">¥328</td><td data-v="166">¥166</td><td data-v="-1">--</td><td data-v="1599376">¥1,599,376</td></tr>
+<tr><td class="l">パーソナルトレーニング</td><td data-v="593">¥593</td><td data-v="-1">--</td><td data-v="135">¥135</td><td data-v="-1">--</td><td data-v="417901">¥417,901</td></tr>
+</table></div></details>
+<details><summary>ヒールメイト・マリーゴー（共通KW 5個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>ヒールメイト</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>マリーゴー</th><th>COST合計</th></tr>
+<tr><td class="l">既婚者マッチングアプリ</td><td data-v="243">¥243</td><td data-v="321">¥321</td><td data-v="8172723">¥8,172,723</td></tr>
+<tr><td class="l">既婚者マッチングアプリ無料</td><td data-v="323">¥323</td><td data-v="264">¥264</td><td data-v="644948">¥644,948</td></tr>
+<tr><td class="l">既婚者出会い</td><td data-v="275">¥275</td><td data-v="310">¥310</td><td data-v="572616">¥572,616</td></tr>
+<tr><td class="l">既婚アプリ</td><td data-v="253">¥253</td><td data-v="385">¥385</td><td data-v="227854">¥227,854</td></tr>
+<tr><td class="l">出会い既婚者</td><td data-v="246">¥246</td><td data-v="315">¥315</td><td data-v="79439">¥79,439</td></tr>
+</table></div></details>
+<details><summary>ピラティス&amp;整体（共通KW 11個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>Rearis</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>TADASU</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>the SILK</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>ピラティスK</th><th>COST合計</th></tr>
+<tr><td class="l">ピラティス</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="269">¥269</td><td data-v="266">¥266</td><td data-v="10755233">¥10,755,233</td></tr>
+<tr><td class="l">マシンピラティス</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="261">¥261</td><td data-v="242">¥242</td><td data-v="1190583">¥1,190,583</td></tr>
+<tr><td class="l">ピラティス新宿</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="530">¥530</td><td data-v="445">¥445</td><td data-v="548420">¥548,420</td></tr>
+<tr><td class="l">ピラティス大阪</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="314">¥314</td><td data-v="355">¥355</td><td data-v="483061">¥483,061</td></tr>
+<tr><td class="l">整体</td><td data-v="156">¥156</td><td data-v="263">¥263</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="398104">¥398,104</td></tr>
+<tr><td class="l">ピラティス大宮</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="415">¥415</td><td data-v="416">¥416</td><td data-v="344418">¥344,418</td></tr>
+<tr><td class="l">ピラティス梅田</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="367">¥367</td><td data-v="388">¥388</td><td data-v="331717">¥331,717</td></tr>
+<tr><td class="l">ピラティス川崎</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="420">¥420</td><td data-v="289">¥289</td><td data-v="324266">¥324,266</td></tr>
+<tr><td class="l">ピラティス所沢</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="507">¥507</td><td data-v="296">¥296</td><td data-v="237920">¥237,920</td></tr>
+<tr><td class="l">ピラティス船橋</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="333">¥333</td><td data-v="328">¥328</td><td data-v="199918">¥199,918</td></tr>
+</table></div></details>
+<details><summary>ピル（共通KW 13個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>クリニックナビゲーション</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>クリニックフォア</th><th>COST合計</th></tr>
+<tr><td class="l">ピルオンライン</td><td data-v="1227">¥1,227</td><td data-v="802">¥802</td><td data-v="9478366">¥9,478,366</td></tr>
+<tr><td class="l">ピル</td><td data-v="816">¥816</td><td data-v="763">¥763</td><td data-v="9276717">¥9,276,717</td></tr>
+<tr><td class="l">ヤーズフレックス通販</td><td data-v="585">¥585</td><td data-v="677">¥677</td><td data-v="5763825">¥5,763,825</td></tr>
+<tr><td class="l">オンラインピル処方</td><td data-v="1449">¥1,449</td><td data-v="693">¥693</td><td data-v="2257121">¥2,257,121</td></tr>
+<tr><td class="l">ピル処方</td><td data-v="711">¥711</td><td data-v="469">¥469</td><td data-v="1473801">¥1,473,801</td></tr>
+<tr><td class="l">ピルオンライン診療</td><td data-v="1294">¥1,294</td><td data-v="1214">¥1,214</td><td data-v="1428689">¥1,428,689</td></tr>
+<tr><td class="l">オンラインピル</td><td data-v="1210">¥1,210</td><td data-v="658">¥658</td><td data-v="1260288">¥1,260,288</td></tr>
+<tr><td class="l">ピル処方オンライン</td><td data-v="1383">¥1,383</td><td data-v="1057">¥1,057</td><td data-v="1236880">¥1,236,880</td></tr>
+<tr><td class="l">ドロエチ</td><td data-v="456">¥456</td><td data-v="654">¥654</td><td data-v="1002619">¥1,002,619</td></tr>
+<tr><td class="l">マーベロン</td><td data-v="582">¥582</td><td data-v="709">¥709</td><td data-v="535441">¥535,441</td></tr>
+</table></div></details>
+<details><summary>ボクササイズ（共通KW 3個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>B-monster</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>Refinas</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>ミットネス</th><th>COST合計</th></tr>
+<tr><td class="l">暗闇キックボクシング大阪</td><td data-v="331">¥331</td><td data-v="-1">--</td><td data-v="399">¥399</td><td data-v="588974">¥588,974</td></tr>
+<tr><td class="l">暗闇キックボクシング</td><td data-v="275">¥275</td><td data-v="-1">--</td><td data-v="385">¥385</td><td data-v="553923">¥553,923</td></tr>
+<tr><td class="l">キックボクシングジム女性</td><td data-v="-1">--</td><td data-v="255">¥255</td><td data-v="360">¥360</td><td data-v="284977">¥284,977</td></tr>
+</table></div></details>
+<details><summary>マウスピース矯正（共通KW 9個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>キレイライン</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>スマイルモア</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>ゼニュム</th><th>COST合計</th></tr>
+<tr><td class="l">歯矯正</td><td data-v="553">¥553</td><td data-v="947">¥947</td><td data-v="-1">--</td><td data-v="10011393">¥10,011,393</td></tr>
+<tr><td class="l">マウスピース矯正</td><td data-v="657">¥657</td><td data-v="1123">¥1,123</td><td data-v="-1">--</td><td data-v="9778585">¥9,778,585</td></tr>
+<tr><td class="l">矯正</td><td data-v="437">¥437</td><td data-v="945">¥945</td><td data-v="-1">--</td><td data-v="4821022">¥4,821,022</td></tr>
+<tr><td class="l">小児矯正</td><td data-v="224">¥224</td><td data-v="614">¥614</td><td data-v="-1">--</td><td data-v="867125">¥867,125</td></tr>
+<tr><td class="l">子供矯正</td><td data-v="248">¥248</td><td data-v="563">¥563</td><td data-v="-1">--</td><td data-v="546847">¥546,847</td></tr>
+<tr><td class="l">マウスピース矯正値段</td><td data-v="448">¥448</td><td data-v="913">¥913</td><td data-v="-1">--</td><td data-v="332137">¥332,137</td></tr>
+<tr><td class="l">出っ歯矯正</td><td data-v="564">¥564</td><td data-v="853">¥853</td><td data-v="-1">--</td><td data-v="322551">¥322,551</td></tr>
+<tr><td class="l">前歯矯正</td><td data-v="554">¥554</td><td data-v="859">¥859</td><td data-v="-1">--</td><td data-v="224668">¥224,668</td></tr>
+<tr><td class="l">歯科矯正子供</td><td data-v="216">¥216</td><td data-v="777">¥777</td><td data-v="-1">--</td><td data-v="84276">¥84,276</td></tr>
+</table></div></details>
+<details><summary>レーシック（共通KW 2個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>あおぞらクリニック</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>先進会眼科</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>冨田実アイクリニック銀座</th><th>COST合計</th></tr>
+<tr><td class="l">レーシック</td><td data-v="-1">--</td><td data-v="380">¥380</td><td data-v="119">¥119</td><td data-v="1383971">¥1,383,971</td></tr>
+<tr><td class="l">レーシック手術</td><td data-v="-1">--</td><td data-v="272">¥272</td><td data-v="116">¥116</td><td data-v="229446">¥229,446</td></tr>
+</table></div></details>
+<details><summary>不動産投資（共通KW 3個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>tecrowd</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>torches</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>不動産投資クラウドファンディング CAMEL</th><th>COST合計</th></tr>
+<tr><td class="l">トーチーズ</td><td data-v="378">¥378</td><td data-v="200">¥200</td><td data-v="-1">--</td><td data-v="5271150">¥5,271,150</td></tr>
+<tr><td class="l">投資初心者</td><td data-v="906">¥906</td><td data-v="-1">--</td><td data-v="202">¥202</td><td data-v="2195369">¥2,195,369</td></tr>
+<tr><td class="l">少額投資</td><td data-v="828">¥828</td><td data-v="-1">--</td><td data-v="221">¥221</td><td data-v="996307">¥996,307</td></tr>
+</table></div></details>
+<details><summary>卵子凍結（共通KW 12個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>Liberty English</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>さくら・はるねクリニック銀座</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>オーク会</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>グレイスグループ</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>グレイス杉山クリニック</th><th>COST合計</th></tr>
+<tr><td class="l">卵子凍結</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="202">¥202</td><td data-v="-1">--</td><td data-v="283">¥283</td><td data-v="2205092">¥2,205,092</td></tr>
+<tr><td class="l">卵子凍結助成金</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="226">¥226</td><td data-v="348">¥348</td><td data-v="1648938">¥1,648,938</td></tr>
+<tr><td class="l">不妊</td><td data-v="-1">--</td><td data-v="324">¥324</td><td data-v="189">¥189</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="1007292">¥1,007,292</td></tr>
+<tr><td class="l">グレイス杉山クリニック</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="268">¥268</td><td data-v="255">¥255</td><td data-v="670281">¥670,281</td></tr>
+<tr><td class="l">卵子凍結セミナー</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="132">¥132</td><td data-v="200">¥200</td><td data-v="536011">¥536,011</td></tr>
+<tr><td class="l">卵子凍結補助金</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="217">¥217</td><td data-v="157">¥157</td><td data-v="346047">¥346,047</td></tr>
+<tr><td class="l">不妊治療</td><td data-v="-1">--</td><td data-v="227">¥227</td><td data-v="149">¥149</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="337772">¥337,772</td></tr>
+<tr><td class="l">グレイス杉山クリニックshibuya</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="283">¥283</td><td data-v="280">¥280</td><td data-v="211415">¥211,415</td></tr>
+<tr><td class="l">グレイス杉山</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="217">¥217</td><td data-v="271">¥271</td><td data-v="192576">¥192,576</td></tr>
+<tr><td class="l">グレイス卵子凍結</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="417">¥417</td><td data-v="422">¥422</td><td data-v="99734">¥99,734</td></tr>
+</table></div></details>
+<details><summary>営業支援サービス（共通KW 2個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>Mazrica</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>ReadyCrew</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>SalesNow</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>Speeda</th><th>COST合計</th></tr>
+<tr><td class="l">企業データベースサービス</td><td data-v="819">¥819</td><td data-v="-1">--</td><td data-v="275">¥275</td><td data-v="-1">--</td><td data-v="213308">¥213,308</td></tr>
+<tr><td class="l">営業データベース</td><td data-v="1128">¥1,128</td><td data-v="-1">--</td><td data-v="131">¥131</td><td data-v="-1">--</td><td data-v="142459">¥142,459</td></tr>
+</table></div></details>
+<details><summary>就活（共通KW 10個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>OfferBox（先方の希望）</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>キャリアパーク（先方の希望）</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>ジール就職エージェント</th><th>COST合計</th></tr>
+<tr><td class="l">適職診断</td><td data-v="387">¥387</td><td data-v="492">¥492</td><td data-v="-1">--</td><td data-v="6161856">¥6,161,856</td></tr>
+<tr><td class="l">就活エージェント</td><td data-v="502">¥502</td><td data-v="-1">--</td><td data-v="827">¥827</td><td data-v="3307311">¥3,307,311</td></tr>
+<tr><td class="l">自己分析</td><td data-v="411">¥411</td><td data-v="522">¥522</td><td data-v="-1">--</td><td data-v="2718572">¥2,718,572</td></tr>
+<tr><td class="l">自己分析やり方</td><td data-v="416">¥416</td><td data-v="507">¥507</td><td data-v="-1">--</td><td data-v="1957619">¥1,957,619</td></tr>
+<tr><td class="l">es書き方</td><td data-v="342">¥342</td><td data-v="509">¥509</td><td data-v="-1">--</td><td data-v="1534192">¥1,534,192</td></tr>
+<tr><td class="l">自己分析就活</td><td data-v="378">¥378</td><td data-v="641">¥641</td><td data-v="-1">--</td><td data-v="1376612">¥1,376,612</td></tr>
+<tr><td class="l">就活</td><td data-v="544">¥544</td><td data-v="568">¥568</td><td data-v="-1">--</td><td data-v="1095875">¥1,095,875</td></tr>
+<tr><td class="l">向いてる仕事診断</td><td data-v="352">¥352</td><td data-v="499">¥499</td><td data-v="-1">--</td><td data-v="712437">¥712,437</td></tr>
+<tr><td class="l">ガクチカ例文</td><td data-v="223">¥223</td><td data-v="273">¥273</td><td data-v="-1">--</td><td data-v="349668">¥349,668</td></tr>
+<tr><td class="l">ガクチカ書き方</td><td data-v="289">¥289</td><td data-v="325">¥325</td><td data-v="-1">--</td><td data-v="321873">¥321,873</td></tr>
+</table></div></details>
+<details><summary>探偵（共通KW 8個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>MR</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>RCL</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>アーネット</th><th>COST合計</th></tr>
+<tr><td class="l">浮気調査</td><td data-v="1327">¥1,327</td><td data-v="3534">¥3,534</td><td data-v="-1">--</td><td data-v="14121008">¥14,121,008</td></tr>
+<tr><td class="l">探偵事務所</td><td data-v="3755">¥3,755</td><td data-v="1787">¥1,787</td><td data-v="-1">--</td><td data-v="7178592">¥7,178,592</td></tr>
+<tr><td class="l">探偵</td><td data-v="3133">¥3,133</td><td data-v="810">¥810</td><td data-v="-1">--</td><td data-v="6464197">¥6,464,197</td></tr>
+<tr><td class="l">興信所</td><td data-v="2292">¥2,292</td><td data-v="1650">¥1,650</td><td data-v="-1">--</td><td data-v="4892439">¥4,892,439</td></tr>
+<tr><td class="l">不倫調査</td><td data-v="968">¥968</td><td data-v="1777">¥1,777</td><td data-v="-1">--</td><td data-v="2753829">¥2,753,829</td></tr>
+<tr><td class="l">探偵不倫</td><td data-v="4253">¥4,253</td><td data-v="2545">¥2,545</td><td data-v="-1">--</td><td data-v="1711488">¥1,711,488</td></tr>
+<tr><td class="l">探偵浮気調査</td><td data-v="523">¥523</td><td data-v="2443">¥2,443</td><td data-v="-1">--</td><td data-v="1428094">¥1,428,094</td></tr>
+<tr><td class="l">浮気探偵</td><td data-v="4135">¥4,135</td><td data-v="1653">¥1,653</td><td data-v="-1">--</td><td data-v="703625">¥703,625</td></tr>
+</table></div></details>
+<details><summary>業界未記載（共通KW 249個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>Anemone</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>BIDAIクレンジング</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>Direct type</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>Findy</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>Forkwell</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>MONEY DOCTOR</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>MSクリニック</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>OKJ</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>SEM!NAR</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>SHIRORU</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>W</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>Wの健康青汁</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>ZEUS WiFi</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>best-nanovi</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>e.mono-file</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>hanaso</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>haruシャンプー(シャンプー)</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>i保険</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>meets company</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>safe-match.tokyo</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>tabiho</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>あかちゃんとこどものクリニック</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>しろふわ便</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>すまサポ</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>せんたく便</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>はまっここどもクリニック</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>アイムピンチ</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>イモトのwifi</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>エコダ</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>オーサムウォッシュ</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>キャリアスタート</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>キーワードレポート</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>クラシアン</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>クリーニングのパンダ</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>グローバルwifi</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>コウジョブ</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>スミジョブ</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>スリモアコーヒー</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>スワローチェーン</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>ソナミラ</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>トベシンエナジー</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>トラベル子</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>ネイティブキャンプ</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>パーフェクトワンフォーカス</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>マナラ</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>マネーキャリア</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>リナビス</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>リネット</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>レアジョブ</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>上野クリニック</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>不動産投資会社</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>保険times</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>指定水道屋クイックホーム</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>水道修繕の窓口</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>薬用リンクルストレッチジェル</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>赤ちゃんの頭のかたち相談室</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>電話占いニーケ</th><th>COST合計</th></tr>
+<tr><td class="l">海外wifi</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="639">¥639</td><td data-v="-1">--</td><td data-v="809">¥809</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="293">¥293</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="503">¥503</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="24890560">¥24,890,560</td></tr>
+<tr><td class="l">英会話オンライン</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="96">¥96</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="532">¥532</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="16566264">¥16,566,264</td></tr>
+<tr><td class="l">fp相談</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="1154">¥1,154</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="709">¥709</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="794">¥794</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="15828254">¥15,828,254</td></tr>
+<tr><td class="l">トイレ詰まり</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="555">¥555</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="1376">¥1,376</td><td data-v="1818">¥1,818</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="14661938">¥14,661,938</td></tr>
+<tr><td class="l">オンライン英会話</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="594">¥594</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="647">¥647</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="10457763">¥10,457,763</td></tr>
+<tr><td class="l">既婚者マッチングアプリ</td><td data-v="456">¥456</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="96">¥96</td><td data-v="105">¥105</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="58">¥58</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="9862072">¥9,862,072</td></tr>
+<tr><td class="l">ファイナンシャルプランナー相談</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="1583">¥1,583</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="946">¥946</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="9593233">¥9,593,233</td></tr>
+<tr><td class="l">ファイナンシャルプランナー</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="978">¥978</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="602">¥602</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="9372466">¥9,372,466</td></tr>
+<tr><td class="l">英会話</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="208">¥208</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="495">¥495</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="348">¥348</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="8764398">¥8,764,398</td></tr>
+<tr><td class="l">水のトラブル</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="1254">¥1,254</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="1682">¥1,682</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="8038180">¥8,038,180</td></tr>
+</table></div></details>
+<details><summary>水道トラブル（共通KW 17個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>アクアホームサービス</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>クリーンライフ</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>富士水道センター</th><th>COST合計</th></tr>
+<tr><td class="l">トイレつまり</td><td data-v="1067">¥1,067</td><td data-v="-1">--</td><td data-v="1940">¥1,940</td><td data-v="7040428">¥7,040,428</td></tr>
+<tr><td class="l">トイレ修理</td><td data-v="807">¥807</td><td data-v="-1">--</td><td data-v="1234">¥1,234</td><td data-v="5903058">¥5,903,058</td></tr>
+<tr><td class="l">水道修理</td><td data-v="755">¥755</td><td data-v="-1">--</td><td data-v="1708">¥1,708</td><td data-v="5453866">¥5,453,866</td></tr>
+<tr><td class="l">水漏れ修理</td><td data-v="809">¥809</td><td data-v="-1">--</td><td data-v="1967">¥1,967</td><td data-v="4045479">¥4,045,479</td></tr>
+<tr><td class="l">トイレ詰まり</td><td data-v="1294">¥1,294</td><td data-v="257">¥257</td><td data-v="-1">--</td><td data-v="3976405">¥3,976,405</td></tr>
+<tr><td class="l">水道工事</td><td data-v="603">¥603</td><td data-v="-1">--</td><td data-v="1195">¥1,195</td><td data-v="2459955">¥2,459,955</td></tr>
+<tr><td class="l">クラシアン</td><td data-v="1514">¥1,514</td><td data-v="-1">--</td><td data-v="1336">¥1,336</td><td data-v="2340026">¥2,340,026</td></tr>
+<tr><td class="l">水道屋さん</td><td data-v="1259">¥1,259</td><td data-v="180">¥180</td><td data-v="1336">¥1,336</td><td data-v="2280043">¥2,280,043</td></tr>
+<tr><td class="l">水道トラブル</td><td data-v="857">¥857</td><td data-v="-1">--</td><td data-v="2333">¥2,333</td><td data-v="1891398">¥1,891,398</td></tr>
+<tr><td class="l">詰まり業者</td><td data-v="996">¥996</td><td data-v="-1">--</td><td data-v="1543">¥1,543</td><td data-v="1849364">¥1,849,364</td></tr>
+</table></div></details>
+<details><summary>水道周り（共通KW 4個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>交換できるくん</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>東京水道センター</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>船戸工業所</th><th>COST合計</th></tr>
+<tr><td class="l">トイレリフォーム</td><td data-v="113">¥113</td><td data-v="309">¥309</td><td data-v="-1">--</td><td data-v="3029945">¥3,029,945</td></tr>
+<tr><td class="l">トイレ交換</td><td data-v="198">¥198</td><td data-v="457">¥457</td><td data-v="-1">--</td><td data-v="769682">¥769,682</td></tr>
+<tr><td class="l">トイレ交換費用</td><td data-v="93">¥93</td><td data-v="248">¥248</td><td data-v="-1">--</td><td data-v="221303">¥221,303</td></tr>
+<tr><td class="l">便器交換</td><td data-v="121">¥121</td><td data-v="507">¥507</td><td data-v="-1">--</td><td data-v="106119">¥106,119</td></tr>
+</table></div></details>
+<details><summary>留学支援（共通KW 27個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>StudyIn</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>スマ留</th><th>COST合計</th></tr>
+<tr><td class="l">留学</td><td data-v="407">¥407</td><td data-v="526">¥526</td><td data-v="13629497">¥13,629,497</td></tr>
+<tr><td class="l">ワーホリ</td><td data-v="430">¥430</td><td data-v="494">¥494</td><td data-v="5869575">¥5,869,575</td></tr>
+<tr><td class="l">フィリピン留学</td><td data-v="585">¥585</td><td data-v="642">¥642</td><td data-v="4727325">¥4,727,325</td></tr>
+<tr><td class="l">セブ島留学</td><td data-v="501">¥501</td><td data-v="603">¥603</td><td data-v="2017754">¥2,017,754</td></tr>
+<tr><td class="l">留学エージェント</td><td data-v="702">¥702</td><td data-v="1662">¥1,662</td><td data-v="1488184">¥1,488,184</td></tr>
+<tr><td class="l">オーストラリア留学</td><td data-v="524">¥524</td><td data-v="442">¥442</td><td data-v="1323063">¥1,323,063</td></tr>
+<tr><td class="l">マルタ留学</td><td data-v="376">¥376</td><td data-v="476">¥476</td><td data-v="1184914">¥1,184,914</td></tr>
+<tr><td class="l">カナダ留学</td><td data-v="426">¥426</td><td data-v="607">¥607</td><td data-v="1148544">¥1,148,544</td></tr>
+<tr><td class="l">セブ留学</td><td data-v="573">¥573</td><td data-v="688">¥688</td><td data-v="895703">¥895,703</td></tr>
+<tr><td class="l">ワーキングホリデー</td><td data-v="398">¥398</td><td data-v="393">¥393</td><td data-v="764849">¥764,849</td></tr>
+</table></div></details>
+<details><summary>結婚相談所（共通KW 8個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>ムスベル</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>ランキングサイト①</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>ランキングサイト②</th><th>COST合計</th></tr>
+<tr><td class="l">結婚相談所</td><td data-v="336">¥336</td><td data-v="268">¥268</td><td data-v="544">¥544</td><td data-v="1333971">¥1,333,971</td></tr>
+<tr><td class="l">婚活パーティー</td><td data-v="265">¥265</td><td data-v="302">¥302</td><td data-v="-1">--</td><td data-v="634232">¥634,232</td></tr>
+<tr><td class="l">50代婚活</td><td data-v="308">¥308</td><td data-v="262">¥262</td><td data-v="-1">--</td><td data-v="574466">¥574,466</td></tr>
+<tr><td class="l">お見合い</td><td data-v="436">¥436</td><td data-v="319">¥319</td><td data-v="-1">--</td><td data-v="528814">¥528,814</td></tr>
+<tr><td class="l">結婚相談所おすすめ</td><td data-v="401">¥401</td><td data-v="323">¥323</td><td data-v="446">¥446</td><td data-v="379618">¥379,618</td></tr>
+<tr><td class="l">婚活おすすめ40代</td><td data-v="384">¥384</td><td data-v="325">¥325</td><td data-v="-1">--</td><td data-v="115084">¥115,084</td></tr>
+<tr><td class="l">バツイチ婚活</td><td data-v="286">¥286</td><td data-v="322">¥322</td><td data-v="-1">--</td><td data-v="107785">¥107,785</td></tr>
+<tr><td class="l">再婚相談所</td><td data-v="337">¥337</td><td data-v="334">¥334</td><td data-v="-1">--</td><td data-v="101727">¥101,727</td></tr>
+</table></div></details>
+<details><summary>結婚相談所探偵社（共通KW 3個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>サンマリエ</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>ツヴァイ</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>リベンジ探偵社</th><th>COST合計</th></tr>
+<tr><td class="l">結婚相談所</td><td data-v="890">¥890</td><td data-v="1123">¥1,123</td><td data-v="-1">--</td><td data-v="7175715">¥7,175,715</td></tr>
+<tr><td class="l">結婚相談所比較</td><td data-v="1381">¥1,381</td><td data-v="1000">¥1,000</td><td data-v="-1">--</td><td data-v="299013">¥299,013</td></tr>
+<tr><td class="l">結婚相談所値段</td><td data-v="394">¥394</td><td data-v="543">¥543</td><td data-v="-1">--</td><td data-v="234594">¥234,594</td></tr>
+</table></div></details>
+<details><summary>給湯器（共通KW 17個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>GAS-Q</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>キンライサー</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>大問屋</th><th>COST合計</th></tr>
+<tr><td class="l">エコキュート</td><td data-v="-1">--</td><td data-v="629">¥629</td><td data-v="644">¥644</td><td data-v="16076586">¥16,076,586</td></tr>
+<tr><td class="l">給湯器交換</td><td data-v="457">¥457</td><td data-v="596">¥596</td><td data-v="494">¥494</td><td data-v="15499840">¥15,499,840</td></tr>
+<tr><td class="l">エコキュート交換</td><td data-v="-1">--</td><td data-v="1481">¥1,481</td><td data-v="673">¥673</td><td data-v="7303940">¥7,303,940</td></tr>
+<tr><td class="l">給湯器</td><td data-v="-1">--</td><td data-v="390">¥390</td><td data-v="728">¥728</td><td data-v="5325486">¥5,325,486</td></tr>
+<tr><td class="l">ガス給湯器交換</td><td data-v="-1">--</td><td data-v="565">¥565</td><td data-v="660">¥660</td><td data-v="2679359">¥2,679,359</td></tr>
+<tr><td class="l">エコキュート買い替え</td><td data-v="-1">--</td><td data-v="1066">¥1,066</td><td data-v="675">¥675</td><td data-v="1850963">¥1,850,963</td></tr>
+<tr><td class="l">エコキュート価格</td><td data-v="-1">--</td><td data-v="345">¥345</td><td data-v="518">¥518</td><td data-v="1772572">¥1,772,572</td></tr>
+<tr><td class="l">給湯器交換費用</td><td data-v="385">¥385</td><td data-v="319">¥319</td><td data-v="662">¥662</td><td data-v="1221639">¥1,221,639</td></tr>
+<tr><td class="l">給湯器工事</td><td data-v="530">¥530</td><td data-v="384">¥384</td><td data-v="-1">--</td><td data-v="1146546">¥1,146,546</td></tr>
+<tr><td class="l">給湯器値段</td><td data-v="-1">--</td><td data-v="189">¥189</td><td data-v="233">¥233</td><td data-v="963319">¥963,319</td></tr>
+</table></div></details>
+<details><summary>美容クリニック（共通KW 71個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>TAクリニック</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>URARAクリニック</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>ディオクリニック</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>リエートクリニック</th><th><span class="adv-dot" style="background:var(--adv-4)"></span>品川美容外科</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>聖心美容クリニック</th><th>COST合計</th></tr>
+<tr><td class="l">ほうれい線ヒアルロン酸</td><td data-v="414">¥414</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="175">¥175</td><td data-v="457">¥457</td><td data-v="7428551">¥7,428,551</td></tr>
+<tr><td class="l">ピコレーザー</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="209">¥209</td><td data-v="324">¥324</td><td data-v="4402949">¥4,402,949</td></tr>
+<tr><td class="l">脂肪冷却</td><td data-v="-1">--</td><td data-v="490">¥490</td><td data-v="745">¥745</td><td data-v="-1">--</td><td data-v="155">¥155</td><td data-v="-1">--</td><td data-v="4217455">¥4,217,455</td></tr>
+<tr><td class="l">鼻整形</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="210">¥210</td><td data-v="463">¥463</td><td data-v="3832572">¥3,832,572</td></tr>
+<tr><td class="l">医療ダイエット</td><td data-v="-1">--</td><td data-v="2139">¥2,139</td><td data-v="652">¥652</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="3435849">¥3,435,849</td></tr>
+<tr><td class="l">脂肪溶解注射</td><td data-v="492">¥492</td><td data-v="1289">¥1,289</td><td data-v="705">¥705</td><td data-v="-1">--</td><td data-v="86">¥86</td><td data-v="605">¥605</td><td data-v="3366475">¥3,366,475</td></tr>
+<tr><td class="l">フラクショナルレーザー</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="207">¥207</td><td data-v="298">¥298</td><td data-v="2747438">¥2,747,438</td></tr>
+<tr><td class="l">目の下のたるみ</td><td data-v="527">¥527</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="160">¥160</td><td data-v="-1">--</td><td data-v="2414063">¥2,414,063</td></tr>
+<tr><td class="l">美容皮膚科</td><td data-v="341">¥341</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="241">¥241</td><td data-v="290">¥290</td><td data-v="1759794">¥1,759,794</td></tr>
+<tr><td class="l">糸リフト</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="163">¥163</td><td data-v="511">¥511</td><td data-v="1359721">¥1,359,721</td></tr>
+</table></div></details>
+<details><summary>英語塾営業促進ツール（共通KW 1個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>English Innovations</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>トフルゼミナール</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>ホットプロファイル</th><th>COST合計</th></tr>
+<tr><td class="l">toefl</td><td data-v="762">¥762</td><td data-v="576">¥576</td><td data-v="-1">--</td><td data-v="1455222">¥1,455,222</td></tr>
+</table></div></details>
+<details><summary>葬儀社（共通KW 1個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>おくりびとのお葬式</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>公益社</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>自由な家族葬　千の風</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>野々村葬儀社</th><th>COST合計</th></tr>
+<tr><td class="l">葬儀</td><td data-v="2291">¥2,291</td><td data-v="550">¥550</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="12499952">¥12,499,952</td></tr>
+</table></div></details>
+<details><summary>記事作成代行（共通KW 4個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>CROCO</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>スマートSEO</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>バクヤスai</th><th><span class="adv-dot" style="background:var(--adv-3)"></span>記事作成代行ULTRA</th><th>COST合計</th></tr>
+<tr><td class="l">aiseo</td><td data-v="-1">--</td><td data-v="667">¥667</td><td data-v="1281">¥1,281</td><td data-v="-1">--</td><td data-v="178164">¥178,164</td></tr>
+<tr><td class="l">ai記事作成</td><td data-v="-1">--</td><td data-v="457">¥457</td><td data-v="1723">¥1,723</td><td data-v="-1">--</td><td data-v="169176">¥169,176</td></tr>
+<tr><td class="l">記事制作</td><td data-v="1140">¥1,140</td><td data-v="-1">--</td><td data-v="1255">¥1,255</td><td data-v="-1">--</td><td data-v="145085">¥145,085</td></tr>
+<tr><td class="l">記事作成ai</td><td data-v="-1">--</td><td data-v="630">¥630</td><td data-v="1307">¥1,307</td><td data-v="-1">--</td><td data-v="113859">¥113,859</td></tr>
+</table></div></details>
+<details><summary>適性テスト（共通KW 1個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</th><th><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</th><th>COST合計</th></tr>
+<tr><td class="l">適性検査</td><td data-v="1736">¥1,736</td><td data-v="-1">--</td><td data-v="748">¥748</td><td data-v="2211302">¥2,211,302</td></tr>
+</table></div></details>
+<details><summary>音声ブック（共通KW 5個）</summary>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">KW（正規化）</th><th><span class="adv-dot" style="background:var(--adv-0)"></span>オーディオブック</th><th><span class="adv-dot" style="background:var(--adv-1)"></span>ゲッツーグ</th><th>COST合計</th></tr>
+<tr><td class="l">オーディオブック</td><td data-v="176">¥176</td><td data-v="15">¥15</td><td data-v="3410847">¥3,410,847</td></tr>
+<tr><td class="l">audiobook</td><td data-v="158">¥158</td><td data-v="20">¥20</td><td data-v="681986">¥681,986</td></tr>
+<tr><td class="l">聞く読書</td><td data-v="97">¥97</td><td data-v="13">¥13</td><td data-v="77919">¥77,919</td></tr>
+<tr><td class="l">本朗読アプリ</td><td data-v="112">¥112</td><td data-v="14">¥14</td><td data-v="28740">¥28,740</td></tr>
+<tr><td class="l">本音読アプリ</td><td data-v="131">¥131</td><td data-v="16">¥16</td><td data-v="24920">¥24,920</td></tr>
+</table></div></details>
+<p class="note">2社以上が50クリック以上使っているKWのみ（各業界上位10KW）。CPC実額は業界相場の一次情報として提案に使用可。</p>
+<h2>業界横断｜品質スコア相場（IMP加重・直近バッチ）</h2>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">業界</th><th class="l">広告主別QS</th><th>レンジ</th></tr>
+<tr><td class="l">AGA治療</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>クリニックフォア 4.55 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>AGAスキンクリニック 3.81 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>銀クリ 3.04</td><td data-v="3.04">3.04〜4.55</td></tr>
+<tr><td class="l">ASP・保険</td><td class="l"><span class="adv-dot" style="background:var(--adv-4)"></span>保険市場 7.35 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>くらべる保険ナビ 6.31 ／ <span class="adv-dot" style="background:var(--adv-3)"></span>レントラックス 5.46 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>A8 5.40 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>バリューコマース 4.82</td><td data-v="4.82">4.82〜7.35</td></tr>
+<tr><td class="l">EC受注出荷管理</td><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ロジモプロ 5.38 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>オープンロジ 3.73 ／ <span class="adv-dot" style="background:var(--adv-3)"></span>ロジレス 3.23 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>コマースロボ 3.11</td><td data-v="3.11">3.11〜5.38</td></tr>
+<tr><td class="l">WEBスクール</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>WEBCOACH 8.54 ／ <span class="adv-dot" style="background:var(--adv-3)"></span>webfree(ウェブフリ) 6.97 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>sonomama 5.15 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>SHElikes 5.10</td><td data-v="5.10">5.10〜8.54</td></tr>
+<tr><td class="l">WiFi</td><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>モンスターモバイル 10.00 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>AIRWIFI 8.11 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>にゃんこWIFI 6.27</td><td data-v="6.27">6.27〜10.00</td></tr>
+<tr><td class="l">WiFi・塾・保険</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>メットライフ生命 7.94 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>Wi-FiBOX 7.61 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>武田塾 5.37</td><td data-v="5.37">5.37〜7.94</td></tr>
+<tr><td class="l">eSIM</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim 7.79 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル 4.79</td><td data-v="4.79">4.79〜7.79</td></tr>
+<tr><td class="l">iPhone買取</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>コエシル 7.84 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>WEBSHOP 7.65</td><td data-v="7.65">7.65〜7.84</td></tr>
+<tr><td class="l">インソール</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>HBLインソール 9.45 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>カモシカソール 7.94</td><td data-v="7.94">7.94〜9.45</td></tr>
+<tr><td class="l">オンラインカードゲーム</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>DOPA 9.53 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>カードショップアルファ 7.64 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>オリパワン 4.52 ／ <span class="adv-dot" style="background:var(--adv-3)"></span>ポケパ365 2.89</td><td data-v="2.89">2.89〜9.53</td></tr>
+<tr><td class="l">オンライン個人指導</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>家庭教師の熱血先生 3.67 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>東大先生 3.11 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>トウコベ 3.01</td><td data-v="3.01">3.01〜3.67</td></tr>
+<tr><td class="l">ギフトカード</td><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ギフトモール 9.42 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>TANP 9.19 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>HYACCA 8.79</td><td data-v="8.79">8.79〜9.42</td></tr>
+<tr><td class="l">スカウト</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>E4（eeasy） 3.17 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>AIスカウトくん 2.76 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>HEROZ ASK 2.68</td><td data-v="2.68">2.68〜3.17</td></tr>
+<tr><td class="l">スマホ買取＆電験</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH 6.03 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>能セン 5.37</td><td data-v="5.37">5.37〜6.03</td></tr>
+<tr><td class="l">ソーラー発電</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>SOLSEL 5.39 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>GATES SOLAR AUCTION 3.88 ／ <span class="adv-dot" style="background:var(--adv-3)"></span>太陽光買取.com 3.73 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>ソーラー買取王 2.33</td><td data-v="2.33">2.33〜5.39</td></tr>
+<tr><td class="l">ダイエット・家庭教師</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カモシカソール 7.54 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>キズキ共育塾 5.32 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>家庭教師のゴーイング 3.16</td><td data-v="3.16">3.16〜7.54</td></tr>
+<tr><td class="l">テレビショッピング・リスティング広告</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ 3.66</td><td data-v="3.66">3.66〜3.66</td></tr>
+<tr><td class="l">デジタルギフト</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ギフティ 7.25 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>デジコ 5.49</td><td data-v="5.49">5.49〜7.25</td></tr>
+<tr><td class="l">バイク買取＆お葬式</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>よりそうお葬式 6.67 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>ちゃんとしたお葬式 4.12</td><td data-v="4.12">4.12〜6.67</td></tr>
+<tr><td class="l">パブリックスピーチ</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>Dr.Communication 5.52 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>モチベーション＆コミュニケーションスクール 2.29</td><td data-v="2.29">2.29〜5.52</td></tr>
+<tr><td class="l">パーソナルジム</td><td class="l"><span class="adv-dot" style="background:var(--adv-3)"></span>UNDEUX 6.36 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>Space gym 5.39 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>BEYOND 5.27 ／ <span class="adv-dot" style="background:var(--adv-4)"></span>かたぎり塾 4.61 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>GYMS 4.60</td><td data-v="4.60">4.60〜6.36</td></tr>
+<tr><td class="l">パーソナルトレーニング＆電験</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>Space gym 5.41 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>element 5.23 ／ <span class="adv-dot" style="background:var(--adv-3)"></span>精神と時のジム 2.81 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>rexer 2.38</td><td data-v="2.38">2.38〜5.41</td></tr>
+<tr><td class="l">ピラティス&amp;整体</td><td class="l"><span class="adv-dot" style="background:var(--adv-3)"></span>ピラティスK 6.76 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>the SILK 5.56 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>Rearis 3.45 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>TADASU 2.74</td><td data-v="2.74">2.74〜6.76</td></tr>
+<tr><td class="l">ピル</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>クリニックフォア 4.65 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>クリニックナビゲーション 4.44</td><td data-v="4.44">4.44〜4.65</td></tr>
+<tr><td class="l">ブライダル</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>ベストブライダル 7.70 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>T&amp;G WEDDING 4.63</td><td data-v="4.63">4.63〜7.70</td></tr>
+<tr><td class="l">ボクササイズ</td><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミットネス 6.61 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>Refinas 5.82 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>B-monster 5.77</td><td data-v="5.77">5.77〜6.61</td></tr>
+<tr><td class="l">マウスピース矯正</td><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ゼニュム 9.27 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>スマイルモア 5.21 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>キレイライン 4.32</td><td data-v="4.32">4.32〜9.27</td></tr>
+<tr><td class="l">レーシック</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>先進会眼科 6.30 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>冨田実アイクリニック銀座 3.87 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>あおぞらクリニック 2.81</td><td data-v="2.81">2.81〜6.30</td></tr>
+<tr><td class="l">不動産</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>いえカツLIFE 8.03 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>FJネクスト 5.44 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>日本財託 4.83 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>不動産売却プラザ 4.09</td><td data-v="4.09">4.09〜8.03</td></tr>
+<tr><td class="l">不動産クラファン</td><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS 9.84 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>FunFund 4.61 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL 3.88</td><td data-v="3.88">3.88〜9.84</td></tr>
+<tr><td class="l">不動産投資</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>torches 8.35 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>tecrowd 7.06 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>不動産投資クラウドファンディング CAMEL 3.48</td><td data-v="3.48">3.48〜8.35</td></tr>
+<tr><td class="l">不妊治療＆占い</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院 4.38 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ 2.30</td><td data-v="2.30">2.30〜4.38</td></tr>
+<tr><td class="l">予約システム</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE 6.36 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun 4.39</td><td data-v="4.39">4.39〜6.36</td></tr>
+<tr><td class="l">保険</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アントプロダクション(オリコ) 5.85</td><td data-v="5.85">5.85〜5.85</td></tr>
+<tr><td class="l">医療ダイエット</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife 2.05</td><td data-v="2.05">2.05〜2.05</td></tr>
+<tr><td class="l">卵子凍結</td><td class="l"><span class="adv-dot" style="background:var(--adv-3)"></span>グレイスグループ 7.30 ／ <span class="adv-dot" style="background:var(--adv-4)"></span>グレイス杉山クリニック 7.27 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>オーク会 4.77 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>さくら・はるねクリニック銀座 3.75 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>Liberty English 3.53</td><td data-v="3.53">3.53〜7.30</td></tr>
+<tr><td class="l">営業支援サービス</td><td class="l"><span class="adv-dot" style="background:var(--adv-3)"></span>Speeda 6.22 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>SalesNow 3.57 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>ReadyCrew 3.17 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>Mazrica 2.91</td><td data-v="2.91">2.91〜6.22</td></tr>
+<tr><td class="l">就活</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>OfferBox（先方の希望） 4.59 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>キャリアパーク（先方の希望） 4.32 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>ジール就職エージェント 3.90</td><td data-v="3.90">3.90〜4.59</td></tr>
+<tr><td class="l">探偵</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>MR 6.59 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>RCL 5.55 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>アーネット 4.22</td><td data-v="4.22">4.22〜6.59</td></tr>
+<tr><td class="l">格安スマホ</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル 9.55</td><td data-v="9.55">9.55〜9.55</td></tr>
+<tr><td class="l">業界未記載</td><td class="l"><span class="adv-dot" style="background:var(--adv-4)"></span>グローバルwifi 8.14 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>W 7.61 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>キーワードレポート 7.56 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>不動産投資会社 7.39 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>クラシアン 5.05 ／ <span class="adv-dot" style="background:var(--adv-3)"></span>meets company 2.25</td><td data-v="2.25">2.25〜8.14</td></tr>
+<tr><td class="l">水道トラブル</td><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>富士水道センター 4.33 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>アクアホームサービス 3.49</td><td data-v="3.49">3.49〜4.33</td></tr>
+<tr><td class="l">水道周り</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>交換できるくん 7.49 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>東京水道センター 7.01 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>船戸工業所 4.75</td><td data-v="4.75">4.75〜7.49</td></tr>
+<tr><td class="l">留学支援</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>スマ留 6.66 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>StudyIn 5.11</td><td data-v="5.11">5.11〜6.66</td></tr>
+<tr><td class="l">結婚相談所</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>ランキングサイト① 5.47 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>ムスベル 5.03 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>ランキングサイト② 4.30</td><td data-v="4.30">4.30〜5.47</td></tr>
+<tr><td class="l">結婚相談所探偵社</td><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リベンジ探偵社 5.98 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>ツヴァイ 5.48 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>サンマリエ 3.10</td><td data-v="3.10">3.10〜5.98</td></tr>
+<tr><td class="l">給湯器</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キンライサー 7.26 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>GAS-Q 6.57 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>大問屋 5.75</td><td data-v="5.75">5.75〜7.26</td></tr>
+<tr><td class="l">美容クリニック</td><td class="l"><span class="adv-dot" style="background:var(--adv-3)"></span>リエートクリニック 8.06 ／ <span class="adv-dot" style="background:var(--adv-4)"></span>品川美容外科 6.02 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>URARAクリニック 5.86 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>ディオクリニック 5.17 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>TAクリニック 3.86 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>聖心美容クリニック 3.62</td><td data-v="3.62">3.62〜8.06</td></tr>
+<tr><td class="l">英会話サービス</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話 5.00 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>イングリード 3.78 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー 3.78</td><td data-v="3.78">3.78〜5.00</td></tr>
+<tr><td class="l">英語塾営業促進ツール</td><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ホットプロファイル 7.83 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>トフルゼミナール 4.00 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>English Innovations 3.25</td><td data-v="3.25">3.25〜7.83</td></tr>
+<tr><td class="l">葬儀会館1</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>家族葬のファミーユ 6.72 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>株式会社ティア 4.48</td><td data-v="4.48">4.48〜6.72</td></tr>
+<tr><td class="l">葬儀会館2</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>典礼会館 4.74 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>はないろ 4.64</td><td data-v="4.64">4.64〜4.74</td></tr>
+<tr><td class="l">葬儀社</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>公益社 6.77 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>おくりびとのお葬式 4.97</td><td data-v="4.97">4.97〜6.77</td></tr>
+<tr><td class="l">記事作成代行</td><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CROCO 3.11 ／ <span class="adv-dot" style="background:var(--adv-3)"></span>記事作成代行ULTRA 3.00 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>スマートSEO 2.98 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>バクヤスai 2.73</td><td data-v="2.73">2.73〜3.11</td></tr>
+<tr><td class="l">通信販売</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング 9.84 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ 8.17 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ 4.15</td><td data-v="4.15">4.15〜9.84</td></tr>
+<tr><td class="l">適性テスト</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック 7.31 ／ <span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査 4.28 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査 4.21</td><td data-v="4.21">4.21〜7.31</td></tr>
+<tr><td class="l">銀行</td><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>鳥取銀行 7.01 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>山陽合同銀行 6.46 ／ <span class="adv-dot" style="background:var(--adv-1)"></span>島根銀行 5.82</td><td data-v="5.82">5.82〜7.01</td></tr>
+<tr><td class="l">電気会社</td><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>idemitsuでんき 4.44</td><td data-v="4.44">4.44〜4.44</td></tr>
+<tr><td class="l">音声ブック</td><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>ゲッツーグ 9.35 ／ <span class="adv-dot" style="background:var(--adv-0)"></span>オーディオブック 6.70</td><td data-v="6.70">6.70〜9.35</td></tr>
+</table></div>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

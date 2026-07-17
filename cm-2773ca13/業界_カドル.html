@@ -1,0 +1,604 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜カドル</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>カドル業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">1社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2025-07-30</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥101,516,723</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥101</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">--</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="カドル（Cuddle）" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2025-07-30（期間 2025年4月1日 - 2025年7月30日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td data-v="101516723">¥101,516,723</td><td data-v="1005747">1,005,747</td><td data-v="0.2083">20.8%</td><td data-v="100.9">¥101</td><td data-v="0.00">--</td><td data-v="0.0">--</td><td data-v="0.0000">0.0%</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div></td><td class="cv sep" data-v="43387">43,387</td><td class="cv" data-v="0.0431">4.3%</td><td class="cv" data-v="2339.8">¥2,340</td></tr>
+</table></div>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td data-v="202504">2025-04</td><td data-v="841577">841,577</td><td data-v="198435">198,435</td><td data-v="0.2358">23.6%</td><td data-v="103.6">¥104</td><td data-v="20552191">¥20,552,191</td><td class="cv sep" data-v="9060">9,060</td><td class="cv" data-v="0.0457">4.6%</td><td class="cv" data-v="2268.6">¥2,269</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td data-v="202505">2025-05</td><td data-v="1270431">1,270,431</td><td data-v="262095">262,095</td><td data-v="0.2063">20.6%</td><td data-v="104.6">¥105</td><td data-v="27421233">¥27,421,233</td><td class="cv sep" data-v="12340">12,340</td><td class="cv" data-v="0.0471">4.7%</td><td class="cv" data-v="2222.2">¥2,222</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td data-v="202506">2025-06</td><td data-v="1340852">1,340,852</td><td data-v="274370">274,370</td><td data-v="0.2046">20.5%</td><td data-v="101.7">¥102</td><td data-v="27899889">¥27,899,889</td><td class="cv sep" data-v="10964">10,964</td><td class="cv" data-v="0.0400">4.0%</td><td class="cv" data-v="2544.6">¥2,545</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td data-v="202507">2025-07</td><td data-v="1374923">1,374,923</td><td data-v="270847">270,847</td><td data-v="0.1970">19.7%</td><td data-v="94.7">¥95</td><td data-v="25643410">¥25,643,410</td><td class="cv sep" data-v="11023">11,023</td><td class="cv" data-v="0.0407">4.1%</td><td class="cv" data-v="2326.4">¥2,326</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="カドル（Cuddle）">
+<h3 class="adv" id="struct-カドルCuddle" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle） <span class="badge">取得 2025-07-30</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</span><span class="st">📁 CPN <b>6</b></span><span class="st">📂 ADG <b>32</b></span><span class="st">🔑 KW <b>100</b></span><span class="st">✏️ 広告 <b>58</b></span><span class="st">🔗 LP <b>1</b></span><span class="st">💰 <b>¥101,516,723</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="google_search_general_male">google_search_general_male</span><span class="share"><div style="width:37%"></div></span><span class="st">37.3%</span><span class="st">📂 <b>7</b></span><span class="st">🔑 <b>50</b></span><span class="st">✏️ <b>13</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥37,909,362</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="kikonAPP">kikonAPP</span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥19,524,376</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="brand">brand</span><span class="st">🔑 <b>8</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥8,309,550</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="deaikei">deaikei</span><span class="st">🔑 <b>17</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥7,562,773</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="sugar">sugar</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,031,650</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="kikonAPP-concept">kikonAPP-concept</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥916,780</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="kikongoukon">kikongoukon</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥414,104</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="kikon-emotion-lonely">kikon-emotion-lonely</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥150,129</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="google_search_general_unknown">google_search_general_unknown</span><span class="share"><div style="width:30%"></div></span><span class="st">30.5%</span><span class="st">📂 <b>7</b></span><span class="st">🔑 <b>46</b></span><span class="st">✏️ <b>12</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥30,950,819</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="kikonAPP">kikonAPP</span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥15,140,176</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="brand">brand</span><span class="st">🔑 <b>8</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥8,577,720</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="deaikei">deaikei</span><span class="st">🔑 <b>17</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥5,463,662</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="kikonAPP-concept">kikonAPP-concept</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,040,524</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="sugar">sugar</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥416,321</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="kikongoukon">kikongoukon</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥196,805</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="kikon-emotion-lonely">kikon-emotion-lonely</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥115,611</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="google_search_general_female">google_search_general_female</span><span class="share"><div style="width:26%"></div></span><span class="st">26.5%</span><span class="st">📂 <b>7</b></span><span class="st">🔑 <b>46</b></span><span class="st">✏️ <b>13</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥26,891,664</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="kikonAPP">kikonAPP</span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥12,231,922</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="brand">brand</span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥6,484,415</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="deaikei">deaikei</span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥6,119,551</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="sugar">sugar</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,137,739</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="kikonAPP-concept">kikonAPP-concept</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥638,418</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="kikon-emotion-lonely">kikon-emotion-lonely</span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥163,785</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="kikongoukon">kikongoukon</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥115,834</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="google_search_competitor_male">google_search_competitor_male</span><span class="share"><div style="width:4%"></div></span><span class="st">4.3%</span><span class="st">📂 <b>4</b></span><span class="st">🔑 <b>32</b></span><span class="st">✏️ <b>7</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥4,342,211</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="kikonAPP">kikonAPP</span><span class="st">🔑 <b>14</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥3,667,523</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="deaikei">deaikei</span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥357,752</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="sugar">sugar</span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥299,204</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="kikongoukon">kikongoukon</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥17,732</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="google_search_competitor_female">google_search_competitor_female</span><span class="share"><div style="width:1%"></div></span><span class="st">1.3%</span><span class="st">📂 <b>4</b></span><span class="st">🔑 <b>25</b></span><span class="st">✏️ <b>8</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,305,100</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="kikonAPP">kikonAPP</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥733,462</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="deaikei">deaikei</span><span class="st">🔑 <b>13</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥352,833</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="sugar">sugar</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥210,822</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="kikongoukon">kikongoukon</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥7,983</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="google_search_competitor_unknown">google_search_competitor_unknown</span><span class="share"><div style="width:0%"></div></span><span class="st">0.1%</span><span class="st">📂 <b>3</b></span><span class="st">🔑 <b>8</b></span><span class="st">✏️ <b>5</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥117,567</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="kikonAPP">kikonAPP</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥112,390</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="sugar">sugar</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥3,393</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="deaikei">deaikei</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,784</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<p class="note">クリック30以上のQS付きKWがありません。</p>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td data-v="0.00">--</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="カドル（Cuddle）">
+<h3 class="adv" id="kwqs-カドルCuddle" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle） <span class="badge">取得 2025-07-30</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>0.00</b></span><span class="chip">関連性↓<b>0.0%</b></span><span class="chip">推定CTR↓<b>0.0%</b></span><span class="chip">LP利便性↓<b>0.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="カドル（Cuddle）"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">既婚者 マッチングアプリ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="841129">841,129</td><td data-v="126193">126,193</td><td data-v="0.1500">15.0%</td><td data-v="287.4">¥287</td><td data-v="36271858">¥36,271,858</td><td class="cv sep" data-v="9845.9">9,845.9</td><td class="cv" data-v="3684.0">¥3,684</td><td class="l">google_search_general_male</td></tr>
+<tr><td class="l">カドル</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1413820">1,413,820</td><td data-v="579280">579,280</td><td data-v="0.4097">41.0%</td><td data-v="33.1">¥33</td><td data-v="19170271">¥19,170,271</td><td class="cv sep" data-v="14669.3">14,669.3</td><td class="cv" data-v="1306.8">¥1,307</td><td class="l">google_search_general_male</td></tr>
+<tr><td class="l">出会い系</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="850732">850,732</td><td data-v="57999">57,999</td><td data-v="0.0682">6.8%</td><td data-v="300.2">¥300</td><td data-v="17409762">¥17,409,762</td><td class="cv sep" data-v="4877.8">4,877.8</td><td class="cv" data-v="3569.2">¥3,569</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">既婚者 マッチング</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="119997">119,997</td><td data-v="18129">18,129</td><td data-v="0.1511">15.1%</td><td data-v="338.5">¥339</td><td data-v="6137441">¥6,137,441</td><td class="cv sep" data-v="2545.8">2,545.8</td><td class="cv" data-v="2410.8">¥2,411</td><td class="l">google_search_general_male</td></tr>
+<tr><td class="l">Cuddle</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="207585">207,585</td><td data-v="77632">77,632</td><td data-v="0.3740">37.4%</td><td data-v="37.0">¥37</td><td data-v="2870175">¥2,870,175</td><td class="cv sep" data-v="4111.5">4,111.5</td><td class="cv" data-v="698.1">¥698</td><td class="l">google_search_general_male</td></tr>
+<tr><td class="l">既婚者クラブ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="145101">145,101</td><td data-v="11343">11,343</td><td data-v="0.0782">7.8%</td><td data-v="242.2">¥242</td><td data-v="2747411">¥2,747,411</td><td class="cv sep" data-v="1048.3">1,048.3</td><td class="cv" data-v="2620.8">¥2,621</td><td class="l">google_search_competitor_female</td></tr>
+<tr><td class="l">既婚者 アプリ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="45566">45,566</td><td data-v="7427">7,427</td><td data-v="0.1630">16.3%</td><td data-v="342.2">¥342</td><td data-v="2541574">¥2,541,574</td><td class="cv sep" data-v="614.8">614.8</td><td class="cv" data-v="4133.7">¥4,134</td><td class="l">google_search_general_male</td></tr>
+<tr><td class="l">パパ活</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="113011">113,011</td><td data-v="7161">7,161</td><td data-v="0.0634">6.3%</td><td data-v="332.6">¥333</td><td data-v="2381532">¥2,381,532</td><td class="cv sep" data-v="626.7">626.7</td><td class="cv" data-v="3800.3">¥3,800</td><td class="l">google_search_general_male</td></tr>
+<tr><td class="l">セカンド パートナー</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="71173">71,173</td><td data-v="3608">3,608</td><td data-v="0.0507">5.1%</td><td data-v="325.5">¥326</td><td data-v="1174539">¥1,174,539</td><td class="cv sep" data-v="311.4">311.4</td><td class="cv" data-v="3772.3">¥3,772</td><td class="l">google_search_general_unknown</td></tr>
+<tr><td class="l">婚外恋 愛</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="59295">59,295</td><td data-v="2764">2,764</td><td data-v="0.0466">4.7%</td><td data-v="344.8">¥345</td><td data-v="952951">¥952,951</td><td class="cv sep" data-v="271.4">271.4</td><td class="cv" data-v="3510.7">¥3,511</td><td class="l">google_search_general_unknown</td></tr>
+<tr><td class="l">か どる</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="147426">147,426</td><td data-v="59795">59,795</td><td data-v="0.4056">40.6%</td><td data-v="15.1">¥15</td><td data-v="903094">¥903,094</td><td class="cv sep" data-v="1230.0">1,230.0</td><td class="cv" data-v="734.2">¥734</td><td class="l">google_search_general_male</td></tr>
+<tr><td class="l">既婚 マッチングアプリ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="19900">19,900</td><td data-v="1930">1,930</td><td data-v="0.0970">9.7%</td><td data-v="459.8">¥460</td><td data-v="887504">¥887,504</td><td class="cv sep" data-v="197.7">197.7</td><td class="cv" data-v="4490.3">¥4,490</td><td class="l">google_search_general_male</td></tr>
+<tr><td class="l">ヒールメイト</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="277731">277,731</td><td data-v="4624">4,624</td><td data-v="0.0166">1.7%</td><td data-v="187.8">¥188</td><td data-v="868288">¥868,288</td><td class="cv sep" data-v="335.3">335.3</td><td class="cv" data-v="2589.7">¥2,590</td><td class="l">google_search_competitor_female</td></tr>
+<tr><td class="l">出会い 系 掲示板</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="31594">31,594</td><td data-v="3176">3,176</td><td data-v="0.1005">10.1%</td><td data-v="218.7">¥219</td><td data-v="694447">¥694,447</td><td class="cv sep" data-v="181.6">181.6</td><td class="cv" data-v="3823.4">¥3,823</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">既婚 者 合コン</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="54237">54,237</td><td data-v="3083">3,083</td><td data-v="0.0568">5.7%</td><td data-v="208.8">¥209</td><td data-v="643599">¥643,599</td><td class="cv sep" data-v="161.6">161.6</td><td class="cv" data-v="3983.7">¥3,984</td><td class="l">google_search_general_male</td></tr>
+<tr><td class="l">既婚 セカンド パートナー</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="19944">19,944</td><td data-v="1361">1,361</td><td data-v="0.0682">6.8%</td><td data-v="325.4">¥325</td><td data-v="442822">¥442,822</td><td class="cv sep" data-v="132.7">132.7</td><td class="cv" data-v="3336.0">¥3,336</td><td class="l">google_search_general_unknown</td></tr>
+<tr><td class="l">既婚 マッチング</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="9988">9,988</td><td data-v="887">887</td><td data-v="0.0888">8.9%</td><td data-v="394.8">¥395</td><td data-v="350203">¥350,203</td><td class="cv sep" data-v="61.0">61.0</td><td class="cv" data-v="5741.0">¥5,741</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">既婚 アプリ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="7005">7,005</td><td data-v="1060">1,060</td><td data-v="0.1513">15.1%</td><td data-v="296.6">¥297</td><td data-v="314401">¥314,401</td><td class="cv sep" data-v="59.4">59.4</td><td class="cv" data-v="5295.6">¥5,296</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">シュガー ダディ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="31839">31,839</td><td data-v="1368">1,368</td><td data-v="0.0430">4.3%</td><td data-v="213.2">¥213</td><td data-v="291598">¥291,598</td><td class="cv sep" data-v="139.8">139.8</td><td class="cv" data-v="2085.4">¥2,085</td><td class="l">google_search_competitor_unknown</td></tr>
+<tr><td class="l">既婚者 出会い系</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="8920">8,920</td><td data-v="759">759</td><td data-v="0.0851">8.5%</td><td data-v="350.7">¥351</td><td data-v="266211">¥266,211</td><td class="cv sep" data-v="70.1">70.1</td><td class="cv" data-v="3796.5">¥3,797</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">既クラ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="10954">10,954</td><td data-v="1117">1,117</td><td data-v="0.1020">10.2%</td><td data-v="234.7">¥235</td><td data-v="262109">¥262,109</td><td class="cv sep" data-v="140.8">140.8</td><td class="cv" data-v="1861.2">¥1,861</td><td class="l">google_search_competitor_female</td></tr>
+<tr><td class="l">既婚者 友達</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="7606">7,606</td><td data-v="817">817</td><td data-v="0.1074">10.7%</td><td data-v="297.2">¥297</td><td data-v="242784">¥242,784</td><td class="cv sep" data-v="61.0">61.0</td><td class="cv" data-v="3978.1">¥3,978</td><td class="l">google_search_general_male</td></tr>
+<tr><td class="l">マッチングStyle</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="7079">7,079</td><td data-v="533">533</td><td data-v="0.0753">7.5%</td><td data-v="371.3">¥371</td><td data-v="197928">¥197,928</td><td class="cv sep" data-v="71.4">71.4</td><td class="cv" data-v="2773.3">¥2,773</td><td class="l">google_search_competitor_male</td></tr>
+<tr><td class="l">ギャラ飲み</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="9095">9,095</td><td data-v="644">644</td><td data-v="0.0708">7.1%</td><td data-v="284.3">¥284</td><td data-v="183074">¥183,074</td><td class="cv sep" data-v="43.0">43.0</td><td class="cv" data-v="4257.5">¥4,258</td><td class="l">google_search_general_unknown</td></tr>
+<tr><td class="l">既婚者 マッチングサイト</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="3222">3,222</td><td data-v="298">298</td><td data-v="0.0925">9.2%</td><td data-v="563.8">¥564</td><td data-v="168004">¥168,004</td><td class="cv sep" data-v="29.4">29.4</td><td class="cv" data-v="5722.2">¥5,722</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">ワクワク メール</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="37528">37,528</td><td data-v="900">900</td><td data-v="0.0240">2.4%</td><td data-v="181.8">¥182</td><td data-v="163637">¥163,637</td><td class="cv sep" data-v="81.0">81.0</td><td class="cv" data-v="2020.2">¥2,020</td><td class="l">google_search_competitor_male</td></tr>
+<tr><td class="l">ハッピーメール</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="24277">24,277</td><td data-v="759">759</td><td data-v="0.0313">3.1%</td><td data-v="205.0">¥205</td><td data-v="155592">¥155,592</td><td class="cv sep" data-v="92.7">92.7</td><td class="cv" data-v="1679.2">¥1,679</td><td class="l">google_search_competitor_unknown</td></tr>
+<tr><td class="l">出会い 系 おすすめ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="6918">6,918</td><td data-v="542">542</td><td data-v="0.0783">7.8%</td><td data-v="280.8">¥281</td><td data-v="152220">¥152,220</td><td class="cv sep" data-v="35.5">35.5</td><td class="cv" data-v="4287.9">¥4,288</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">かどる</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="31733">31,733</td><td data-v="10666">10,666</td><td data-v="0.3361">33.6%</td><td data-v="13.5">¥14</td><td data-v="144063">¥144,063</td><td class="cv sep" data-v="199.7">199.7</td><td class="cv" data-v="721.4">¥721</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">既婚 出 会</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="6315">6,315</td><td data-v="437">437</td><td data-v="0.0692">6.9%</td><td data-v="314.1">¥314</td><td data-v="137265">¥137,265</td><td class="cv sep" data-v="23.7">23.7</td><td class="cv" data-v="5786.9">¥5,787</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">caddle</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="5244">5,244</td><td data-v="1443">1,443</td><td data-v="0.2752">27.5%</td><td data-v="90.9">¥91</td><td data-v="131239">¥131,239</td><td class="cv sep" data-v="77.3">77.3</td><td class="cv" data-v="1696.7">¥1,697</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">セパ マッチング アプリ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="3832">3,832</td><td data-v="384">384</td><td data-v="0.1002">10.0%</td><td data-v="319.8">¥320</td><td data-v="122819">¥122,819</td><td class="cv sep" data-v="39.0">39.0</td><td class="cv" data-v="3153.2">¥3,153</td><td class="l">google_search_competitor_male</td></tr>
+<tr><td class="l">出会い アプリ 人気</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="3575">3,575</td><td data-v="273">273</td><td data-v="0.0764">7.6%</td><td data-v="445.1">¥445</td><td data-v="121502">¥121,502</td><td class="cv sep" data-v="29.6">29.6</td><td class="cv" data-v="4099.3">¥4,099</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">pcmax</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="18319">18,319</td><td data-v="649">649</td><td data-v="0.0354">3.5%</td><td data-v="180.4">¥180</td><td data-v="117097">¥117,097</td><td class="cv sep" data-v="76.8">76.8</td><td class="cv" data-v="1524.1">¥1,524</td><td class="l">google_search_competitor_unknown</td></tr>
+<tr><td class="l">出会い 系 サイト 掲示板</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="3363">3,363</td><td data-v="411">411</td><td data-v="0.1222">12.2%</td><td data-v="253.8">¥254</td><td data-v="104301">¥104,301</td><td class="cv sep" data-v="38.5">38.5</td><td class="cv" data-v="2709.1">¥2,709</td><td class="l">google_search_general_unknown</td></tr>
+<tr><td class="l">ラブアン</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="23703">23,703</td><td data-v="445">445</td><td data-v="0.0188">1.9%</td><td data-v="201.1">¥201</td><td data-v="89508">¥89,508</td><td class="cv sep" data-v="35.3">35.3</td><td class="cv" data-v="2533.5">¥2,533</td><td class="l">google_search_competitor_male</td></tr>
+<tr><td class="l">healmate</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="12372">12,372</td><td data-v="419">419</td><td data-v="0.0339">3.4%</td><td data-v="205.4">¥205</td><td data-v="86076">¥86,076</td><td class="cv sep" data-v="37.8">37.8</td><td class="cv" data-v="2275.3">¥2,275</td><td class="l">google_search_competitor_female</td></tr>
+<tr><td class="l">j メール</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="12895">12,895</td><td data-v="540">540</td><td data-v="0.0419">4.2%</td><td data-v="155.4">¥155</td><td data-v="83913">¥83,913</td><td class="cv sep" data-v="39.5">39.5</td><td class="cv" data-v="2124.4">¥2,124</td><td class="l">google_search_competitor_male</td></tr>
+<tr><td class="l">出会いのサイト</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2140">2,140</td><td data-v="231">231</td><td data-v="0.1079">10.8%</td><td data-v="313.8">¥314</td><td data-v="72496">¥72,496</td><td class="cv sep" data-v="23.5">23.5</td><td class="cv" data-v="3081.0">¥3,081</td><td class="l">google_search_general_male</td></tr>
+<tr><td class="l">セパ マッチング</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2598">2,598</td><td data-v="276">276</td><td data-v="0.1062">10.6%</td><td data-v="251.5">¥251</td><td data-v="69407">¥69,407</td><td class="cv sep" data-v="23.0">23.0</td><td class="cv" data-v="3017.7">¥3,018</td><td class="l">google_search_competitor_male</td></tr>
+<tr><td class="l">イククル</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="9384">9,384</td><td data-v="387">387</td><td data-v="0.0412">4.1%</td><td data-v="177.6">¥178</td><td data-v="68714">¥68,714</td><td class="cv sep" data-v="44.3">44.3</td><td class="cv" data-v="1550.1">¥1,550</td><td class="l">google_search_competitor_male</td></tr>
+<tr><td class="l">既婚 者 出会い イベント</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="4608">4,608</td><td data-v="310">310</td><td data-v="0.0673">6.7%</td><td data-v="217.7">¥218</td><td data-v="67481">¥67,481</td><td class="cv sep" data-v="14.3">14.3</td><td class="cv" data-v="4715.7">¥4,716</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">kikonclub</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2566">2,566</td><td data-v="187">187</td><td data-v="0.0729">7.3%</td><td data-v="349.6">¥350</td><td data-v="65376">¥65,376</td><td class="cv sep" data-v="22.0">22.0</td><td class="cv" data-v="2971.6">¥2,972</td><td class="l">google_search_competitor_male</td></tr>
+<tr><td class="l">既婚 セックスレス</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="3492">3,492</td><td data-v="241">241</td><td data-v="0.0690">6.9%</td><td data-v="262.2">¥262</td><td data-v="63200">¥63,200</td><td class="cv sep" data-v="14.5">14.5</td><td class="cv" data-v="4358.6">¥4,359</td><td class="l">google_search_general_unknown</td></tr>
+<tr><td class="l">既婚 者 パーティー</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="5097">5,097</td><td data-v="256">256</td><td data-v="0.0502">5.0%</td><td data-v="240.1">¥240</td><td data-v="61465">¥61,465</td><td class="cv sep" data-v="16.5">16.5</td><td class="cv" data-v="3725.2">¥3,725</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">既婚 女 恋</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2165">2,165</td><td data-v="181">181</td><td data-v="0.0836">8.4%</td><td data-v="328.9">¥329</td><td data-v="59527">¥59,527</td><td class="cv sep" data-v="14.7">14.7</td><td class="cv" data-v="4057.7">¥4,058</td><td class="l">google_search_general_unknown</td></tr>
+<tr><td class="l">かドル</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="11292">11,292</td><td data-v="5261">5,261</td><td data-v="0.4659">46.6%</td><td data-v="10.8">¥11</td><td data-v="56652">¥56,652</td><td class="cv sep" data-v="100.0">100.0</td><td class="cv" data-v="566.6">¥567</td><td class="l">google_search_general_female</td></tr>
+<tr><td class="l">ペイターズ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="7846">7,846</td><td data-v="272">272</td><td data-v="0.0347">3.5%</td><td data-v="204.9">¥205</td><td data-v="55742">¥55,742</td><td class="cv sep" data-v="18.0">18.0</td><td class="cv" data-v="3096.8">¥3,097</td><td class="l">google_search_competitor_male</td></tr>
+<tr><td class="l">既婚 クラブ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2587">2,587</td><td data-v="240">240</td><td data-v="0.0928">9.3%</td><td data-v="219.0">¥219</td><td data-v="52553">¥52,553</td><td class="cv sep" data-v="19.8">19.8</td><td class="cv" data-v="2656.9">¥2,657</td><td class="l">google_search_competitor_female</td></tr>
+<tr><td class="l">既婚 マッチングサイト</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1336">1,336</td><td data-v="83">83</td><td data-v="0.0621">6.2%</td><td data-v="547.4">¥547</td><td data-v="45433">¥45,433</td><td class="cv sep" data-v="13.0">13.0</td><td class="cv" data-v="3494.8">¥3,495</td><td class="l">google_search_general_male</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="カドル（Cuddle）" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.cuddle-jp.com<br><span>www.cuddle-jp.com</span></div><div class="t">既婚者マッチングアプリ - かどる - 既婚者掲示板</div><div class="d">18禁. 結婚後も異性と交流したい方を応援。お互いを理解しあえる理想の関係を創り出せます。 今すぐ無料で簡単登録！スワイプするだけでマッチング</div><div class="meta2">IMP 481,958 ／ CTR 34.7% ／ COST ¥4,330,247<br>google_search_general_unknown</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.cuddle-jp.com<br><span>www.cuddle-jp.com</span></div><div class="t">カドル(Cuddle) - 既婚者マッチングアプリ - かどる</div><div class="d">18禁. 利用率No1 既婚者マッチングアプリ「カドル(Cuddle)」へようこそ。 結婚後も新たな出会いを応援する既婚者マッチングアプリです。</div><div class="meta2">IMP 470,109 ／ CTR 33.5% ／ COST ¥4,248,533<br>google_search_general_unknown</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.cuddle-jp.com<br><span>www.cuddle-jp.com</span></div><div class="t">カドル(Cuddle) - 既婚者マッチングアプリ - かどる</div><div class="d">18禁. 利用率No1 既婚者マッチングアプリ「カドル(Cuddle)」へようこそ。 結婚後も新たな出会いを応援する既婚者マッチングアプリです。</div><div class="meta2">IMP 251,523 ／ CTR 41.0% ／ COST ¥4,534,943<br>google_search_general_male</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.cuddle-jp.com<br><span>www.cuddle-jp.com</span></div><div class="t">既婚者マッチングアプリ - かどる - 既婚者掲示板</div><div class="d">18禁. 結婚後も異性と交流したい方を応援。お互いを理解しあえる理想の関係を創り出せます。 今すぐ無料で簡単登録！スワイプするだけでマッチング</div><div class="meta2">IMP 248,145 ／ CTR 53.0% ／ COST ¥3,447,673<br>google_search_general_female</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">カドル(Cuddle)</td><td data-v="58">58</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者マッチングアプリ</td><td data-v="58">58</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">かどる</td><td data-v="33">33</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">大人の出会い探し</td><td data-v="31">31</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者専用出会い</td><td data-v="31">31</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">安全な出会い系</td><td data-v="31">31</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者の新恋愛</td><td data-v="31">31</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">強固なセキュリティ</td><td data-v="31">31</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者の特別な空間</td><td data-v="31">31</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">気軽に新しい出会い</td><td data-v="31">31</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者限定交流</td><td data-v="31">31</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">オープンマリッジ専用アプリ</td><td data-v="31">31</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者同士で安心</td><td data-v="31">31</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">新たな友達探し</td><td data-v="31">31</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">気軽に友達作り</td><td data-v="31">31</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">婚外恋愛専用アプリ</td><td data-v="27">27</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者OKのマッチングアプリ</td><td data-v="27">27</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者飲み会アプリ</td><td data-v="27">27</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">ユーザーは既婚者のみ</td><td data-v="24">24</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者友達探しアプリ</td><td data-v="24">24</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">AIがお相手をご提案</td><td data-v="24">24</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者掲示板</td><td data-v="24">24</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">無料で登録</td><td data-v="24">24</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者出会い系</td><td data-v="23">23</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者に特化した機能</td><td data-v="21">21</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">立場が同じだから共感し合える</td><td data-v="14">14</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">二度目の春、探しませんか</td><td data-v="14">14</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">Cuddleで絆を深めよう</td><td data-v="14">14</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者コミュニティ</td><td data-v="4">4</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者サロン</td><td data-v="4">4</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚者マッチングサイト</td><td data-v="4">4</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">二度目の青春、探しませんか</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">マリッジブルーなあなたへ</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">人肌恋しいこの時期に</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">主婦・既婚女でも使える</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">既婚男でも使える</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">恋のようなドキドキを</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">寂しい・孤独な時に使える</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">40代におすすめ</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">パーティーより既婚者マッチング</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">合コンより既婚者マッチング</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">50代におすすめ</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">合同コンより既婚者マッチング</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">サークルより既婚者マッチング</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">卒婚するなら</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">オープンマレッジ専用アプリ</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">セカンドパートナー探すなら</td><td data-v="3">3</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">セックスレスの悩み</td><td data-v="1">1</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l wrap">セックスレス</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="カドル（Cuddle）">
+<h3 class="adv" id="adlib-カドルCuddle" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle） <span class="badge">取得 2025-07-30</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>58本</b></span><span class="chip">CPN<b>6個</b></span><span class="chip">ADG<b>32個</b></span><span class="chip">ピン留め<b>100%</b></span><span class="chip">LP使い分け<b>1本</b></span></div>
+<p class="note">主要LP: <span title="https://www.cuddle-jp.com/">https://www.cuddle-jp.com/（58本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="カドル（Cuddle）"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">カドル(Cuddle)</td><td data-v="58">58</td></tr>
+<tr><td class="l wrap">既婚者マッチングアプリ</td><td data-v="58">58</td></tr>
+<tr><td class="l wrap">かどる</td><td data-v="33">33</td></tr>
+<tr><td class="l wrap">大人の出会い探し</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">既婚者専用出会い</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">安全な出会い系</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">既婚者の新恋愛</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">強固なセキュリティ</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">既婚者の特別な空間</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">気軽に新しい出会い</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">既婚者限定交流</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">オープンマリッジ専用アプリ</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">既婚者同士で安心</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">新たな友達探し</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">気軽に友達作り</td><td data-v="31">31</td></tr>
+</table></div></div><div>
+<table data-adv="カドル（Cuddle）"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">既婚者に特化した豊富な機能を搭載。価値観の合う素敵な相手を見つけてみませんか</td><td data-v="58">58</td></tr>
+<tr><td class="l wrap">結婚後も新たな出会いを応援する既婚者マッチングアプリです。</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">18禁. 利用率No1 既婚者マッチングアプリ「カドル(Cuddle)」へようこそ。</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">既婚者という同じ立場だからこそ、お互いを理解し合える関係を築けます。</td><td data-v="31">31</td></tr>
+<tr><td class="l wrap">既婚者限定のため、同じような価値観、生活リズムのお相手と出会うことができます。</td><td data-v="27">27</td></tr>
+<tr><td class="l wrap">今すぐ無料で簡単登録！スワイプするだけでマッチング</td><td data-v="27">27</td></tr>
+<tr><td class="l wrap">18禁. 結婚後も異性と交流したい方を応援。お互いを理解しあえる理想の関係を創り出せます。</td><td data-v="27">27</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="カドル（Cuddle）">
+<h3 class="adv" id="query-カドルCuddle" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle） <span class="badge">取得 2025-07-30</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="380">380</td><td data-v="773673">773,673</td><td data-v="55600144">¥55,600,144</td><td data-v="0.7772">77.7%</td><td class="cv sep" data-v="27969.7">27,969.7</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="1141">1,141</td><td data-v="126008">126,008</td><td data-v="15941177">¥15,941,177</td><td data-v="0.2228">22.3%</td><td class="cv sep" data-v="6450.3">6,450.3</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="カドル（Cuddle）"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">カドル</td><td>追加済み</td><td>検索</td><td data-v="543335">543,335</td><td data-v="17909956">¥17,909,956</td><td class="cv sep" data-v="13585.9">13,585.9</td><td class="cv" data-v="1318.3">¥1,318</td></tr>
+<tr><td class="l">既婚 者 マッチング アプリ</td><td>なし</td><td>検索</td><td data-v="38791">38,791</td><td data-v="19107728">¥19,107,728</td><td class="cv sep" data-v="4607.2">4,607.2</td><td class="cv" data-v="4147.4">¥4,147</td></tr>
+<tr><td class="l">cuddle</td><td>追加済み</td><td>検索</td><td data-v="68084">68,084</td><td data-v="2639957">¥2,639,957</td><td class="cv sep" data-v="3891.2">3,891.2</td><td class="cv" data-v="678.4">¥678</td></tr>
+<tr><td class="l">か どる</td><td>追加済み</td><td>検索</td><td data-v="66810">66,810</td><td data-v="943086">¥943,086</td><td class="cv sep" data-v="1346.0">1,346.0</td><td class="cv" data-v="700.6">¥701</td></tr>
+<tr><td class="l">カドル ログイン</td><td>なし</td><td>検索</td><td data-v="58601">58,601</td><td data-v="1067685">¥1,067,685</td><td class="cv sep" data-v="1303.6">1,303.6</td><td class="cv" data-v="819.0">¥819</td></tr>
+<tr><td class="l">既婚 者 マッチング</td><td>追加済み</td><td>検索</td><td data-v="11278">11,278</td><td data-v="4981240">¥4,981,240</td><td class="cv sep" data-v="1076.2">1,076.2</td><td class="cv" data-v="4628.8">¥4,629</td></tr>
+<tr><td class="l">既婚 者 クラブ</td><td>追加済み</td><td>検索</td><td data-v="11341">11,341</td><td data-v="2746758">¥2,746,758</td><td class="cv sep" data-v="1048.3">1,048.3</td><td class="cv" data-v="2620.2">¥2,620</td></tr>
+<tr><td class="l">既婚 者 アプリ</td><td>追加済み</td><td>検索</td><td data-v="6695">6,695</td><td data-v="2285157">¥2,285,157</td><td class="cv sep" data-v="559.0">559.0</td><td class="cv" data-v="4087.9">¥4,088</td></tr>
+<tr><td class="l">カドル マッチング</td><td>なし</td><td>検索</td><td data-v="8231">8,231</td><td data-v="467136">¥467,136</td><td class="cv sep" data-v="427.6">427.6</td><td class="cv" data-v="1092.5">¥1,092</td></tr>
+<tr><td class="l">ヒール メイト</td><td>追加済み</td><td>検索</td><td data-v="4452">4,452</td><td data-v="825220">¥825,220</td><td class="cv sep" data-v="316.8">316.8</td><td class="cv" data-v="2604.8">¥2,605</td></tr>
+<tr><td class="l">マリーゴー</td><td>なし</td><td>検索</td><td data-v="5673">5,673</td><td data-v="1394111">¥1,394,111</td><td class="cv sep" data-v="314.7">314.7</td><td class="cv" data-v="4429.4">¥4,429</td></tr>
+<tr><td class="l">カドル 評判</td><td>なし</td><td>検索</td><td data-v="2008">2,008</td><td data-v="578601">¥578,601</td><td class="cv sep" data-v="280.4">280.4</td><td class="cv" data-v="2063.6">¥2,064</td></tr>
+<tr><td class="l">パパ 活 アプリ</td><td>なし</td><td>検索</td><td data-v="2021">2,021</td><td data-v="741995">¥741,995</td><td class="cv sep" data-v="194.3">194.3</td><td class="cv" data-v="3818.4">¥3,818</td></tr>
+<tr><td class="l">セカンド パートナー アプリ</td><td>なし</td><td>検索</td><td data-v="1340">1,340</td><td data-v="625015">¥625,015</td><td class="cv sep" data-v="173.6">173.6</td><td class="cv" data-v="3600.3">¥3,600</td></tr>
+<tr><td class="l">マッチング アプリ</td><td>なし</td><td>検索</td><td data-v="1672">1,672</td><td data-v="586443">¥586,443</td><td class="cv sep" data-v="169.0">169.0</td><td class="cv" data-v="3469.1">¥3,469</td></tr>
+<tr><td class="l">即 婚 者</td><td>なし</td><td>検索</td><td data-v="301">301</td><td data-v="92574">¥92,574</td><td class="cv sep" data-v="155.5">155.5</td><td class="cv" data-v="595.3">¥595</td></tr>
+<tr><td class="l">セカンド パートナー</td><td>追加済み</td><td>検索</td><td data-v="1840">1,840</td><td data-v="549772">¥549,772</td><td class="cv sep" data-v="149.1">149.1</td><td class="cv" data-v="3686.8">¥3,687</td></tr>
+<tr><td class="l">既婚 マッチング アプリ</td><td>追加済み</td><td>検索</td><td data-v="1074">1,074</td><td data-v="563714">¥563,714</td><td class="cv sep" data-v="144.5">144.5</td><td class="cv" data-v="3900.1">¥3,900</td></tr>
+<tr><td class="l">シュガー ダディ</td><td>追加済み</td><td>検索</td><td data-v="1253">1,253</td><td data-v="264701">¥264,701</td><td class="cv sep" data-v="127.8">127.8</td><td class="cv" data-v="2070.7">¥2,071</td></tr>
+<tr><td class="l">カドル 口コミ</td><td>なし</td><td>検索</td><td data-v="1185">1,185</td><td data-v="262990">¥262,990</td><td class="cv sep" data-v="119.2">119.2</td><td class="cv" data-v="2206.8">¥2,207</td></tr>
+<tr><td class="l">カドル アプリ</td><td>なし</td><td>検索</td><td data-v="2034">2,034</td><td data-v="141875">¥141,875</td><td class="cv sep" data-v="113.4">113.4</td><td class="cv" data-v="1251.4">¥1,251</td></tr>
+<tr><td class="l">か ドル</td><td>追加済み</td><td>検索</td><td data-v="5730">5,730</td><td data-v="60940">¥60,940</td><td class="cv sep" data-v="109.4">109.4</td><td class="cv" data-v="557.1">¥557</td></tr>
+<tr><td class="l">cuddle マッチング</td><td>なし</td><td>検索</td><td data-v="1903">1,903</td><td data-v="123607">¥123,607</td><td class="cv sep" data-v="106.4">106.4</td><td class="cv" data-v="1162.2">¥1,162</td></tr>
+<tr><td class="l">不倫 アプリ</td><td>なし</td><td>検索</td><td data-v="1061">1,061</td><td data-v="354323">¥354,323</td><td class="cv sep" data-v="106.2">106.2</td><td class="cv" data-v="3337.6">¥3,338</td></tr>
+<tr><td class="l">ハハロル</td><td>なし</td><td>検索</td><td data-v="998">998</td><td data-v="309111">¥309,111</td><td class="cv sep" data-v="102.2">102.2</td><td class="cv" data-v="3023.1">¥3,023</td></tr>
+<tr><td class="l">既婚 者 マッチング アプリ やばい</td><td>なし</td><td>検索</td><td data-v="1071">1,071</td><td data-v="609405">¥609,405</td><td class="cv sep" data-v="102.2">102.2</td><td class="cv" data-v="5961.7">¥5,962</td></tr>
+<tr><td class="l">出会い アプリ</td><td>なし</td><td>検索</td><td data-v="1083">1,083</td><td data-v="402970">¥402,970</td><td class="cv sep" data-v="98.3">98.3</td><td class="cv" data-v="4099.4">¥4,099</td></tr>
+<tr><td class="l">既婚 者 マッチング アプリ 体験 談</td><td>なし</td><td>検索</td><td data-v="1355">1,355</td><td data-v="469495">¥469,495</td><td class="cv sep" data-v="97.2">97.2</td><td class="cv" data-v="4832.7">¥4,833</td></tr>
+<tr><td class="l">カドル 料金</td><td>なし</td><td>検索</td><td data-v="1130">1,130</td><td data-v="172274">¥172,274</td><td class="cv sep" data-v="95.1">95.1</td><td class="cv" data-v="1812.3">¥1,812</td></tr>
+<tr><td class="l">ハッピー メール</td><td>追加済み</td><td>検索</td><td data-v="695">695</td><td data-v="144791">¥144,791</td><td class="cv sep" data-v="88.2">88.2</td><td class="cv" data-v="1642.4">¥1,642</td></tr>
+<tr><td class="l">婚外恋 愛</td><td>追加済み</td><td>検索</td><td data-v="818">818</td><td data-v="306515">¥306,515</td><td class="cv sep" data-v="86.2">86.2</td><td class="cv" data-v="3554.2">¥3,554</td></tr>
+<tr><td class="l">既婚 者 出会い</td><td>なし</td><td>検索</td><td data-v="775">775</td><td data-v="309181">¥309,181</td><td class="cv sep" data-v="84.6">84.6</td><td class="cv" data-v="3655.9">¥3,656</td></tr>
+<tr><td class="l">パパ 活</td><td>追加済み</td><td>検索</td><td data-v="823">823</td><td data-v="295190">¥295,190</td><td class="cv sep" data-v="83.5">83.5</td><td class="cv" data-v="3535.2">¥3,535</td></tr>
+<tr><td class="l">出 会 系 サイト</td><td>なし</td><td>検索</td><td data-v="763">763</td><td data-v="264355">¥264,355</td><td class="cv sep" data-v="80.7">80.7</td><td class="cv" data-v="3277.0">¥3,277</td></tr>
+<tr><td class="l">cuddle ログイン</td><td>なし</td><td>検索</td><td data-v="5259">5,259</td><td data-v="33099">¥33,099</td><td class="cv sep" data-v="80.2">80.2</td><td class="cv" data-v="412.7">¥413</td></tr>
+<tr><td class="l">ワクワク メール</td><td>追加済み</td><td>検索</td><td data-v="871">871</td><td data-v="156621">¥156,621</td><td class="cv sep" data-v="78.1">78.1</td><td class="cv" data-v="2005.4">¥2,005</td></tr>
+<tr><td class="l">caddle</td><td>追加済み</td><td>検索</td><td data-v="1441">1,441</td><td data-v="130802">¥130,802</td><td class="cv sep" data-v="77.4">77.4</td><td class="cv" data-v="1691.0">¥1,691</td></tr>
+<tr><td class="l">cuddle マッチング アプリ</td><td>なし</td><td>検索</td><td data-v="4982">4,982</td><td data-v="173198">¥173,198</td><td class="cv sep" data-v="69.8">69.8</td><td class="cv" data-v="2481.3">¥2,481</td></tr>
+<tr><td class="l">セフレ アプリ</td><td>なし</td><td>検索</td><td data-v="795">795</td><td data-v="266244">¥266,244</td><td class="cv sep" data-v="68.3">68.3</td><td class="cv" data-v="3896.4">¥3,896</td></tr>
+<tr><td class="l">セフレ 探し</td><td>なし</td><td>検索</td><td data-v="704">704</td><td data-v="223086">¥223,086</td><td class="cv sep" data-v="65.6">65.6</td><td class="cv" data-v="3401.7">¥3,402</td></tr>
+<tr><td class="l">pcmax</td><td>追加済み</td><td>検索</td><td data-v="575">575</td><td data-v="103394">¥103,394</td><td class="cv sep" data-v="64.3">64.3</td><td class="cv" data-v="1607.2">¥1,607</td></tr>
+<tr><td class="l">パパ 活 サイト</td><td>なし</td><td>検索</td><td data-v="543">543</td><td data-v="178816">¥178,816</td><td class="cv sep" data-v="61.0">61.0</td><td class="cv" data-v="2931.4">¥2,931</td></tr>
+<tr><td class="l">ガドル アプリ</td><td>なし</td><td>検索</td><td data-v="1336">1,336</td><td data-v="85152">¥85,152</td><td class="cv sep" data-v="60.1">60.1</td><td class="cv" data-v="1417.8">¥1,418</td></tr>
+<tr><td class="l">マッチング アプリ 既婚 者</td><td>なし</td><td>検索</td><td data-v="713">713</td><td data-v="281928">¥281,928</td><td class="cv sep" data-v="58.4">58.4</td><td class="cv" data-v="4830.8">¥4,831</td></tr>
+<tr><td class="l">既婚 者 合コン</td><td>追加済み</td><td>検索</td><td data-v="1141">1,141</td><td data-v="236318">¥236,318</td><td class="cv sep" data-v="58.1">58.1</td><td class="cv" data-v="4070.2">¥4,070</td></tr>
+<tr><td class="l">出会い 系</td><td>追加済み</td><td>検索</td><td data-v="626">626</td><td data-v="219563">¥219,563</td><td class="cv sep" data-v="56.9">56.9</td><td class="cv" data-v="3861.5">¥3,861</td></tr>
+<tr><td class="l">既婚 者 マッチング アプリ 無料</td><td>なし</td><td>検索</td><td data-v="408">408</td><td data-v="177974">¥177,974</td><td class="cv sep" data-v="53.4">53.4</td><td class="cv" data-v="3333.5">¥3,333</td></tr>
+<tr><td class="l">既婚 アプリ</td><td>追加済み</td><td>検索</td><td data-v="876">876</td><td data-v="260140">¥260,140</td><td class="cv sep" data-v="51.0">51.0</td><td class="cv" data-v="5096.8">¥5,097</td></tr>
+<tr><td class="l">カドル 既婚 者</td><td>なし</td><td>検索</td><td data-v="1022">1,022</td><td data-v="65322">¥65,322</td><td class="cv sep" data-v="47.9">47.9</td><td class="cv" data-v="1363.7">¥1,364</td></tr>
+<tr><td class="l">既婚 者 マチアプ</td><td>なし</td><td>検索</td><td data-v="422">422</td><td data-v="238038">¥238,038</td><td class="cv sep" data-v="45.0">45.0</td><td class="cv" data-v="5289.7">¥5,290</td></tr>
+<tr><td class="l">既婚 者 同士 の マッチング アプリ</td><td>なし</td><td>検索</td><td data-v="338">338</td><td data-v="168654">¥168,654</td><td class="cv sep" data-v="42.8">42.8</td><td class="cv" data-v="3940.5">¥3,941</td></tr>
+<tr><td class="l">既婚 者 限定 マッチング アプリ</td><td>なし</td><td>検索</td><td data-v="354">354</td><td data-v="149603">¥149,603</td><td class="cv sep" data-v="41.7">41.7</td><td class="cv" data-v="3590.2">¥3,590</td></tr>
+<tr><td class="l">人妻 アプリ</td><td>なし</td><td>検索</td><td data-v="355">355</td><td data-v="171887">¥171,887</td><td class="cv sep" data-v="41.3">41.3</td><td class="cv" data-v="4163.9">¥4,164</td></tr>
+<tr><td class="l">人妻 出会い</td><td>なし</td><td>検索</td><td data-v="558">558</td><td data-v="156230">¥156,230</td><td class="cv sep" data-v="39.3">39.3</td><td class="cv" data-v="3972.3">¥3,972</td></tr>
+<tr><td class="l">既婚 者 専用 マッチング アプリ</td><td>なし</td><td>検索</td><td data-v="328">328</td><td data-v="145849">¥145,849</td><td class="cv sep" data-v="35.8">35.8</td><td class="cv" data-v="4079.7">¥4,080</td></tr>
+<tr><td class="l">不倫 マッチング</td><td>なし</td><td>検索</td><td data-v="344">344</td><td data-v="159936">¥159,936</td><td class="cv sep" data-v="35.2">35.2</td><td class="cv" data-v="4538.5">¥4,538</td></tr>
+<tr><td class="l">既婚 マッチング</td><td>追加済み</td><td>検索</td><td data-v="426">426</td><td data-v="193654">¥193,654</td><td class="cv sep" data-v="33.7">33.7</td><td class="cv" data-v="5753.2">¥5,753</td></tr>
+<tr><td class="l">既婚 者 マッチング アプリ 実態</td><td>なし</td><td>検索</td><td data-v="395">395</td><td data-v="167420">¥167,420</td><td class="cv sep" data-v="31.0">31.0</td><td class="cv" data-v="5393.7">¥5,394</td></tr>
+<tr><td class="l">出会い 系 サイト</td><td>なし</td><td>検索</td><td data-v="375">375</td><td data-v="152647">¥152,647</td><td class="cv sep" data-v="25.8">25.8</td><td class="cv" data-v="5909.7">¥5,910</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（59行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2025-07-30 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td class="l">一般</td><td data-v="4827783">4,827,783</td><td data-v="1005747">1,005,747</td><td data-v="0.2083">20.8%</td><td data-v="100.9">¥101</td><td data-v="101516723">¥101,516,723</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="43387">43,387</td><td class="cv" data-v="0.0431">4.3%</td><td class="cv" data-v="2339.8">¥2,340</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2025-07-30</th></tr>
+<tr data-a="カドル（Cuddle）"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>カドル（Cuddle）</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div><div class="note">インテント100% / フレーズ0%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2025-07-30</b>（【カドル】250730_レポート依頼用_セレス様__1eecOKSM.xlsx）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

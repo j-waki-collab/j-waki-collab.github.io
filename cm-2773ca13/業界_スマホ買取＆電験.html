@@ -1,0 +1,922 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜スマホ買取＆電験</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>スマホ買取＆電験業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">2社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2026-02-26</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥8,866,185</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥87</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">5.4〜6.0</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="スマホ買取YTH" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</button><button class="achip" data-t="能セン" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2026-02-26（期間 2025年12月1日 - 2026年2月26日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td data-v="8730497">¥8,730,497</td><td data-v="101287">101,287</td><td data-v="0.1101">11.0%</td><td data-v="86.2">¥86</td><td data-v="6.03">6.03</td><td data-v="0.0">--</td><td data-v="0.0000">0.0%</td><td><div class="bar"><div class="mt-p" style="width:90.2%" title="フレーズ一致 90.2%"></div><div class="mt-e" style="width:9.8%" title="完全一致 9.8%"></div></div></td><td class="cv sep" data-v="5688">5,688</td><td class="cv" data-v="0.0562">5.6%</td><td class="cv" data-v="1534.8">¥1,535</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td data-v="135688">¥135,688</td><td data-v="534">534</td><td data-v="0.0879">8.8%</td><td data-v="254.1">¥254</td><td data-v="5.37">5.37</td><td data-v="0.0">--</td><td data-v="0.0000">0.0%</td><td><div class="bar"><div class="mt-i" style="width:96.1%" title="インテント マッチ 96.1%"></div><div class="mt-p" style="width:3.9%" title="フレーズ一致 3.9%"></div></div></td><td class="cv sep" data-v="28">28</td><td class="cv" data-v="0.0524">5.2%</td><td class="cv" data-v="4846.0">¥4,846</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: ウリドキ</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td data-v="202512">2025-12</td><td data-v="271633">271,633</td><td data-v="30134">30,134</td><td data-v="0.1109">11.1%</td><td data-v="81.6">¥82</td><td data-v="2458246">¥2,458,246</td><td class="cv sep" data-v="1979">1,979</td><td class="cv" data-v="0.0657">6.6%</td><td class="cv" data-v="1241.9">¥1,242</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td data-v="202601">2026-01</td><td data-v="330403">330,403</td><td data-v="36775">36,775</td><td data-v="0.1113">11.1%</td><td data-v="82.2">¥82</td><td data-v="3024329">¥3,024,329</td><td class="cv sep" data-v="2059">2,059</td><td class="cv" data-v="0.0560">5.6%</td><td class="cv" data-v="1468.9">¥1,469</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td data-v="202602">2026-02 ⚠</td><td data-v="318323">318,323</td><td data-v="34378">34,378</td><td data-v="0.1080">10.8%</td><td data-v="94.5">¥94</td><td data-v="3247922">¥3,247,922</td><td class="cv sep" data-v="1650">1,650</td><td class="cv" data-v="0.0480">4.8%</td><td class="cv" data-v="1968.5">¥1,969</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td data-v="202512">2025-12</td><td data-v="1507">1,507</td><td data-v="132">132</td><td data-v="0.0876">8.8%</td><td data-v="218.8">¥219</td><td data-v="28877">¥28,877</td><td class="cv sep" data-v="28">28</td><td class="cv" data-v="0.2121">21.2%</td><td class="cv" data-v="1031.3">¥1,031</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td data-v="202601">2026-01</td><td data-v="1988">1,988</td><td data-v="186">186</td><td data-v="0.0936">9.4%</td><td data-v="190.4">¥190</td><td data-v="35420">¥35,420</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="0.0000">0.0%</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td data-v="202602">2026-02 ⚠</td><td data-v="2582">2,582</td><td data-v="216">216</td><td data-v="0.0837">8.4%</td><td data-v="330.5">¥331</td><td data-v="71391">¥71,391</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="0.0000">0.0%</td><td class="cv" data-v="-1">--</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="スマホ買取YTH">
+<h3 class="adv" id="struct-スマホ買取YTH" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH <span class="badge">取得 2026-02-26</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</span><span class="st">📁 CPN <b>6</b></span><span class="st">📂 ADG <b>29</b></span><span class="st">🔑 KW <b>83</b></span><span class="st">✏️ 広告 <b>34</b></span><span class="st">🔗 LP <b>26</b></span><span class="st">💰 <b>¥8,730,497</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="iPhone">iPhone</span><span class="share"><div style="width:38%"></div></span><span class="st">37.5%</span><span class="st">📂 <b>7</b></span><span class="st">🔑 <b>48</b></span><span class="st">✏️ <b>9</b></span><span class="st">🔗 <b>7</b></span><span class="st">💰 <b>¥3,274,529</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="iPhone_16">iPhone_16</span><span class="st">🔑 <b>8</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥935,733</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="iPhone_15">iPhone_15</span><span class="st">🔑 <b>9</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥797,296</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="iPhone_13">iPhone_13</span><span class="st">🔑 <b>11</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥645,303</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="iPhone_12">iPhone_12</span><span class="st">🔑 <b>8</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥399,519</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="iPhone_14">iPhone_14</span><span class="st">🔑 <b>8</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥381,722</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="iPhone_11">iPhone_11</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥114,956</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="iPhone">iPhone</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="シリーズ">シリーズ</span><span class="share"><div style="width:25%"></div></span><span class="st">24.8%</span><span class="st">📂 <b>6</b></span><span class="st">🔑 <b>13</b></span><span class="st">✏️ <b>7</b></span><span class="st">🔗 <b>5</b></span><span class="st">💰 <b>¥2,163,822</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="iPhone">iPhone</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,580,158</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="Google Pixel">Google Pixel</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥264,193</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="Galaxy">Galaxy</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥254,339</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="ARROWS">ARROWS</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥36,828</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="Xperia">Xperia</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥14,725</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="Google Pixel Fold">Google Pixel Fold</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥13,579</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="メーカー">メーカー</span><span class="share"><div style="width:20%"></div></span><span class="st">20.3%</span><span class="st">📂 <b>12</b></span><span class="st">🔑 <b>15</b></span><span class="st">✏️ <b>14</b></span><span class="st">🔗 <b>11</b></span><span class="st">💰 <b>¥1,768,820</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="Apple">Apple</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥742,950</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="SONY">SONY</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥211,962</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="OPPO">OPPO</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥196,797</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="Google">Google</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥147,792</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="SHARP">SHARP</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥147,047</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="SAMSUNG">SAMSUNG</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥114,308</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="Xiaomi">Xiaomi</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥100,594</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="MOTOROLA">MOTOROLA</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥35,890</b></span></span></li>
+<li><details><summary>… 残り 4 広告グループ（🔑 3 / ✏️ 4 / 💰 ¥71,480）</summary><ul>
+<li><span class="node adg"><span class="nm" title="楽天モバイル">楽天モバイル</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥27,491</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="ASUS">ASUS</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥24,299</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="HUAWEI">HUAWEI</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥19,690</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="HTC">HTC</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></details></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="スマホBIG">スマホBIG</span><span class="share"><div style="width:14%"></div></span><span class="st">14.3%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,249,040</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="スマホBIG">スマホBIG</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,249,040</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="下取り">下取り</span><span class="share"><div style="width:2%"></div></span><span class="st">1.9%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥165,750</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="広告グループ 1 個">広告グループ 1 個</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥165,750</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="固有名詞">固有名詞</span><span class="share"><div style="width:1%"></div></span><span class="st">1.2%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥108,536</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="固有名詞×スマホ">固有名詞×スマホ</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥108,536</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="固有名詞×iphone">固有名詞×iphone</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="能セン">
+<h3 class="adv" id="struct-能セン" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン <span class="badge">取得 2026-02-26</span></h3>
+<div class="tree" style="--ac:var(--adv-1)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</span><span class="st">📁 CPN <b>2</b></span><span class="st">📂 ADG <b>2</b></span><span class="st">🔑 KW <b>29</b></span><span class="st">✏️ 広告 <b>2</b></span><span class="st">🔗 LP <b>2</b></span><span class="st">💰 <b>¥135,688</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="電験三種 通学講座【首都圏】">電験三種 通学講座【首都圏】</span><span class="share"><div style="width:64%"></div></span><span class="st">64.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>13</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥86,885</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="広告グループ 1 個">広告グループ 1 個</span><span class="st">🔑 <b>13</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥86,885</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="電験三種【地方】">電験三種【地方】</span><span class="share"><div style="width:36%"></div></span><span class="st">36.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>18</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥48,803</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="広告グループ 1 個">広告グループ 1 個</span><span class="st">🔑 <b>18</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥48,803</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:63.9%;bottom:11.1%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜Apple 下取り / QS2 / CPC¥92 / COST¥35,926"></span>
+<span class="dot" style="left:63.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 下取り / QS7 / CPC¥91 / COST¥129,824"></span>
+<span class="dot" style="left:98.4%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iphone16 pro 査定 / QS5 / CPC¥142 / COST¥95,158"></span>
+<span class="dot" style="left:97.2%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜[iphone16 pro 査定] / QS5 / CPC¥140 / COST¥37,431"></span>
+<span class="dot" style="left:97.4%;bottom:33.3%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜[iphone16 査定] / QS4 / CPC¥141 / COST¥126,930"></span>
+<span class="dot" style="left:96.9%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iphone16 pro max 売りたい / QS8 / CPC¥140 / COST¥19,860"></span>
+<span class="dot" style="left:98.0%;bottom:11.1%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜[iphone16 128 買取] / QS2 / CPC¥141 / COST¥23,053"></span>
+<span class="dot" style="left:100.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜[iphone16 売る] / QS7 / CPC¥144 / COST¥33,904"></span>
+<span class="dot" style="left:97.5%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iphone16 買取 / QS3 / CPC¥141 / COST¥484,078"></span>
+<span class="dot" style="left:98.1%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜[iphone16 買取] / QS3 / CPC¥141 / COST¥115,319"></span>
+<span class="dot" style="left:79.2%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜アイフォン 15 Pro Max 買取 / QS3 / CPC¥114 / COST¥74,409"></span>
+<span class="dot" style="left:80.4%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 15 買取 / QS5 / CPC¥116 / COST¥218,764"></span>
+<span class="dot" style="left:77.8%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 15 査定 / QS3 / CPC¥112 / COST¥55,250"></span>
+<span class="dot" style="left:84.9%;bottom:33.3%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 15 売却 / QS4 / CPC¥123 / COST¥34,794"></span>
+<span class="dot" style="left:79.8%;bottom:11.1%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 15 Pro 買取 / QS2 / CPC¥115 / COST¥126,010"></span>
+<span class="dot" style="left:80.3%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 15 Pro Max 買取 / QS5 / CPC¥116 / COST¥83,902"></span>
+<span class="dot" style="left:80.4%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 15 128G 買取 / QS1 / CPC¥116 / COST¥21,692"></span>
+<span class="dot" style="left:81.6%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜アイフォン 15 買取 / QS6 / CPC¥118 / COST¥62,195"></span>
+<span class="dot" style="left:58.4%;bottom:33.3%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜アイフォン 11 売りたい / QS4 / CPC¥84 / COST¥38,922"></span>
+<span class="dot" style="left:56.6%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 11 Pro 買取 / QS3 / CPC¥82 / COST¥21,486"></span>
+<span class="dot" style="left:62.1%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜アイフォン 12 Pro Max 買取 / QS5 / CPC¥90 / COST¥53,675"></span>
+<span class="dot" style="left:62.3%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 12 買取 / QS5 / CPC¥90 / COST¥82,478"></span>
+<span class="dot" style="left:62.6%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 12 mini 買取 / QS3 / CPC¥90 / COST¥36,875"></span>
+<span class="dot" style="left:62.3%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 12 Pro 買取 / QS3 / CPC¥90 / COST¥43,685"></span>
+<span class="dot" style="left:62.2%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 12 Pro Max 買取 / QS5 / CPC¥90 / COST¥19,021"></span>
+<span class="dot" style="left:61.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 12 売る / QS3 / CPC¥89 / COST¥51,428"></span>
+<span class="dot" style="left:69.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜アイフォン 13 売却 / QS3 / CPC¥101 / COST¥156,759"></span>
+<span class="dot" style="left:66.2%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 13 査定 / QS6 / CPC¥96 / COST¥46,617"></span>
+<span class="dot" style="left:71.3%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 13 Pro 売る / QS5 / CPC¥103 / COST¥27,792"></span>
+<span class="dot" style="left:67.2%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 13 Pro 売りたい / QS5 / CPC¥97 / COST¥94,140"></span>
+<span class="dot" style="left:66.8%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 13 Pro Max 売る / QS5 / CPC¥96 / COST¥52,920"></span>
+<span class="dot" style="left:68.2%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 13 Pro Max 買取 / QS3 / CPC¥98 / COST¥21,557"></span>
+<span class="dot" style="left:66.0%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 13 Pro 買取 / QS3 / CPC¥95 / COST¥65,065"></span>
+<span class="dot" style="left:66.4%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 13 買取 / QS3 / CPC¥96 / COST¥40,023"></span>
+<span class="dot" style="left:68.2%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 13 mini 買取 / QS3 / CPC¥98 / COST¥23,138"></span>
+<span class="dot" style="left:66.1%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜アイフォン 14 査定 / QS6 / CPC¥95 / COST¥40,885"></span>
+<span class="dot" style="left:70.1%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜アイフォン 14 売却 / QS5 / CPC¥101 / COST¥51,751"></span>
+<span class="dot" style="left:66.6%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜アイフォン 14 Pro 買取 / QS5 / CPC¥96 / COST¥31,908"></span>
+<span class="dot" style="left:67.8%;bottom:33.3%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 14 買取 / QS4 / CPC¥98 / COST¥75,902"></span>
+<span class="dot" style="left:67.6%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 14 Pro 買取 / QS3 / CPC¥98 / COST¥75,565"></span>
+<span class="dot" style="left:67.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 14 Plus 買取 / QS3 / CPC¥98 / COST¥20,778"></span>
+<span class="dot" style="left:47.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜ギャラクシー 買取 / QS7 / CPC¥69 / COST¥98,836"></span>
+<span class="dot" style="left:49.3%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜Galaxy 買取 / QS7 / CPC¥71 / COST¥46,537"></span>
+<span class="dot" style="left:46.9%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜ギャラクシー 売却 / QS5 / CPC¥68 / COST¥108,966"></span>
+<span class="dot" style="left:47.3%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜Xperia 買取 / QS6 / CPC¥68 / COST¥14,725"></span>
+<span class="dot" style="left:47.3%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜Google Pixel Fold 買取 / QS7 / CPC¥68 / COST¥13,579"></span>
+<span class="dot" style="left:47.6%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜Google Pixel 売る / QS8 / CPC¥69 / COST¥206,773"></span>
+<span class="dot" style="left:47.1%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜Google Pixel 買取 / QS8 / CPC¥68 / COST¥24,733"></span>
+<span class="dot" style="left:46.6%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜グーグルピクセル 買取 / QS5 / CPC¥67 / COST¥16,214"></span>
+<span class="dot" style="left:45.9%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜グーグルピクセル 売る / QS6 / CPC¥66 / COST¥16,473"></span>
+<span class="dot" style="left:46.5%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜ARROWS 買取 / QS7 / CPC¥67 / COST¥14,895"></span>
+<span class="dot" style="left:48.0%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜アローズ 売却 / QS6 / CPC¥69 / COST¥21,933"></span>
+<span class="dot" style="left:59.8%;bottom:66.7%;width:14px;height:14px;background:var(--adv-0)" title="スマホ買取YTH｜iPhone 買取 / QS7 / CPC¥86 / COST¥1,186,350"></span>
+<span class="dot" style="left:66.5%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜[iPhone 買取] / QS7 / CPC¥96 / COST¥393,808"></span>
+<span class="dot" style="left:43.5%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜シャオミ スマホ 売る / QS8 / CPC¥63 / COST¥100,594"></span>
+<span class="dot" style="left:43.2%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜楽天モバイル 携帯 買取 / QS5 / CPC¥62 / COST¥27,491"></span>
+<span class="dot" style="left:44.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜SAMSUNG スマホ 買取 / QS7 / CPC¥63 / COST¥114,308"></span>
+<span class="dot" style="left:43.3%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜OPPO スマホ 買取 / QS8 / CPC¥62 / COST¥196,797"></span>
+<span class="dot" style="left:43.4%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜ソニー スマホ 買取 / QS7 / CPC¥63 / COST¥211,962"></span>
+<span class="dot" style="left:43.5%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜シャープ 携帯 買取 / QS8 / CPC¥63 / COST¥147,047"></span>
+<span class="dot" style="left:42.9%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜HUAWEI 携帯 買取 / QS8 / CPC¥62 / COST¥19,690"></span>
+<span class="dot" style="left:43.5%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜グーグル 携帯 買取 / QS8 / CPC¥63 / COST¥114,157"></span>
+<span class="dot" style="left:45.2%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜Google スマホ 売る / QS5 / CPC¥65 / COST¥33,635"></span>
+<span class="dot" style="left:43.3%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜ASUS スマホ 買取 / QS8 / CPC¥62 / COST¥24,299"></span>
+<span class="dot" style="left:55.3%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜アップル 携帯 買取 / QS7 / CPC¥80 / COST¥55,932"></span>
+<span class="dot" style="left:53.3%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜スマホ 売る / QS7 / CPC¥77 / COST¥13,375"></span>
+<span class="dot" style="left:53.5%;bottom:66.7%;width:14px;height:14px;background:var(--adv-0)" title="スマホ買取YTH｜スマホ 買取 / QS7 / CPC¥77 / COST¥1,113,985"></span>
+<span class="dot" style="left:66.9%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜[スマホ 売る] / QS7 / CPC¥97 / COST¥39,881"></span>
+<span class="dot" style="left:67.3%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜[スマホ 買取] / QS7 / CPC¥97 / COST¥81,799"></span>
+<span class="dot" style="left:41.4%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="スマホ買取YTH｜スマホ YTH / QS10 / CPC¥60 / COST¥108,536"></span>
+<span class="dot" style="left:100.0%;bottom:55.6%;width:10px;height:10px;background:var(--adv-1)" title="能セン｜電気 主任 技術 者 3 種 講習 / QS6 / CPC¥338 / COST¥61,240"></span>
+<span class="dot" style="left:100.0%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="能セン｜電 験 三種 ユーキャン / QS3 / CPC¥154 / COST¥13,969"></span>
+<span class="dot" style="left:100.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="能セン｜電験三種 講座 / QS7 / CPC¥150 / COST¥4,497"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥36</span>
+<span class="ax" style="left:50%;bottom:-22px">¥72</span>
+<span class="ax" style="left:75%;bottom:-22px">¥108</span>
+<span class="ax" style="left:100%;bottom:-22px">¥144</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>スマホ買取YTH</span><span><i style="background:var(--adv-1)"></i>能セン</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">スマホ YTH</td><td data-v="10">10</td><td data-v="60">¥60</td><td data-v="1819">1,819</td><td data-v="108536">¥108,536</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">HUAWEI 携帯 買取</td><td data-v="8">8</td><td data-v="62">¥62</td><td data-v="318">318</td><td data-v="19690">¥19,690</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">ASUS スマホ 買取</td><td data-v="8">8</td><td data-v="62">¥62</td><td data-v="389">389</td><td data-v="24299">¥24,299</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">OPPO スマホ 買取</td><td data-v="8">8</td><td data-v="62">¥62</td><td data-v="3149">3,149</td><td data-v="196797">¥196,797</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">ソニー スマホ 買取</td><td data-v="7">7</td><td data-v="63">¥63</td><td data-v="3382">3,382</td><td data-v="211962">¥211,962</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">シャオミ スマホ 売る</td><td data-v="8">8</td><td data-v="63">¥63</td><td data-v="1604">1,604</td><td data-v="100594">¥100,594</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">グーグル 携帯 買取</td><td data-v="8">8</td><td data-v="63">¥63</td><td data-v="1820">1,820</td><td data-v="114157">¥114,157</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">シャープ 携帯 買取</td><td data-v="8">8</td><td data-v="63">¥63</td><td data-v="2343">2,343</td><td data-v="147047">¥147,047</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">SAMSUNG スマホ 買取</td><td data-v="7">7</td><td data-v="63">¥63</td><td data-v="1801">1,801</td><td data-v="114308">¥114,308</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">ARROWS 買取</td><td data-v="7">7</td><td data-v="67">¥67</td><td data-v="222">222</td><td data-v="14895">¥14,895</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">Google Pixel 買取</td><td data-v="8">8</td><td data-v="68">¥68</td><td data-v="364">364</td><td data-v="24733">¥24,733</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">Google Pixel Fold 買取</td><td data-v="7">7</td><td data-v="68">¥68</td><td data-v="199">199</td><td data-v="13579">¥13,579</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">Google Pixel 売る</td><td data-v="8">8</td><td data-v="69">¥69</td><td data-v="3013">3,013</td><td data-v="206773">¥206,773</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">ギャラクシー 買取</td><td data-v="7">7</td><td data-v="69">¥69</td><td data-v="1432">1,432</td><td data-v="98836">¥98,836</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">Galaxy 買取</td><td data-v="7">7</td><td data-v="71">¥71</td><td data-v="654">654</td><td data-v="46537">¥46,537</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">スマホ 売る</td><td data-v="7">7</td><td data-v="77">¥77</td><td data-v="174">174</td><td data-v="13375">¥13,375</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">スマホ 買取</td><td data-v="7">7</td><td data-v="77">¥77</td><td data-v="14434">14,434</td><td data-v="1113985">¥1,113,985</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">アップル 携帯 買取</td><td data-v="7">7</td><td data-v="80">¥80</td><td data-v="701">701</td><td data-v="55932">¥55,932</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 買取</td><td data-v="7">7</td><td data-v="86">¥86</td><td data-v="13751">13,751</td><td data-v="1186350">¥1,186,350</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 下取り</td><td data-v="7">7</td><td data-v="91">¥91</td><td data-v="1423">1,423</td><td data-v="129824">¥129,824</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">[iPhone 買取]</td><td data-v="7">7</td><td data-v="96">¥96</td><td data-v="4106">4,106</td><td data-v="393808">¥393,808</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">[スマホ 売る]</td><td data-v="7">7</td><td data-v="97">¥97</td><td data-v="413">413</td><td data-v="39881">¥39,881</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">[スマホ 買取]</td><td data-v="7">7</td><td data-v="97">¥97</td><td data-v="843">843</td><td data-v="81799">¥81,799</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iphone16 pro max 売りたい</td><td data-v="8">8</td><td data-v="140">¥140</td><td data-v="142">142</td><td data-v="19860">¥19,860</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">[iphone16 売る]</td><td data-v="7">7</td><td data-v="144">¥144</td><td data-v="235">235</td><td data-v="33904">¥33,904</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l">電験三種 講座</td><td data-v="7">7</td><td data-v="150">¥150</td><td data-v="30">30</td><td data-v="4497">¥4,497</td></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iphone16 買取</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="141">¥141</td><td data-v="484078">¥484,078</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">アイフォン 13 売却</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="101">¥101</td><td data-v="156759">¥156,759</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">[iphone16 査定]</td><td data-v="4">4</td><td>推定CTR</td><td data-v="141">¥141</td><td data-v="126930">¥126,930</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 15 Pro 買取</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="115">¥115</td><td data-v="126010">¥126,010</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">[iphone16 買取]</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="141">¥141</td><td data-v="115319">¥115,319</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 14 買取</td><td data-v="4">4</td><td>推定CTR</td><td data-v="98">¥98</td><td data-v="75902">¥75,902</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 14 Pro 買取</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="98">¥98</td><td data-v="75565">¥75,565</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">アイフォン 15 Pro Max 買取</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="114">¥114</td><td data-v="74409">¥74,409</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 13 Pro 買取</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="95">¥95</td><td data-v="65065">¥65,065</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 15 査定</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="112">¥112</td><td data-v="55250">¥55,250</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 12 売る</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="89">¥89</td><td data-v="51428">¥51,428</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 12 Pro 買取</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="90">¥90</td><td data-v="43685">¥43,685</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 13 買取</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="96">¥96</td><td data-v="40023">¥40,023</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">アイフォン 11 売りたい</td><td data-v="4">4</td><td>推定CTR</td><td data-v="84">¥84</td><td data-v="38922">¥38,922</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 12 mini 買取</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="90">¥90</td><td data-v="36875">¥36,875</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">Apple 下取り</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="92">¥92</td><td data-v="35926">¥35,926</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 15 売却</td><td data-v="4">4</td><td>推定CTR</td><td data-v="123">¥123</td><td data-v="34794">¥34,794</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 13 mini 買取</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="98">¥98</td><td data-v="23138">¥23,138</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">[iphone16 128 買取]</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="141">¥141</td><td data-v="23053">¥23,053</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 15 128G 買取</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="116">¥116</td><td data-v="21692">¥21,692</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 13 Pro Max 買取</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="98">¥98</td><td data-v="21557">¥21,557</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 11 Pro 買取</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="82">¥82</td><td data-v="21486">¥21,486</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">iPhone 14 Plus 買取</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="98">¥98</td><td data-v="20778">¥20,778</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l">電 験 三種 ユーキャン</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="154">¥154</td><td data-v="13969">¥13,969</td></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td data-v="6.03">6.03</td><td data-v="20.3"><b>20.3%</b></td><td data-v="24.7"><b>24.7%</b></td><td data-v="15.9">15.9%</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td data-v="5.37">5.37</td><td data-v="17.4">17.4%</td><td data-v="13.0">13.0%</td><td data-v="69.3"><b>69.3%</b></td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="スマホ買取YTH">
+<h3 class="adv" id="kwqs-スマホ買取YTH" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH <span class="badge">取得 2026-02-26</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>6.03</b></span><span class="chip">関連性↓<b>20.3%</b></span><span class="chip">推定CTR↓<b>24.7%</b></span><span class="chip">LP利便性↓<b>15.9%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="スマホ買取YTH"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">iPhone 買取</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="134321">134,321</td><td data-v="13751">13,751</td><td data-v="0.1024">10.2%</td><td data-v="86.3">¥86</td><td data-v="1186350">¥1,186,350</td><td class="cv sep" data-v="597.5">597.5</td><td class="cv" data-v="1985.7">¥1,986</td><td class="l">シリーズ</td></tr>
+<tr><td class="l">スマホ 買取</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="138491">138,491</td><td data-v="14434">14,434</td><td data-v="0.1042">10.4%</td><td data-v="77.2">¥77</td><td data-v="1113985">¥1,113,985</td><td class="cv sep" data-v="835.0">835.0</td><td class="cv" data-v="1334.1">¥1,334</td><td class="l">スマホBIG</td></tr>
+<tr><td class="l">アップル スマホ 査定</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="59578">59,578</td><td data-v="6310">6,310</td><td data-v="0.1059">10.6%</td><td data-v="80.9">¥81</td><td data-v="510551">¥510,551</td><td class="cv sep" data-v="230.8">230.8</td><td class="cv" data-v="2212.3">¥2,212</td><td class="l">メーカー</td></tr>
+<tr><td class="l">iphone16 買取</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="31446">31,446</td><td data-v="3442">3,442</td><td data-v="0.1095">10.9%</td><td data-v="140.6">¥141</td><td data-v="484078">¥484,078</td><td class="cv sep" data-v="166.6">166.6</td><td class="cv" data-v="2905.5">¥2,905</td><td class="l">iPhone</td></tr>
+<tr><td class="l">[iPhone 買取]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="38266">38,266</td><td data-v="4106">4,106</td><td data-v="0.1073">10.7%</td><td data-v="95.9">¥96</td><td data-v="393808">¥393,808</td><td class="cv sep" data-v="327.2">327.2</td><td class="cv" data-v="1203.6">¥1,204</td><td class="l">シリーズ</td></tr>
+<tr><td class="l">iPhone 15 買取</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="21122">21,122</td><td data-v="1887">1,887</td><td data-v="0.0893">8.9%</td><td data-v="115.9">¥116</td><td data-v="218764">¥218,764</td><td class="cv sep" data-v="121.6">121.6</td><td class="cv" data-v="1798.9">¥1,799</td><td class="l">iPhone</td></tr>
+<tr><td class="l">ソニー スマホ 買取</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="21750">21,750</td><td data-v="3382">3,382</td><td data-v="0.1555">15.5%</td><td data-v="62.7">¥63</td><td data-v="211962">¥211,962</td><td class="cv sep" data-v="174.2">174.2</td><td class="cv" data-v="1217.1">¥1,217</td><td class="l">メーカー</td></tr>
+<tr><td class="l">Google Pixel 売る</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="20581">20,581</td><td data-v="3013">3,013</td><td data-v="0.1464">14.6%</td><td data-v="68.6">¥69</td><td data-v="206773">¥206,773</td><td class="cv sep" data-v="208.7">208.7</td><td class="cv" data-v="990.8">¥991</td><td class="l">シリーズ</td></tr>
+<tr><td class="l">OPPO スマホ 買取</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="18342">18,342</td><td data-v="3149">3,149</td><td data-v="0.1717">17.2%</td><td data-v="62.5">¥62</td><td data-v="196797">¥196,797</td><td class="cv sep" data-v="182.1">182.1</td><td class="cv" data-v="1081.0">¥1,081</td><td class="l">メーカー</td></tr>
+<tr><td class="l">アイフォン 13 売却</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="16059">16,059</td><td data-v="1555">1,555</td><td data-v="0.0968">9.7%</td><td data-v="100.8">¥101</td><td data-v="156759">¥156,759</td><td class="cv sep" data-v="65.8">65.8</td><td class="cv" data-v="2384.2">¥2,384</td><td class="l">iPhone</td></tr>
+<tr><td class="l">シャープ 携帯 買取</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="15623">15,623</td><td data-v="2343">2,343</td><td data-v="0.1500">15.0%</td><td data-v="62.8">¥63</td><td data-v="147047">¥147,047</td><td class="cv sep" data-v="111.6">111.6</td><td class="cv" data-v="1317.2">¥1,317</td><td class="l">メーカー</td></tr>
+<tr><td class="l">iPhone 下取り</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="14570">14,570</td><td data-v="1423">1,423</td><td data-v="0.0977">9.8%</td><td data-v="91.2">¥91</td><td data-v="129824">¥129,824</td><td class="cv sep" data-v="30.0">30.0</td><td class="cv" data-v="4324.6">¥4,325</td><td class="l">下取り</td></tr>
+<tr><td class="l">[iphone16 査定]</td><td>完全</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="9020">9,020</td><td data-v="903">903</td><td data-v="0.1001">10.0%</td><td data-v="140.6">¥141</td><td data-v="126930">¥126,930</td><td class="cv sep" data-v="35.9">35.9</td><td class="cv" data-v="3532.7">¥3,533</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 15 Pro 買取</td><td>フレーズ</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="12003">12,003</td><td data-v="1094">1,094</td><td data-v="0.0911">9.1%</td><td data-v="115.2">¥115</td><td data-v="126010">¥126,010</td><td class="cv sep" data-v="80.5">80.5</td><td class="cv" data-v="1565.7">¥1,566</td><td class="l">iPhone</td></tr>
+<tr><td class="l">アイフォン 15 Pro 売る</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="9849">9,849</td><td data-v="1032">1,032</td><td data-v="0.1048">10.5%</td><td data-v="116.6">¥117</td><td data-v="120280">¥120,280</td><td class="cv sep" data-v="57.5">57.5</td><td class="cv" data-v="2092.2">¥2,092</td><td class="l">iPhone</td></tr>
+<tr><td class="l">[iphone16 買取]</td><td>完全</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="10358">10,358</td><td data-v="815">815</td><td data-v="0.0787">7.9%</td><td data-v="141.5">¥141</td><td data-v="115319">¥115,319</td><td class="cv sep" data-v="44.4">44.4</td><td class="cv" data-v="2599.0">¥2,599</td><td class="l">iPhone</td></tr>
+<tr><td class="l">SAMSUNG スマホ 買取</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="11730">11,730</td><td data-v="1801">1,801</td><td data-v="0.1535">15.4%</td><td data-v="63.5">¥63</td><td data-v="114308">¥114,308</td><td class="cv sep" data-v="92.4">92.4</td><td class="cv" data-v="1236.8">¥1,237</td><td class="l">メーカー</td></tr>
+<tr><td class="l">グーグル 携帯 買取</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="14467">14,467</td><td data-v="1820">1,820</td><td data-v="0.1258">12.6%</td><td data-v="62.7">¥63</td><td data-v="114157">¥114,157</td><td class="cv sep" data-v="104.3">104.3</td><td class="cv" data-v="1094.5">¥1,095</td><td class="l">メーカー</td></tr>
+<tr><td class="l">アップル 携帯 売却</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="15098">15,098</td><td data-v="1415">1,415</td><td data-v="0.0937">9.4%</td><td data-v="79.5">¥80</td><td data-v="112558">¥112,558</td><td class="cv sep" data-v="60.4">60.4</td><td class="cv" data-v="1862.0">¥1,862</td><td class="l">メーカー</td></tr>
+<tr><td class="l">ギャラクシー 売却</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="11266">11,266</td><td data-v="1611">1,611</td><td data-v="0.1430">14.3%</td><td data-v="67.6">¥68</td><td data-v="108966">¥108,966</td><td class="cv sep" data-v="94.0">94.0</td><td class="cv" data-v="1159.3">¥1,159</td><td class="l">シリーズ</td></tr>
+<tr><td class="l">スマホ YTH</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="9051">9,051</td><td data-v="1819">1,819</td><td data-v="0.2010">20.1%</td><td data-v="59.7">¥60</td><td data-v="108536">¥108,536</td><td class="cv sep" data-v="258.2">258.2</td><td class="cv" data-v="420.4">¥420</td><td class="l">固有名詞</td></tr>
+<tr><td class="l">シャオミ スマホ 売る</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="11215">11,215</td><td data-v="1604">1,604</td><td data-v="0.1430">14.3%</td><td data-v="62.7">¥63</td><td data-v="100594">¥100,594</td><td class="cv sep" data-v="95.6">95.6</td><td class="cv" data-v="1051.8">¥1,052</td><td class="l">メーカー</td></tr>
+<tr><td class="l">ギャラクシー 買取</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="10268">10,268</td><td data-v="1432">1,432</td><td data-v="0.1395">13.9%</td><td data-v="69.0">¥69</td><td data-v="98836">¥98,836</td><td class="cv sep" data-v="72.9">72.9</td><td class="cv" data-v="1355.8">¥1,356</td><td class="l">シリーズ</td></tr>
+<tr><td class="l">iphone16 pro 査定</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="6942">6,942</td><td data-v="670">670</td><td data-v="0.0965">9.7%</td><td data-v="142.0">¥142</td><td data-v="95158">¥95,158</td><td class="cv sep" data-v="22.8">22.8</td><td class="cv" data-v="4173.6">¥4,174</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 13 Pro 売りたい</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="9288">9,288</td><td data-v="971">971</td><td data-v="0.1045">10.5%</td><td data-v="97.0">¥97</td><td data-v="94140">¥94,140</td><td class="cv sep" data-v="60.0">60.0</td><td class="cv" data-v="1568.5">¥1,568</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 15 Pro Max 買取</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="7217">7,217</td><td data-v="724">724</td><td data-v="0.1003">10.0%</td><td data-v="115.9">¥116</td><td data-v="83902">¥83,902</td><td class="cv sep" data-v="49.8">49.8</td><td class="cv" data-v="1684.4">¥1,684</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 12 買取</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="10632">10,632</td><td data-v="918">918</td><td data-v="0.0863">8.6%</td><td data-v="89.8">¥90</td><td data-v="82478">¥82,478</td><td class="cv sep" data-v="70.1">70.1</td><td class="cv" data-v="1177.1">¥1,177</td><td class="l">iPhone</td></tr>
+<tr><td class="l">[スマホ 買取]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="6985">6,985</td><td data-v="843">843</td><td data-v="0.1207">12.1%</td><td data-v="97.0">¥97</td><td data-v="81799">¥81,799</td><td class="cv sep" data-v="59.8">59.8</td><td class="cv" data-v="1368.1">¥1,368</td><td class="l">スマホBIG</td></tr>
+<tr><td class="l">iPhone 14 買取</td><td>フレーズ</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="8972">8,972</td><td data-v="776">776</td><td data-v="0.0865">8.6%</td><td data-v="97.8">¥98</td><td data-v="75902">¥75,902</td><td class="cv sep" data-v="57.1">57.1</td><td class="cv" data-v="1329.3">¥1,329</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 14 Pro 買取</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="8873">8,873</td><td data-v="775">775</td><td data-v="0.0873">8.7%</td><td data-v="97.5">¥98</td><td data-v="75565">¥75,565</td><td class="cv sep" data-v="68.3">68.3</td><td class="cv" data-v="1105.6">¥1,106</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 12 査定</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="8060">8,060</td><td data-v="837">837</td><td data-v="0.1038">10.4%</td><td data-v="89.7">¥90</td><td data-v="75075">¥75,075</td><td class="cv sep" data-v="39.8">39.8</td><td class="cv" data-v="1888.2">¥1,888</td><td class="l">iPhone</td></tr>
+<tr><td class="l">アイフォン 15 Pro Max 買取</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="6650">6,650</td><td data-v="651">651</td><td data-v="0.0979">9.8%</td><td data-v="114.3">¥114</td><td data-v="74409">¥74,409</td><td class="cv sep" data-v="37.4">37.4</td><td class="cv" data-v="1990.6">¥1,991</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 13 売れる</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="8151">8,151</td><td data-v="691">691</td><td data-v="0.0848">8.5%</td><td data-v="97.5">¥97</td><td data-v="67364">¥67,364</td><td class="cv sep" data-v="49.9">49.9</td><td class="cv" data-v="1350.0">¥1,350</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 13 Pro 買取</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="6536">6,536</td><td data-v="683">683</td><td data-v="0.1045">10.4%</td><td data-v="95.3">¥95</td><td data-v="65065">¥65,065</td><td class="cv sep" data-v="68.3">68.3</td><td class="cv" data-v="952.4">¥952</td><td class="l">iPhone</td></tr>
+<tr><td class="l">Apple スマホ 査定</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="8584">8,584</td><td data-v="805">805</td><td data-v="0.0938">9.4%</td><td data-v="79.4">¥79</td><td data-v="63909">¥63,909</td><td class="cv sep" data-v="24.4">24.4</td><td class="cv" data-v="2620.3">¥2,620</td><td class="l">メーカー</td></tr>
+<tr><td class="l">アイフォン 15 買取</td><td>フレーズ</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="5385">5,385</td><td data-v="528">528</td><td data-v="0.0981">9.8%</td><td data-v="117.8">¥118</td><td data-v="62195">¥62,195</td><td class="cv sep" data-v="35.7">35.7</td><td class="cv" data-v="1744.1">¥1,744</td><td class="l">iPhone</td></tr>
+<tr><td class="l">アップル 携帯 買取</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="8542">8,542</td><td data-v="701">701</td><td data-v="0.0821">8.2%</td><td data-v="79.8">¥80</td><td data-v="55932">¥55,932</td><td class="cv sep" data-v="27.7">27.7</td><td class="cv" data-v="2020.7">¥2,021</td><td class="l">メーカー</td></tr>
+<tr><td class="l">iPhone 15 査定</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="5191">5,191</td><td data-v="492">492</td><td data-v="0.0948">9.5%</td><td data-v="112.3">¥112</td><td data-v="55250">¥55,250</td><td class="cv sep" data-v="21.8">21.8</td><td class="cv" data-v="2533.2">¥2,533</td><td class="l">iPhone</td></tr>
+<tr><td class="l">アイフォン 14 Pro Max 買取</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="5448">5,448</td><td data-v="565">565</td><td data-v="0.1037">10.4%</td><td data-v="97.8">¥98</td><td data-v="55240">¥55,240</td><td class="cv sep" data-v="51.5">51.5</td><td class="cv" data-v="1072.4">¥1,072</td><td class="l">iPhone</td></tr>
+<tr><td class="l">アイフォン 12 Pro Max 買取</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="4969">4,969</td><td data-v="599">599</td><td data-v="0.1205">12.1%</td><td data-v="89.6">¥90</td><td data-v="53675">¥53,675</td><td class="cv sep" data-v="44.7">44.7</td><td class="cv" data-v="1201.6">¥1,202</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 13 Pro Max 売る</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="4425">4,425</td><td data-v="549">549</td><td data-v="0.1241">12.4%</td><td data-v="96.4">¥96</td><td data-v="52920">¥52,920</td><td class="cv sep" data-v="34.0">34.0</td><td class="cv" data-v="1556.0">¥1,556</td><td class="l">iPhone</td></tr>
+<tr><td class="l">アイフォン 14 売却</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="5068">5,068</td><td data-v="512">512</td><td data-v="0.1010">10.1%</td><td data-v="101.1">¥101</td><td data-v="51751">¥51,751</td><td class="cv sep" data-v="22.0">22.0</td><td class="cv" data-v="2349.1">¥2,349</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 12 売る</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="5369">5,369</td><td data-v="576">576</td><td data-v="0.1073">10.7%</td><td data-v="89.3">¥89</td><td data-v="51428">¥51,428</td><td class="cv sep" data-v="27.1">27.1</td><td class="cv" data-v="1894.2">¥1,894</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 13 mini 査定</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="6170">6,170</td><td data-v="514">514</td><td data-v="0.0833">8.3%</td><td data-v="97.1">¥97</td><td data-v="49928">¥49,928</td><td class="cv sep" data-v="26.2">26.2</td><td class="cv" data-v="1902.0">¥1,902</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 13 査定</td><td>フレーズ</td><td data-v="6">6</td><td>平均より下</td><td>平均より上</td><td>平均</td><td class="sep" data-v="5204">5,204</td><td data-v="488">488</td><td data-v="0.0938">9.4%</td><td data-v="95.5">¥96</td><td data-v="46617">¥46,617</td><td class="cv sep" data-v="18.0">18.0</td><td class="cv" data-v="2591.3">¥2,591</td><td class="l">iPhone</td></tr>
+<tr><td class="l">Galaxy 買取</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="4905">4,905</td><td data-v="654">654</td><td data-v="0.1333">13.3%</td><td data-v="71.2">¥71</td><td data-v="46537">¥46,537</td><td class="cv sep" data-v="45.8">45.8</td><td class="cv" data-v="1015.2">¥1,015</td><td class="l">シリーズ</td></tr>
+<tr><td class="l">iPhone 12 Pro 買取</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="5583">5,583</td><td data-v="486">486</td><td data-v="0.0870">8.7%</td><td data-v="89.9">¥90</td><td data-v="43685">¥43,685</td><td class="cv sep" data-v="34.3">34.3</td><td class="cv" data-v="1273.6">¥1,274</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 11 査定</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="6089">6,089</td><td data-v="503">503</td><td data-v="0.0826">8.3%</td><td data-v="81.3">¥81</td><td data-v="40898">¥40,898</td><td class="cv sep" data-v="22.3">22.3</td><td class="cv" data-v="1831.5">¥1,832</td><td class="l">iPhone</td></tr>
+<tr><td class="l">アイフォン 14 査定</td><td>フレーズ</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="4031">4,031</td><td data-v="429">429</td><td data-v="0.1064">10.6%</td><td data-v="95.3">¥95</td><td data-v="40885">¥40,885</td><td class="cv sep" data-v="14.9">14.9</td><td class="cv" data-v="2738.4">¥2,738</td><td class="l">iPhone</td></tr>
+<tr><td class="l">iPhone 13 買取</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="5012">5,012</td><td data-v="418">418</td><td data-v="0.0834">8.3%</td><td data-v="95.7">¥96</td><td data-v="40023">¥40,023</td><td class="cv sep" data-v="31.2">31.2</td><td class="cv" data-v="1281.6">¥1,282</td><td class="l">iPhone</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="能セン">
+<h3 class="adv" id="kwqs-能セン" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン <span class="badge">取得 2026-02-26</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>5.37</b></span><span class="chip">関連性↓<b>17.4%</b></span><span class="chip">推定CTR↓<b>13.0%</b></span><span class="chip bad">LP利便性↓<b>69.3%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="能セン"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">電気 主任 技術 者 3 種 講習</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="1936">1,936</td><td data-v="181">181</td><td data-v="0.0935">9.3%</td><td data-v="338.3">¥338</td><td data-v="61240">¥61,240</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種 通学講座【首都圏】</td></tr>
+<tr><td class="l">電 験 三種 ユーキャン</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="1017">1,017</td><td data-v="91">91</td><td data-v="0.0895">8.9%</td><td data-v="153.5">¥154</td><td data-v="13969">¥13,969</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="6984.5">¥6,984</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電験三種</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="941">941</td><td data-v="63">63</td><td data-v="0.0670">6.7%</td><td data-v="194.8">¥195</td><td data-v="12273">¥12,273</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">第 三種 電気 主任 技術 者 講習</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="357">357</td><td data-v="22">22</td><td data-v="0.0616">6.2%</td><td data-v="346.0">¥346</td><td data-v="7612">¥7,612</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種 通学講座【首都圏】</td></tr>
+<tr><td class="l">電 験 三種 講座</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="188">188</td><td data-v="17">17</td><td data-v="0.0904">9.0%</td><td data-v="356.9">¥357</td><td data-v="6067">¥6,067</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種 通学講座【首都圏】</td></tr>
+<tr><td class="l">電験三種 講習</td><td>フレーズ</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="111">111</td><td data-v="17">17</td><td data-v="0.1532">15.3%</td><td data-v="300.5">¥301</td><td data-v="5109">¥5,109</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種 通学講座【首都圏】</td></tr>
+<tr><td class="l">電験三種 講座</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="430">430</td><td data-v="30">30</td><td data-v="0.0698">7.0%</td><td data-v="149.9">¥150</td><td data-v="4497">¥4,497</td><td class="cv sep" data-v="26.0">26.0</td><td class="cv" data-v="173.0">¥173</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電験三種 講習会</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="152">152</td><td data-v="16">16</td><td data-v="0.1053">10.5%</td><td data-v="223.2">¥223</td><td data-v="3571">¥3,571</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電験三種 通信講座</td><td>インテント</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="154">154</td><td data-v="18">18</td><td data-v="0.1169">11.7%</td><td data-v="179.9">¥180</td><td data-v="3239">¥3,239</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電 験 三種 スクール</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均より上</td><td>平均</td><td class="sep" data-v="76">76</td><td data-v="9">9</td><td data-v="0.1184">11.8%</td><td data-v="268.9">¥269</td><td data-v="2420">¥2,420</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電験三種 講座 おすすめ</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均より上</td><td>平均</td><td class="sep" data-v="53">53</td><td data-v="12">12</td><td data-v="0.2264">22.6%</td><td data-v="169.6">¥170</td><td data-v="2035">¥2,035</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電験三種 web講座</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="81">81</td><td data-v="9">9</td><td data-v="0.1111">11.1%</td><td data-v="181.0">¥181</td><td data-v="1629">¥1,629</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電 験 講習</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="66">66</td><td data-v="4">4</td><td data-v="0.0606">6.1%</td><td data-v="358.2">¥358</td><td data-v="1433">¥1,433</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種 通学講座【首都圏】</td></tr>
+<tr><td class="l">電験三種 講習会 東京</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="9">9</td><td data-v="2">2</td><td data-v="0.2222">22.2%</td><td data-v="710.0">¥710</td><td data-v="1420">¥1,420</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種 通学講座【首都圏】</td></tr>
+<tr><td class="l">電験三種 通学</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="8">8</td><td data-v="3">3</td><td data-v="0.3750">37.5%</td><td data-v="434.3">¥434</td><td data-v="1303">¥1,303</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種 通学講座【首都圏】</td></tr>
+<tr><td class="l">電験三種 オンライン講座</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="39">39</td><td data-v="4">4</td><td data-v="0.1026">10.3%</td><td data-v="309.5">¥310</td><td data-v="1238">¥1,238</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電験三種 通学講座</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="25">25</td><td data-v="4">4</td><td data-v="0.1600">16.0%</td><td data-v="255.5">¥256</td><td data-v="1022">¥1,022</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電 験 三種 通信 教育</td><td>インテント</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="32">32</td><td data-v="6">6</td><td data-v="0.1875">18.8%</td><td data-v="154.5">¥154</td><td data-v="927">¥927</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">ユーキャン 電 験 三種</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="160">160</td><td data-v="6">6</td><td data-v="0.0375">3.8%</td><td data-v="151.0">¥151</td><td data-v="906">¥906</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電 験 三種 セミナー</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="10">10</td><td data-v="3">3</td><td data-v="0.3000">30.0%</td><td data-v="242.7">¥243</td><td data-v="728">¥728</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種 通学講座【首都圏】</td></tr>
+<tr><td class="l">３種 講習</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="20">20</td><td data-v="2">2</td><td data-v="0.1000">10.0%</td><td data-v="308.5">¥308</td><td data-v="617">¥617</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種 通学講座【首都圏】</td></tr>
+<tr><td class="l">電 験 三種 通信</td><td>インテント</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="9">9</td><td data-v="1">1</td><td data-v="0.1111">11.1%</td><td data-v="516.0">¥516</td><td data-v="516">¥516</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電 験 三種 講習 おすすめ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="67">67</td><td data-v="2">2</td><td data-v="0.0299">3.0%</td><td data-v="201.5">¥202</td><td data-v="403">¥403</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電 験 三種 e ラーニング</td><td>インテント</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="15">15</td><td data-v="3">3</td><td data-v="0.2000">20.0%</td><td data-v="117.3">¥117</td><td data-v="352">¥352</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電 験 三種 おすすめ 通信 講座</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="11">11</td><td data-v="2">2</td><td data-v="0.1818">18.2%</td><td data-v="174.0">¥174</td><td data-v="348">¥348</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電 験 三種 予備校</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="41">41</td><td data-v="3">3</td><td data-v="0.0732">7.3%</td><td data-v="99.7">¥100</td><td data-v="299">¥299</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電 験 3 種 講習 会 おすすめ</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="18">18</td><td data-v="1">1</td><td data-v="0.0556">5.6%</td><td data-v="171.0">¥171</td><td data-v="171">¥171</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種 通学講座【首都圏】</td></tr>
+<tr><td class="l">電 験 三種 通信 講座 おすすめ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="13">13</td><td data-v="1">1</td><td data-v="0.0769">7.7%</td><td data-v="155.0">¥155</td><td data-v="155">¥155</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種【地方】</td></tr>
+<tr><td class="l">電験三種 講習会</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="20">20</td><td data-v="1">1</td><td data-v="0.0500">5.0%</td><td data-v="121.0">¥121</td><td data-v="121">¥121</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種 通学講座【首都圏】</td></tr>
+<tr><td class="l">電験三種 講習</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="18">18</td><td data-v="1">1</td><td data-v="0.0556">5.6%</td><td data-v="68.0">¥68</td><td data-v="68">¥68</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">電験三種 通学講座【首都圏】</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="スマホ買取YTH" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">smartphone-kaitorisatei.com<br><span>smartphone-kaitorisatei.com</span></div><div class="t">スマホの超高額買取ならYTH - 他社様には絶対負けません - 他社圧倒の超高額買取</div><div class="d">Apple正規セラー認定会社。自社で修理でき、他にない買取額。セキュリティーも超高水準 詰めて送るだけのラクラク宅配買取。もしもの保証は3000万円！キャンセルでもお客様負担0は円。</div><div class="meta2">IMP 156,659 ／ CTR 10.6% ／ COST ¥1,309,311<br>スマホBIG</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">smartphone-kaitorisatei.com<br><span>smartphone-kaitorisatei.com › iphone</span></div><div class="t">スマホの超高額買取ならYTH - 他社様には絶対負けません - 有資格者の査定士だから安心売却</div><div class="d">メーカー正規セラー認定会社。自社で修理でき、他にない買取額。セキュリティーも超高水準 詰めて送るだけのラクラク宅配買取。もしもの保証は3000万円！キャンセルでもお客様負担0は円。</div><div class="meta2">IMP 124,816 ／ CTR 10.1% ／ COST ¥1,065,950<br>シリーズ</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">smartphone-kaitorisatei.com<br><span>smartphone-kaitorisatei.com › iphone</span></div><div class="t">iPhoneの超高額買取ならYTH - 他社様には絶対負けません - 有資格者の査定士だから安心売却</div><div class="d">Apple正規セラー認定会社。自社で修理でき、他にない買取額。セキュリティーも超高水準 詰めて送るだけのラクラク宅配買取。もしもの保証は3000万円！キャンセルでもお客様負担0は円。</div><div class="meta2">IMP 93,456 ／ CTR 10.1% ／ COST ¥756,620<br>メーカー</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">smartphone-kaitorisatei.com<br><span>smartphone-kaitorisatei.com › iphone › iphone13</span></div><div class="t">スマホの超高額買取ならYTH - 他社様には絶対負けません - 有資格者の査定士だから安心売却</div><div class="d">Apple正規セラー認定会社。自社で修理でき、他にない買取額。セキュリティーも超高水準 詰めて送るだけのラクラク宅配買取。もしもの保証は3000万円！キャンセルでもお客様負担0は円。</div><div class="meta2">IMP 77,677 ／ CTR 9.5% ／ COST ¥724,380<br>iPhone</div></div>
+</div>
+<div class="serp-col advblk" data-a="能セン" style="--ac:var(--adv-1)"><h4><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">gokaku.nouryoku.com<br><span>gokaku.nouryoku.com › lp › nousen_online</span></div><div class="t">自宅完結オンライン講座 - 【電験三種の合格実績NO.1】 - 令和8年度 受講申込受付中</div><div class="d">基礎講座からスタート可。電気数学や理論の基礎から応用問題まで。出題範囲を絞った合格特化型 【能セン】オンライン・通信対応。出題範囲を絞った短期合格特化型カリキュラムで合格へ。</div><div class="meta2">IMP 16,466 ／ CTR 5.2% ／ COST ¥99,275<br>電験三種【地方】</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">gokaku.nouryoku.com<br><span>gokaku.nouryoku.com › lp › nousen_school</span></div><div class="t">【基礎から合格レベルへ】 - 令和8年度 受講申込受付中 - 【電験三種の合格実績NO.1】</div><div class="d">4月の基礎講座からスタート。電気数学や理論の基礎から応用問題まで出題範囲を絞った合格特化型 【能セン】令和8年度（上期）通学講座・オンライン講座・通信講座。出題範囲を絞った合格特化型</div><div class="meta2">IMP 3,222 ／ CTR 14.8% ／ COST ¥110,546<br>電験三種 通学講座【首都圏】</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">キャリアの下取りより高額買取</td><td data-v="33">33</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">他社様には絶対負けません</td><td data-v="33">33</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">有資格者の査定士だから安心売却</td><td data-v="30">30</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">スマホの超高額買取ならYTH</td><td data-v="12">12</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">他社圧倒の超高額買取</td><td data-v="3">3</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">iPhone16の超高額買取はYTH</td><td data-v="2">2</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">iPhoneの超高額買取ならYTH</td><td data-v="2">2</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【大嶋先生の合格講座】能セン</td><td data-v="2">2</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【電験三種の合格実績NO.1】</td><td data-v="2">2</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">令和8年度 受講申込受付中</td><td data-v="2">2</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">iPhone16の超高額買取ならYTH</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">iPhone、スマホの超高額買取なら</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">全国どこでも買取可能！</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">下取りはマジでもったいない</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">キャリア、メーカーの下取を圧倒</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">他社圧倒、スマホ衝撃の高額買取</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">下取りよりも全然高い買取店なら</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">iPhone15の超高額買取ならYTH</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">Galaxyの超高額買取ならYTH</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">Xperiaの超高額買取ならYTH</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">GooglePixel Foldの超高額買取</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">GooglePixelの超高額買取ならYTH</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">ARROWSの超高額買取ならYTH</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">HTCのスマホ超高額で買取ります</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">MOTOROLAのスマホ超高額買い取り</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">SAMSUNGのスマホ超高額買い取り</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">OPPOのスマホ超高額で買取ります</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">SONYのスマホ超高額で買取ります</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">SHARPのスマホ超高額で買取ます</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">HUAWEIのスマホ超高額で買取ます</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">Googleのスマホ超高額で買取ます</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">ASUSのスマホ超高額で買取ります</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">Xiaomiのスマホ超高額で買取ます</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">楽天モバイルの超高額買取</td><td data-v="1">1</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l wrap">アイフォンの超高額買取ならYTH</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【能セン 東京会場】</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【令和8年度】電験三種 通学講座</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【基礎から合格レベルへ】</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【電験三種】講習会</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【初心者OK】電気数学から指導</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【社会人・未経験歓迎】</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【合格率重視カリキュラム】</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【合格特化カリキュラム】</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【4月開講】電験三種 通学講座</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【残席あり】通学クラス</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【東京会場】少人数制クラス</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">電験三種 合格講座</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">自宅完結オンライン講座</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">電験三種 通信講座</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【初心者の方は電気数学からOK】</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【電験三種オンラインスクール】</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">スマホ・PCで今すぐ受講</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">電験三種 web講座</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">電験三種オンライン講座おすすめ</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">自宅で学べる 電験三種講座</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">電験三種 eラーニング</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">【最短合格ルートはこちら】</td><td data-v="1">1</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l wrap">電験三種 オンライン講座</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="スマホ買取YTH">
+<h3 class="adv" id="adlib-スマホ買取YTH" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH <span class="badge">取得 2026-02-26</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>34本</b></span><span class="chip">CPN<b>6個</b></span><span class="chip">ADG<b>29個</b></span><span class="chip">ピン留め<b>100%</b></span><span class="chip">LP使い分け<b>26本</b></span></div>
+<p class="note">主要LP: <span title="https://smartphone-kaitorisatei.com/iphone/iphone16/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=iphone">https://smartphone-kaitorisatei.com/iphone/iphone16/?utm_source=google&amp;utm_mediu（2本）</span> ／ <span title="https://smartphone-kaitorisatei.com/iphone/iphone15/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=iphone">https://smartphone-kaitorisatei.com/iphone/iphone15/?utm_source=google&amp;utm_mediu（2本）</span> ／ <span title="https://smartphone-kaitorisatei.com/android/googlepixel/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=series">https://smartphone-kaitorisatei.com/android/googlepixel/?utm_source=google&amp;utm_m（2本）</span> ／ <span title="https://smartphone-kaitorisatei.com/iphone/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=series">https://smartphone-kaitorisatei.com/iphone/?utm_source=google&amp;utm_medium=cpc&amp;utm（2本）</span> ／ <span title="https://smartphone-kaitorisatei.com/android/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=manufacturer">https://smartphone-kaitorisatei.com/android/?utm_source=google&amp;utm_medium=cpc&amp;ut（2本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="スマホ買取YTH"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">キャリアの下取りより高額買取</td><td data-v="33">33</td></tr>
+<tr><td class="l wrap">他社様には絶対負けません</td><td data-v="33">33</td></tr>
+<tr><td class="l wrap">有資格者の査定士だから安心売却</td><td data-v="30">30</td></tr>
+<tr><td class="l wrap">スマホの超高額買取ならYTH</td><td data-v="12">12</td></tr>
+<tr><td class="l wrap">他社圧倒の超高額買取</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">iPhone16の超高額買取はYTH</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">iPhoneの超高額買取ならYTH</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">iPhone16の超高額買取ならYTH</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">iPhone、スマホの超高額買取なら</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">全国どこでも買取可能！</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">下取りはマジでもったいない</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">キャリア、メーカーの下取を圧倒</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">他社圧倒、スマホ衝撃の高額買取</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">下取りよりも全然高い買取店なら</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">iPhone15の超高額買取ならYTH</td><td data-v="1">1</td></tr>
+</table></div></div><div>
+<table data-adv="スマホ買取YTH"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">スマホのこと、わからなくても大丈夫。オペレーターが査定以外のことも丁寧にご案内いたします。</td><td data-v="34">34</td></tr>
+<tr><td class="l wrap">詰めて送るだけのラクラク宅配買取。もしもの保証は3000万円！キャンセルでもお客様負担0は円。</td><td data-v="34">34</td></tr>
+<tr><td class="l wrap">Apple正規セラー認定会社。自社で修理でき、他にない買取額。セキュリティーも超高水準</td><td data-v="24">24</td></tr>
+<tr><td class="l wrap">メーカー正規セラー認定会社。自社で修理でき、他にない買取額。セキュリティーも超高水準</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">Apple正規セラー認定会社。自社で修理でき、だから他にない買取額。セキュリティーも超高水準</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">AppleとAmazon正規セラー認定会社。自社で修理でき、他にない買取額。セキュリティーも超高水準</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">Appleとアマゾン正規セラー認定会社。自社で修理でき他にない買取額。セキュリティーも超高水準</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="能セン">
+<h3 class="adv" id="adlib-能セン" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン <span class="badge">取得 2026-02-26</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>2本</b></span><span class="chip">CPN<b>2個</b></span><span class="chip">ADG<b>2個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>2本</b></span></div>
+<p class="note">主要LP: <span title="https://gokaku.nouryoku.com/lp/nousen_school/">https://gokaku.nouryoku.com/lp/nousen_school/（1本）</span> ／ <span title="https://gokaku.nouryoku.com/lp/nousen_online/">https://gokaku.nouryoku.com/lp/nousen_online/（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="能セン"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">【大嶋先生の合格講座】能セン</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【電験三種の合格実績NO.1】</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">令和8年度 受講申込受付中</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【能セン 東京会場】</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【令和8年度】電験三種 通学講座</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【基礎から合格レベルへ】</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【電験三種】講習会</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【初心者OK】電気数学から指導</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【社会人・未経験歓迎】</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【合格率重視カリキュラム】</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【合格特化カリキュラム】</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【4月開講】電験三種 通学講座</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【残席あり】通学クラス</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【東京会場】少人数制クラス</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">電験三種 合格講座</td><td data-v="1">1</td></tr>
+</table></div></div><div>
+<table data-adv="能セン"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">【能セン】令和8年度（上期）通学講座・オンライン講座・通信講座。出題範囲を絞った合格特化型</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">4月の基礎講座からスタート。電気数学や理論の基礎から応用問題まで出題範囲を絞った合格特化型</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">科目別・セット別に受講料が選べる。4月基礎講座スタート。合格特化型通学講座【残席あり】</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">無料資料請求受付中。カリキュラム・料金・日程・学習サポート内容をまとめて確認。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">基礎講座からスタート可。電気数学や理論の基礎から応用問題まで。出題範囲を絞った合格特化型</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【能セン】オンライン・通信対応。出題範囲を絞った短期合格特化型カリキュラムで合格へ。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">初心者OK。電気数学から学べるため、未経験の方でも安心して合格を目指せます。</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="スマホ買取YTH">
+<h3 class="adv" id="query-スマホ買取YTH" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH <span class="badge">取得 2026-02-26</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜なし</td><td data-v="145">145</td><td data-v="12746">12,746</td><td data-v="1164802">¥1,164,802</td><td data-v="0.7048">70.5%</td><td class="cv sep" data-v="1005.0">1,005.0</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="13">13</td><td data-v="5172">5,172</td><td data-v="487804">¥487,804</td><td data-v="0.2952">29.5%</td><td class="cv sep" data-v="434.8">434.8</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="スマホ買取YTH"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">iphone 買取</td><td>追加済み</td><td>検索</td><td data-v="2310">2,310</td><td data-v="221604">¥221,604</td><td class="cv sep" data-v="204.6">204.6</td><td class="cv" data-v="1082.9">¥1,083</td></tr>
+<tr><td class="l">スマホ 買取</td><td>追加済み</td><td>検索</td><td data-v="2178">2,178</td><td data-v="175809">¥175,809</td><td class="cv sep" data-v="182.2">182.2</td><td class="cv" data-v="964.8">¥965</td></tr>
+<tr><td class="l">yth スマホ 買取</td><td>なし</td><td>検索</td><td data-v="414">414</td><td data-v="21516">¥21,516</td><td class="cv sep" data-v="71.7">71.7</td><td class="cv" data-v="300.1">¥300</td></tr>
+<tr><td class="l">iphone13pro 買取 価格</td><td>なし</td><td>検索</td><td data-v="830">830</td><td data-v="80715">¥80,715</td><td class="cv sep" data-v="59.8">59.8</td><td class="cv" data-v="1348.8">¥1,349</td></tr>
+<tr><td class="l">iphone 買取 価格</td><td>なし</td><td>検索</td><td data-v="871">871</td><td data-v="72806">¥72,806</td><td class="cv sep" data-v="48.9">48.9</td><td class="cv" data-v="1488.6">¥1,489</td></tr>
+<tr><td class="l">スマホ 買取 yth</td><td>なし</td><td>検索</td><td data-v="321">321</td><td data-v="18342">¥18,342</td><td class="cv sep" data-v="48.7">48.7</td><td class="cv" data-v="376.4">¥376</td></tr>
+<tr><td class="l">スマホ 買取 の yth</td><td>なし</td><td>検索</td><td data-v="387">387</td><td data-v="24427">¥24,427</td><td class="cv sep" data-v="48.7">48.7</td><td class="cv" data-v="501.3">¥501</td></tr>
+<tr><td class="l">iphone16 買取</td><td>追加済み</td><td>検索</td><td data-v="612">612</td><td data-v="86857">¥86,857</td><td class="cv sep" data-v="34.4">34.4</td><td class="cv" data-v="2527.1">¥2,527</td></tr>
+<tr><td class="l">iphone12 買取 価格</td><td>なし</td><td>検索</td><td data-v="394">394</td><td data-v="35932">¥35,932</td><td class="cv sep" data-v="30.0">30.0</td><td class="cv" data-v="1198.5">¥1,199</td></tr>
+<tr><td class="l">iphone16 買取 価格</td><td>なし</td><td>検索</td><td data-v="596">596</td><td data-v="83764">¥83,764</td><td class="cv sep" data-v="29.3">29.3</td><td class="cv" data-v="2862.7">¥2,863</td></tr>
+<tr><td class="l">iphone 買取 高額 ランキング</td><td>なし</td><td>検索</td><td data-v="317">317</td><td data-v="26759">¥26,759</td><td class="cv sep" data-v="28.7">28.7</td><td class="cv" data-v="931.7">¥932</td></tr>
+<tr><td class="l">iphone15 買取 価格</td><td>なし</td><td>検索</td><td data-v="525">525</td><td data-v="61098">¥61,098</td><td class="cv sep" data-v="28.0">28.0</td><td class="cv" data-v="2178.2">¥2,178</td></tr>
+<tr><td class="l">携帯 買取</td><td>なし</td><td>検索</td><td data-v="286">286</td><td data-v="21577">¥21,577</td><td class="cv sep" data-v="26.1">26.1</td><td class="cv" data-v="826.7">¥827</td></tr>
+<tr><td class="l">スマホ 買取 高額 ランキング</td><td>なし</td><td>検索</td><td data-v="413">413</td><td data-v="32019">¥32,019</td><td class="cv sep" data-v="24.3">24.3</td><td class="cv" data-v="1319.3">¥1,319</td></tr>
+<tr><td class="l">iphone 高価 買取</td><td>なし</td><td>検索</td><td data-v="205">205</td><td data-v="19452">¥19,452</td><td class="cv sep" data-v="23.6">23.6</td><td class="cv" data-v="822.8">¥823</td></tr>
+<tr><td class="l">iphone13 買取</td><td>なし</td><td>検索</td><td data-v="275">275</td><td data-v="27042">¥27,042</td><td class="cv sep" data-v="23.5">23.5</td><td class="cv" data-v="1151.2">¥1,151</td></tr>
+<tr><td class="l">スマホ 買取 おすすめ</td><td>なし</td><td>検索</td><td data-v="260">260</td><td data-v="19623">¥19,623</td><td class="cv sep" data-v="23.5">23.5</td><td class="cv" data-v="835.4">¥835</td></tr>
+<tr><td class="l">スマホ 売る なら どこがいい</td><td>なし</td><td>検索</td><td data-v="247">247</td><td data-v="18629">¥18,629</td><td class="cv sep" data-v="22.7">22.7</td><td class="cv" data-v="820.3">¥820</td></tr>
+<tr><td class="l">iphone15 買取</td><td>なし</td><td>検索</td><td data-v="330">330</td><td data-v="38352">¥38,352</td><td class="cv sep" data-v="22.6">22.6</td><td class="cv" data-v="1694.7">¥1,695</td></tr>
+<tr><td class="l">iphone15 pro max 買取</td><td>なし</td><td>検索</td><td data-v="251">251</td><td data-v="29014">¥29,014</td><td class="cv sep" data-v="22.5">22.5</td><td class="cv" data-v="1289.5">¥1,290</td></tr>
+<tr><td class="l">iphone15 pro 買取</td><td>なし</td><td>検索</td><td data-v="276">276</td><td data-v="32234">¥32,234</td><td class="cv sep" data-v="22.0">22.0</td><td class="cv" data-v="1463.9">¥1,464</td></tr>
+<tr><td class="l">iphone15pro 買取</td><td>なし</td><td>検索</td><td data-v="299">299</td><td data-v="34291">¥34,291</td><td class="cv sep" data-v="22.0">22.0</td><td class="cv" data-v="1558.7">¥1,559</td></tr>
+<tr><td class="l">iphone14 買取</td><td>なし</td><td>検索</td><td data-v="254">254</td><td data-v="24938">¥24,938</td><td class="cv sep" data-v="21.7">21.7</td><td class="cv" data-v="1148.2">¥1,148</td></tr>
+<tr><td class="l">スマホ 高く 売れる ドット コム</td><td>なし</td><td>検索</td><td data-v="164">164</td><td data-v="12461">¥12,461</td><td class="cv sep" data-v="21.2">21.2</td><td class="cv" data-v="586.4">¥586</td></tr>
+<tr><td class="l">iphone14promax 買取 価格</td><td>なし</td><td>検索</td><td data-v="180">180</td><td data-v="17532">¥17,532</td><td class="cv sep" data-v="20.5">20.5</td><td class="cv" data-v="855.2">¥855</td></tr>
+<tr><td class="l">iphone14pro 買取</td><td>なし</td><td>検索</td><td data-v="241">241</td><td data-v="23438">¥23,438</td><td class="cv sep" data-v="20.5">20.5</td><td class="cv" data-v="1143.9">¥1,144</td></tr>
+<tr><td class="l">iphone13 買取 価格</td><td>なし</td><td>検索</td><td data-v="313">313</td><td data-v="31842">¥31,842</td><td class="cv sep" data-v="19.0">19.0</td><td class="cv" data-v="1674.1">¥1,674</td></tr>
+<tr><td class="l">iphone 下取り 価格</td><td>なし</td><td>検索</td><td data-v="421">421</td><td data-v="35277">¥35,277</td><td class="cv sep" data-v="18.0">18.0</td><td class="cv" data-v="1962.0">¥1,962</td></tr>
+<tr><td class="l">iphone 買取 おすすめ</td><td>なし</td><td>検索</td><td data-v="198">198</td><td data-v="19006">¥19,006</td><td class="cv sep" data-v="17.0">17.0</td><td class="cv" data-v="1115.4">¥1,115</td></tr>
+<tr><td class="l">iphone14pro 買取 価格</td><td>なし</td><td>検索</td><td data-v="169">169</td><td data-v="16607">¥16,607</td><td class="cv sep" data-v="16.8">16.8</td><td class="cv" data-v="986.2">¥986</td></tr>
+<tr><td class="l">iphone 買取 yth</td><td>なし</td><td>検索</td><td data-v="73">73</td><td data-v="3997">¥3,997</td><td class="cv sep" data-v="16.3">16.3</td><td class="cv" data-v="244.6">¥245</td></tr>
+<tr><td class="l">iphone12promax 買取 価格</td><td>なし</td><td>検索</td><td data-v="229">229</td><td data-v="20300">¥20,300</td><td class="cv sep" data-v="16.0">16.0</td><td class="cv" data-v="1268.8">¥1,269</td></tr>
+<tr><td class="l">スマホ 買取 価格 一覧</td><td>なし</td><td>検索</td><td data-v="414">414</td><td data-v="32549">¥32,549</td><td class="cv sep" data-v="14.7">14.7</td><td class="cv" data-v="2218.7">¥2,219</td></tr>
+<tr><td class="l">に こ スマ 買取</td><td>なし</td><td>検索</td><td data-v="250">250</td><td data-v="19359">¥19,359</td><td class="cv sep" data-v="14.2">14.2</td><td class="cv" data-v="1362.4">¥1,362</td></tr>
+<tr><td class="l">スマホ yth</td><td>追加済み</td><td>検索</td><td data-v="72">72</td><td data-v="3534">¥3,534</td><td class="cv sep" data-v="13.6">13.6</td><td class="cv" data-v="259.9">¥260</td></tr>
+<tr><td class="l">iphone 買取 どこがいい</td><td>なし</td><td>検索</td><td data-v="138">138</td><td data-v="13148">¥13,148</td><td class="cv sep" data-v="12.9">12.9</td><td class="cv" data-v="1021.6">¥1,022</td></tr>
+<tr><td class="l">スマホ 買取 価格 一覧 アンドロイド</td><td>なし</td><td>検索</td><td data-v="168">168</td><td data-v="13254">¥13,254</td><td class="cv sep" data-v="12.8">12.8</td><td class="cv" data-v="1032.2">¥1,032</td></tr>
+<tr><td class="l">iphone8 買取</td><td>なし</td><td>検索</td><td data-v="212">212</td><td data-v="16855">¥16,855</td><td class="cv sep" data-v="12.5">12.5</td><td class="cv" data-v="1346.2">¥1,346</td></tr>
+<tr><td class="l">iphone 下取り</td><td>なし</td><td>検索</td><td data-v="313">313</td><td data-v="24915">¥24,915</td><td class="cv sep" data-v="12.2">12.2</td><td class="cv" data-v="2050.6">¥2,051</td></tr>
+<tr><td class="l">iphone16e 買取</td><td>なし</td><td>検索</td><td data-v="262">262</td><td data-v="21816">¥21,816</td><td class="cv sep" data-v="12.0">12.0</td><td class="cv" data-v="1818.0">¥1,818</td></tr>
+<tr><td class="l">iphone 下取り 価格 一覧</td><td>なし</td><td>検索</td><td data-v="227">227</td><td data-v="19080">¥19,080</td><td class="cv sep" data-v="11.6">11.6</td><td class="cv" data-v="1649.1">¥1,649</td></tr>
+<tr><td class="l">iphone16 買取 高額 ランキング</td><td>なし</td><td>検索</td><td data-v="182">182</td><td data-v="25537">¥25,537</td><td class="cv sep" data-v="11.5">11.5</td><td class="cv" data-v="2222.5">¥2,223</td></tr>
+<tr><td class="l">iphone12 mini 買取</td><td>なし</td><td>検索</td><td data-v="159">159</td><td data-v="14306">¥14,306</td><td class="cv sep" data-v="11.5">11.5</td><td class="cv" data-v="1246.2">¥1,246</td></tr>
+<tr><td class="l">pixel6a 買取</td><td>なし</td><td>検索</td><td data-v="59">59</td><td data-v="4030">¥4,030</td><td class="cv sep" data-v="11.4">11.4</td><td class="cv" data-v="352.9">¥353</td></tr>
+<tr><td class="l">iphone12 下取り 価格</td><td>なし</td><td>検索</td><td data-v="150">150</td><td data-v="13372">¥13,372</td><td class="cv sep" data-v="11.3">11.3</td><td class="cv" data-v="1180.2">¥1,180</td></tr>
+<tr><td class="l">iphone13promax 買取 価格</td><td>なし</td><td>検索</td><td data-v="132">132</td><td data-v="12389">¥12,389</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="1125.2">¥1,125</td></tr>
+<tr><td class="l">iphone 高額 買取</td><td>なし</td><td>検索</td><td data-v="58">58</td><td data-v="5527">¥5,527</td><td class="cv sep" data-v="10.5">10.5</td><td class="cv" data-v="525.9">¥526</td></tr>
+<tr><td class="l">iphone 売る なら どこがいい</td><td>なし</td><td>検索</td><td data-v="228">228</td><td data-v="22108">¥22,108</td><td class="cv sep" data-v="10.5">10.5</td><td class="cv" data-v="2105.5">¥2,106</td></tr>
+<tr><td class="l">スマホ の 買取 yth</td><td>なし</td><td>検索</td><td data-v="55">55</td><td data-v="3567">¥3,567</td><td class="cv sep" data-v="10.5">10.5</td><td class="cv" data-v="339.7">¥340</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（49行）。</p></div>
+<div class="advblk" data-a="能セン">
+<h3 class="adv" id="query-能セン" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン <span class="badge">取得 2026-02-26</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜なし</td><td data-v="181">181</td><td data-v="339">339</td><td data-v="63759">¥63,759</td><td data-v="0.4067">40.7%</td><td class="cv sep" data-v="8.0">8.0</td></tr>
+<tr><td class="l">検索｜除外済み</td><td data-v="30">30</td><td data-v="646">646</td><td data-v="62874">¥62,874</td><td data-v="0.4011">40.1%</td><td class="cv sep" data-v="18.0">18.0</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="60">60</td><td data-v="122">122</td><td data-v="30124">¥30,124</td><td data-v="0.1922">19.2%</td><td class="cv sep" data-v="24.0">24.0</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="能セン"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">電 験 三種 講座</td><td>追加済み</td><td>検索</td><td data-v="37">37</td><td data-v="9218">¥9,218</td><td class="cv sep" data-v="24.0">24.0</td><td class="cv" data-v="384.1">¥384</td></tr>
+<tr><td class="l">新入 社員 研修 e ラーニング</td><td>除外済み</td><td>検索</td><td data-v="270">270</td><td data-v="31808">¥31,808</td><td class="cv sep" data-v="16.0">16.0</td><td class="cv" data-v="1988.0">¥1,988</td></tr>
+<tr><td class="l">人材 育成 e ラーニング</td><td>除外済み</td><td>検索</td><td data-v="198">198</td><td data-v="17815">¥17,815</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="2226.9">¥2,227</td></tr>
+<tr><td class="l">建設 業界 研修</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="16">¥16</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="8.0">¥8</td></tr>
+<tr><td class="l">電 験 三種 勉強 方法 おすすめ</td><td>除外済み</td><td>検索</td><td data-v="1">1</td><td data-v="67">¥67</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 学校</td><td>なし</td><td>検索</td><td data-v="21">21</td><td data-v="7099">¥7,099</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 短期 合格</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="653">¥653</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 通信 教育</td><td>除外済み</td><td>検索</td><td data-v="4">4</td><td data-v="732">¥732</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 法規</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="547">¥547</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 学校</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="1589">¥1,589</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 対策</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="30">¥30</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">令 和 8 年度 電 験 三種</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="862">¥862</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電気 主任 技術 者 3 種 講習</td><td>追加済み</td><td>検索</td><td data-v="2">2</td><td data-v="946">¥946</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 講習 おすすめ</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="3369">¥3,369</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 おすすめ 講座</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="126">¥126</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 予備校</td><td>追加済み</td><td>検索</td><td data-v="3">3</td><td data-v="429">¥429</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">3 種 冷凍 機械 責任 者</td><td>除外済み</td><td>検索</td><td data-v="2">2</td><td data-v="617">¥617</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 専門 学校</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="395">¥395</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 講習</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="2003">¥2,003</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 学校 社会 人</td><td>除外済み</td><td>検索</td><td data-v="7">7</td><td data-v="1161">¥1,161</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 講習 会 おすすめ</td><td>追加済み</td><td>検索</td><td data-v="1">1</td><td data-v="171">¥171</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 講習</td><td>追加済み</td><td>検索</td><td data-v="34">34</td><td data-v="8231">¥8,231</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">オンライン 講座</td><td>除外済み</td><td>検索</td><td data-v="129">129</td><td data-v="6761">¥6,761</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 スクール</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="1806">¥1,806</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 通信 講座</td><td>追加済み</td><td>検索</td><td data-v="16">16</td><td data-v="2664">¥2,664</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">塾</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="43">¥43</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">オンライン 学び</td><td>除外済み</td><td>検索</td><td data-v="6">6</td><td data-v="381">¥381</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 講習 大阪</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="644">¥644</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 塾</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="960">¥960</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">ユーキャン 電 験 三種</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="313">¥313</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">通信 講座</td><td>除外済み</td><td>検索</td><td data-v="8">8</td><td data-v="1555">¥1,555</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 スマホアプリ</td><td>除外済み</td><td>検索</td><td data-v="1">1</td><td data-v="124">¥124</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 2026</td><td>除外済み</td><td>検索</td><td data-v="2">2</td><td data-v="358">¥358</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 オンライン 講座</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="141">¥141</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電気 主任 技術 者 講座</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="206">¥206</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 講習</td><td>追加済み</td><td>検索</td><td data-v="3">3</td><td data-v="1173">¥1,173</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">sat 電 験 3 種</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="589">¥589</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 講習 会 東京</td><td>追加済み</td><td>検索</td><td data-v="2">2</td><td data-v="1420">¥1,420</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 tac</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="19">¥19</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 通信 講座</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="315">¥315</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 通信 教育</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="652">¥652</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">第 三 種 電気 主任 技術 者 通信 講座</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="312">¥312</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 塾</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="745">¥745</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 通学</td><td>追加済み</td><td>検索</td><td data-v="3">3</td><td data-v="1303">¥1,303</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">tac 電 験 三種</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="995">¥995</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">オンライン 学習</td><td>除外済み</td><td>検索</td><td data-v="4">4</td><td data-v="533">¥533</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 ユーキャン</td><td>追加済み</td><td>検索</td><td data-v="2">2</td><td data-v="418">¥418</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 e ラーニング</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="438">¥438</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">定義 電気</td><td>除外済み</td><td>検索</td><td data-v="1">1</td><td data-v="705">¥705</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 予備校</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="908">¥908</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">第 三 種 電気 主任 技術 者 通信 教育</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="203">¥203</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">e den 電 験 三種</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="679">¥679</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 講座</td><td>なし</td><td>検索</td><td data-v="13">13</td><td data-v="7980">¥7,980</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">ユーキャン 電 験</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="396">¥396</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">第 三 種 電気 主任 技術 者 講習</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="124">¥124</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 専門 学校</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="733">¥733</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 オンライン 講座</td><td>追加済み</td><td>検索</td><td data-v="4">4</td><td data-v="1238">¥1,238</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 3 種 講習 会</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="4546">¥4,546</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 攻略</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="545">¥545</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 sat</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="226">¥226</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 講座 おすすめ</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="389">¥389</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 基礎 数学</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="256">¥256</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">オンライン 講座 おすすめ</td><td>除外済み</td><td>検索</td><td data-v="149">149</td><td data-v="11869">¥11,869</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 講座 おすすめ</td><td>なし</td><td>検索</td><td data-v="13">13</td><td data-v="2203">¥2,203</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 通信</td><td>追加済み</td><td>検索</td><td data-v="1">1</td><td data-v="516">¥516</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 通学 講座</td><td>追加済み</td><td>検索</td><td data-v="3">3</td><td data-v="996">¥996</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電 験 三種 セミナー</td><td>追加済み</td><td>検索</td><td data-v="4">4</td><td data-v="886">¥886</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+<tr><td class="l">電気 主任 技術 者 通信 講座</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="202">¥202</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（68行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2026-02-26 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td class="l">一般</td><td data-v="920359">920,359</td><td data-v="101287">101,287</td><td data-v="0.1101">11.0%</td><td data-v="86.2">¥86</td><td data-v="8730497">¥8,730,497</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="5688">5,688</td><td class="cv" data-v="0.0562">5.6%</td><td class="cv" data-v="1534.8">¥1,535</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td class="l">一般</td><td data-v="6077">6,077</td><td data-v="534">534</td><td data-v="0.0879">8.8%</td><td data-v="254.1">¥254</td><td data-v="135688">¥135,688</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="28">28</td><td class="cv" data-v="0.0524">5.2%</td><td class="cv" data-v="4846.0">¥4,846</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2026-02-26</th></tr>
+<tr data-a="スマホ買取YTH"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>スマホ買取YTH</td><td><div class="bar"><div class="mt-p" style="width:90.2%" title="フレーズ一致 90.2%"></div><div class="mt-e" style="width:9.8%" title="完全一致 9.8%"></div></div><div class="note">フレーズ90% / 完全10%</div></td></tr>
+<tr data-a="能セン"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>能セン</td><td><div class="bar"><div class="mt-i" style="width:96.1%" title="インテント マッチ 96.1%"></div><div class="mt-p" style="width:3.9%" title="フレーズ一致 3.9%"></div></div><div class="note">インテント96% / フレーズ4%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2026-02-26</b>（260226_レポート依頼用（スマホ買取＆電験）_セレス様__1JhktCs8.xlsx）<br>取得不可（空タブ）: ウリドキ<br>端数月: 2026-02（26日まで）<br>CV0クエリが112件あり（ムダ打ち分析が可能なデータ）</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

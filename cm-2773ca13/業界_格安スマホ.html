@@ -1,0 +1,608 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜格安スマホ</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>格安スマホ業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">1社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2026-06-18</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥340,594</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥117</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">9.5〜9.5</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="ロケットモバイル" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2026-06-18（期間 2026年3月19日 - 2026年6月18日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td data-v="340594">¥340,594</td><td data-v="2910">2,910</td><td data-v="0.2763">27.6%</td><td data-v="117.0">¥117</td><td data-v="9.55">9.55</td><td data-v="52.6">52.6%</td><td data-v="0.9203">92.0%</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div></td><td class="cv sep" data-v="83">83</td><td class="cv" data-v="0.0286">2.9%</td><td class="cv" data-v="4089.7">¥4,090</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: JCOM Mobile・LINEMO</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td data-v="202603">2026-03 ⚠</td><td data-v="1228">1,228</td><td data-v="431">431</td><td data-v="0.3510">35.1%</td><td data-v="73.3">¥73</td><td data-v="31594">¥31,594</td><td class="cv sep" data-v="19">19</td><td class="cv" data-v="0.0441">4.4%</td><td class="cv" data-v="1662.8">¥1,663</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td data-v="202604">2026-04</td><td data-v="3827">3,827</td><td data-v="1096">1,096</td><td data-v="0.2864">28.6%</td><td data-v="125.4">¥125</td><td data-v="137410">¥137,410</td><td class="cv sep" data-v="35">35</td><td class="cv" data-v="0.0319">3.2%</td><td class="cv" data-v="3927.1">¥3,927</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td data-v="202605">2026-05</td><td data-v="3979">3,979</td><td data-v="1236">1,236</td><td data-v="0.3106">31.1%</td><td data-v="98.3">¥98</td><td data-v="121455">¥121,455</td><td class="cv sep" data-v="21">21</td><td class="cv" data-v="0.0172">1.7%</td><td class="cv" data-v="5704.8">¥5,705</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td data-v="202606">2026-06 ⚠</td><td data-v="1499">1,499</td><td data-v="147">147</td><td data-v="0.0981">9.8%</td><td data-v="341.1">¥341</td><td data-v="50135">¥50,135</td><td class="cv sep" data-v="8">8</td><td class="cv" data-v="0.0544">5.4%</td><td class="cv" data-v="6266.9">¥6,267</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="ロケットモバイル">
+<h3 class="adv" id="struct-ロケットモバイル" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル <span class="badge">取得 2026-06-18</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</span><span class="st">📁 CPN <b>4</b></span><span class="st">📂 ADG <b>5</b></span><span class="st">🔑 KW <b>41</b></span><span class="st">✏️ 広告 <b>5</b></span><span class="st">🔗 LP <b>4</b></span><span class="st">💰 <b>¥340,594</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="【法人】指名キーワード_PC限定">【法人】指名キーワード_PC限定</span><span class="share"><div style="width:69%"></div></span><span class="st">69.2%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>16</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥235,597</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="法人">法人</span><span class="st">🔑 <b>16</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥235,597</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="【個人】指名キーワード">【個人】指名キーワード</span><span class="share"><div style="width:23%"></div></span><span class="st">22.9%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>24</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥77,854</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="個人">個人</span><span class="st">🔑 <b>24</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥77,854</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="【法人】ロケモバZ_一般キーワード">【法人】ロケモバZ_一般キーワード</span><span class="share"><div style="width:8%"></div></span><span class="st">8.0%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>13</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>2</b></span><span class="st">💰 <b>¥27,143</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="固定IP　SIM">固定IP　SIM</span><span class="st">🔑 <b>11</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥27,143</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="太陽光特化">太陽光特化</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="【法人】上り専用_一般キーワード">【法人】上り専用_一般キーワード</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="上りSIM">上りSIM</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:29.5%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="ロケットモバイル｜ロケットモバイル / QS10 / CPC¥110 / COST¥248,887"></span>
+<span class="dot" style="left:31.0%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="ロケットモバイル｜ロケモバ / QS8 / CPC¥116 / COST¥13,445"></span>
+<span class="dot" style="left:20.2%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="ロケットモバイル｜ロケット モバイル 神 プラン / QS10 / CPC¥76 / COST¥22,442"></span>
+<span class="dot" style="left:12.3%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="ロケットモバイル｜ロケット sim / QS10 / CPC¥46 / COST¥1,664"></span>
+<span class="dot" style="left:23.1%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="ロケットモバイル｜神プラン / QS10 / CPC¥87 / COST¥3,550"></span>
+<span class="dot" style="left:100.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="ロケットモバイル｜モバイル 固定IP / QS7 / CPC¥374 / COST¥19,467"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥94</span>
+<span class="ax" style="left:50%;bottom:-22px">¥187</span>
+<span class="ax" style="left:75%;bottom:-22px">¥281</span>
+<span class="ax" style="left:100%;bottom:-22px">¥374</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>ロケットモバイル</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l">ロケット sim</td><td data-v="10">10</td><td data-v="46">¥46</td><td data-v="36">36</td><td data-v="1664">¥1,664</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l">ロケット モバイル 神 プラン</td><td data-v="10">10</td><td data-v="76">¥76</td><td data-v="297">297</td><td data-v="22442">¥22,442</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l">神プラン</td><td data-v="10">10</td><td data-v="87">¥87</td><td data-v="41">41</td><td data-v="3550">¥3,550</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l">ロケットモバイル</td><td data-v="10">10</td><td data-v="110">¥110</td><td data-v="2256">2,256</td><td data-v="248887">¥248,887</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l">ロケモバ</td><td data-v="8">8</td><td data-v="116">¥116</td><td data-v="116">116</td><td data-v="13445">¥13,445</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l">モバイル 固定IP</td><td data-v="7">7</td><td data-v="374">¥374</td><td data-v="52">52</td><td data-v="19467">¥19,467</td></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td data-v="9.55">9.55</td><td data-v="3.1"><b>3.1%</b></td><td data-v="2.1"><b>2.1%</b></td><td data-v="0.6"><b>0.6%</b></td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="ロケットモバイル">
+<h3 class="adv" id="kwqs-ロケットモバイル" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル <span class="badge">取得 2026-06-18</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>9.55</b></span><span class="chip">関連性↓<b>3.1%</b></span><span class="chip">推定CTR↓<b>2.1%</b></span><span class="chip">LP利便性↓<b>0.6%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="ロケットモバイル"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">ロケットモバイル</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="7587">7,587</td><td data-v="2256">2,256</td><td data-v="0.2974">29.7%</td><td data-v="110.3">¥110</td><td data-v="248887">¥248,887</td><td class="cv sep" data-v="63.4">63.4</td><td class="cv" data-v="3923.2">¥3,923</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル 神 プラン</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="975">975</td><td data-v="297">297</td><td data-v="0.3046">30.5%</td><td data-v="75.6">¥76</td><td data-v="22442">¥22,442</td><td class="cv sep" data-v="12.9">12.9</td><td class="cv" data-v="1739.7">¥1,740</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">モバイル 固定IP</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="606">606</td><td data-v="52">52</td><td data-v="0.0858">8.6%</td><td data-v="374.4">¥374</td><td data-v="19467">¥19,467</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">ロケモバ</td><td>インテント</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="413">413</td><td data-v="116">116</td><td data-v="0.2809">28.1%</td><td data-v="115.9">¥116</td><td data-v="13445">¥13,445</td><td class="cv sep" data-v="3.7">3.7</td><td class="cv" data-v="3594.9">¥3,595</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル 法人</td><td>インテント</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="41">41</td><td data-v="13">13</td><td data-v="0.3171">31.7%</td><td data-v="574.3">¥574</td><td data-v="7466">¥7,466</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="14932.0">¥14,932</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケモバＺ</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均</td><td>平均より上</td><td class="sep" data-v="56">56</td><td data-v="9">9</td><td data-v="0.1607">16.1%</td><td data-v="526.3">¥526</td><td data-v="4737">¥4,737</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">ロケット モバイル apn 設定</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="4">4</td><td data-v="3">3</td><td data-v="0.7500">75.0%</td><td data-v="1452.0">¥1,452</td><td data-v="4356">¥4,356</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】指名キーワード_PC限定</td></tr>
+<tr><td class="l">ロケット モバイル 会社</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="60">60</td><td data-v="4">4</td><td data-v="0.0667">6.7%</td><td data-v="930.2">¥930</td><td data-v="3721">¥3,721</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】指名キーワード_PC限定</td></tr>
+<tr><td class="l">神プラン</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="174">174</td><td data-v="41">41</td><td data-v="0.2356">23.6%</td><td data-v="86.6">¥87</td><td data-v="3550">¥3,550</td><td class="cv sep" data-v="1.2">1.2</td><td class="cv" data-v="2958.3">¥2,958</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケモバ 神 プラン</td><td>インテント</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="84">84</td><td data-v="26">26</td><td data-v="0.3095">31.0%</td><td data-v="88.0">¥88</td><td data-v="2287">¥2,287</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル z</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均</td><td>平均より上</td><td class="sep" data-v="57">57</td><td data-v="14">14</td><td data-v="0.2456">24.6%</td><td data-v="139.9">¥140</td><td data-v="1959">¥1,959</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】指名キーワード_PC限定</td></tr>
+<tr><td class="l">ロケット sim</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="98">98</td><td data-v="36">36</td><td data-v="0.3673">36.7%</td><td data-v="46.2">¥46</td><td data-v="1664">¥1,664</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="3328.0">¥3,328</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">イプシム 固定IP</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="23">23</td><td data-v="3">3</td><td data-v="0.1304">13.0%</td><td data-v="329.3">¥329</td><td data-v="988">¥988</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">インターリンク 固定IP</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="103">103</td><td data-v="3">3</td><td data-v="0.0291">2.9%</td><td data-v="318.0">¥318</td><td data-v="954">¥954</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">ロケット モバイル 神 プラン 評判</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均</td><td>平均より上</td><td class="sep" data-v="15">15</td><td data-v="5">5</td><td data-v="0.3333">33.3%</td><td data-v="178.4">¥178</td><td data-v="892">¥892</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">固定IP SIM docomo</td><td>インテント</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="2">2</td><td data-v="1">1</td><td data-v="0.5000">50.0%</td><td data-v="727.0">¥727</td><td data-v="727">¥727</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">神 sim</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="7">7</td><td data-v="2">2</td><td data-v="0.2857">28.6%</td><td data-v="242.0">¥242</td><td data-v="484">¥484</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】指名キーワード_PC限定</td></tr>
+<tr><td class="l">低速 無制限 sim ロケット モバイル</td><td>インテント</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="27">27</td><td data-v="6">6</td><td data-v="0.2222">22.2%</td><td data-v="70.5">¥70</td><td data-v="423">¥423</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル 評判</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="78">78</td><td data-v="5">5</td><td data-v="0.0641">6.4%</td><td data-v="82.6">¥83</td><td data-v="413">¥413</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル 通信 速度</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="6">6</td><td data-v="2">2</td><td data-v="0.3333">33.3%</td><td data-v="199.5">¥200</td><td data-v="399">¥399</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル 音声 sim</td><td>インテント</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="5">5</td><td data-v="2">2</td><td data-v="0.4000">40.0%</td><td data-v="140.5">¥140</td><td data-v="281">¥281</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ASAHIネット 固定IP</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="14">14</td><td data-v="1">1</td><td data-v="0.0714">7.1%</td><td data-v="270.0">¥270</td><td data-v="270">¥270</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">ロケット モバイル d プラン</td><td>インテント</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="2">2</td><td data-v="1">1</td><td data-v="0.5000">50.0%</td><td data-v="187.0">¥187</td><td data-v="187">¥187</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル ルーター</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="4">4</td><td data-v="1">1</td><td data-v="0.2500">25.0%</td><td data-v="168.0">¥168</td><td data-v="168">¥168</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル ポケット wifi</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均より上</td><td>平均</td><td class="sep" data-v="6">6</td><td data-v="1">1</td><td data-v="0.1667">16.7%</td><td data-v="109.0">¥109</td><td data-v="109">¥109</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル データ sim</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="13">13</td><td data-v="4">4</td><td data-v="0.3077">30.8%</td><td data-v="27.0">¥27</td><td data-v="108">¥108</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル の 神 プラン</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="9">9</td><td data-v="2">2</td><td data-v="0.2222">22.2%</td><td data-v="33.5">¥34</td><td data-v="67">¥67</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル 料金</td><td>インテント</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="5">5</td><td data-v="1">1</td><td data-v="0.2000">20.0%</td><td data-v="66.0">¥66</td><td data-v="66">¥66</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="66.0">¥66</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル 神</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="4">4</td><td data-v="2">2</td><td data-v="0.5000">50.0%</td><td data-v="25.5">¥26</td><td data-v="51">¥51</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル 神 プラン 通話</td><td>インテント</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="3">3</td><td data-v="1">1</td><td data-v="0.3333">33.3%</td><td data-v="26.0">¥26</td><td data-v="26">¥26</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">太陽光 SIM</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="3">3</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">太陽光 遠隔監視 格安</td><td>インテント</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="3">3</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">固定IP SIM 比較</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="8">8</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">IIJ 固定IP</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="6">6</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">BIGLOBEモバイル 固定IP</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="3">3</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">イプシム プリペイド</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="8">8</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">interlink 固定ip</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="5">5</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【法人】ロケモバZ_一般キーワード</td></tr>
+<tr><td class="l">ロケット モバイル とは</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="2">2</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル 無制限</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="4">4</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケット モバイル 神 プラン 速度</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均</td><td>平均より上</td><td class="sep" data-v="6">6</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+<tr><td class="l">ロケットモバイル 速度</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="4">4</td><td data-v="0">0</td><td data-v="0.0000">0.0%</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">【個人】指名キーワード</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="ロケットモバイル" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">rokemoba.co.jp<br><span>rokemoba.co.jp</span></div><div class="t">【固定IP】ロケットモバイルZ - 太陽光用SIMならロケモバ - 太陽光発電遠隔遠隔モニタリング</div><div class="d">IoT用途に特化した法人契約限定のモバイル通信SIMサービス 最短翌々日着で10年一括払い可能。 太陽光発電に最適な低速無制限SIMカードが月額298円税抜より利用可。</div><div class="meta2">IMP 128,723 ／ CTR 0.3% ／ COST ¥24,939<br>【法人】ロケモバZ_一般キーワード</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">rokemoba.co.jp<br><span>rokemoba.co.jp › upload_sim</span></div><div class="t">楽天回線上り100GB 月額2,024円 - 監視カメラに最適なSIMカード - 業界最安級の監視カメラ用SIM</div><div class="d">業界最安級上り特化型SIM。3GB～1000GBプランをご用意。解約金なしで1回線から利用可能。 コスパに優れた上り特化型SIMサービス！遠隔地の監視カメラ、固定回線がない場所での通信等に</div><div class="meta2">IMP 123,114 ／ CTR 1.0% ／ COST ¥33,205<br>【法人】上り専用_一般キーワード</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">rokemoba.co.jp<br><span>rokemoba.co.jp › rokemoba-z</span></div><div class="t">【固定IP】ロケットモバイルZ - 法人用 固定IP付きSIMサービス - 固定IP付き上り特化SIM</div><div class="d">固定IPアドレス付きSIMカードを業界最安級で提供。 4キャリア対応固定IPアドレス付きSIM。多数のプランの中から用途にあったものをご選択可能。</div><div class="meta2">IMP 43,521 ／ CTR 0.5% ／ COST ¥36,756<br>【法人】ロケモバZ_一般キーワード</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">rokemoba.co.jp<br><span>rokemoba.co.jp › personal-sim</span></div><div class="t">【公式】ロケットモバイル - データ通信のみ SIM 最安 - ロケット モバイル かけ放題</div><div class="d">神プランがもたらす、驚安の通信体験。無駄を省き、賢く選ぶ新しい時代のSIM。 必要最低限の費用でGB数を適度に使いたいあなたに寄りそうロケモバ</div><div class="meta2">IMP 6,144 ／ CTR 29.2% ／ COST ¥77,852<br>【個人】指名キーワード</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">4キャリア対応の格安SIM</td><td data-v="2">2</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">【公式】ロケットモバイル</td><td data-v="2">2</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">低速データ無制限 神プラン328円</td><td data-v="2">2</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">IPv4固定IPアドレス</td><td data-v="2">2</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">【固定IP】月額632円(税抜)</td><td data-v="2">2</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">【固定IP】モバイルSIMサービス</td><td data-v="2">2</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">IoT＆M2M向けSIMカード</td><td data-v="2">2</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">【固定IP】ロケットモバイルZ</td><td data-v="2">2</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">【大手4キャリア対応】</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">【ロケモバ】IoT特化型格安SIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">ビジネス用格安SIMならロケモバ</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">法人SIM月額328円～高コスパ</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">納期指定場所に最短2、3日後着</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">データSIMならロケモバ</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">ロケット モバイル 神 プラン au</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">ロケットモバイル 神プラン 評判</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">3,000社以上の取引実績あり</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">低コストで高品質な法人向けSIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">IoT・M2M向けプラン充実</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">企業のモバイル通信コスト削減</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">ドコモ回線 上り6GB 980円</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">上り3GBから1TBまで対応</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">SIMカメラ用上りプラン</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">楽天回線上り100GB 月額2,024円</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">ハイコスパな上り通信用SIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">固定IPも付与可能な上り特化SIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">防犯カメラに最適</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">業界最安級の上り専用SIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">ロケモバの上り専用プラン</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">監視カメラに最適なSIMカード</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">監視カメラ用上りSIMはロケモバ</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">【上りSIM】3GB555円</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">映像IoT用上りSIMカード</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">業界最安級の監視カメラ用SIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">固定IP付与可</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">太陽光用途で15,000か所の採用</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">太陽光用データSIMならロケモバ</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">【固定IP対応】太陽光用SIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">太陽光発電遠隔遠隔モニタリング</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">太陽光用SIMならロケモバ</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">太陽光発電に最適なSIMカード</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">太陽光発電出力制御装置用SIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">業界最安級の固定IP付き格安SIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">太陽光発電用SIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">【固定IP】4キャリア対応</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">固定IP＋SIMが月782円(税抜)より</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">高速上りプランが驚きの低価格に</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">固定IP SIM 法人プラン</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">法人用 固定IP付きSIMサービス</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">固定IP付き上り特化SIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">固定IP SIM 比較</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">【固定IPSIM】4キャリア対応</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">４キャリア対応固定IP付きSIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">固定IPの法人契約ならロケモバZ</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">業界最安級の固定IP付きSIM</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">通信料金を神レベルまで引き下げ</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">データ通信のみ SIM 最安</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">スマホ代が高いと感じる人に朗報</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">ロケット モバイル キャンペーン</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">ロケットモバイル</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">SIMカードを安く</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">神プランは低速度で無制限</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">奇跡の低価格、神プラン</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">ロケモバ個人向け楽天回線新登場</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">神の采配で通信費削減</td><td data-v="1">1</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l wrap">ロケット モバイル かけ放題</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="ロケットモバイル">
+<h3 class="adv" id="adlib-ロケットモバイル" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル <span class="badge">取得 2026-06-18</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>5本</b></span><span class="chip">CPN<b>4個</b></span><span class="chip">ADG<b>5個</b></span><span class="chip">ピン留め<b>100%</b></span><span class="chip">LP使い分け<b>4本</b></span></div>
+<p class="note">主要LP: <span title="https://rokemoba.co.jp">https://rokemoba.co.jp（2本）</span> ／ <span title="https://rokemoba.co.jp/upload_sim">https://rokemoba.co.jp/upload_sim（1本）</span> ／ <span title="https://rokemoba.co.jp/rokemoba-z">https://rokemoba.co.jp/rokemoba-z（1本）</span> ／ <span title="https://rokemoba.co.jp/personal-sim">https://rokemoba.co.jp/personal-sim（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="ロケットモバイル"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">4キャリア対応の格安SIM</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【公式】ロケットモバイル</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">低速データ無制限 神プラン328円</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">IPv4固定IPアドレス</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【固定IP】月額632円(税抜)</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【固定IP】モバイルSIMサービス</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">IoT＆M2M向けSIMカード</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【固定IP】ロケットモバイルZ</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【大手4キャリア対応】</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【ロケモバ】IoT特化型格安SIM</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">ビジネス用格安SIMならロケモバ</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">法人SIM月額328円～高コスパ</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">納期指定場所に最短2、3日後着</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">データSIMならロケモバ</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">ロケット モバイル 神 プラン au</td><td data-v="1">1</td></tr>
+</table></div></div><div>
+<table data-adv="ロケットモバイル"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">IoT用途に特化した法人契約限定のモバイル通信SIMサービス 最短翌々日着で10年一括払い可能。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">4キャリア対応。全100以上のプランの中から用途にあったものをご選択可能。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">コンソールでSIMの契約、解約、プラン変更、受発注状況確認が可。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">従量課金がない為、1枚当たりのSIMの費用が明確です。10MBから1TBまで対応。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">コスパに優れた上り特化型SIMサービス！遠隔地の監視カメラ、固定回線がない場所での通信等に</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">上り専用SIM/100GB/3,400円/固定IP可/最低ロット1回線より/工事不要なモバイル回線</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">上り専用SIM/3GB555円/6GB980円/12GB1,240円/20GB1,480円/固定IP付与可</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">業界最安級上り特化型SIM。3GB～1000GBプランをご用意。解約金なしで1回線から利用可能。</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="ロケットモバイル">
+<h3 class="adv" id="query-ロケットモバイル" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル <span class="badge">取得 2026-06-18</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="144">144</td><td data-v="6458">6,458</td><td data-v="178045">¥178,045</td><td data-v="0.5610">56.1%</td><td class="cv sep" data-v="181.1">181.1</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="38">38</td><td data-v="2270">2,270</td><td data-v="134400">¥134,400</td><td data-v="0.4235">42.3%</td><td class="cv sep" data-v="68.2">68.2</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="23">23</td><td data-v="19">19</td><td data-v="4912">¥4,912</td><td data-v="0.0155">1.5%</td><td class="cv sep" data-v="6.2">6.2</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="ロケットモバイル"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">ロケット モバイル</td><td>追加済み</td><td>検索</td><td data-v="6668">6,668</td><td data-v="197290">¥197,290</td><td class="cv sep" data-v="149.0">149.0</td><td class="cv" data-v="1324.3">¥1,324</td></tr>
+<tr><td class="l">ロケット モバイル 神 プラン</td><td>追加済み</td><td>検索</td><td data-v="886">886</td><td data-v="39488">¥39,488</td><td class="cv sep" data-v="35.3">35.3</td><td class="cv" data-v="1117.7">¥1,118</td></tr>
+<tr><td class="l">ロケモバ</td><td>なし</td><td>P-MAX</td><td data-v="293">293</td><td data-v="11031">¥11,031</td><td class="cv sep" data-v="12.5">12.5</td><td class="cv" data-v="883.9">¥884</td></tr>
+<tr><td class="l">神 プラン</td><td>なし</td><td>P-MAX</td><td data-v="68">68</td><td data-v="1967">¥1,967</td><td class="cv sep" data-v="6.2">6.2</td><td class="cv" data-v="317.3">¥317</td></tr>
+<tr><td class="l">ロケット モバイル 問い合わせ</td><td>なし</td><td>P-MAX</td><td data-v="18">18</td><td data-v="11419">¥11,419</td><td class="cv sep" data-v="4.5">4.5</td><td class="cv" data-v="2537.6">¥2,538</td></tr>
+<tr><td class="l">ロケット sim</td><td>なし</td><td>P-MAX</td><td data-v="63">63</td><td data-v="2892">¥2,892</td><td class="cv sep" data-v="3.5">3.5</td><td class="cv" data-v="826.3">¥826</td></tr>
+<tr><td class="l">ロケット モバイル apn</td><td>なし</td><td>P-MAX</td><td data-v="181">181</td><td data-v="408">¥408</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="136.0">¥136</td></tr>
+<tr><td class="l">株式 会社 ロケット モバイル</td><td>なし</td><td>P-MAX</td><td data-v="20">20</td><td data-v="7227">¥7,227</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="2409.0">¥2,409</td></tr>
+<tr><td class="l">ロケット モバイル 申し込み</td><td>なし</td><td>P-MAX</td><td data-v="12">12</td><td data-v="770">¥770</td><td class="cv sep" data-v="2.8">2.8</td><td class="cv" data-v="276.0">¥276</td></tr>
+<tr><td class="l">ロケット モバイル 問い合わせ 電話</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="8361">¥8,361</td><td class="cv sep" data-v="2.2">2.2</td><td class="cv" data-v="3716.0">¥3,716</td></tr>
+<tr><td class="l">ロケット モバイル z</td><td>なし</td><td>P-MAX</td><td data-v="16">16</td><td data-v="2213">¥2,213</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1106.5">¥1,106</td></tr>
+<tr><td class="l">rocket mobile</td><td>なし</td><td>検索</td><td data-v="30">30</td><td data-v="1285">¥1,285</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="642.5">¥642</td></tr>
+<tr><td class="l">ロケモバ wi fi</td><td>なし</td><td>P-MAX</td><td data-v="58">58</td><td data-v="14988">¥14,988</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="7494.0">¥7,494</td></tr>
+<tr><td class="l">ロケット モバイル 評判</td><td>なし</td><td>P-MAX</td><td data-v="5">5</td><td data-v="271">¥271</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="180.7">¥181</td></tr>
+<tr><td class="l">ギガ 無制限 安い</td><td>なし</td><td>P-MAX</td><td data-v="11">11</td><td data-v="14">¥14</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="14.0">¥14</td></tr>
+<tr><td class="l">ロケット モバイル 料金</td><td>追加済み</td><td>検索</td><td data-v="1">1</td><td data-v="66">¥66</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="66.0">¥66</td></tr>
+<tr><td class="l">ロケモバ 神 プラン</td><td>なし</td><td>P-MAX</td><td data-v="34">34</td><td data-v="1673">¥1,673</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1673.0">¥1,673</td></tr>
+<tr><td class="l">新 トク する サポート</td><td>なし</td><td>P-MAX</td><td data-v="12">12</td><td data-v="11">¥11</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="11.0">¥11</td></tr>
+<tr><td class="l">ロケット モバイル 神 プラン 評判</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="21">¥21</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="21.0">¥21</td></tr>
+<tr><td class="l">格安 スマホ 電波 ランキング</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="1">¥1</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1.0">¥1</td></tr>
+<tr><td class="l">ロケット シム</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="237">¥237</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="237.0">¥237</td></tr>
+<tr><td class="l">roketmobile</td><td>なし</td><td>P-MAX</td><td data-v="3">3</td><td data-v="107">¥107</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="107.0">¥107</td></tr>
+<tr><td class="l">ロケット モバイル 神 プラン esim</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="183">¥183</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="183.0">¥183</td></tr>
+<tr><td class="l">ロケット wifi</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="582">¥582</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="582.0">¥582</td></tr>
+<tr><td class="l">ロケット モバイル 価格</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="7">¥7</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="7.0">¥7</td></tr>
+<tr><td class="l">ロケット モバイル 新規</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="13">¥13</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="13.0">¥13</td></tr>
+<tr><td class="l">ロケット モバイル esim</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="697">¥697</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="697.0">¥697</td></tr>
+<tr><td class="l">y モバイル 紹介 キャンペーン</td><td>なし</td><td>P-MAX</td><td data-v="6">6</td><td data-v="13">¥13</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="13.0">¥13</td></tr>
+<tr><td class="l">無制限 sim</td><td>なし</td><td>P-MAX</td><td data-v="5">5</td><td data-v="9">¥9</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="9.0">¥9</td></tr>
+<tr><td class="l">低速 sim</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="44">¥44</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="44.0">¥44</td></tr>
+<tr><td class="l">ロケット モバイル 事務 手数料 無料</td><td>なし</td><td>P-MAX</td><td data-v="3">3</td><td data-v="122">¥122</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="122.0">¥122</td></tr>
+<tr><td class="l">google pixel 10 は いくら</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="2">¥2</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2.0">¥2</td></tr>
+<tr><td class="l">povo 評判</td><td>なし</td><td>P-MAX</td><td data-v="13">13</td><td data-v="12">¥12</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="12.0">¥12</td></tr>
+<tr><td class="l">ロケット モバイル 事務 手数料</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="199">¥199</td><td class="cv sep" data-v="0.8">0.8</td><td class="cv" data-v="265.3">¥265</td></tr>
+<tr><td class="l">ロケット モバイル キャンペーン</td><td>なし</td><td>P-MAX</td><td data-v="24">24</td><td data-v="1901">¥1,901</td><td class="cv sep" data-v="0.7">0.7</td><td class="cv" data-v="2837.3">¥2,837</td></tr>
+<tr><td class="l">ロケット モバイル ログイン</td><td>なし</td><td>P-MAX</td><td data-v="180">180</td><td data-v="479">¥479</td><td class="cv sep" data-v="0.6">0.6</td><td class="cv" data-v="785.2">¥785</td></tr>
+<tr><td class="l">ロケット モバイル 個人</td><td>なし</td><td>P-MAX</td><td data-v="13">13</td><td data-v="416">¥416</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="784.9">¥785</td></tr>
+<tr><td class="l">ロケット モバイル 神 プラン sms</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="486">¥486</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="972.0">¥972</td></tr>
+<tr><td class="l">ロケット モバイル 法人</td><td>追加済み</td><td>検索</td><td data-v="11">11</td><td data-v="7071">¥7,071</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="14142.0">¥14,142</td></tr>
+<tr><td class="l">ロケット モバイル mnp 弾</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="335">¥335</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="670.0">¥670</td></tr>
+<tr><td class="l">ロケット モバイル 初期 費用</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="429">¥429</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="858.0">¥858</td></tr>
+<tr><td class="l">ロケット モバイル 神 プラン キャンペーン</td><td>なし</td><td>P-MAX</td><td data-v="5">5</td><td data-v="273">¥273</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="546.0">¥546</td></tr>
+<tr><td class="l">ロケット モバイル 複数 契約</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="247">¥247</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="494.0">¥494</td></tr>
+<tr><td class="l">神 プラン ロケット モバイル</td><td>なし</td><td>P-MAX</td><td data-v="18">18</td><td data-v="417">¥417</td><td class="cv sep" data-v="0.3">0.3</td><td class="cv" data-v="1263.6">¥1,264</td></tr>
+<tr><td class="l">sim ロケット モバイル</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="503">¥503</td><td class="cv sep" data-v="0.3">0.3</td><td class="cv" data-v="1524.2">¥1,524</td></tr>
+<tr><td class="l">ロケット モバイル 初期 費用 キャンペーン</td><td>なし</td><td>P-MAX</td><td data-v="4">4</td><td data-v="477">¥477</td><td class="cv sep" data-v="0.3">0.3</td><td class="cv" data-v="1445.5">¥1,445</td></tr>
+<tr><td class="l">ロケット モバイル 解約</td><td>なし</td><td>P-MAX</td><td data-v="49">49</td><td data-v="250">¥250</td><td class="cv sep" data-v="0.2">0.2</td><td class="cv" data-v="1000.0">¥1,000</td></tr>
+<tr><td class="l">ロケット モバイル d プラン</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="450">¥450</td><td class="cv sep" data-v="0.2">0.2</td><td class="cv" data-v="2250.0">¥2,250</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（48行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2026-06-18 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l">指名</td><td data-v="9693">9,693</td><td data-v="2841">2,841</td><td data-v="0.2931">29.3%</td><td data-v="110.3">¥110</td><td data-v="313451">¥313,451</td><td data-v="0.9203">92.0%</td><td class="cv sep" data-v="83">83</td><td class="cv" data-v="0.0293">2.9%</td><td class="cv" data-v="3763.8">¥3,764</td></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td class="l">一般</td><td data-v="840">840</td><td data-v="69">69</td><td data-v="0.0821">8.2%</td><td data-v="393.4">¥393</td><td data-v="27143">¥27,143</td><td data-v="0.0797">8.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="0.0000">0.0%</td><td class="cv" data-v="-1">--</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2026-06-18</th></tr>
+<tr data-a="ロケットモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ロケットモバイル</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div><div class="note">インテント100%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2026-06-18</b>（20260618_レポート依頼用【格安スマホ】_セレス様__19fBCSzW.xlsx）<br>取得不可（空タブ）: JCOM Mobile・LINEMO<br>端数月: 2026-03（19日開始）・2026-06（18日まで）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

@@ -1,0 +1,923 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜英会話サービス</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>英会話サービス業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">3社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2025-11-28</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥16,176,578</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥472</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">3.8〜5.0</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="イングリード" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</button><button class="achip" data-t="スパルタ英会話" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話</button><button class="achip" data-t="リバティ・イングリッシュ・アカデミー" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2025-11-28（期間 2025年9月1日 - 2025年11月27日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td data-v="5989186">¥5,989,186</td><td data-v="10210">10,210</td><td data-v="0.0418">4.2%</td><td data-v="586.6">¥587</td><td data-v="3.78">3.78</td><td data-v="0.0">--</td><td data-v="0.1462">14.6%</td><td><div class="bar"><div class="mt-i" style="width:68.7%" title="インテント マッチ 68.7%"></div><div class="mt-p" style="width:1.0%" title="フレーズ一致 1.0%"></div><div class="mt-e" style="width:30.3%" title="完全一致 30.3%"></div></div></td><td class="cv sep" data-v="245">245</td><td class="cv" data-v="0.0240">2.4%</td><td class="cv" data-v="24435.7">¥24,436</td></tr>
+<tr data-a="スパルタ英会話"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話</td><td data-v="45998">¥45,998</td><td data-v="36">36</td><td data-v="0.0587">5.9%</td><td data-v="1277.7">¥1,278</td><td data-v="5.00">5.00</td><td data-v="0.0">--</td><td data-v="0.0000">0.0%</td><td><div class="bar"><div class="mt-p" style="width:100.0%" title="フレーズ一致 100.0%"></div></div></td><td class="cv sep" data-v="2">2</td><td class="cv" data-v="0.0556">5.6%</td><td class="cv" data-v="22999.0">¥22,999</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td data-v="10141394">¥10,141,394</td><td data-v="24034">24,034</td><td data-v="0.0371">3.7%</td><td data-v="422.0">¥422</td><td data-v="3.78">3.78</td><td data-v="0.0">--</td><td data-v="0.0857">8.6%</td><td><div class="bar"><div class="mt-i" style="width:83.1%" title="インテント マッチ 83.1%"></div><div class="mt-p" style="width:15.3%" title="フレーズ一致 15.3%"></div><div class="mt-e" style="width:1.6%" title="完全一致 1.6%"></div></div></td><td class="cv sep" data-v="465">465</td><td class="cv" data-v="0.0194">1.9%</td><td class="cv" data-v="21790.7">¥21,791</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: トライズ</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td data-v="202509">2025-09</td><td data-v="112384">112,384</td><td data-v="4646">4,646</td><td data-v="0.0413">4.1%</td><td data-v="655.5">¥655</td><td data-v="3045422">¥3,045,422</td><td class="cv sep" data-v="119">119</td><td class="cv" data-v="0.0255">2.6%</td><td class="cv" data-v="25671.6">¥25,672</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td data-v="202510">2025-10</td><td data-v="107592">107,592</td><td data-v="4001">4,001</td><td data-v="0.0372">3.7%</td><td data-v="523.8">¥524</td><td data-v="2095692">¥2,095,692</td><td class="cv sep" data-v="89">89</td><td class="cv" data-v="0.0222">2.2%</td><td class="cv" data-v="23555.0">¥23,555</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td data-v="202511">2025-11 ⚠</td><td data-v="24391">24,391</td><td data-v="1563">1,563</td><td data-v="0.0641">6.4%</td><td data-v="542.6">¥543</td><td data-v="848072">¥848,072</td><td class="cv sep" data-v="38">38</td><td class="cv" data-v="0.0240">2.4%</td><td class="cv" data-v="22615.3">¥22,615</td></tr>
+<tr data-a="スパルタ英会話"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話</td><td data-v="202509">2025-09</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="スパルタ英会話"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話</td><td data-v="202510">2025-10</td><td data-v="75">75</td><td data-v="5">5</td><td data-v="0.0667">6.7%</td><td data-v="1640.2">¥1,640</td><td data-v="8201">¥8,201</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="0.0000">0.0%</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="スパルタ英会話"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話</td><td data-v="202511">2025-11 ⚠</td><td data-v="538">538</td><td data-v="31">31</td><td data-v="0.0576">5.8%</td><td data-v="1219.3">¥1,219</td><td data-v="37797">¥37,797</td><td class="cv sep" data-v="2">2</td><td class="cv" data-v="0.0645">6.5%</td><td class="cv" data-v="18898.5">¥18,898</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td data-v="202509">2025-09</td><td data-v="259424">259,424</td><td data-v="9238">9,238</td><td data-v="0.0356">3.6%</td><td data-v="421.3">¥421</td><td data-v="3891739">¥3,891,739</td><td class="cv sep" data-v="187">187</td><td class="cv" data-v="0.0202">2.0%</td><td class="cv" data-v="20857.2">¥20,857</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td data-v="202510">2025-10</td><td data-v="185281">185,281</td><td data-v="6521">6,521</td><td data-v="0.0352">3.5%</td><td data-v="411.4">¥411</td><td data-v="2682964">¥2,682,964</td><td class="cv sep" data-v="125">125</td><td class="cv" data-v="0.0192">1.9%</td><td class="cv" data-v="21410.6">¥21,411</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td data-v="202511">2025-11 ⚠</td><td data-v="202296">202,296</td><td data-v="8275">8,275</td><td data-v="0.0409">4.1%</td><td data-v="431.0">¥431</td><td data-v="3566691">¥3,566,691</td><td class="cv sep" data-v="154">154</td><td class="cv" data-v="0.0185">1.9%</td><td class="cv" data-v="23235.8">¥23,236</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="イングリード">
+<h3 class="adv" id="struct-イングリード" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード <span class="badge">取得 2025-11-28</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</span><span class="st">📁 CPN <b>3</b></span><span class="st">📂 ADG <b>4</b></span><span class="st">🔑 KW <b>32</b></span><span class="st">✏️ 広告 <b>9</b></span><span class="st">🔗 LP <b>3</b></span><span class="st">💰 <b>¥5,989,186</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="2508｜一般">2508｜一般</span><span class="share"><div style="width:84%"></div></span><span class="st">84.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>21</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥5,030,871</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="一般｜BIG">一般｜BIG</span><span class="st">🔑 <b>21</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥5,030,871</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="2508｜指名">2508｜指名</span><span class="share"><div style="width:15%"></div></span><span class="st">14.6%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>9</b></span><span class="st">✏️ <b>4</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥875,540</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="指名｜単体">指名｜単体</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥548,867</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="指名｜掛け合わせ">指名｜掛け合わせ</span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥326,673</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="【リスキリング用】2511｜一般">【リスキリング用】2511｜一般</span><span class="share"><div style="width:1%"></div></span><span class="st">1.4%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥82,775</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="一般｜BIG">一般｜BIG</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥82,775</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="スパルタ英会話">
+<h3 class="adv" id="struct-スパルタ英会話" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話 <span class="badge">取得 2025-11-28</span></h3>
+<div class="tree" style="--ac:var(--adv-1)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話</span><span class="st">📁 CPN <b>1</b></span><span class="st">📂 ADG <b>1</b></span><span class="st">🔑 KW <b>1</b></span><span class="st">✏️ 広告 <b>0</b></span><span class="st">🔗 LP <b>0</b></span><span class="st">💰 <b>¥45,998</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="02.ミドルワード英会話">02.ミドルワード英会話</span><span class="share"><div style="width:100%"></div></span><span class="st">100.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥45,998</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="広告グループ 1 個">広告グループ 1 個</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥45,998</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="リバティ・イングリッシュ・アカデミー">
+<h3 class="adv" id="struct-リバティ・イングリッシュ・アカデミー" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー <span class="badge">取得 2025-11-28</span></h3>
+<div class="tree" style="--ac:var(--adv-2)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</span><span class="st">📁 CPN <b>6</b></span><span class="st">📂 ADG <b>8</b></span><span class="st">🔑 KW <b>41</b></span><span class="st">✏️ 広告 <b>8</b></span><span class="st">🔗 LP <b>8</b></span><span class="st">💰 <b>¥10,141,394</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="一般_コース_IELTS">一般_コース_IELTS</span><span class="share"><div style="width:36%"></div></span><span class="st">36.5%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥3,698,058</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="IELTS">IELTS</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥3,698,058</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="一般_コース_TOEIC">一般_コース_TOEIC</span><span class="share"><div style="width:28%"></div></span><span class="st">27.8%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>11</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥2,814,438</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="TOEIC">TOEIC</span><span class="st">🔑 <b>11</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥2,814,438</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="一般_コース_TOEFL">一般_コース_TOEFL</span><span class="share"><div style="width:20%"></div></span><span class="st">20.3%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥2,057,490</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="TOEFL">TOEFL</span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥2,057,490</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="指名">指名</span><span class="share"><div style="width:9%"></div></span><span class="st">8.6%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥869,308</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="指名">指名</span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥869,308</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="一般_コース_一般受験">一般_コース_一般受験</span><span class="share"><div style="width:4%"></div></span><span class="st">4.4%</span><span class="st">📂 <b>3</b></span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>3</b></span><span class="st">💰 <b>¥445,405</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="早稲田大学">早稲田大学</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥203,646</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="東京大学">東京大学</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥142,265</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="慶應大学">慶應大学</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥99,494</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="一般_英検">一般_英検</span><span class="share"><div style="width:3%"></div></span><span class="st">2.5%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥256,695</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="英検">英検</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥256,695</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:52.2%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜社会人 英会話 勉強 / QS3 / CPC¥669 / COST¥331,753"></span>
+<span class="dot" style="left:100.0%;bottom:33.3%;width:14px;height:14px;background:var(--adv-0)" title="イングリード｜[英語 コーチング] / QS4 / CPC¥1,557 / COST¥675,951"></span>
+<span class="dot" style="left:68.4%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜英語 コーチング 無料 カウンセリング / QS8 / CPC¥876 / COST¥39,399"></span>
+<span class="dot" style="left:59.9%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜英語 コーチング コスパ / QS5 / CPC¥767 / COST¥211,644"></span>
+<span class="dot" style="left:49.7%;bottom:11.1%;width:14px;height:14px;background:var(--adv-0)" title="イングリード｜英会話 学習 おすすめ / QS2 / CPC¥637 / COST¥1,018,647"></span>
+<span class="dot" style="left:60.5%;bottom:44.4%;width:14px;height:14px;background:var(--adv-0)" title="イングリード｜英会話 コーチング オンライン / QS5 / CPC¥775 / COST¥1,080,987"></span>
+<span class="dot" style="left:52.4%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜英会話 コーチング 3ヶ月 / QS5 / CPC¥672 / COST¥51,710"></span>
+<span class="dot" style="left:47.5%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜英語 学習 おすすめ / QS1 / CPC¥608 / COST¥451,424"></span>
+<span class="dot" style="left:68.3%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜英会話 コーチング 評判 / QS5 / CPC¥874 / COST¥140,764"></span>
+<span class="dot" style="left:16.8%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜[イングリード] / QS8 / CPC¥215 / COST¥431,478"></span>
+<span class="dot" style="left:58.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜ビジネス 英会話 コーチング / QS7 / CPC¥745 / COST¥117,042"></span>
+<span class="dot" style="left:43.1%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜TOEIC 勉強 おすすめ / QS3 / CPC¥552 / COST¥283,417"></span>
+<span class="dot" style="left:47.1%;bottom:11.1%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜社会人 英語 勉強 / QS2 / CPC¥603 / COST¥194,849"></span>
+<span class="dot" style="left:100.0%;bottom:11.1%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜[英語 コーチング おすすめ] / QS2 / CPC¥2,220 / COST¥117,663"></span>
+<span class="dot" style="left:18.4%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜[イングリード 料金] / QS10 / CPC¥235 / COST¥188,892"></span>
+<span class="dot" style="left:100.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜[英会話 コーチング] / QS7 / CPC¥1,281 / COST¥88,374"></span>
+<span class="dot" style="left:93.2%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜ビジネス 英会話 マンツーマン / QS5 / CPC¥1,193 / COST¥54,888"></span>
+<span class="dot" style="left:22.0%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜[ENGLEAD] / QS10 / CPC¥282 / COST¥117,389"></span>
+<span class="dot" style="left:46.8%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜イングリード コーチ / QS10 / CPC¥599 / COST¥56,922"></span>
+<span class="dot" style="left:29.5%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜[イングリード コーチ] / QS10 / CPC¥378 / COST¥12,489"></span>
+<span class="dot" style="left:33.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜[イングリード 評判] / QS7 / CPC¥433 / COST¥32,072"></span>
+<span class="dot" style="left:37.3%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="イングリード｜[イングリード 口コミ] / QS7 / CPC¥478 / COST¥29,653"></span>
+<span class="dot" style="left:99.8%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="スパルタ英会話｜英会話 新宿 / QS5 / CPC¥1,278 / COST¥45,998"></span>
+<span class="dot" style="left:42.7%;bottom:22.2%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜慶應大学 塾 / QS3 / CPC¥547 / COST¥99,494"></span>
+<span class="dot" style="left:43.3%;bottom:22.2%;width:14px;height:14px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜IELTS 勉強 / QS3 / CPC¥554 / COST¥2,814,561"></span>
+<span class="dot" style="left:41.4%;bottom:22.2%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜早稲田大学 塾 / QS3 / CPC¥530 / COST¥185,942"></span>
+<span class="dot" style="left:42.2%;bottom:22.2%;width:14px;height:14px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜TOEFL 勉強 / QS3 / CPC¥541 / COST¥1,716,976"></span>
+<span class="dot" style="left:30.5%;bottom:33.3%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜東京大学 塾 / QS4 / CPC¥391 / COST¥142,265"></span>
+<span class="dot" style="left:46.1%;bottom:33.3%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜IELTS スクール / QS4 / CPC¥590 / COST¥448,264"></span>
+<span class="dot" style="left:48.3%;bottom:55.6%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜IELTS コーチング / QS6 / CPC¥619 / COST¥157,119"></span>
+<span class="dot" style="left:16.2%;bottom:77.8%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜Liberty English Academy / QS8 / CPC¥207 / COST¥473,599"></span>
+<span class="dot" style="left:52.7%;bottom:66.7%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜toeic 塾 / QS7 / CPC¥675 / COST¥228,081"></span>
+<span class="dot" style="left:44.3%;bottom:55.6%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜IELTS 予備校 / QS6 / CPC¥568 / COST¥79,475"></span>
+<span class="dot" style="left:37.9%;bottom:11.1%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜IELTS 対策 / QS2 / CPC¥485 / COST¥157,124"></span>
+<span class="dot" style="left:26.9%;bottom:55.6%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜英検 塾 / QS6 / CPC¥345 / COST¥128,367"></span>
+<span class="dot" style="left:21.5%;bottom:66.7%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜英検1級 塾 / QS7 / CPC¥275 / COST¥25,839"></span>
+<span class="dot" style="left:42.1%;bottom:55.6%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜IELTS 講座 / QS6 / CPC¥539 / COST¥41,515"></span>
+<span class="dot" style="left:18.2%;bottom:22.2%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜英検 対策 / QS3 / CPC¥233 / COST¥102,489"></span>
+<span class="dot" style="left:49.4%;bottom:44.4%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜[TOEFL 講座 オンライン] / QS5 / CPC¥633 / COST¥28,482"></span>
+<span class="dot" style="left:43.1%;bottom:66.7%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜TOEIC スクール / QS7 / CPC¥552 / COST¥152,840"></span>
+<span class="dot" style="left:71.5%;bottom:33.3%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜[TOEFL 勉強 オンライン] / QS4 / CPC¥916 / COST¥28,404"></span>
+<span class="dot" style="left:46.1%;bottom:55.6%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜TOEFL スクール / QS6 / CPC¥591 / COST¥216,291"></span>
+<span class="dot" style="left:52.9%;bottom:44.4%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜TOEIC コーチング / QS5 / CPC¥678 / COST¥132,896"></span>
+<span class="dot" style="left:46.6%;bottom:55.6%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜TOEFL コーチング / QS6 / CPC¥597 / COST¥29,233"></span>
+<span class="dot" style="left:24.8%;bottom:55.6%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜TOEIC 講座 / QS6 / CPC¥317 / COST¥128,258"></span>
+<span class="dot" style="left:12.2%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜リバティ イングリッシュ アカデミー / QS10 / CPC¥157 / COST¥151,971"></span>
+<span class="dot" style="left:38.6%;bottom:55.6%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜TOEFL レッスン / QS6 / CPC¥495 / COST¥31,186"></span>
+<span class="dot" style="left:41.9%;bottom:55.6%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜[TOEIC スクール オンライン] / QS6 / CPC¥537 / COST¥62,308"></span>
+<span class="dot" style="left:16.3%;bottom:77.8%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜リバティ イングリッシュ / QS8 / CPC¥209 / COST¥132,315"></span>
+<span class="dot" style="left:27.0%;bottom:11.1%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜toeic オンライン / QS2 / CPC¥346 / COST¥74,080"></span>
+<span class="dot" style="left:32.0%;bottom:33.3%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜トイック 勉強 / QS4 / CPC¥410 / COST¥38,978"></span>
+<span class="dot" style="left:14.2%;bottom:77.8%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜Liberty English / QS8 / CPC¥182 / COST¥35,079"></span>
+<span class="dot" style="left:39.6%;bottom:88.9%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜[リバティ IELTS] / QS9 / CPC¥507 / COST¥21,292"></span>
+<span class="dot" style="left:14.2%;bottom:88.9%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜Liberty TOEIC / QS9 / CPC¥182 / COST¥8,384"></span>
+<span class="dot" style="left:31.6%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜Liberty TOEFL / QS10 / CPC¥405 / COST¥13,778"></span>
+<span class="dot" style="left:10.6%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="リバティ・イングリッシュ・アカデミー｜Liberty IELTS / QS10 / CPC¥136 / COST¥11,037"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥320</span>
+<span class="ax" style="left:50%;bottom:-22px">¥640</span>
+<span class="ax" style="left:75%;bottom:-22px">¥961</span>
+<span class="ax" style="left:100%;bottom:-22px">¥1,281</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>イングリード</span><span><i style="background:var(--adv-1)"></i>スパルタ英会話</span><span><i style="background:var(--adv-2)"></i>リバティ・イングリッシュ・アカデミー</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">Liberty IELTS</td><td data-v="10">10</td><td data-v="136">¥136</td><td data-v="81">81</td><td data-v="11037">¥11,037</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">リバティ イングリッシュ アカデミー</td><td data-v="10">10</td><td data-v="157">¥157</td><td data-v="971">971</td><td data-v="151971">¥151,971</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">Liberty English</td><td data-v="8">8</td><td data-v="182">¥182</td><td data-v="193">193</td><td data-v="35079">¥35,079</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">Liberty TOEIC</td><td data-v="9">9</td><td data-v="182">¥182</td><td data-v="46">46</td><td data-v="8384">¥8,384</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">Liberty English Academy</td><td data-v="8">8</td><td data-v="207">¥207</td><td data-v="2287">2,287</td><td data-v="473599">¥473,599</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">リバティ イングリッシュ</td><td data-v="8">8</td><td data-v="209">¥209</td><td data-v="632">632</td><td data-v="132315">¥132,315</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">[イングリード]</td><td data-v="8">8</td><td data-v="215">¥215</td><td data-v="2006">2,006</td><td data-v="431478">¥431,478</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">[イングリード 料金]</td><td data-v="10">10</td><td data-v="235">¥235</td><td data-v="803">803</td><td data-v="188892">¥188,892</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">英検1級 塾</td><td data-v="7">7</td><td data-v="275">¥275</td><td data-v="94">94</td><td data-v="25839">¥25,839</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">[ENGLEAD]</td><td data-v="10">10</td><td data-v="282">¥282</td><td data-v="416">416</td><td data-v="117389">¥117,389</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">[イングリード コーチ]</td><td data-v="10">10</td><td data-v="378">¥378</td><td data-v="33">33</td><td data-v="12489">¥12,489</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">Liberty TOEFL</td><td data-v="10">10</td><td data-v="405">¥405</td><td data-v="34">34</td><td data-v="13778">¥13,778</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">[イングリード 評判]</td><td data-v="7">7</td><td data-v="433">¥433</td><td data-v="74">74</td><td data-v="32072">¥32,072</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">[イングリード 口コミ]</td><td data-v="7">7</td><td data-v="478">¥478</td><td data-v="62">62</td><td data-v="29653">¥29,653</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">[リバティ IELTS]</td><td data-v="9">9</td><td data-v="507">¥507</td><td data-v="42">42</td><td data-v="21292">¥21,292</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">TOEIC スクール</td><td data-v="7">7</td><td data-v="552">¥552</td><td data-v="277">277</td><td data-v="152840">¥152,840</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">イングリード コーチ</td><td data-v="10">10</td><td data-v="599">¥599</td><td data-v="95">95</td><td data-v="56922">¥56,922</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">toeic 塾</td><td data-v="7">7</td><td data-v="675">¥675</td><td data-v="338">338</td><td data-v="228081">¥228,081</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">ビジネス 英会話 コーチング</td><td data-v="7">7</td><td data-v="745">¥745</td><td data-v="157">157</td><td data-v="117042">¥117,042</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">英語 コーチング 無料 カウンセリング</td><td data-v="8">8</td><td data-v="876">¥876</td><td data-v="45">45</td><td data-v="39399">¥39,399</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">[英会話 コーチング]</td><td data-v="7">7</td><td data-v="1281">¥1,281</td><td data-v="69">69</td><td data-v="88374">¥88,374</td></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">IELTS 勉強</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="554">¥554</td><td data-v="2814561">¥2,814,561</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">TOEFL 勉強</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="541">¥541</td><td data-v="1716976">¥1,716,976</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">英会話 学習 おすすめ</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="637">¥637</td><td data-v="1018647">¥1,018,647</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">[英語 コーチング]</td><td data-v="4">4</td><td>推定CTR</td><td data-v="1557">¥1,557</td><td data-v="675951">¥675,951</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">英語 学習 おすすめ</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="608">¥608</td><td data-v="451424">¥451,424</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">IELTS スクール</td><td data-v="4">4</td><td>推定CTR</td><td data-v="590">¥590</td><td data-v="448264">¥448,264</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">社会人 英会話 勉強</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="669">¥669</td><td data-v="331753">¥331,753</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">TOEIC 勉強 おすすめ</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="552">¥552</td><td data-v="283417">¥283,417</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">社会人 英語 勉強</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="603">¥603</td><td data-v="194849">¥194,849</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">早稲田大学 塾</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="530">¥530</td><td data-v="185942">¥185,942</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">IELTS 対策</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="485">¥485</td><td data-v="157124">¥157,124</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">東京大学 塾</td><td data-v="4">4</td><td>LP</td><td data-v="391">¥391</td><td data-v="142265">¥142,265</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">[英語 コーチング おすすめ]</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="2220">¥2,220</td><td data-v="117663">¥117,663</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">英検 対策</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="233">¥233</td><td data-v="102489">¥102,489</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">慶應大学 塾</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="547">¥547</td><td data-v="99494">¥99,494</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">toeic オンライン</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="346">¥346</td><td data-v="74080">¥74,080</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">トイック 勉強</td><td data-v="4">4</td><td>LP</td><td data-v="410">¥410</td><td data-v="38978">¥38,978</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">[TOEFL 勉強 オンライン]</td><td data-v="4">4</td><td>LP</td><td data-v="916">¥916</td><td data-v="28404">¥28,404</td></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td data-v="3.78">3.78</td><td data-v="7.8"><b>7.8%</b></td><td data-v="78.2"><b>78.2%</b></td><td data-v="45.5">45.5%</td></tr>
+<tr data-a="スパルタ英会話"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話</td><td data-v="5.00">5.00</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td><td data-v="100.0"><b>100.0%</b></td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td data-v="3.78">3.78</td><td data-v="5.9">5.9%</td><td data-v="65.2">65.2%</td><td data-v="65.7">65.7%</td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="イングリード">
+<h3 class="adv" id="kwqs-イングリード" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード <span class="badge">取得 2025-11-28</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>3.78</b></span><span class="chip">関連性↓<b>7.8%</b></span><span class="chip bad">推定CTR↓<b>78.2%</b></span><span class="chip bad">LP利便性↓<b>45.5%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="イングリード"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">英会話 コーチング オンライン</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="62484">62,484</td><td data-v="1394">1,394</td><td data-v="0.0223">2.2%</td><td data-v="775.5">¥775</td><td data-v="1080987">¥1,080,987</td><td class="cv sep" data-v="20.8">20.8</td><td class="cv" data-v="51895.7">¥51,896</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">英会話 学習 おすすめ</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="56495">56,495</td><td data-v="1600">1,600</td><td data-v="0.0283">2.8%</td><td data-v="636.7">¥637</td><td data-v="1018647">¥1,018,647</td><td class="cv sep" data-v="11.7">11.7</td><td class="cv" data-v="87138.3">¥87,138</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">[英語 コーチング]</td><td>完全</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="7057">7,057</td><td data-v="434">434</td><td data-v="0.0615">6.1%</td><td data-v="1557.5">¥1,557</td><td data-v="675951">¥675,951</td><td class="cv sep" data-v="17.0">17.0</td><td class="cv" data-v="39761.8">¥39,762</td><td class="l">【リスキリング用】2511｜一般</td></tr>
+<tr><td class="l">英語 学習 おすすめ</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="27502">27,502</td><td data-v="742">742</td><td data-v="0.0270">2.7%</td><td data-v="608.4">¥608</td><td data-v="451424">¥451,424</td><td class="cv sep" data-v="4.5">4.5</td><td class="cv" data-v="100316.4">¥100,316</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">[イングリード]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="8596">8,596</td><td data-v="2006">2,006</td><td data-v="0.2334">23.3%</td><td data-v="215.1">¥215</td><td data-v="431478">¥431,478</td><td class="cv sep" data-v="88.6">88.6</td><td class="cv" data-v="4870.5">¥4,871</td><td class="l">2508｜指名</td></tr>
+<tr><td class="l">社会人 英会話 勉強</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="15083">15,083</td><td data-v="496">496</td><td data-v="0.0329">3.3%</td><td data-v="668.9">¥669</td><td data-v="331753">¥331,753</td><td class="cv sep" data-v="8.5">8.5</td><td class="cv" data-v="39029.8">¥39,030</td><td class="l">【リスキリング用】2511｜一般</td></tr>
+<tr><td class="l">TOEIC 勉強 おすすめ</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="13135">13,135</td><td data-v="513">513</td><td data-v="0.0391">3.9%</td><td data-v="552.5">¥552</td><td data-v="283417">¥283,417</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="94472.3">¥94,472</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">英語 コーチング コスパ</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="10380">10,380</td><td data-v="276">276</td><td data-v="0.0266">2.7%</td><td data-v="766.8">¥767</td><td data-v="211644">¥211,644</td><td class="cv sep" data-v="3.8">3.8</td><td class="cv" data-v="56438.4">¥56,438</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">社会人 英語 勉強</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="8144">8,144</td><td data-v="323">323</td><td data-v="0.0397">4.0%</td><td data-v="603.2">¥603</td><td data-v="194849">¥194,849</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="97424.5">¥97,424</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">[イングリード 料金]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="2380">2,380</td><td data-v="803">803</td><td data-v="0.3374">33.7%</td><td data-v="235.2">¥235</td><td data-v="188892">¥188,892</td><td class="cv sep" data-v="17.4">17.4</td><td class="cv" data-v="10862.1">¥10,862</td><td class="l">2508｜指名</td></tr>
+<tr><td class="l">英会話 コーチング 評判</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="6853">6,853</td><td data-v="161">161</td><td data-v="0.0235">2.3%</td><td data-v="874.3">¥874</td><td data-v="140764">¥140,764</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="70382.0">¥70,382</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">[英語 コーチング おすすめ]</td><td>完全</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1324">1,324</td><td data-v="53">53</td><td data-v="0.0400">4.0%</td><td data-v="2220.1">¥2,220</td><td data-v="117663">¥117,663</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="29415.8">¥29,416</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">[ENGLEAD]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="1885">1,885</td><td data-v="416">416</td><td data-v="0.2207">22.1%</td><td data-v="282.2">¥282</td><td data-v="117389">¥117,389</td><td class="cv sep" data-v="7.5">7.5</td><td class="cv" data-v="15651.9">¥15,652</td><td class="l">2508｜指名</td></tr>
+<tr><td class="l">ビジネス 英会話 コーチング</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="6559">6,559</td><td data-v="157">157</td><td data-v="0.0239">2.4%</td><td data-v="745.5">¥745</td><td data-v="117042">¥117,042</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="88001.5">¥88,002</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">TOEIC 勉強 比較</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="4058">4,058</td><td data-v="174">174</td><td data-v="0.0429">4.3%</td><td data-v="623.3">¥623</td><td data-v="108447">¥108,447</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="27111.8">¥27,112</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">[英会話 コーチング]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1082">1,082</td><td data-v="69">69</td><td data-v="0.0638">6.4%</td><td data-v="1280.8">¥1,281</td><td data-v="88374">¥88,374</td><td class="cv sep" data-v="2.3">2.3</td><td class="cv" data-v="37928.8">¥37,929</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">イングリード コーチ</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="1040">1,040</td><td data-v="95">95</td><td data-v="0.0913">9.1%</td><td data-v="599.2">¥599</td><td data-v="56922">¥56,922</td><td class="cv sep" data-v="14.4">14.4</td><td class="cv" data-v="3942.0">¥3,942</td><td class="l">2508｜指名</td></tr>
+<tr><td class="l">ビジネス 英会話 マンツーマン</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="1524">1,524</td><td data-v="46">46</td><td data-v="0.0302">3.0%</td><td data-v="1193.2">¥1,193</td><td data-v="54888">¥54,888</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="27444.0">¥27,444</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">英会話 コーチング 3ヶ月</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="2257">2,257</td><td data-v="77">77</td><td data-v="0.0341">3.4%</td><td data-v="671.6">¥672</td><td data-v="51710">¥51,710</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="25855.0">¥25,855</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">英語 コーチング 無料 カウンセリング</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="1218">1,218</td><td data-v="45">45</td><td data-v="0.0369">3.7%</td><td data-v="875.5">¥876</td><td data-v="39399">¥39,399</td><td class="cv sep" data-v="1.2">1.2</td><td class="cv" data-v="31519.2">¥31,519</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">[英語 コーチング 比較]</td><td>完全</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="526">526</td><td data-v="16">16</td><td data-v="0.0304">3.0%</td><td data-v="2439.3">¥2,439</td><td data-v="39029">¥39,029</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="26019.3">¥26,019</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">[イングリード 評判]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="893">893</td><td data-v="74">74</td><td data-v="0.0829">8.3%</td><td data-v="433.4">¥433</td><td data-v="32072">¥32,072</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="8018.0">¥8,018</td><td class="l">2508｜指名</td></tr>
+<tr><td class="l">[英会話 伸ばし方]</td><td>完全</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1197">1,197</td><td data-v="49">49</td><td data-v="0.0409">4.1%</td><td data-v="618.1">¥618</td><td data-v="30286">¥30,286</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="15143.0">¥15,143</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">[イングリード 口コミ]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="620">620</td><td data-v="62">62</td><td data-v="0.1000">10.0%</td><td data-v="478.3">¥478</td><td data-v="29653">¥29,653</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="14826.5">¥14,826</td><td class="l">2508｜指名</td></tr>
+<tr><td class="l">[英会話 3ヶ月]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="175">175</td><td data-v="14">14</td><td data-v="0.0800">8.0%</td><td data-v="1789.4">¥1,789</td><td data-v="25051">¥25,051</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="8350.3">¥8,350</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">[英語 コーチング オンライン]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="305">305</td><td data-v="18">18</td><td data-v="0.0590">5.9%</td><td data-v="1222.3">¥1,222</td><td data-v="22002">¥22,002</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="11001.0">¥11,001</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">プレゼン 英語 コーチング</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="862">862</td><td data-v="27">27</td><td data-v="0.0313">3.1%</td><td data-v="738.4">¥738</td><td data-v="19937">¥19,937</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="6645.7">¥6,646</td><td class="l">2508｜一般</td></tr>
+<tr><td class="l">[イングリード コーチ]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="156">156</td><td data-v="33">33</td><td data-v="0.2115">21.2%</td><td data-v="378.5">¥378</td><td data-v="12489">¥12,489</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="8326.0">¥8,326</td><td class="l">2508｜指名</td></tr>
+<tr><td class="l">英会話 3ヶ月 マスター</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="239">239</td><td data-v="16">16</td><td data-v="0.0669">6.7%</td><td data-v="502.9">¥503</td><td data-v="8046">¥8,046</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="4023.0">¥4,023</td><td class="l">【リスキリング用】2511｜一般</td></tr>
+<tr><td class="l">ENGLEAD コーチング</td><td>フレーズ</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="81">81</td><td data-v="10">10</td><td data-v="0.1235">12.3%</td><td data-v="337.8">¥338</td><td data-v="3378">¥3,378</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="1351.2">¥1,351</td><td class="l">2508｜指名</td></tr>
+<tr><td class="l">[イングリード 体験談]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="233">233</td><td data-v="7">7</td><td data-v="0.0300">3.0%</td><td data-v="466.7">¥467</td><td data-v="3267">¥3,267</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1633.5">¥1,634</td><td class="l">2508｜指名</td></tr>
+<tr><td class="l">[英語 リスキリング]</td><td>完全</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="24">24</td><td data-v="4">4</td><td data-v="0.1667">16.7%</td><td data-v="584.0">¥584</td><td data-v="2336">¥2,336</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="1557.3">¥1,557</td><td class="l">【リスキリング用】2511｜一般</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="スパルタ英会話">
+<h3 class="adv" id="kwqs-スパルタ英会話" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話 <span class="badge">取得 2025-11-28</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>5.00</b></span><span class="chip">関連性↓<b>0.0%</b></span><span class="chip">推定CTR↓<b>0.0%</b></span><span class="chip bad">LP利便性↓<b>100.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="スパルタ英会話"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">英会話 新宿</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="613">613</td><td data-v="36">36</td><td data-v="0.0587">5.9%</td><td data-v="1277.7">¥1,278</td><td data-v="45998">¥45,998</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="22999.0">¥22,999</td><td class="l">02.ミドルワード英会話</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="リバティ・イングリッシュ・アカデミー">
+<h3 class="adv" id="kwqs-リバティ・イングリッシュ・アカデミー" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー <span class="badge">取得 2025-11-28</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>3.78</b></span><span class="chip">関連性↓<b>5.9%</b></span><span class="chip bad">推定CTR↓<b>65.2%</b></span><span class="chip bad">LP利便性↓<b>65.7%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="リバティ・イングリッシュ・アカデミー"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">IELTS 勉強</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="180247">180,247</td><td data-v="5079">5,079</td><td data-v="0.0282">2.8%</td><td data-v="554.2">¥554</td><td data-v="2814561">¥2,814,561</td><td class="cv sep" data-v="72.9">72.9</td><td class="cv" data-v="38582.1">¥38,582</td><td class="l">一般_コース_IELTS</td></tr>
+<tr><td class="l">TOEIC 対策</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="151839">151,839</td><td data-v="5816">5,816</td><td data-v="0.0383">3.8%</td><td data-v="339.3">¥339</td><td data-v="1973212">¥1,973,212</td><td class="cv sep" data-v="53.2">53.2</td><td class="cv" data-v="37055.6">¥37,056</td><td class="l">一般_コース_TOEIC</td></tr>
+<tr><td class="l">TOEFL 勉強</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="124735">124,735</td><td data-v="3175">3,175</td><td data-v="0.0255">2.5%</td><td data-v="540.8">¥541</td><td data-v="1716976">¥1,716,976</td><td class="cv sep" data-v="49.6">49.6</td><td class="cv" data-v="34595.5">¥34,596</td><td class="l">一般_コース_TOEFL</td></tr>
+<tr><td class="l">Liberty English Academy</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="13665">13,665</td><td data-v="2287">2,287</td><td data-v="0.1674">16.7%</td><td data-v="207.1">¥207</td><td data-v="473599">¥473,599</td><td class="cv sep" data-v="112.2">112.2</td><td class="cv" data-v="4220.3">¥4,220</td><td class="l">指名</td></tr>
+<tr><td class="l">IELTS スクール</td><td>インテント</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="23830">23,830</td><td data-v="760">760</td><td data-v="0.0319">3.2%</td><td data-v="589.8">¥590</td><td data-v="448264">¥448,264</td><td class="cv sep" data-v="14.5">14.5</td><td class="cv" data-v="30914.8">¥30,915</td><td class="l">一般_コース_IELTS</td></tr>
+<tr><td class="l">toeic 塾</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均</td><td>平均より上</td><td class="sep" data-v="5538">5,538</td><td data-v="338">338</td><td data-v="0.0610">6.1%</td><td data-v="674.8">¥675</td><td data-v="228081">¥228,081</td><td class="cv sep" data-v="5.8">5.8</td><td class="cv" data-v="39122.0">¥39,122</td><td class="l">一般_コース_TOEIC</td></tr>
+<tr><td class="l">TOEFL スクール</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="11126">11,126</td><td data-v="366">366</td><td data-v="0.0329">3.3%</td><td data-v="591.0">¥591</td><td data-v="216291">¥216,291</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="30898.7">¥30,899</td><td class="l">一般_コース_TOEFL</td></tr>
+<tr><td class="l">早稲田大学 塾</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="10201">10,201</td><td data-v="351">351</td><td data-v="0.0344">3.4%</td><td data-v="529.7">¥530</td><td data-v="185942">¥185,942</td><td class="cv sep" data-v="4.5">4.5</td><td class="cv" data-v="41320.4">¥41,320</td><td class="l">一般_コース_一般受験</td></tr>
+<tr><td class="l">IELTS 対策</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="9990">9,990</td><td data-v="324">324</td><td data-v="0.0324">3.2%</td><td data-v="485.0">¥485</td><td data-v="157124">¥157,124</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="26187.3">¥26,187</td><td class="l">一般_コース_IELTS</td></tr>
+<tr><td class="l">IELTS コーチング</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="8422">8,422</td><td data-v="254">254</td><td data-v="0.0302">3.0%</td><td data-v="618.6">¥619</td><td data-v="157119">¥157,119</td><td class="cv sep" data-v="4.2">4.2</td><td class="cv" data-v="36969.2">¥36,969</td><td class="l">一般_コース_IELTS</td></tr>
+<tr><td class="l">TOEIC スクール</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均</td><td>平均より上</td><td class="sep" data-v="7641">7,641</td><td data-v="277">277</td><td data-v="0.0363">3.6%</td><td data-v="551.8">¥552</td><td data-v="152840">¥152,840</td><td class="cv sep" data-v="2.3">2.3</td><td class="cv" data-v="65596.6">¥65,597</td><td class="l">一般_コース_TOEIC</td></tr>
+<tr><td class="l">リバティ イングリッシュ アカデミー</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="4479">4,479</td><td data-v="971">971</td><td data-v="0.2168">21.7%</td><td data-v="156.5">¥157</td><td data-v="151971">¥151,971</td><td class="cv sep" data-v="30.9">30.9</td><td class="cv" data-v="4911.8">¥4,912</td><td class="l">指名</td></tr>
+<tr><td class="l">東京大学 塾</td><td>フレーズ</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="7383">7,383</td><td data-v="364">364</td><td data-v="0.0493">4.9%</td><td data-v="390.8">¥391</td><td data-v="142265">¥142,265</td><td class="cv sep" data-v="3.7">3.7</td><td class="cv" data-v="38764.3">¥38,764</td><td class="l">一般_コース_一般受験</td></tr>
+<tr><td class="l">TOEIC コーチング</td><td>インテント</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="7127">7,127</td><td data-v="196">196</td><td data-v="0.0275">2.8%</td><td data-v="678.0">¥678</td><td data-v="132896">¥132,896</td><td class="cv sep" data-v="4.5">4.5</td><td class="cv" data-v="29532.4">¥29,532</td><td class="l">一般_コース_TOEIC</td></tr>
+<tr><td class="l">リバティ イングリッシュ</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="3795">3,795</td><td data-v="632">632</td><td data-v="0.1665">16.7%</td><td data-v="209.4">¥209</td><td data-v="132315">¥132,315</td><td class="cv sep" data-v="19.0">19.0</td><td class="cv" data-v="6963.9">¥6,964</td><td class="l">指名</td></tr>
+<tr><td class="l">英検 塾</td><td>フレーズ</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="7372">7,372</td><td data-v="372">372</td><td data-v="0.0505">5.0%</td><td data-v="345.1">¥345</td><td data-v="128367">¥128,367</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="42789.0">¥42,789</td><td class="l">一般_英検</td></tr>
+<tr><td class="l">TOEIC 講座</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="12954">12,954</td><td data-v="404">404</td><td data-v="0.0312">3.1%</td><td data-v="317.5">¥317</td><td data-v="128258">¥128,258</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="51303.2">¥51,303</td><td class="l">一般_コース_TOEIC</td></tr>
+<tr><td class="l">英検 対策</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="23939">23,939</td><td data-v="440">440</td><td data-v="0.0184">1.8%</td><td data-v="232.9">¥233</td><td data-v="102489">¥102,489</td><td class="cv sep" data-v="6.3">6.3</td><td class="cv" data-v="16191.0">¥16,191</td><td class="l">一般_英検</td></tr>
+<tr><td class="l">慶應大学 塾</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="3198">3,198</td><td data-v="182">182</td><td data-v="0.0569">5.7%</td><td data-v="546.7">¥547</td><td data-v="99494">¥99,494</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="49747.0">¥49,747</td><td class="l">一般_コース_一般受験</td></tr>
+<tr><td class="l">IELTS 予備校</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="5321">5,321</td><td data-v="140">140</td><td data-v="0.0263">2.6%</td><td data-v="567.7">¥568</td><td data-v="79475">¥79,475</td><td class="cv sep" data-v="3.3">3.3</td><td class="cv" data-v="23866.4">¥23,866</td><td class="l">一般_コース_IELTS</td></tr>
+<tr><td class="l">toeic オンライン</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="7444">7,444</td><td data-v="214">214</td><td data-v="0.0287">2.9%</td><td data-v="346.2">¥346</td><td data-v="74080">¥74,080</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="30236.7">¥30,237</td><td class="l">一般_コース_TOEIC</td></tr>
+<tr><td class="l">[TOEIC スクール オンライン]</td><td>完全</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="1085">1,085</td><td data-v="116">116</td><td data-v="0.1069">10.7%</td><td data-v="537.1">¥537</td><td data-v="62308">¥62,308</td><td class="cv sep" data-v="1.8">1.8</td><td class="cv" data-v="35604.6">¥35,605</td><td class="l">一般_コース_TOEIC</td></tr>
+<tr><td class="l">IELTS 講座</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="1984">1,984</td><td data-v="77">77</td><td data-v="0.0388">3.9%</td><td data-v="539.2">¥539</td><td data-v="41515">¥41,515</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="13838.3">¥13,838</td><td class="l">一般_コース_IELTS</td></tr>
+<tr><td class="l">トイック 勉強</td><td>インテント</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="2497">2,497</td><td data-v="95">95</td><td data-v="0.0380">3.8%</td><td data-v="410.3">¥410</td><td data-v="38978">¥38,978</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="19489.0">¥19,489</td><td class="l">一般_コース_TOEIC</td></tr>
+<tr><td class="l">Liberty English</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="1133">1,133</td><td data-v="193">193</td><td data-v="0.1703">17.0%</td><td data-v="181.8">¥182</td><td data-v="35079">¥35,079</td><td class="cv sep" data-v="10.1">10.1</td><td class="cv" data-v="3487.0">¥3,487</td><td class="l">指名</td></tr>
+<tr><td class="l">TOEFL レッスン</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="3547">3,547</td><td data-v="63">63</td><td data-v="0.0178">1.8%</td><td data-v="495.0">¥495</td><td data-v="31186">¥31,186</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="20790.7">¥20,791</td><td class="l">一般_コース_TOEFL</td></tr>
+<tr><td class="l">TOEFL コーチング</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="2022">2,022</td><td data-v="49">49</td><td data-v="0.0242">2.4%</td><td data-v="596.6">¥597</td><td data-v="29233">¥29,233</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="21979.7">¥21,980</td><td class="l">一般_コース_TOEFL</td></tr>
+<tr><td class="l">[TOEFL 講座 オンライン]</td><td>完全</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="501">501</td><td data-v="45">45</td><td data-v="0.0898">9.0%</td><td data-v="632.9">¥633</td><td data-v="28482">¥28,482</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="11392.8">¥11,393</td><td class="l">一般_コース_TOEFL</td></tr>
+<tr><td class="l">[TOEFL 勉強 オンライン]</td><td>完全</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="408">408</td><td data-v="31">31</td><td data-v="0.0760">7.6%</td><td data-v="916.3">¥916</td><td data-v="28404">¥28,404</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="11361.6">¥11,362</td><td class="l">一般_コース_TOEFL</td></tr>
+<tr><td class="l">英検1級 塾</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1521">1,521</td><td data-v="94">94</td><td data-v="0.0618">6.2%</td><td data-v="274.9">¥275</td><td data-v="25839">¥25,839</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="17226.0">¥17,226</td><td class="l">一般_英検</td></tr>
+<tr><td class="l">[リバティ IELTS]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="104">104</td><td data-v="42">42</td><td data-v="0.4038">40.4%</td><td data-v="507.0">¥507</td><td data-v="21292">¥21,292</td><td class="cv sep" data-v="4.2">4.2</td><td class="cv" data-v="5009.9">¥5,010</td><td class="l">指名</td></tr>
+<tr><td class="l">早稲田 英語 塾</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="522">522</td><td data-v="23">23</td><td data-v="0.0441">4.4%</td><td data-v="769.7">¥770</td><td data-v="17704">¥17,704</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="11802.7">¥11,803</td><td class="l">一般_コース_一般受験</td></tr>
+<tr><td class="l">Liberty TOEFL</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="158">158</td><td data-v="34">34</td><td data-v="0.2152">21.5%</td><td data-v="405.2">¥405</td><td data-v="13778">¥13,778</td><td class="cv sep" data-v="5.3">5.3</td><td class="cv" data-v="2585.0">¥2,585</td><td class="l">指名</td></tr>
+<tr><td class="l">リバティ TOEFL</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="70">70</td><td data-v="24">24</td><td data-v="0.3429">34.3%</td><td data-v="522.6">¥523</td><td data-v="12542">¥12,542</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="4180.7">¥4,181</td><td class="l">指名</td></tr>
+<tr><td class="l">Liberty IELTS</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="238">238</td><td data-v="81">81</td><td data-v="0.3403">34.0%</td><td data-v="136.3">¥136</td><td data-v="11037">¥11,037</td><td class="cv sep" data-v="4.5">4.5</td><td class="cv" data-v="2452.7">¥2,453</td><td class="l">指名</td></tr>
+<tr><td class="l">[リバティ TOEIC]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="103">103</td><td data-v="26">26</td><td data-v="0.2524">25.2%</td><td data-v="358.1">¥358</td><td data-v="9311">¥9,311</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="6207.3">¥6,207</td><td class="l">指名</td></tr>
+<tr><td class="l">[TOEIC コーチング 短期]</td><td>完全</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="100">100</td><td data-v="15">15</td><td data-v="0.1500">15.0%</td><td data-v="584.3">¥584</td><td data-v="8765">¥8,765</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="5843.3">¥5,843</td><td class="l">一般_コース_TOEIC</td></tr>
+<tr><td class="l">Liberty TOEIC</td><td>フレーズ</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="160">160</td><td data-v="46">46</td><td data-v="0.2875">28.7%</td><td data-v="182.3">¥182</td><td data-v="8384">¥8,384</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="4192.0">¥4,192</td><td class="l">指名</td></tr>
+<tr><td class="l">toeic オンライン講座 おすすめ</td><td>インテント</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="301">301</td><td data-v="22">22</td><td data-v="0.0731">7.3%</td><td data-v="369.9">¥370</td><td data-v="8137">¥8,137</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="4068.5">¥4,068</td><td class="l">一般_コース_TOEIC</td></tr>
+<tr><td class="l">TOEFL コーチング</td><td>フレーズ</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="72">72</td><td data-v="5">5</td><td data-v="0.0694">6.9%</td><td data-v="1383.6">¥1,384</td><td data-v="6918">¥6,918</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3459.0">¥3,459</td><td class="l">一般_コース_TOEFL</td></tr>
+<tr><td class="l">TOEIC スコアアップ</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="229">229</td><td data-v="11">11</td><td data-v="0.0480">4.8%</td><td data-v="625.7">¥626</td><td data-v="6883">¥6,883</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="4588.7">¥4,589</td><td class="l">一般_コース_TOEIC</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="イングリード" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">englead.jp<br><span>englead.jp › lp2505_01</span></div><div class="t">【公式】イングリード - イングリード 英会話コーチング - 英語コーチング／イングリード</div><div class="d">完全オーダーメイドの英会話学習カリキュラム／採用率0.3%を突破したプロコーチが徹底サポート WEB予約24時間受付中。カウンセリング当日の予約もOK。まずは30秒で無料カウンセリング予約。</div><div class="meta2">IMP 198,867 ／ CTR 3.1% ／ COST ¥4,896,183<br>2508｜一般</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">englead.jp<br><span>englead.jp › lp2505_01</span></div><div class="t">【公式】イングリード - イングリード 英会話コーチング - 英語コーチング／イングリード</div><div class="d">完全オーダーメイドの英会話学習カリキュラム／採用率0.3%を突破したプロコーチが徹底サポート WEB予約24時間受付中。カウンセリング当日の予約もOK。まずは30秒で無料カウンセリング予約。</div><div class="meta2">IMP 117,400 ／ CTR 3.0% ／ COST ¥2,321,156<br>2508｜一般</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">englead.jp<br><span>englead.jp › lp2505_01</span></div><div class="t">【公式】イングリード - 英会話コーチングサービスなら - 2ヶ月で英語を話す力に変える</div><div class="d">最短2ヶ月で英語が話せる自分へ。専属コーチが毎日サポートし、英語力UPも実現のプログラム １日２時間の本気で英語が変わる。満足度97%の専属コーチが毎日の学習設計し仕事後も続けれる</div><div class="meta2">IMP 36,934 ／ CTR 2.9% ／ COST ¥700,830<br>2508｜一般</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">englead.jp<br><span>englead.jp › lp2505_reskilling</span></div><div class="t">【公式】イングリード - 英会話コーチングサービスなら - 英語コーチング／イングリード</div><div class="d">昇進・転職を叶えるビジネス英語を。海外でも通用する伝わる英語力を専属プロコーチが最短育成。 １日２時間の本気で英語が変わる。満足度97%の専属コーチが毎日の学習設計し仕事後も続けれる</div><div class="meta2">IMP 19,169 ／ CTR 4.4% ／ COST ¥484,265<br>【リスキリング用】2511｜一般</div></div>
+</div>
+<div class="serp-col advblk" data-a="スパルタ英会話" style="--ac:var(--adv-1)"><h4><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話</h4>
+<p class="note">広告文データなし</p></div>
+<div class="serp-col advblk" data-a="リバティ・イングリッシュ・アカデミー" style="--ac:var(--adv-2)"><h4><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.liberty-e.com<br><span>www.liberty-e.com › ielts-taisaku</span></div><div class="t">IELTS 7.0超えの実績多数 - IELTSが短期的・効率的に上達 - LIBERTYの&quot;IELTS&quot;対策コース</div><div class="d">【LIBERTYの&quot;IELTS&quot;対策コース】7.0超えの実績多数／短期的・効率的にテスト結果の向上を実現。 コロンビア大学大学院ティーチャーズカレッジで独自性が認めらたメソッド「グラマーテーブル」</div><div class="meta2">IMP 237,401 ／ CTR 3.0% ／ COST ¥3,984,494<br>一般_コース_IELTS</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.liberty-e.com<br><span>www.liberty-e.com › toeic-taisaku</span></div><div class="t">【LIBERTY】TOEIC®対策コース - 【TOEIC】Aランク860～990を保証 - TOEIC対策は圧倒的実績で選ぶ</div><div class="d">日本では教えられていない「英語本来のルール」を体系化したメソッド／TOEIC 860以上獲得コース 短期間・効率的に目標達成 受講期間 最短1ヶ月（平均3〜6ヶ月） 平均自習時間1.5時間／1日</div><div class="meta2">IMP 232,064 ／ CTR 3.7% ／ COST ¥3,328,846<br>一般_コース_TOEIC</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.liberty-e.com<br><span>www.liberty-e.com › toefl-taisaku</span></div><div class="t">TOEFL 100点超えの実績多数 - TOEFLが短期的・効率的に上達 - 【TOEFL】iBT/ITP 対策コース</div><div class="d">【TOEFL iBT/ITP 対策コース】100点超えの実績多数／短期的・効率的にテスト結果の向上を実現。 コロンビア大学大学院ティーチャーズカレッジで独自性が認めらたメソッド「グラマーテーブル」</div><div class="meta2">IMP 165,706 ／ CTR 2.7% ／ COST ¥2,377,323<br>一般_コース_TOEFL</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.liberty-e.com<br><span>www.liberty-e.com › eiken-taisaku</span></div><div class="t">公式／Liberty English Academy - LIBERTYで身につく完璧な英語 - 英検１級・準１級・２級の対策</div><div class="d">他の英語学校とは異なるLIBERTYの英語学習。レベルの高い1級合格にも対応。大学入試を有利に 国内外トップ大学への進学実績多数／3〜6ヶ月、1日1.5時間の自習で完璧な英語力を習得！</div><div class="meta2">IMP 60,818 ／ CTR 2.4% ／ COST ¥368,871<br>一般_英検</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">{Keyword:英会話コーチングサービス}なら</td><td data-v="9">9</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">【公式】イングリード</td><td data-v="9">9</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">本気で英語を学ぶイングリード</td><td data-v="7">7</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">英語コーチング／イングリード</td><td data-v="7">7</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">イングリード 英会話コーチング</td><td data-v="6">6</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">公式／Liberty English Academy</td><td data-v="5">5</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">国内外のトップ校へ進学を実現</td><td data-v="4">4</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">完璧な英語で、世界のトップ校へ</td><td data-v="4">4</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">やり直し不要な本質的な英語力</td><td data-v="4">4</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">１日２時間の本気で英語を話せる</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">圧倒的に効率よく英語力を伸ばす</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">最短×効率で英語が使える自分へ</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">お客様の英語力UP率は脅威の95%</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">3ヶ月でTOEIC355点アップの実績</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">初心者から上級者まで英語が上達</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">短期間で留学並みに英語が伸びる</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">TOEIC350点アップを目指すなら</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">忙しい社会人向けの英会話学習</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">3ヶ月で結果を出す英会話学習法</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">月額1万円代から英語コーチング</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">マンツーマン指導で英会話力向上</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">完全オーダーメイドの英語学習</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">採用率0.3%のプロが個別指導</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">英語力UP率は脅威の95%</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">お客様満足度97%超えの英語学習</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">英語学習者10,000人超の相談実績</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">有名人や著名人も多数利用</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">オンライン完結／英語コーチング</td><td data-v="3">3</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">1日90分・3ヵ月～で完璧な英語力</td><td data-v="3">3</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">完璧な英語と、圧倒的な合格実績</td><td data-v="3">3</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">無料カウンセリング実施中</td><td data-v="3">3</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">短期間で効率よく高い英語力を</td><td data-v="3">3</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">最短1ヶ月、1日1.5hで目標達成へ</td><td data-v="3">3</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">国内外トップ大学への進学実績</td><td data-v="3">3</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">安心の保証制度／圧倒的な実績</td><td data-v="3">3</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">１日３時間で本気の英語学習を</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">英語学習の正しい学び方がわかる</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">TOEIC315点UPの実績</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">昇進を叶える社会人の英語力を</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">英語学習の「最後の挑戦」を</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">2ヶ月で英語を話せる自分へ</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">2ヶ月で英語を話す力に変える</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">ビジネス英語を武器にするなら</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">英語で通じる自信を仕事に</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">英語の正しい伸ばし方がわかる</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">実際使えるビジネス英語を最短で</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">英語学習の最後の砦</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">{Keyword:英会話コーチング}はイングリード</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">本物の英会話力を手にしたい方へ</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">SNSで話題沸騰の英語コーチング</td><td data-v="2">2</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">早慶・東大・医学部合格実績多数</td><td data-v="2">2</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">スピード・効率性・品質を重視</td><td data-v="2">2</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">自信があるからこそ「成果保証」</td><td data-v="2">2</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">修了者数4000名／継続率96%</td><td data-v="2">2</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">LIBERTYで身につく完璧な英語</td><td data-v="2">2</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">英米人と同じ“英語脳”を作る</td><td data-v="2">2</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">3ヵ月～・1日1.5hで完璧な英語力</td><td data-v="2">2</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">完成された一回完結型のレッスン</td><td data-v="2">2</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">早く正確な理解力を身に着ける</td><td data-v="2">2</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">IELTS 7.0超えの実績多数</td><td data-v="2">2</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">実践的なSpeaking/Writingを習得</td><td data-v="2">2</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">TOEFL 100点超えの実績多数</td><td data-v="2">2</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">LINEで簡単相談</td><td data-v="1">1</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">最大56万円のキャッシュバックも</td><td data-v="1">1</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">6ヶ月のリスキリングプログラム</td><td data-v="1">1</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">キャンペーン終了まで後{GLOBAL_COUNTDOWN(2025-11-30 23:59:59,15)}</td><td data-v="1">1</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">今すぐLINEで無料相談</td><td data-v="1">1</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">受講費最大56万円お得</td><td data-v="1">1</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">リスキリングプログラム開始</td><td data-v="1">1</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">抽選で10名様限定キャンペーン</td><td data-v="1">1</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">経済産業省より採択のプログラム</td><td data-v="1">1</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l wrap">プロの英語コーチに無料LINE相談</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">慶應大学入試は英語で差がつく</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">慶應義塾大学 受験コース</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">慶應義塾大学への進学を実現</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">慶應義塾大学 合格実績多数</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">早稲田大 合格実績多数</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">早稲田大 受験コース</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">早稲田大入試は英語で差がつく</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">早稲田大への進学を実現</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">東京大学 合格実績多数</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">東京大学 受験コース</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">東大・早慶・医学部合格実績多数</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">東大入試は英語で差がつく</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">東京大学への進学を実現</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">英検合格で大学入試を有利に</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">【LIBERTYで英語検定対策】</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">英検１級・準１級・２級の対策</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">英検合格を目指すならLIBERTY</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">IELTSが短期的・効率的に上達</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">LIBERTYの&quot;IELTS&quot;対策コース</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">米国式のサクセスコーチング</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">IELTSのスキルアップを保証</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">TOEFLのスキルアップを保証</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">【TOEFL】iBT/ITP 対策コース</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">LIBERTYの&quot;TOEFL&quot;対策コース</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">TOEFLが短期的・効率的に上達</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">独自メソッド&quot;グラマーテーブル&quot;</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">TOEIC 900超えの実績多数</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">Aランク（860以上）を目指す方に</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">Aランク860～990を保証</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">完璧な英語を、すべての人に。</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">【TOEIC】Aランク860～990を保証</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">圧倒的実績で選ぶなら</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">平均3〜6ヶ月で目標達成</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">最短ルートでTOEICスコアアップ</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">1日平均1.5時間の学習時間</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">TOEIC対策は圧倒的実績で選ぶ</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">【認定】一般教育訓練給付金対象</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">現在の英語力は問いません</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">英語力を根本的に伸ばす</td><td data-v="1">1</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l wrap">【LIBERTY】TOEIC®対策コース</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="イングリード">
+<h3 class="adv" id="adlib-イングリード" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード <span class="badge">取得 2025-11-28</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>9本</b></span><span class="chip">CPN<b>3個</b></span><span class="chip">ADG<b>4個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>3本</b></span></div>
+<p class="note">主要LP: <span title="https://englead.jp/lp2505_01/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=shimei">https://englead.jp/lp2505_01/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=shim（4本）</span> ／ <span title="https://englead.jp/lp2505_01/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=ippan">https://englead.jp/lp2505_01/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=ippa（3本）</span> ／ <span title="https://englead.jp/lp2505_reskilling/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=ippan_skill">https://englead.jp/lp2505_reskilling/?utm_source=google&amp;utm_medium=cpc&amp;utm_campa（2本）</span></p>
+<p class="note">カスタマイザ: {Keyword}×11 ／ {GLOBAL_COUNTDOWN}×1</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="イングリード"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">{Keyword:英会話コーチングサービス}なら</td><td data-v="9">9</td></tr>
+<tr><td class="l wrap">【公式】イングリード</td><td data-v="9">9</td></tr>
+<tr><td class="l wrap">本気で英語を学ぶイングリード</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">英語コーチング／イングリード</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">イングリード 英会話コーチング</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">１日２時間の本気で英語を話せる</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">圧倒的に効率よく英語力を伸ばす</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">最短×効率で英語が使える自分へ</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">お客様の英語力UP率は脅威の95%</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">3ヶ月でTOEIC355点アップの実績</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">初心者から上級者まで英語が上達</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">短期間で留学並みに英語が伸びる</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">TOEIC350点アップを目指すなら</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">忙しい社会人向けの英会話学習</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">3ヶ月で結果を出す英会話学習法</td><td data-v="3">3</td></tr>
+</table></div></div><div>
+<table data-adv="イングリード"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">完全オーダーメイドの英会話学習カリキュラム／採用率0.3%を突破したプロコーチが徹底サポート</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">WEB予約24時間受付中。カウンセリング当日の予約もOK。まずは30秒で無料カウンセリング予約。</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">１日２時間の本気で英語が変わる。満足度97%の専属コーチが毎日の学習設計し仕事後も続けれる</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">昇進・転職を叶えるビジネス英語を。海外でも通用する伝わる英語力を専属プロコーチが最短育成。</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">3ヶ月でTOEIC355点アップも可能！オンライン完結／英語はロジックと習慣化で伸ばす</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">短期間で圧倒的に英語力が伸びる！決して挫折させないオンライン英語コーチング</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">LINEを活用した徹底サポートで、挫折せず英語学習が続けられます。</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">オンライン完結で効率的な英語学習を実現。3ヶ月で本物の英会話力を。</td><td data-v="3">3</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="スパルタ英会話">
+<h3 class="adv" id="adlib-スパルタ英会話" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話 <span class="badge">取得 2025-11-28</span></h3>
+<p class="note">広告レポートに見出しデータなし（取得形式の問題の可能性）</p></div>
+<div class="card advblk" data-a="リバティ・イングリッシュ・アカデミー">
+<h3 class="adv" id="adlib-リバティ・イングリッシュ・アカデミー" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー <span class="badge">取得 2025-11-28</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>8本</b></span><span class="chip">CPN<b>6個</b></span><span class="chip">ADG<b>8個</b></span><span class="chip">ピン留め<b>25%</b></span><span class="chip">LP使い分け<b>8本</b></span></div>
+<p class="note">主要LP: <span title="https://www.liberty-e.com/keio-university-juken/">https://www.liberty-e.com/keio-university-juken/（1本）</span> ／ <span title="https://www.liberty-e.com/waseda-university-juken/">https://www.liberty-e.com/waseda-university-juken/（1本）</span> ／ <span title="https://www.liberty-e.com/tokyo-university-juken/">https://www.liberty-e.com/tokyo-university-juken/（1本）</span> ／ <span title="https://www.liberty-e.com/eiken-taisaku/">https://www.liberty-e.com/eiken-taisaku/（1本）</span> ／ <span title="https://www.liberty-e.com/ielts-taisaku/">https://www.liberty-e.com/ielts-taisaku/（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="リバティ・イングリッシュ・アカデミー"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">公式／Liberty English Academy</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">国内外のトップ校へ進学を実現</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">完璧な英語で、世界のトップ校へ</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">やり直し不要な本質的な英語力</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">1日90分・3ヵ月～で完璧な英語力</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">完璧な英語と、圧倒的な合格実績</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">無料カウンセリング実施中</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">短期間で効率よく高い英語力を</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">最短1ヶ月、1日1.5hで目標達成へ</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">国内外トップ大学への進学実績</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">安心の保証制度／圧倒的な実績</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">早慶・東大・医学部合格実績多数</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">スピード・効率性・品質を重視</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">自信があるからこそ「成果保証」</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">修了者数4000名／継続率96%</td><td data-v="2">2</td></tr>
+</table></div></div><div>
+<table data-adv="リバティ・イングリッシュ・アカデミー"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">コロンビア大学大学院ティーチャーズカレッジで独自性が認めらたメソッド「グラマーテーブル」</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">国内外トップ大学への進学実績多数／3〜6ヶ月、1日1.5時間の自習で完璧な英語力を習得！</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">英語力を短時間の学習で効率よく高め、他教科の学習時間を確保。英語専門スクールLIBERTY。</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">早慶・東大・医学部合格 実績多数！完璧に本質的な英語力の習得を目指すならLIBERTY。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">他の英語学校とは異なるLIBERTYの英語学習。確固たる自信と実績に裏付けられた充実の保証制度。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">他の英語学校とは異なるLIBERTYの英語学習。確固たる自信と実績に裏付けられた充実の保障制度。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">圧倒的な実績に裏付けられた保障制度。スコアアップはもちろん、根本的かつ実用的な英語を学べる</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">東大・早慶・医学部合格 実績多数！完璧に本質的な英語力の習得を目指すならLIBERTY。</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="イングリード">
+<h3 class="adv" id="query-イングリード" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード <span class="badge">取得 2025-11-28</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="27">27</td><td data-v="3542">3,542</td><td data-v="1374027">¥1,374,027</td><td data-v="0.9047">90.5%</td><td class="cv sep" data-v="136.0">136.0</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="25">25</td><td data-v="150">150</td><td data-v="132819">¥132,819</td><td data-v="0.0875">8.7%</td><td class="cv sep" data-v="21.4">21.4</td></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="8">8</td><td data-v="17">17</td><td data-v="11863">¥11,863</td><td data-v="0.0078">0.8%</td><td class="cv sep" data-v="10.0">10.0</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="イングリード"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">イング リード</td><td>追加済み</td><td>検索</td><td data-v="1925">1,925</td><td data-v="401493">¥401,493</td><td class="cv sep" data-v="88.6">88.6</td><td class="cv" data-v="4532.0">¥4,532</td></tr>
+<tr><td class="l">イング リード 料金</td><td>追加済み</td><td>検索</td><td data-v="762">762</td><td data-v="174565">¥174,565</td><td class="cv sep" data-v="17.4">17.4</td><td class="cv" data-v="10038.2">¥10,038</td></tr>
+<tr><td class="l">英語 コーチング</td><td>追加済み</td><td>検索</td><td data-v="352">352</td><td data-v="554628">¥554,628</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="50420.7">¥50,421</td></tr>
+<tr><td class="l">englead</td><td>追加済み</td><td>検索</td><td data-v="298">298</td><td data-v="74077">¥74,077</td><td class="cv sep" data-v="6.5">6.5</td><td class="cv" data-v="11396.5">¥11,396</td></tr>
+<tr><td class="l">コーチング 英語</td><td>なし</td><td>検索</td><td data-v="26">26</td><td data-v="39843">¥39,843</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="9960.8">¥9,961</td></tr>
+<tr><td class="l">イング リード 評判</td><td>追加済み</td><td>検索</td><td data-v="74">74</td><td data-v="32072">¥32,072</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="8018.0">¥8,018</td></tr>
+<tr><td class="l">英語 コーチング おすすめ</td><td>追加済み</td><td>検索</td><td data-v="35">35</td><td data-v="94270">¥94,270</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="31423.3">¥31,423</td></tr>
+<tr><td class="l">イングリー ど</td><td>なし</td><td>P-MAX</td><td data-v="11">11</td><td data-v="10103">¥10,103</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="3367.7">¥3,368</td></tr>
+<tr><td class="l">native camp</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="947">¥947</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="315.7">¥316</td></tr>
+<tr><td class="l">3 ヶ月 英会話</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="8096">¥8,096</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="2698.7">¥2,699</td></tr>
+<tr><td class="l">半年 で 英語 を マスター する</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="229">¥229</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="114.5">¥114</td></tr>
+<tr><td class="l">英語 2 ヶ月 で 話せる</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="573">¥573</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="286.5">¥286</td></tr>
+<tr><td class="l">gaba マンツーマン 英会話</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1092">¥1,092</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="546.0">¥546</td></tr>
+<tr><td class="l">イングリッシュ カンパニー</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="4081">¥4,081</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2040.5">¥2,040</td></tr>
+<tr><td class="l">ペコ 英会話</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="427">¥427</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="213.5">¥214</td></tr>
+<tr><td class="l">ぺこ 英語</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="14408">¥14,408</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="7204.0">¥7,204</td></tr>
+<tr><td class="l">イング リード 体験 談</td><td>追加済み</td><td>検索</td><td data-v="7">7</td><td data-v="3267">¥3,267</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1633.5">¥1,634</td></tr>
+<tr><td class="l">イング リード 口コミ</td><td>追加済み</td><td>検索</td><td data-v="59">59</td><td data-v="28405">¥28,405</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="14202.5">¥14,202</td></tr>
+<tr><td class="l">peco 英語</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="386">¥386</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="193.0">¥193</td></tr>
+<tr><td class="l">英語 スピーキング スクール</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="1051">¥1,051</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="700.7">¥701</td></tr>
+<tr><td class="l">英語 本気 で 勉強</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="661">¥661</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="440.7">¥441</td></tr>
+<tr><td class="l">イング リード コーチ</td><td>追加済み</td><td>検索</td><td data-v="30">30</td><td data-v="11250">¥11,250</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="7500.0">¥7,500</td></tr>
+<tr><td class="l">英会話</td><td>なし</td><td>検索</td><td data-v="99">99</td><td data-v="62785">¥62,785</td><td class="cv sep" data-v="1.4">1.4</td><td class="cv" data-v="43600.7">¥43,601</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（23行）。</p></div>
+<div class="advblk" data-a="スパルタ英会話">
+<h3 class="adv" id="query-スパルタ英会話" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話 <span class="badge">取得 2025-11-28</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="2">2</td><td data-v="184">184</td><td data-v="55652">¥55,652</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="4.0">4.0</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="スパルタ英会話"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">スパルタ 英会話</td><td>なし</td><td>P-MAX</td><td data-v="184">184</td><td data-v="55652">¥55,652</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="13913.0">¥13,913</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（1行）。</p></div>
+<div class="advblk" data-a="リバティ・イングリッシュ・アカデミー">
+<h3 class="adv" id="query-リバティ・イングリッシュ・アカデミー" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー <span class="badge">取得 2025-11-28</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜なし</td><td data-v="97">97</td><td data-v="2433">2,433</td><td data-v="1103912">¥1,103,912</td><td data-v="0.5710">57.1%</td><td class="cv sep" data-v="123.6">123.6</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="54">54</td><td data-v="2746">2,746</td><td data-v="829222">¥829,222</td><td data-v="0.4290">42.9%</td><td class="cv sep" data-v="99.4">99.4</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="リバティ・イングリッシュ・アカデミー"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">リバティ 英語</td><td>なし</td><td>検索</td><td data-v="462">462</td><td data-v="106958">¥106,958</td><td class="cv sep" data-v="32.4">32.4</td><td class="cv" data-v="3306.3">¥3,306</td></tr>
+<tr><td class="l">liberty english academy</td><td>追加済み</td><td>検索</td><td data-v="912">912</td><td data-v="144352">¥144,352</td><td class="cv sep" data-v="31.7">31.7</td><td class="cv" data-v="4552.3">¥4,552</td></tr>
+<tr><td class="l">リバティ イングリッシュ アカデミー</td><td>追加済み</td><td>検索</td><td data-v="948">948</td><td data-v="147564">¥147,564</td><td class="cv sep" data-v="29.9">29.9</td><td class="cv" data-v="4928.7">¥4,929</td></tr>
+<tr><td class="l">リバティー 英語</td><td>なし</td><td>検索</td><td data-v="110">110</td><td data-v="23473">¥23,473</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="2133.9">¥2,134</td></tr>
+<tr><td class="l">ielts</td><td>なし</td><td>検索</td><td data-v="332">332</td><td data-v="111653">¥111,653</td><td class="cv sep" data-v="7.7">7.7</td><td class="cv" data-v="14557.1">¥14,557</td></tr>
+<tr><td class="l">toefl 塾</td><td>なし</td><td>検索</td><td data-v="150">150</td><td data-v="219494">¥219,494</td><td class="cv sep" data-v="6.3">6.3</td><td class="cv" data-v="34675.2">¥34,675</td></tr>
+<tr><td class="l">リバティー イングリッシュ アカデミー</td><td>なし</td><td>検索</td><td data-v="244">244</td><td data-v="46650">¥46,650</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="7775.0">¥7,775</td></tr>
+<tr><td class="l">liberty 英語</td><td>なし</td><td>検索</td><td data-v="109">109</td><td data-v="18618">¥18,618</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="3723.6">¥3,724</td></tr>
+<tr><td class="l">toeic 塾</td><td>追加済み</td><td>検索</td><td data-v="268">268</td><td data-v="194824">¥194,824</td><td class="cv sep" data-v="4.8">4.8</td><td class="cv" data-v="40336.2">¥40,336</td></tr>
+<tr><td class="l">ielts 塾</td><td>なし</td><td>検索</td><td data-v="166">166</td><td data-v="256455">¥256,455</td><td class="cv sep" data-v="4.5">4.5</td><td class="cv" data-v="56990.0">¥56,990</td></tr>
+<tr><td class="l">ielts 対策</td><td>追加済み</td><td>検索</td><td data-v="135">135</td><td data-v="73799">¥73,799</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="18449.8">¥18,450</td></tr>
+<tr><td class="l">liberty 英語 塾</td><td>なし</td><td>検索</td><td data-v="39">39</td><td data-v="9658">¥9,658</td><td class="cv sep" data-v="3.3">3.3</td><td class="cv" data-v="2900.3">¥2,900</td></tr>
+<tr><td class="l">トフルゼミナール</td><td>なし</td><td>検索</td><td data-v="166">166</td><td data-v="64835">¥64,835</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="21611.7">¥21,612</td></tr>
+<tr><td class="l">英語 リバティ</td><td>なし</td><td>検索</td><td data-v="47">47</td><td data-v="9940">¥9,940</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="3313.3">¥3,313</td></tr>
+<tr><td class="l">リバティ toefl</td><td>追加済み</td><td>検索</td><td data-v="24">24</td><td data-v="12542">¥12,542</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="4180.7">¥4,181</td></tr>
+<tr><td class="l">toeic test sample</td><td>なし</td><td>検索</td><td data-v="42">42</td><td data-v="7682">¥7,682</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="2560.7">¥2,561</td></tr>
+<tr><td class="l">ielts スクール</td><td>追加済み</td><td>検索</td><td data-v="30">30</td><td data-v="43226">¥43,226</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="14408.7">¥14,409</td></tr>
+<tr><td class="l">toefl オンライン 講座</td><td>なし</td><td>検索</td><td data-v="29">29</td><td data-v="14260">¥14,260</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="5704.0">¥5,704</td></tr>
+<tr><td class="l">toeic コーチング</td><td>追加済み</td><td>検索</td><td data-v="57">57</td><td data-v="44039">¥44,039</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="17615.6">¥17,616</td></tr>
+<tr><td class="l">liberty ielts</td><td>追加済み</td><td>検索</td><td data-v="19">19</td><td data-v="5754">¥5,754</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="2301.6">¥2,302</td></tr>
+<tr><td class="l">toefl</td><td>なし</td><td>検索</td><td data-v="270">270</td><td data-v="97372">¥97,372</td><td class="cv sep" data-v="2.3">2.3</td><td class="cv" data-v="41790.6">¥41,791</td></tr>
+<tr><td class="l">ielts 塾 おすすめ</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="12131">¥12,131</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="6065.5">¥6,066</td></tr>
+<tr><td class="l">リバティ イングリッシュ アカデミー 初心者</td><td>なし</td><td>検索</td><td data-v="14">14</td><td data-v="2513">¥2,513</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1256.5">¥1,256</td></tr>
+<tr><td class="l">toefl ibt</td><td>なし</td><td>検索</td><td data-v="89">89</td><td data-v="29808">¥29,808</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="14904.0">¥14,904</td></tr>
+<tr><td class="l">toeic の 点数 を 上げる 方法</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="273">¥273</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="136.5">¥136</td></tr>
+<tr><td class="l">toefl コーチング</td><td>追加済み</td><td>検索</td><td data-v="5">5</td><td data-v="6918">¥6,918</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3459.0">¥3,459</td></tr>
+<tr><td class="l">トーフル 塾</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="7950">¥7,950</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3975.0">¥3,975</td></tr>
+<tr><td class="l">英語 専門 塾 高校生</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="7660">¥7,660</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3830.0">¥3,830</td></tr>
+<tr><td class="l">リバティ イングリッシュ アカデミー オンライン</td><td>なし</td><td>検索</td><td data-v="10">10</td><td data-v="1945">¥1,945</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="972.5">¥972</td></tr>
+<tr><td class="l">toeic 講座</td><td>追加済み</td><td>検索</td><td data-v="78">78</td><td data-v="29606">¥29,606</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="14803.0">¥14,803</td></tr>
+<tr><td class="l">岸谷 蘭丸 英語 塾</td><td>なし</td><td>検索</td><td data-v="16">16</td><td data-v="3387">¥3,387</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1693.5">¥1,694</td></tr>
+<tr><td class="l">toefl 塾 おすすめ</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="16123">¥16,123</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="8061.5">¥8,062</td></tr>
+<tr><td class="l">ielts 講座</td><td>追加済み</td><td>検索</td><td data-v="45">45</td><td data-v="25493">¥25,493</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="12746.5">¥12,746</td></tr>
+<tr><td class="l">早稲田 大学 塾</td><td>追加済み</td><td>検索</td><td data-v="17">17</td><td data-v="10427">¥10,427</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="5213.5">¥5,214</td></tr>
+<tr><td class="l">英語 塾 リバティ</td><td>なし</td><td>検索</td><td data-v="40">40</td><td data-v="6543">¥6,543</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3271.5">¥3,272</td></tr>
+<tr><td class="l">toeic オンライン 講座 おすすめ</td><td>追加済み</td><td>検索</td><td data-v="17">17</td><td data-v="7287">¥7,287</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3643.5">¥3,644</td></tr>
+<tr><td class="l">liberty english</td><td>追加済み</td><td>検索</td><td data-v="63">63</td><td data-v="8919">¥8,919</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="4459.5">¥4,460</td></tr>
+<tr><td class="l">uk plus 名古屋</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="850">¥850</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="425.0">¥425</td></tr>
+<tr><td class="l">toefl スクール</td><td>追加済み</td><td>検索</td><td data-v="25">25</td><td data-v="27882">¥27,882</td><td class="cv sep" data-v="1.7">1.7</td><td class="cv" data-v="16695.8">¥16,696</td></tr>
+<tr><td class="l">東大 毎日 塾 口コミ</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="5799">¥5,799</td><td class="cv sep" data-v="1.7">1.7</td><td class="cv" data-v="3472.5">¥3,472</td></tr>
+<tr><td class="l">ielts 点数 保証</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="7733">¥7,733</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="5155.3">¥5,155</td></tr>
+<tr><td class="l">liberty english academy 入会 金 無料</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="2744">¥2,744</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="1829.3">¥1,829</td></tr>
+<tr><td class="l">toeic スコア アップ</td><td>追加済み</td><td>検索</td><td data-v="11">11</td><td data-v="6883">¥6,883</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="4588.7">¥4,589</td></tr>
+<tr><td class="l">toeic 大学生 塾</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="4123">¥4,123</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="2748.7">¥2,749</td></tr>
+<tr><td class="l">リバティ イングリッシュ</td><td>追加済み</td><td>検索</td><td data-v="69">69</td><td data-v="13530">¥13,530</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="9020.0">¥9,020</td></tr>
+<tr><td class="l">短期 集中 toeic</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="390">¥390</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="260.0">¥260</td></tr>
+<tr><td class="l">リバティ 英語 塾</td><td>なし</td><td>検索</td><td data-v="28">28</td><td data-v="5328">¥5,328</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="3552.0">¥3,552</td></tr>
+<tr><td class="l">英語 liberty</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="1314">¥1,314</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="988.0">¥988</td></tr>
+<tr><td class="l">ielts コーチング</td><td>追加済み</td><td>検索</td><td data-v="23">23</td><td data-v="26177">¥26,177</td><td class="cv sep" data-v="1.2">1.2</td><td class="cv" data-v="20941.6">¥20,942</td></tr>
+<tr><td class="l">アイエルツ 単語 帳 おすすめ</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="250">¥250</td><td class="cv sep" data-v="1.1">1.1</td><td class="cv" data-v="221.2">¥221</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（50行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2025-11-28 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">指名</td><td data-v="15884">15,884</td><td data-v="3506">3,506</td><td data-v="0.2207">22.1%</td><td data-v="249.7">¥250</td><td data-v="875540">¥875,540</td><td data-v="0.1462">14.6%</td><td class="cv sep" data-v="140">140</td><td class="cv" data-v="0.0399">4.0%</td><td class="cv" data-v="6257.4">¥6,257</td></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td class="l">一般</td><td data-v="228483">228,483</td><td data-v="6704">6,704</td><td data-v="0.0293">2.9%</td><td data-v="762.8">¥763</td><td data-v="5113646">¥5,113,646</td><td data-v="0.8538">85.4%</td><td class="cv sep" data-v="105">105</td><td class="cv" data-v="0.0157">1.6%</td><td class="cv" data-v="48618.0">¥48,618</td></tr>
+<tr data-a="スパルタ英会話"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="スパルタ英会話"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話</td><td class="l">一般</td><td data-v="613">613</td><td data-v="36">36</td><td data-v="0.0587">5.9%</td><td data-v="1277.7">¥1,278</td><td data-v="45998">¥45,998</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="2">2</td><td class="cv" data-v="0.0556">5.6%</td><td class="cv" data-v="22999.0">¥22,999</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">指名</td><td data-v="23905">23,905</td><td data-v="4336">4,336</td><td data-v="0.1814">18.1%</td><td data-v="200.5">¥200</td><td data-v="869308">¥869,308</td><td data-v="0.0857">8.6%</td><td class="cv sep" data-v="193">193</td><td class="cv" data-v="0.0445">4.4%</td><td class="cv" data-v="4508.9">¥4,509</td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td class="l">一般</td><td data-v="623096">623,096</td><td data-v="19698">19,698</td><td data-v="0.0316">3.2%</td><td data-v="470.7">¥471</td><td data-v="9272086">¥9,272,086</td><td data-v="0.9143">91.4%</td><td class="cv sep" data-v="273">273</td><td class="cv" data-v="0.0138">1.4%</td><td class="cv" data-v="34013.5">¥34,014</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2025-11-28</th></tr>
+<tr data-a="イングリード"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>イングリード</td><td><div class="bar"><div class="mt-i" style="width:68.7%" title="インテント マッチ 68.7%"></div><div class="mt-p" style="width:1.0%" title="フレーズ一致 1.0%"></div><div class="mt-e" style="width:30.3%" title="完全一致 30.3%"></div></div><div class="note">インテント69% / フレーズ1% / 完全30%</div></td></tr>
+<tr data-a="スパルタ英会話"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>スパルタ英会話</td><td><div class="bar"><div class="mt-p" style="width:100.0%" title="フレーズ一致 100.0%"></div></div><div class="note">フレーズ100%</div></td></tr>
+<tr data-a="リバティ・イングリッシュ・アカデミー"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>リバティ・イングリッシュ・アカデミー</td><td><div class="bar"><div class="mt-i" style="width:83.1%" title="インテント マッチ 83.1%"></div><div class="mt-p" style="width:15.3%" title="フレーズ一致 15.3%"></div><div class="mt-e" style="width:1.6%" title="完全一致 1.6%"></div></div><div class="note">インテント83% / フレーズ15% / 完全2%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2025-11-28</b>（20251128_レポート依頼用（英会話サービス）_セレス様__159ph-dq.xlsx）<br>取得不可（空タブ）: トライズ<br>端数月: 2025-11（27日まで）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

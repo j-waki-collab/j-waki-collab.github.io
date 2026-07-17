@@ -1,0 +1,841 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜eSIM</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>eSIM業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">2社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2026-05-18</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥16,783,762</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥225</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">4.8〜7.8</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="World esim" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</button><button class="achip" data-t="Xモバイル" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2026-05-18（期間 2026年3月1日 - 2026年5月18日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td data-v="15129147">¥15,129,147</td><td data-v="70105">70,105</td><td data-v="0.1375">13.7%</td><td data-v="215.8">¥216</td><td data-v="7.79">7.79</td><td data-v="0.0">--</td><td data-v="0.2399">24.0%</td><td><div class="bar"><div class="mt-i" style="width:25.5%" title="インテント マッチ 25.5%"></div><div class="mt-p" style="width:28.3%" title="フレーズ一致 28.3%"></div><div class="mt-e" style="width:46.2%" title="完全一致 46.2%"></div></div></td><td class="cv sep" data-v="14619">14,619</td><td class="cv" data-v="0.2085">20.9%</td><td class="cv" data-v="1034.9">¥1,035</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td data-v="1654615">¥1,654,615</td><td data-v="4502">4,502</td><td data-v="0.1121">11.2%</td><td data-v="367.5">¥368</td><td data-v="4.79">4.79</td><td data-v="0.0">--</td><td data-v="0.5910">59.1%</td><td><div class="bar"><div class="mt-i" style="width:23.6%" title="インテント マッチ 23.6%"></div><div class="mt-p" style="width:44.0%" title="フレーズ一致 44.0%"></div><div class="mt-e" style="width:32.4%" title="完全一致 32.4%"></div></div></td><td class="cv sep" data-v="142">142</td><td class="cv" data-v="0.0315">3.2%</td><td class="cv" data-v="11653.0">¥11,653</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: グローバルesim</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td data-v="202603">2026-03</td><td data-v="204484">204,484</td><td data-v="29269">29,269</td><td data-v="0.1431">14.3%</td><td data-v="199.5">¥200</td><td data-v="5839884">¥5,839,884</td><td class="cv sep" data-v="6466">6,466</td><td class="cv" data-v="0.2209">22.1%</td><td class="cv" data-v="903.1">¥903</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td data-v="202604">2026-04</td><td data-v="187309">187,309</td><td data-v="24634">24,634</td><td data-v="0.1315">13.2%</td><td data-v="215.4">¥215</td><td data-v="5306585">¥5,306,585</td><td class="cv sep" data-v="5220">5,220</td><td class="cv" data-v="0.2119">21.2%</td><td class="cv" data-v="1016.5">¥1,017</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td data-v="202605">2026-05 ⚠</td><td data-v="118194">118,194</td><td data-v="16202">16,202</td><td data-v="0.1371">13.7%</td><td data-v="245.8">¥246</td><td data-v="3982678">¥3,982,678</td><td class="cv sep" data-v="2932">2,932</td><td class="cv" data-v="0.1810">18.1%</td><td class="cv" data-v="1358.4">¥1,358</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td data-v="202603">2026-03</td><td data-v="19452">19,452</td><td data-v="1995">1,995</td><td data-v="0.1026">10.3%</td><td data-v="348.3">¥348</td><td data-v="694820">¥694,820</td><td class="cv sep" data-v="68">68</td><td class="cv" data-v="0.0341">3.4%</td><td class="cv" data-v="10219.4">¥10,219</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td data-v="202604">2026-04</td><td data-v="15117">15,117</td><td data-v="1768">1,768</td><td data-v="0.1170">11.7%</td><td data-v="390.8">¥391</td><td data-v="690857">¥690,857</td><td class="cv sep" data-v="56">56</td><td class="cv" data-v="0.0317">3.2%</td><td class="cv" data-v="12336.7">¥12,337</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td data-v="202605">2026-05 ⚠</td><td data-v="5598">5,598</td><td data-v="739">739</td><td data-v="0.1320">13.2%</td><td data-v="363.9">¥364</td><td data-v="268938">¥268,938</td><td class="cv sep" data-v="18">18</td><td class="cv" data-v="0.0244">2.4%</td><td class="cv" data-v="14941.0">¥14,941</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="World esim">
+<h3 class="adv" id="struct-Worldesim" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim <span class="badge">取得 2026-05-18</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</span><span class="st">📁 CPN <b>2</b></span><span class="st">📂 ADG <b>12</b></span><span class="st">🔑 KW <b>83</b></span><span class="st">✏️ 広告 <b>0</b></span><span class="st">🔗 LP <b>0</b></span><span class="st">💰 <b>¥15,129,147</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="UC_SK_2_一般">UC_SK_2_一般</span><span class="share"><div style="width:51%"></div></span><span class="st">51.0%</span><span class="st">📂 <b>11</b></span><span class="st">🔑 <b>77</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥7,711,255</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="UCSK2_一般">UCSK2_一般</span><span class="st">🔑 <b>9</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥1,895,950</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="UCSK2_ヨーロッパ">UCSK2_ヨーロッパ</span><span class="st">🔑 <b>15</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥1,500,529</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="UCSK2_アメリカ">UCSK2_アメリカ</span><span class="st">🔑 <b>15</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥922,122</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="UCSK2_韓国">UCSK2_韓国</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥885,337</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="UCSK2_中国">UCSK2_中国</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥694,213</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="UCSK2_ハワイ">UCSK2_ハワイ</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥629,403</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="UCSK2_台湾">UCSK2_台湾</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥590,604</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="UCSK2_ベトナム">UCSK2_ベトナム</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥243,683</b></span></span></li>
+<li><details><summary>… 残り 3 広告グループ（🔑 13 / ✏️ 0 / 💰 ¥349,414）</summary><ul>
+<li><span class="node adg"><span class="nm" title="UCSK2_タイ">UCSK2_タイ</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥193,608</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="UCSK2_オーストラリア">UCSK2_オーストラリア</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥82,895</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="UCSK2_香港">UCSK2_香港</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥72,911</b></span></span></li>
+</ul></details></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="UC_SK_1_ブランド名(G)">UC_SK_1_ブランド名(G)</span><span class="share"><div style="width:49%"></div></span><span class="st">49.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥7,417,892</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="UCSK1_ブランド名2">UCSK1_ブランド名2</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>0</b></span><span class="st">🔗 <b>0</b></span><span class="st">💰 <b>¥7,417,892</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="Xモバイル">
+<h3 class="adv" id="struct-Xモバイル" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル <span class="badge">取得 2026-05-18</span></h3>
+<div class="tree" style="--ac:var(--adv-1)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</span><span class="st">📁 CPN <b>6</b></span><span class="st">📂 ADG <b>6</b></span><span class="st">🔑 KW <b>32</b></span><span class="st">✏️ 広告 <b>6</b></span><span class="st">🔗 LP <b>3</b></span><span class="st">💰 <b>¥1,654,615</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)">【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</span><span class="share"><div style="width:46%"></div></span><span class="st">45.6%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>11</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥754,358</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【限界突破Wi-Fi】gs_brand">【限界突破Wi-Fi】gs_brand</span><span class="st">🔑 <b>11</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥754,358</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="【エックスグローバル】GS_General(5/1目標CPAさらに抑制)">【エックスグローバル】GS_General(5/1目標CPAさらに抑制)</span><span class="share"><div style="width:24%"></div></span><span class="st">24.4%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥403,780</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【エックスグローバル】GS_General">【エックスグローバル】GS_General</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥403,780</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="【限界突破Wi-Fi】GS_General">【限界突破Wi-Fi】GS_General</span><span class="share"><div style="width:16%"></div></span><span class="st">15.7%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥259,249</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【限界突破Wi-Fi】gs_general">【限界突破Wi-Fi】gs_general</span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥259,249</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="【タックルベリーモバイル】GS_Brand">【タックルベリーモバイル】GS_Brand</span><span class="share"><div style="width:10%"></div></span><span class="st">9.5%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥157,947</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【タックルベリーモバイル】GS_Brand">【タックルベリーモバイル】GS_Brand</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥157,947</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="【エックスグローバル】GS_Brand">【エックスグローバル】GS_Brand</span><span class="share"><div style="width:4%"></div></span><span class="st">4.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥65,621</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【エックスグローバル】GS_Brand">【エックスグローバル】GS_Brand</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥65,621</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="【タックルベリーモバイル】GS_General">【タックルベリーモバイル】GS_General</span><span class="share"><div style="width:1%"></div></span><span class="st">0.8%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥13,660</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【タックルベリーモバイル】GS_General">【タックルベリーモバイル】GS_General</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥13,660</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:50.7%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[ニューヨーク esim] / QS7 / CPC¥262 / COST¥16,258"></span>
+<span class="dot" style="left:35.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜esim 韓国 旅行 / QS7 / CPC¥181 / COST¥7,597"></span>
+<span class="dot" style="left:42.7%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜ロサンゼルス esim / QS7 / CPC¥221 / COST¥16,342"></span>
+<span class="dot" style="left:26.7%;bottom:100.0%;width:14px;height:14px;background:var(--adv-0)" title="World esim｜[world esim] / QS10 / CPC¥138 / COST¥1,569,980"></span>
+<span class="dot" style="left:26.9%;bottom:100.0%;width:14px;height:14px;background:var(--adv-0)" title="World esim｜[ワールドesim] / QS10 / CPC¥139 / COST¥1,254,964"></span>
+<span class="dot" style="left:30.3%;bottom:55.6%;width:14px;height:14px;background:var(--adv-0)" title="World esim｜海外 sim / QS6 / CPC¥156 / COST¥1,169,370"></span>
+<span class="dot" style="left:37.4%;bottom:66.7%;width:14px;height:14px;background:var(--adv-0)" title="World esim｜[韓国 esim] / QS7 / CPC¥194 / COST¥660,025"></span>
+<span class="dot" style="left:25.6%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[ワールドイーシム] / QS8 / CPC¥133 / COST¥316,553"></span>
+<span class="dot" style="left:83.1%;bottom:100.0%;width:14px;height:14px;background:var(--adv-0)" title="World esim｜ワールドesim / QS10 / CPC¥430 / COST¥1,629,781"></span>
+<span class="dot" style="left:96.8%;bottom:100.0%;width:14px;height:14px;background:var(--adv-0)" title="World esim｜world esim / QS10 / CPC¥500 / COST¥2,060,035"></span>
+<span class="dot" style="left:38.7%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[台湾 esim] / QS7 / CPC¥200 / COST¥437,017"></span>
+<span class="dot" style="left:35.3%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[esim 中国 旅行] / QS7 / CPC¥183 / COST¥21,175"></span>
+<span class="dot" style="left:30.5%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜esim 海外 旅行 / QS7 / CPC¥157 / COST¥409,720"></span>
+<span class="dot" style="left:47.4%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[ハワイ esim] / QS8 / CPC¥245 / COST¥407,667"></span>
+<span class="dot" style="left:36.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[タイ esim] / QS7 / CPC¥190 / COST¥152,884"></span>
+<span class="dot" style="left:50.6%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[中国 esim] / QS7 / CPC¥261 / COST¥286,972"></span>
+<span class="dot" style="left:49.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜ヨーロッパ esim / QS7 / CPC¥254 / COST¥384,277"></span>
+<span class="dot" style="left:31.3%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜韓国 esim / QS7 / CPC¥162 / COST¥180,548"></span>
+<span class="dot" style="left:44.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜中国 esim / QS7 / CPC¥228 / COST¥243,177"></span>
+<span class="dot" style="left:60.7%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[アメリカ esim] / QS7 / CPC¥314 / COST¥309,843"></span>
+<span class="dot" style="left:43.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[ボストン esim] / QS7 / CPC¥222 / COST¥210,032"></span>
+<span class="dot" style="left:38.6%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[シカゴ esim] / QS7 / CPC¥199 / COST¥97,457"></span>
+<span class="dot" style="left:25.9%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜香港 esim / QS7 / CPC¥134 / COST¥12,581"></span>
+<span class="dot" style="left:40.1%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜esim 中国 旅行 / QS7 / CPC¥207 / COST¥131,734"></span>
+<span class="dot" style="left:87.2%;bottom:77.8%;width:14px;height:14px;background:var(--adv-0)" title="World esim｜ワールドイーシム / QS8 / CPC¥451 / COST¥586,579"></span>
+<span class="dot" style="left:41.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[ベトナム esim] / QS7 / CPC¥212 / COST¥174,527"></span>
+<span class="dot" style="left:52.1%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[ヨーロッパ esim] / QS7 / CPC¥269 / COST¥201,589"></span>
+<span class="dot" style="left:33.3%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜台湾 esim / QS7 / CPC¥172 / COST¥95,249"></span>
+<span class="dot" style="left:38.4%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜ハワイ esim / QS8 / CPC¥198 / COST¥183,394"></span>
+<span class="dot" style="left:31.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜海外 esim / QS7 / CPC¥161 / COST¥155,440"></span>
+<span class="dot" style="left:55.0%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[esim ヨーロッパ] / QS8 / CPC¥284 / COST¥146,035"></span>
+<span class="dot" style="left:49.5%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜アメリカ esim / QS7 / CPC¥256 / COST¥178,945"></span>
+<span class="dot" style="left:53.9%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[イタリア esim] / QS7 / CPC¥279 / COST¥118,442"></span>
+<span class="dot" style="left:33.7%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[香港 esim] / QS7 / CPC¥174 / COST¥57,292"></span>
+<span class="dot" style="left:55.7%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[スペイン esim] / QS7 / CPC¥288 / COST¥64,769"></span>
+<span class="dot" style="left:53.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[フランス esim] / QS7 / CPC¥274 / COST¥81,923"></span>
+<span class="dot" style="left:40.6%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜海外 で 使える sim / QS6 / CPC¥210 / COST¥50,825"></span>
+<span class="dot" style="left:38.5%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[オーストラリア esim] / QS7 / CPC¥199 / COST¥69,703"></span>
+<span class="dot" style="left:30.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜ベトナム esim / QS7 / CPC¥159 / COST¥39,954"></span>
+<span class="dot" style="left:51.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[イギリス esim] / QS7 / CPC¥263 / COST¥76,935"></span>
+<span class="dot" style="left:43.5%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜イギリス esim / QS7 / CPC¥225 / COST¥46,550"></span>
+<span class="dot" style="left:42.7%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜イタリア esim / QS7 / CPC¥221 / COST¥52,136"></span>
+<span class="dot" style="left:48.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜スペイン esim / QS7 / CPC¥248 / COST¥70,741"></span>
+<span class="dot" style="left:43.8%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜esim ヨーロッパ 旅行 / QS8 / CPC¥226 / COST¥96,262"></span>
+<span class="dot" style="left:53.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[ドイツ esim] / QS7 / CPC¥275 / COST¥59,141"></span>
+<span class="dot" style="left:33.9%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜esim 台湾 旅行 / QS7 / CPC¥175 / COST¥42,083"></span>
+<span class="dot" style="left:34.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜タイ esim / QS7 / CPC¥180 / COST¥21,043"></span>
+<span class="dot" style="left:37.5%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[ソウル esim] / QS7 / CPC¥194 / COST¥23,636"></span>
+<span class="dot" style="left:39.2%;bottom:33.3%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[北京 esim] / QS4 / CPC¥203 / COST¥11,155"></span>
+<span class="dot" style="left:34.2%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜格安 sim 海外 / QS3 / CPC¥177 / COST¥19,956"></span>
+<span class="dot" style="left:44.4%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜フランス esim / QS7 / CPC¥229 / COST¥44,485"></span>
+<span class="dot" style="left:51.5%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[ロサンゼルス esim] / QS7 / CPC¥266 / COST¥26,903"></span>
+<span class="dot" style="left:37.6%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜海外 旅行 携帯 sim / QS6 / CPC¥194 / COST¥29,750"></span>
+<span class="dot" style="left:35.9%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[台北 esim] / QS7 / CPC¥186 / COST¥12,438"></span>
+<span class="dot" style="left:36.9%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[esim 韓国 旅行] / QS7 / CPC¥191 / COST¥13,531"></span>
+<span class="dot" style="left:46.9%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[esim ヨーロッパ 旅行] / QS8 / CPC¥243 / COST¥32,513"></span>
+<span class="dot" style="left:39.5%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜ドイツ esim / QS7 / CPC¥204 / COST¥24,731"></span>
+<span class="dot" style="left:32.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[バンコク esim] / QS7 / CPC¥166 / COST¥11,647"></span>
+<span class="dot" style="left:50.4%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜esim アメリカ 旅行 / QS7 / CPC¥261 / COST¥31,024"></span>
+<span class="dot" style="left:45.1%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[ホノルル esim] / QS6 / CPC¥233 / COST¥15,377"></span>
+<span class="dot" style="left:33.9%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜esim ベトナム 旅行 / QS7 / CPC¥175 / COST¥17,696"></span>
+<span class="dot" style="left:31.8%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜esim ハワイ 旅行 / QS8 / CPC¥164 / COST¥20,226"></span>
+<span class="dot" style="left:29.9%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜esim タイ 旅行 / QS7 / CPC¥154 / COST¥6,023"></span>
+<span class="dot" style="left:33.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜オーストラリア esim / QS7 / CPC¥172 / COST¥7,043"></span>
+<span class="dot" style="left:31.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="World esim｜[esim ベトナム 旅行] / QS7 / CPC¥164 / COST¥7,061"></span>
+<span class="dot" style="left:91.0%;bottom:11.1%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜esim 海外 / QS2 / CPC¥470 / COST¥16,931"></span>
+<span class="dot" style="left:65.1%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜海外 wifi / QS1 / CPC¥337 / COST¥17,846"></span>
+<span class="dot" style="left:100.0%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜esim / QS3 / CPC¥669 / COST¥321,115"></span>
+<span class="dot" style="left:100.0%;bottom:55.6%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜エックスモバイル 海外 / QS6 / CPC¥680 / COST¥48,949"></span>
+<span class="dot" style="left:20.0%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜釣り具 中古 / QS5 / CPC¥103 / COST¥13,660"></span>
+<span class="dot" style="left:13.9%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜タックルベリーモバイル / QS10 / CPC¥72 / COST¥21,880"></span>
+<span class="dot" style="left:56.7%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜タックルベリー / QS7 / CPC¥293 / COST¥136,067"></span>
+<span class="dot" style="left:100.0%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜[x モバイル wifi] / QS8 / CPC¥559 / COST¥108,928"></span>
+<span class="dot" style="left:47.5%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜[限界突破Wi-Fi] / QS10 / CPC¥246 / COST¥54,554"></span>
+<span class="dot" style="left:50.7%;bottom:88.9%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜[限界 突破 wifi] / QS9 / CPC¥262 / COST¥169,589"></span>
+<span class="dot" style="left:71.8%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜[限界突破ワイファイ] / QS10 / CPC¥371 / COST¥27,829"></span>
+<span class="dot" style="left:56.8%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜[x モバイル 限界 突破 wifi] / QS8 / CPC¥294 / COST¥17,040"></span>
+<span class="dot" style="left:95.8%;bottom:88.9%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜限界 突破 wifi / QS9 / CPC¥495 / COST¥161,967"></span>
+<span class="dot" style="left:100.0%;bottom:88.9%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜[エックス モバイル wi fi] / QS9 / CPC¥517 / COST¥67,193"></span>
+<span class="dot" style="left:53.4%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜[エックス モバイル ポケット wifi] / QS8 / CPC¥276 / COST¥12,425"></span>
+<span class="dot" style="left:100.0%;bottom:88.9%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜エックス モバイル wi fi / QS9 / CPC¥701 / COST¥109,304"></span>
+<span class="dot" style="left:32.4%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜クラウド wifi / QS1 / CPC¥168 / COST¥10,231"></span>
+<span class="dot" style="left:52.4%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜[無制限 ポケット wi fi] / QS5 / CPC¥271 / COST¥8,939"></span>
+<span class="dot" style="left:70.9%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜レンタル ワイファイ / QS5 / CPC¥367 / COST¥28,589"></span>
+<span class="dot" style="left:49.8%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜無制限 ポケット wi fi / QS5 / CPC¥257 / COST¥16,460"></span>
+<span class="dot" style="left:49.5%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜モバイル ルーター / QS1 / CPC¥256 / COST¥142,402"></span>
+<span class="dot" style="left:80.2%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="Xモバイル｜[モバイル ルーター] / QS1 / CPC¥415 / COST¥31,106"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥129</span>
+<span class="ax" style="left:50%;bottom:-22px">¥258</span>
+<span class="ax" style="left:75%;bottom:-22px">¥388</span>
+<span class="ax" style="left:100%;bottom:-22px">¥517</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>World esim</span><span><i style="background:var(--adv-1)"></i>Xモバイル</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l">タックルベリーモバイル</td><td data-v="10">10</td><td data-v="72">¥72</td><td data-v="305">305</td><td data-v="21880">¥21,880</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[ワールドイーシム]</td><td data-v="8">8</td><td data-v="133">¥133</td><td data-v="2388">2,388</td><td data-v="316553">¥316,553</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">香港 esim</td><td data-v="7">7</td><td data-v="134">¥134</td><td data-v="94">94</td><td data-v="12581">¥12,581</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[world esim]</td><td data-v="10">10</td><td data-v="138">¥138</td><td data-v="11387">11,387</td><td data-v="1569980">¥1,569,980</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[ワールドesim]</td><td data-v="10">10</td><td data-v="139">¥139</td><td data-v="9022">9,022</td><td data-v="1254964">¥1,254,964</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">esim タイ 旅行</td><td data-v="7">7</td><td data-v="154">¥154</td><td data-v="39">39</td><td data-v="6023">¥6,023</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">esim 海外 旅行</td><td data-v="7">7</td><td data-v="157">¥157</td><td data-v="2603">2,603</td><td data-v="409720">¥409,720</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">ベトナム esim</td><td data-v="7">7</td><td data-v="159">¥159</td><td data-v="251">251</td><td data-v="39954">¥39,954</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">海外 esim</td><td data-v="7">7</td><td data-v="161">¥161</td><td data-v="965">965</td><td data-v="155440">¥155,440</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">韓国 esim</td><td data-v="7">7</td><td data-v="162">¥162</td><td data-v="1117">1,117</td><td data-v="180548">¥180,548</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[esim ベトナム 旅行]</td><td data-v="7">7</td><td data-v="164">¥164</td><td data-v="43">43</td><td data-v="7061">¥7,061</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">esim ハワイ 旅行</td><td data-v="8">8</td><td data-v="164">¥164</td><td data-v="123">123</td><td data-v="20226">¥20,226</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[バンコク esim]</td><td data-v="7">7</td><td data-v="166">¥166</td><td data-v="70">70</td><td data-v="11647">¥11,647</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">オーストラリア esim</td><td data-v="7">7</td><td data-v="172">¥172</td><td data-v="41">41</td><td data-v="7043">¥7,043</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">台湾 esim</td><td data-v="7">7</td><td data-v="172">¥172</td><td data-v="554">554</td><td data-v="95249">¥95,249</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[香港 esim]</td><td data-v="7">7</td><td data-v="174">¥174</td><td data-v="329">329</td><td data-v="57292">¥57,292</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">esim ベトナム 旅行</td><td data-v="7">7</td><td data-v="175">¥175</td><td data-v="101">101</td><td data-v="17696">¥17,696</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">esim 台湾 旅行</td><td data-v="7">7</td><td data-v="175">¥175</td><td data-v="240">240</td><td data-v="42083">¥42,083</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">タイ esim</td><td data-v="7">7</td><td data-v="180">¥180</td><td data-v="117">117</td><td data-v="21043">¥21,043</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">esim 韓国 旅行</td><td data-v="7">7</td><td data-v="181">¥181</td><td data-v="42">42</td><td data-v="7597">¥7,597</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[esim 中国 旅行]</td><td data-v="7">7</td><td data-v="183">¥183</td><td data-v="116">116</td><td data-v="21175">¥21,175</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[台北 esim]</td><td data-v="7">7</td><td data-v="186">¥186</td><td data-v="67">67</td><td data-v="12438">¥12,438</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[タイ esim]</td><td data-v="7">7</td><td data-v="190">¥190</td><td data-v="803">803</td><td data-v="152884">¥152,884</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[esim 韓国 旅行]</td><td data-v="7">7</td><td data-v="191">¥191</td><td data-v="71">71</td><td data-v="13531">¥13,531</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[韓国 esim]</td><td data-v="7">7</td><td data-v="194">¥194</td><td data-v="3410">3,410</td><td data-v="660025">¥660,025</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[ソウル esim]</td><td data-v="7">7</td><td data-v="194">¥194</td><td data-v="122">122</td><td data-v="23636">¥23,636</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">ハワイ esim</td><td data-v="8">8</td><td data-v="198">¥198</td><td data-v="924">924</td><td data-v="183394">¥183,394</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[オーストラリア esim]</td><td data-v="7">7</td><td data-v="199">¥199</td><td data-v="350">350</td><td data-v="69703">¥69,703</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[シカゴ esim]</td><td data-v="7">7</td><td data-v="199">¥199</td><td data-v="489">489</td><td data-v="97457">¥97,457</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[台湾 esim]</td><td data-v="7">7</td><td data-v="200">¥200</td><td data-v="2186">2,186</td><td data-v="437017">¥437,017</td></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l">esim</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="669">¥669</td><td data-v="321115">¥321,115</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l">モバイル ルーター</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="256">¥256</td><td data-v="142402">¥142,402</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l">[モバイル ルーター]</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="415">¥415</td><td data-v="31106">¥31,106</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">格安 sim 海外</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="177">¥177</td><td data-v="19956">¥19,956</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l">海外 wifi</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="337">¥337</td><td data-v="17846">¥17,846</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l">esim 海外</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="470">¥470</td><td data-v="16931">¥16,931</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">[北京 esim]</td><td data-v="4">4</td><td>推定CTR</td><td data-v="203">¥203</td><td data-v="11155">¥11,155</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l">クラウド wifi</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="168">¥168</td><td data-v="10231">¥10,231</td></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td data-v="7.79">7.79</td><td data-v="14.5">14.5%</td><td data-v="0.2">0.2%</td><td data-v="0.0">0.0%</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td data-v="4.79">4.79</td><td data-v="31.9"><b>31.9%</b></td><td data-v="34.4"><b>34.4%</b></td><td data-v="43.7"><b>43.7%</b></td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="World esim">
+<h3 class="adv" id="kwqs-Worldesim" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim <span class="badge">取得 2026-05-18</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>7.79</b></span><span class="chip">関連性↓<b>14.5%</b></span><span class="chip">推定CTR↓<b>0.2%</b></span><span class="chip">LP利便性↓<b>0.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="World esim"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">world esim</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="39747">39,747</td><td data-v="4118">4,118</td><td data-v="0.1036">10.4%</td><td data-v="500.3">¥500</td><td data-v="2060035">¥2,060,035</td><td class="cv sep" data-v="754.6">754.6</td><td class="cv" data-v="2729.8">¥2,730</td><td class="l">UC_SK_1_ブランド名(G)</td></tr>
+<tr><td class="l">ワールドesim</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="29803">29,803</td><td data-v="3793">3,793</td><td data-v="0.1273">12.7%</td><td data-v="429.7">¥430</td><td data-v="1629781">¥1,629,781</td><td class="cv sep" data-v="637.9">637.9</td><td class="cv" data-v="2554.8">¥2,555</td><td class="l">UC_SK_1_ブランド名(G)</td></tr>
+<tr><td class="l">[world esim]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="44583">44,583</td><td data-v="11387">11,387</td><td data-v="0.2554">25.5%</td><td data-v="137.9">¥138</td><td data-v="1569980">¥1,569,980</td><td class="cv sep" data-v="3065.2">3,065.2</td><td class="cv" data-v="512.2">¥512</td><td class="l">UC_SK_1_ブランド名(G)</td></tr>
+<tr><td class="l">[ワールドesim]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="33470">33,470</td><td data-v="9022">9,022</td><td data-v="0.2696">27.0%</td><td data-v="139.1">¥139</td><td data-v="1254964">¥1,254,964</td><td class="cv sep" data-v="2174.2">2,174.2</td><td class="cv" data-v="577.2">¥577</td><td class="l">UC_SK_1_ブランド名(G)</td></tr>
+<tr><td class="l">海外 sim</td><td>インテント</td><td data-v="6">6</td><td>平均より下</td><td>平均</td><td>平均より上</td><td class="sep" data-v="75974">75,974</td><td data-v="7474">7,474</td><td data-v="0.0984">9.8%</td><td data-v="156.5">¥156</td><td data-v="1169370">¥1,169,370</td><td class="cv sep" data-v="1087.2">1,087.2</td><td class="cv" data-v="1075.6">¥1,076</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[韓国 esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="32055">32,055</td><td data-v="3410">3,410</td><td data-v="0.1064">10.6%</td><td data-v="193.6">¥194</td><td data-v="660025">¥660,025</td><td class="cv sep" data-v="910.3">910.3</td><td class="cv" data-v="725.0">¥725</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">ワールドイーシム</td><td>フレーズ</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="12363">12,363</td><td data-v="1301">1,301</td><td data-v="0.1052">10.5%</td><td data-v="450.9">¥451</td><td data-v="586579">¥586,579</td><td class="cv sep" data-v="195.9">195.9</td><td class="cv" data-v="2993.5">¥2,994</td><td class="l">UC_SK_1_ブランド名(G)</td></tr>
+<tr><td class="l">[台湾 esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="18941">18,941</td><td data-v="2186">2,186</td><td data-v="0.1154">11.5%</td><td data-v="199.9">¥200</td><td data-v="437017">¥437,017</td><td class="cv sep" data-v="512.9">512.9</td><td class="cv" data-v="852.1">¥852</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">esim 海外 旅行</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均</td><td>平均より上</td><td class="sep" data-v="22998">22,998</td><td data-v="2603">2,603</td><td data-v="0.1132">11.3%</td><td data-v="157.4">¥157</td><td data-v="409720">¥409,720</td><td class="cv sep" data-v="412.1">412.1</td><td class="cv" data-v="994.3">¥994</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[ハワイ esim]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="11179">11,179</td><td data-v="1665">1,665</td><td data-v="0.1489">14.9%</td><td data-v="244.8">¥245</td><td data-v="407667">¥407,667</td><td class="cv sep" data-v="329.1">329.1</td><td class="cv" data-v="1238.9">¥1,239</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">ヨーロッパ esim</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="10486">10,486</td><td data-v="1512">1,512</td><td data-v="0.1442">14.4%</td><td data-v="254.2">¥254</td><td data-v="384277">¥384,277</td><td class="cv sep" data-v="227.9">227.9</td><td class="cv" data-v="1686.4">¥1,686</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[ワールドイーシム]</td><td>完全</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="8743">8,743</td><td data-v="2388">2,388</td><td data-v="0.2731">27.3%</td><td data-v="132.6">¥133</td><td data-v="316553">¥316,553</td><td class="cv sep" data-v="689.1">689.1</td><td class="cv" data-v="459.3">¥459</td><td class="l">UC_SK_1_ブランド名(G)</td></tr>
+<tr><td class="l">[アメリカ esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="7108">7,108</td><td data-v="988">988</td><td data-v="0.1390">13.9%</td><td data-v="313.6">¥314</td><td data-v="309843">¥309,843</td><td class="cv sep" data-v="245.9">245.9</td><td class="cv" data-v="1259.8">¥1,260</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[中国 esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="9402">9,402</td><td data-v="1098">1,098</td><td data-v="0.1168">11.7%</td><td data-v="261.4">¥261</td><td data-v="286972">¥286,972</td><td class="cv sep" data-v="223.2">223.2</td><td class="cv" data-v="1285.8">¥1,286</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">中国 esim</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="10634">10,634</td><td data-v="1065">1,065</td><td data-v="0.1002">10.0%</td><td data-v="228.3">¥228</td><td data-v="243177">¥243,177</td><td class="cv sep" data-v="161.1">161.1</td><td class="cv" data-v="1509.3">¥1,509</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[ボストン esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="8247">8,247</td><td data-v="946">946</td><td data-v="0.1147">11.5%</td><td data-v="222.0">¥222</td><td data-v="210032">¥210,032</td><td class="cv sep" data-v="161.6">161.6</td><td class="cv" data-v="1300.1">¥1,300</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[ヨーロッパ esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="5431">5,431</td><td data-v="749">749</td><td data-v="0.1379">13.8%</td><td data-v="269.1">¥269</td><td data-v="201589">¥201,589</td><td class="cv sep" data-v="146.8">146.8</td><td class="cv" data-v="1372.8">¥1,373</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">ハワイ esim</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="7829">7,829</td><td data-v="924">924</td><td data-v="0.1180">11.8%</td><td data-v="198.5">¥198</td><td data-v="183394">¥183,394</td><td class="cv sep" data-v="141.8">141.8</td><td class="cv" data-v="1293.5">¥1,294</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">韓国 esim</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="12215">12,215</td><td data-v="1117">1,117</td><td data-v="0.0914">9.1%</td><td data-v="161.6">¥162</td><td data-v="180548">¥180,548</td><td class="cv sep" data-v="219.0">219.0</td><td class="cv" data-v="824.5">¥824</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">アメリカ esim</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="5883">5,883</td><td data-v="700">700</td><td data-v="0.1190">11.9%</td><td data-v="255.6">¥256</td><td data-v="178945">¥178,945</td><td class="cv sep" data-v="121.0">121.0</td><td class="cv" data-v="1478.3">¥1,478</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[ベトナム esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="6503">6,503</td><td data-v="824">824</td><td data-v="0.1267">12.7%</td><td data-v="211.8">¥212</td><td data-v="174527">¥174,527</td><td class="cv sep" data-v="183.6">183.6</td><td class="cv" data-v="950.3">¥950</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">海外 esim</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均</td><td>平均より上</td><td class="sep" data-v="7913">7,913</td><td data-v="965">965</td><td data-v="0.1220">12.2%</td><td data-v="161.1">¥161</td><td data-v="155440">¥155,440</td><td class="cv sep" data-v="169.1">169.1</td><td class="cv" data-v="919.3">¥919</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[タイ esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="6615">6,615</td><td data-v="803">803</td><td data-v="0.1214">12.1%</td><td data-v="190.4">¥190</td><td data-v="152884">¥152,884</td><td class="cv sep" data-v="243.4">243.4</td><td class="cv" data-v="628.0">¥628</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[esim ヨーロッパ]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="3289">3,289</td><td data-v="514">514</td><td data-v="0.1563">15.6%</td><td data-v="284.1">¥284</td><td data-v="146035">¥146,035</td><td class="cv sep" data-v="113.9">113.9</td><td class="cv" data-v="1282.0">¥1,282</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">esim 中国 旅行</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="6521">6,521</td><td data-v="635">635</td><td data-v="0.0974">9.7%</td><td data-v="207.5">¥207</td><td data-v="131734">¥131,734</td><td class="cv sep" data-v="113.5">113.5</td><td class="cv" data-v="1160.7">¥1,161</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[イタリア esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="2680">2,680</td><td data-v="425">425</td><td data-v="0.1586">15.9%</td><td data-v="278.7">¥279</td><td data-v="118442">¥118,442</td><td class="cv sep" data-v="94.1">94.1</td><td class="cv" data-v="1258.7">¥1,259</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[シカゴ esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="3743">3,743</td><td data-v="489">489</td><td data-v="0.1306">13.1%</td><td data-v="199.3">¥199</td><td data-v="97457">¥97,457</td><td class="cv sep" data-v="99.9">99.9</td><td class="cv" data-v="975.2">¥975</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">esim ヨーロッパ 旅行</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="3589">3,589</td><td data-v="425">425</td><td data-v="0.1184">11.8%</td><td data-v="226.5">¥226</td><td data-v="96262">¥96,262</td><td class="cv sep" data-v="52.8">52.8</td><td class="cv" data-v="1822.5">¥1,822</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">台湾 esim</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="5637">5,637</td><td data-v="554">554</td><td data-v="0.0983">9.8%</td><td data-v="171.9">¥172</td><td data-v="95249">¥95,249</td><td class="cv sep" data-v="107.8">107.8</td><td class="cv" data-v="883.9">¥884</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[フランス esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="2143">2,143</td><td data-v="299">299</td><td data-v="0.1395">14.0%</td><td data-v="274.0">¥274</td><td data-v="81923">¥81,923</td><td class="cv sep" data-v="48.0">48.0</td><td class="cv" data-v="1705.0">¥1,705</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[イギリス esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="2116">2,116</td><td data-v="292">292</td><td data-v="0.1380">13.8%</td><td data-v="263.5">¥263</td><td data-v="76935">¥76,935</td><td class="cv sep" data-v="43.3">43.3</td><td class="cv" data-v="1777.2">¥1,777</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">スペイン esim</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="2015">2,015</td><td data-v="285">285</td><td data-v="0.1414">14.1%</td><td data-v="248.2">¥248</td><td data-v="70741">¥70,741</td><td class="cv sep" data-v="41.3">41.3</td><td class="cv" data-v="1712.4">¥1,712</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[オーストラリア esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="2583">2,583</td><td data-v="350">350</td><td data-v="0.1355">13.6%</td><td data-v="199.2">¥199</td><td data-v="69703">¥69,703</td><td class="cv sep" data-v="56.4">56.4</td><td class="cv" data-v="1235.2">¥1,235</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[スペイン esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1591">1,591</td><td data-v="225">225</td><td data-v="0.1414">14.1%</td><td data-v="287.9">¥288</td><td data-v="64769">¥64,769</td><td class="cv sep" data-v="57.8">57.8</td><td class="cv" data-v="1120.8">¥1,121</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[ドイツ esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1212">1,212</td><td data-v="215">215</td><td data-v="0.1774">17.7%</td><td data-v="275.1">¥275</td><td data-v="59141">¥59,141</td><td class="cv sep" data-v="46.0">46.0</td><td class="cv" data-v="1286.2">¥1,286</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[香港 esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="2903">2,903</td><td data-v="329">329</td><td data-v="0.1133">11.3%</td><td data-v="174.1">¥174</td><td data-v="57292">¥57,292</td><td class="cv sep" data-v="80.1">80.1</td><td class="cv" data-v="715.3">¥715</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">イタリア esim</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1710">1,710</td><td data-v="236">236</td><td data-v="0.1380">13.8%</td><td data-v="220.9">¥221</td><td data-v="52136">¥52,136</td><td class="cv sep" data-v="32.5">32.5</td><td class="cv" data-v="1603.2">¥1,603</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">海外 で 使える sim</td><td>インテント</td><td data-v="6">6</td><td>平均より下</td><td>平均</td><td>平均より上</td><td class="sep" data-v="3271">3,271</td><td data-v="242">242</td><td data-v="0.0740">7.4%</td><td data-v="210.0">¥210</td><td data-v="50825">¥50,825</td><td class="cv sep" data-v="41.5">41.5</td><td class="cv" data-v="1223.2">¥1,223</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">海外 で 使える 携帯 sim フリー</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="3686">3,686</td><td data-v="299">299</td><td data-v="0.0811">8.1%</td><td data-v="169.4">¥169</td><td data-v="50665">¥50,665</td><td class="cv sep" data-v="47.8">47.8</td><td class="cv" data-v="1060.6">¥1,061</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">イギリス esim</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1892">1,892</td><td data-v="207">207</td><td data-v="0.1094">10.9%</td><td data-v="224.9">¥225</td><td data-v="46550">¥46,550</td><td class="cv sep" data-v="37.5">37.5</td><td class="cv" data-v="1242.3">¥1,242</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">フランス esim</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1562">1,562</td><td data-v="194">194</td><td data-v="0.1242">12.4%</td><td data-v="229.3">¥229</td><td data-v="44485">¥44,485</td><td class="cv sep" data-v="30.8">30.8</td><td class="cv" data-v="1446.2">¥1,446</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">esim 台湾 旅行</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="3019">3,019</td><td data-v="240">240</td><td data-v="0.0795">7.9%</td><td data-v="175.3">¥175</td><td data-v="42083">¥42,083</td><td class="cv sep" data-v="40.1">40.1</td><td class="cv" data-v="1049.7">¥1,050</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">ベトナム esim</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="2166">2,166</td><td data-v="251">251</td><td data-v="0.1159">11.6%</td><td data-v="159.2">¥159</td><td data-v="39954">¥39,954</td><td class="cv sep" data-v="39.0">39.0</td><td class="cv" data-v="1025.5">¥1,026</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[esim ヨーロッパ 旅行]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="740">740</td><td data-v="134">134</td><td data-v="0.1811">18.1%</td><td data-v="242.6">¥243</td><td data-v="32513">¥32,513</td><td class="cv sep" data-v="18.0">18.0</td><td class="cv" data-v="1810.3">¥1,810</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">esim アメリカ 旅行</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1113">1,113</td><td data-v="119">119</td><td data-v="0.1069">10.7%</td><td data-v="260.7">¥261</td><td data-v="31024">¥31,024</td><td class="cv sep" data-v="14.2">14.2</td><td class="cv" data-v="2180.2">¥2,180</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">海外 旅行 携帯 sim</td><td>インテント</td><td data-v="6">6</td><td>平均より下</td><td>平均</td><td>平均より上</td><td class="sep" data-v="2227">2,227</td><td data-v="153">153</td><td data-v="0.0687">6.9%</td><td data-v="194.4">¥194</td><td data-v="29750">¥29,750</td><td class="cv sep" data-v="16.1">16.1</td><td class="cv" data-v="1850.1">¥1,850</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[ロサンゼルス esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="698">698</td><td data-v="101">101</td><td data-v="0.1447">14.5%</td><td data-v="266.4">¥266</td><td data-v="26903">¥26,903</td><td class="cv sep" data-v="24.2">24.2</td><td class="cv" data-v="1110.3">¥1,110</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">ドイツ esim</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1048">1,048</td><td data-v="121">121</td><td data-v="0.1155">11.5%</td><td data-v="204.4">¥204</td><td data-v="24731">¥24,731</td><td class="cv sep" data-v="17.4">17.4</td><td class="cv" data-v="1425.4">¥1,425</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[ソウル esim]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1335">1,335</td><td data-v="122">122</td><td data-v="0.0914">9.1%</td><td data-v="193.7">¥194</td><td data-v="23636">¥23,636</td><td class="cv sep" data-v="24.4">24.4</td><td class="cv" data-v="967.1">¥967</td><td class="l">UC_SK_2_一般</td></tr>
+<tr><td class="l">[esim 中国 旅行]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="1152">1,152</td><td data-v="116">116</td><td data-v="0.1007">10.1%</td><td data-v="182.5">¥183</td><td data-v="21175">¥21,175</td><td class="cv sep" data-v="11.1">11.1</td><td class="cv" data-v="1900.8">¥1,901</td><td class="l">UC_SK_2_一般</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="Xモバイル">
+<h3 class="adv" id="kwqs-Xモバイル" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル <span class="badge">取得 2026-05-18</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>4.79</b></span><span class="chip">関連性↓<b>31.9%</b></span><span class="chip bad">推定CTR↓<b>34.4%</b></span><span class="chip bad">LP利便性↓<b>43.7%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="Xモバイル"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">esim</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="7844">7,844</td><td data-v="480">480</td><td data-v="0.0612">6.1%</td><td data-v="669.0">¥669</td><td data-v="321115">¥321,115</td><td class="cv sep" data-v="26.0">26.0</td><td class="cv" data-v="12350.6">¥12,351</td><td class="l">【エックスグローバル】GS_General(5/1目標CPAさらに抑制)</td></tr>
+<tr><td class="l">[限界 突破 wifi]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="2496">2,496</td><td data-v="647">647</td><td data-v="0.2592">25.9%</td><td data-v="262.1">¥262</td><td data-v="169589">¥169,589</td><td class="cv sep" data-v="17.7">17.7</td><td class="cv" data-v="9597.6">¥9,598</td><td class="l">【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</td></tr>
+<tr><td class="l">限界 突破 wifi</td><td>フレーズ</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="2621">2,621</td><td data-v="327">327</td><td data-v="0.1248">12.5%</td><td data-v="495.3">¥495</td><td data-v="161967">¥161,967</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="23138.1">¥23,138</td><td class="l">【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</td></tr>
+<tr><td class="l">モバイル ルーター</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="8093">8,093</td><td data-v="557">557</td><td data-v="0.0688">6.9%</td><td data-v="255.7">¥256</td><td data-v="142402">¥142,402</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="15822.4">¥15,822</td><td class="l">【限界突破Wi-Fi】GS_General</td></tr>
+<tr><td class="l">タックルベリー</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="4838">4,838</td><td data-v="464">464</td><td data-v="0.0959">9.6%</td><td data-v="293.2">¥293</td><td data-v="136067">¥136,067</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="19438.1">¥19,438</td><td class="l">【タックルベリーモバイル】GS_Brand</td></tr>
+<tr><td class="l">エックス モバイル wi fi</td><td>フレーズ</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="1303">1,303</td><td data-v="156">156</td><td data-v="0.1197">12.0%</td><td data-v="700.7">¥701</td><td data-v="109304">¥109,304</td><td class="cv sep" data-v="3.7">3.7</td><td class="cv" data-v="29783.1">¥29,783</td><td class="l">【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</td></tr>
+<tr><td class="l">[x モバイル wifi]</td><td>完全</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="771">771</td><td data-v="195">195</td><td data-v="0.2529">25.3%</td><td data-v="558.6">¥559</td><td data-v="108928">¥108,928</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="9902.5">¥9,903</td><td class="l">【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</td></tr>
+<tr><td class="l">[エックス モバイル wi fi]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="512">512</td><td data-v="130">130</td><td data-v="0.2539">25.4%</td><td data-v="516.9">¥517</td><td data-v="67193">¥67,193</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="67193.0">¥67,193</td><td class="l">【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</td></tr>
+<tr><td class="l">[限界突破Wi-Fi]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="813">813</td><td data-v="222">222</td><td data-v="0.2731">27.3%</td><td data-v="245.7">¥246</td><td data-v="54554">¥54,554</td><td class="cv sep" data-v="10.8">10.8</td><td class="cv" data-v="5037.3">¥5,037</td><td class="l">【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</td></tr>
+<tr><td class="l">エックスモバイル 海外</td><td>フレーズ</td><td data-v="6">6</td><td>平均より下</td><td>平均より上</td><td>平均</td><td class="sep" data-v="336">336</td><td data-v="72">72</td><td data-v="0.2143">21.4%</td><td data-v="679.8">¥680</td><td data-v="48949">¥48,949</td><td class="cv sep" data-v="6.3">6.3</td><td class="cv" data-v="7732.9">¥7,733</td><td class="l">【エックスグローバル】GS_Brand</td></tr>
+<tr><td class="l">グローバルwifi おすすめ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1160">1,160</td><td data-v="65">65</td><td data-v="0.0560">5.6%</td><td data-v="538.7">¥539</td><td data-v="35018">¥35,018</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="17509.0">¥17,509</td><td class="l">【エックスグローバル】GS_General(5/1目標CPAさらに抑制)</td></tr>
+<tr><td class="l">[モバイル ルーター]</td><td>完全</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="748">748</td><td data-v="75">75</td><td data-v="0.1003">10.0%</td><td data-v="414.7">¥415</td><td data-v="31106">¥31,106</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="10368.7">¥10,369</td><td class="l">【限界突破Wi-Fi】GS_General</td></tr>
+<tr><td class="l">レンタル ワイファイ</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="1273">1,273</td><td data-v="78">78</td><td data-v="0.0613">6.1%</td><td data-v="366.5">¥367</td><td data-v="28589">¥28,589</td><td class="cv sep" data-v="2.7">2.7</td><td class="cv" data-v="10747.7">¥10,748</td><td class="l">【限界突破Wi-Fi】GS_General</td></tr>
+<tr><td class="l">[限界突破ワイファイ]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="315">315</td><td data-v="75">75</td><td data-v="0.2381">23.8%</td><td data-v="371.1">¥371</td><td data-v="27829">¥27,829</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="13914.5">¥13,914</td><td class="l">【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</td></tr>
+<tr><td class="l">タックルベリーモバイル</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="1114">1,114</td><td data-v="305">305</td><td data-v="0.2738">27.4%</td><td data-v="71.7">¥72</td><td data-v="21880">¥21,880</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="3125.7">¥3,126</td><td class="l">【タックルベリーモバイル】GS_Brand</td></tr>
+<tr><td class="l">x モバイル wifi</td><td>フレーズ</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="325">325</td><td data-v="29">29</td><td data-v="0.0892">8.9%</td><td data-v="653.1">¥653</td><td data-v="18941">¥18,941</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="6313.7">¥6,314</td><td class="l">【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</td></tr>
+<tr><td class="l">海外 wifi</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1367">1,367</td><td data-v="53">53</td><td data-v="0.0388">3.9%</td><td data-v="336.7">¥337</td><td data-v="17846">¥17,846</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="17846.0">¥17,846</td><td class="l">【エックスグローバル】GS_General(5/1目標CPAさらに抑制)</td></tr>
+<tr><td class="l">[x モバイル 限界 突破 wifi]</td><td>完全</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="220">220</td><td data-v="58">58</td><td data-v="0.2636">26.4%</td><td data-v="293.8">¥294</td><td data-v="17040">¥17,040</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="3408.0">¥3,408</td><td class="l">【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</td></tr>
+<tr><td class="l">esim 海外</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="610">610</td><td data-v="36">36</td><td data-v="0.0590">5.9%</td><td data-v="470.3">¥470</td><td data-v="16931">¥16,931</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="16931.0">¥16,931</td><td class="l">【エックスグローバル】GS_General(5/1目標CPAさらに抑制)</td></tr>
+<tr><td class="l">無制限 ポケット wi fi</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="389">389</td><td data-v="64">64</td><td data-v="0.1645">16.5%</td><td data-v="257.2">¥257</td><td data-v="16460">¥16,460</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="16460.0">¥16,460</td><td class="l">【限界突破Wi-Fi】GS_General</td></tr>
+<tr><td class="l">釣り具 中古</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="744">744</td><td data-v="132">132</td><td data-v="0.1774">17.7%</td><td data-v="103.5">¥103</td><td data-v="13660">¥13,660</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="6830.0">¥6,830</td><td class="l">【タックルベリーモバイル】GS_General</td></tr>
+<tr><td class="l">[エックスモバイル 海外]</td><td>完全</td><td data-v="6">6</td><td>平均より下</td><td>平均より上</td><td>平均</td><td class="sep" data-v="136">136</td><td data-v="22">22</td><td data-v="0.1618">16.2%</td><td data-v="611.2">¥611</td><td data-v="13446">¥13,446</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="6723.0">¥6,723</td><td class="l">【エックスグローバル】GS_Brand</td></tr>
+<tr><td class="l">[esim]</td><td>完全</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="373">373</td><td data-v="21">21</td><td data-v="0.0563">5.6%</td><td data-v="612.9">¥613</td><td data-v="12870">¥12,870</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="12870.0">¥12,870</td><td class="l">【エックスグローバル】GS_General(5/1目標CPAさらに抑制)</td></tr>
+<tr><td class="l">[エックス モバイル ポケット wifi]</td><td>完全</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="161">161</td><td data-v="45">45</td><td data-v="0.2795">28.0%</td><td data-v="276.1">¥276</td><td data-v="12425">¥12,425</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="12425.0">¥12,425</td><td class="l">【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</td></tr>
+<tr><td class="l">レンタル wi fi 口座 振替</td><td>フレーズ</td><td data-v="6">6</td><td>平均より下</td><td>平均より上</td><td>平均</td><td class="sep" data-v="239">239</td><td data-v="27">27</td><td data-v="0.1130">11.3%</td><td data-v="452.2">¥452</td><td data-v="12210">¥12,210</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="24420.0">¥24,420</td><td class="l">【限界突破Wi-Fi】GS_General</td></tr>
+<tr><td class="l">クラウド wifi</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="476">476</td><td data-v="61">61</td><td data-v="0.1282">12.8%</td><td data-v="167.7">¥168</td><td data-v="10231">¥10,231</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="6820.7">¥6,821</td><td class="l">【限界突破Wi-Fi】GS_General</td></tr>
+<tr><td class="l">[無制限 ポケット wi fi]</td><td>完全</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="251">251</td><td data-v="33">33</td><td data-v="0.1315">13.1%</td><td data-v="270.9">¥271</td><td data-v="8939">¥8,939</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="6721.1">¥6,721</td><td class="l">【限界突破Wi-Fi】GS_General</td></tr>
+<tr><td class="l">[限界突破wifi 2]</td><td>完全</td><td data-v="6">6</td><td>平均より下</td><td>平均</td><td>平均より上</td><td class="sep" data-v="111">111</td><td data-v="16">16</td><td data-v="0.1441">14.4%</td><td data-v="411.8">¥412</td><td data-v="6588">¥6,588</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="4392.0">¥4,392</td><td class="l">【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</td></tr>
+<tr><td class="l">[モバイル wifi docomo]</td><td>完全</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="304">304</td><td data-v="26">26</td><td data-v="0.0855">8.6%</td><td data-v="192.6">¥193</td><td data-v="5008">¥5,008</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="5008.0">¥5,008</td><td class="l">【限界突破Wi-Fi】GS_General</td></tr>
+<tr><td class="l">ポケット wifi レンタル</td><td>フレーズ</td><td data-v="6">6</td><td>平均より下</td><td>平均より上</td><td>平均</td><td class="sep" data-v="124">124</td><td data-v="15">15</td><td data-v="0.1210">12.1%</td><td data-v="256.7">¥257</td><td data-v="3850">¥3,850</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3850.0">¥3,850</td><td class="l">【限界突破Wi-Fi】GS_General</td></tr>
+<tr><td class="l">エックスグローバル</td><td>フレーズ</td><td data-v="7">7</td><td>平均</td><td>平均より上</td><td>平均</td><td class="sep" data-v="98">98</td><td data-v="14">14</td><td data-v="0.1429">14.3%</td><td data-v="230.4">¥230</td><td data-v="3226">¥3,226</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3226.0">¥3,226</td><td class="l">【エックスグローバル】GS_Brand</td></tr>
+<tr><td class="l">[レンタル wi fi 口座 振替]</td><td>完全</td><td data-v="6">6</td><td>平均より下</td><td>平均より上</td><td>平均</td><td class="sep" data-v="2">2</td><td data-v="2">2</td><td data-v="1.0000">100.0%</td><td data-v="227.0">¥227</td><td data-v="454">¥454</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="454.0">¥454</td><td class="l">【限界突破Wi-Fi】GS_General</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="World esim" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</h4>
+<p class="note">広告文データなし</p></div>
+<div class="serp-col advblk" data-a="Xモバイル" style="--ac:var(--adv-1)"><h4><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">xmobile.ne.jp<br><span>xmobile.ne.jp › xglobalsim</span></div><div class="t">eSIMで旅先のネットを自由に - インストールするだけ現地で接続 - 【公式】エックスグローバルSIM</div><div class="d">【公式】エックスグローバルSIM、切り替え不要だから旅の管理がもっとスマートに！ 使用回線は現地の大手キャリア回線！安定の通信品質で快適な旅行を</div><div class="meta2">IMP 13,773 ／ CTR 5.7% ／ COST ¥459,549<br>【エックスグローバル】GS_General(5/1目標CPAさらに抑制)</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">xmobile.ne.jp<br><span>xmobile.ne.jp › genkaitoppa</span></div><div class="t">【公式】限界突破Wi-FiⅡ - 限界突破Wi-FiⅡ - 【限界突破Wi-FiⅡ】</div><div class="d">すべての人の 手のひらに 最高に自由な FREE WiFiを。 初めての方でも安心！ お申し込みから わずか４ステップで WiFiが使用可能に。</div><div class="meta2">IMP 13,375 ／ CTR 7.7% ／ COST ¥282,072<br>【限界突破Wi-Fi】GS_General</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">xmobile.ne.jp<br><span>xmobile.ne.jp › genkaitoppa</span></div><div class="t">【公式】限界突破Wi-FiⅡ - 限界突破Wi-FiⅡ - 【限界突破Wi-FiⅡ】</div><div class="d">すべての人の 手のひらに 最高に自由な FREE WiFiを。 初めての方でも安心！ お申し込みから わずか４ステップで WiFiが使用可能に。</div><div class="meta2">IMP 9,862 ／ CTR 19.6% ／ COST ¥769,403<br>【限界突破Wi-Fi】GS_Brand(3/2目標CPA抑制)</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.tackleberry.co.jp<br><span>www.tackleberry.co.jp › tbmobile</span></div><div class="t">【公式】タックルベリーモバイル - アングラーに嬉しい豊富な特典 - 浮いたお金で釣り具をお得にGET</div><div class="d">タックルベリーが提供する格安sim &amp; wifiプラン、浮いたお金で欲しかった釣り具も買えちゃう！ 新品はもちろん中古品にも使えるクーポンや買取金額20%UPなど釣り好きに捧げる限定特典が多数！</div><div class="meta2">IMP 6,341 ／ CTR 13.8% ／ COST ¥179,296<br>【タックルベリーモバイル】GS_Brand</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">【公式】エックスグローバルSIM</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">インストールするだけ現地で接続</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">eSIMで旅先のネットを自由に</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">アングラーに嬉しい豊富な特典</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">【公式】タックルベリーモバイル</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">浮いたお金で釣り具をお得にGET</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">手のひらに毎日新たな驚きを</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">事務手数料無料</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">制限を気にせず使える</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">月に約990GB使える</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">【公式】限界突破Wi-FiⅡ</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">4キャリアに対応</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">【大容量】月に約990GB使える</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">海外渡航にもおススメ</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">国境の限界突破世界中これ１台</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">ずっと定額の4,180円/月額</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">限界突破Wi-FiⅡ / 1日33GB</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">【1日33GB】</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">【限界突破Wi-FiⅡ】</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">海外151か国に対応</td><td data-v="2">2</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l wrap">限界突破Wi-FiⅡ</td><td data-v="2">2</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="World esim">
+<h3 class="adv" id="adlib-Worldesim" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim <span class="badge">取得 2026-05-18</span></h3>
+<p class="note">広告レポートに見出しデータなし（取得形式の問題の可能性）</p></div>
+<div class="card advblk" data-a="Xモバイル">
+<h3 class="adv" id="adlib-Xモバイル" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル <span class="badge">取得 2026-05-18</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>6本</b></span><span class="chip">CPN<b>6個</b></span><span class="chip">ADG<b>6個</b></span><span class="chip">ピン留め<b>67%</b></span><span class="chip">LP使い分け<b>3本</b></span></div>
+<p class="note">主要LP: <span title="https://xmobile.ne.jp/xglobalsim/">https://xmobile.ne.jp/xglobalsim/（2本）</span> ／ <span title="https://www.tackleberry.co.jp/tbmobile/?utm_source=google&amp;utm_medium=cpc">https://www.tackleberry.co.jp/tbmobile/?utm_source=google&amp;utm_medium=cpc（2本）</span> ／ <span title="https://xmobile.ne.jp/genkaitoppa/">https://xmobile.ne.jp/genkaitoppa/（2本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="Xモバイル"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">【公式】エックスグローバルSIM</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">インストールするだけ現地で接続</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">eSIMで旅先のネットを自由に</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">アングラーに嬉しい豊富な特典</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【公式】タックルベリーモバイル</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">浮いたお金で釣り具をお得にGET</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">手のひらに毎日新たな驚きを</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">事務手数料無料</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">制限を気にせず使える</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">月に約990GB使える</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【公式】限界突破Wi-FiⅡ</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">4キャリアに対応</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【大容量】月に約990GB使える</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">海外渡航にもおススメ</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">国境の限界突破世界中これ１台</td><td data-v="2">2</td></tr>
+</table></div></div><div>
+<table data-adv="Xモバイル"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">必要な時に必要な分だけ！滞在日数や通信料に応じて買い足せる。1GBで706円～50GBで8,824円</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">使用回線は現地の大手キャリア回線！安定の通信品質で快適な旅行を</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【公式】エックスグローバルSIM、切り替え不要だから旅の管理がもっとスマートに！</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">新品はもちろん中古品にも使えるクーポンや買取金額20%UPなど釣り好きに捧げる限定特典が多数！</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">タックルベリーが提供する格安sim &amp; wifiプラン、浮いたお金で欲しかった釣り具も買えちゃう！</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">タックルベリーユーザーなら持ってて損なし！タックルベリーモバイルで更に快適な釣りライフを</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">初めての方でも安心！ お申し込みから わずか４ステップで WiFiが使用可能に。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">4キャリアに対応、どこでも使える</td><td data-v="2">2</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="World esim">
+<h3 class="adv" id="query-Worldesim" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim <span class="badge">取得 2026-05-18</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="1083">1,083</td><td data-v="43654">43,654</td><td data-v="9660845">¥9,660,845</td><td data-v="0.5383">53.8%</td><td class="cv sep" data-v="10005.2">10,005.2</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="81">81</td><td data-v="31442">31,442</td><td data-v="5139539">¥5,139,539</td><td data-v="0.2864">28.6%</td><td class="cv sep" data-v="7722.1">7,722.1</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="500">500</td><td data-v="13049">13,049</td><td data-v="3145358">¥3,145,358</td><td data-v="0.1753">17.5%</td><td class="cv sep" data-v="3157.3">3,157.3</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="World esim"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">world esim</td><td>なし</td><td>P-MAX</td><td data-v="10451">10,451</td><td data-v="1348536">¥1,348,536</td><td class="cv sep" data-v="2800.3">2,800.3</td><td class="cv" data-v="481.6">¥482</td></tr>
+<tr><td class="l">esim</td><td>なし</td><td>検索</td><td data-v="11242">11,242</td><td data-v="3152131">¥3,152,131</td><td class="cv sep" data-v="2771.4">2,771.4</td><td class="cv" data-v="1137.4">¥1,137</td></tr>
+<tr><td class="l">ワールド esim</td><td>なし</td><td>P-MAX</td><td data-v="7369">7,369</td><td data-v="1025863">¥1,025,863</td><td class="cv sep" data-v="1742.8">1,742.8</td><td class="cv" data-v="588.6">¥589</td></tr>
+<tr><td class="l">ワールド イー シム</td><td>なし</td><td>P-MAX</td><td data-v="2408">2,408</td><td data-v="317112">¥317,112</td><td class="cv sep" data-v="692.9">692.9</td><td class="cv" data-v="457.7">¥458</td></tr>
+<tr><td class="l">esim 韓国</td><td>なし</td><td>P-MAX</td><td data-v="2664">2,664</td><td data-v="584816">¥584,816</td><td class="cv sep" data-v="635.7">635.7</td><td class="cv" data-v="919.9">¥920</td></tr>
+<tr><td class="l">韓国 esim</td><td>追加済み</td><td>検索</td><td data-v="2100">2,100</td><td data-v="405566">¥405,566</td><td class="cv sep" data-v="609.3">609.3</td><td class="cv" data-v="665.6">¥666</td></tr>
+<tr><td class="l">海外 esim</td><td>なし</td><td>P-MAX</td><td data-v="2921">2,921</td><td data-v="585123">¥585,123</td><td class="cv sep" data-v="541.8">541.8</td><td class="cv" data-v="1079.9">¥1,080</td></tr>
+<tr><td class="l">worldesim</td><td>なし</td><td>P-MAX</td><td data-v="1823">1,823</td><td data-v="223008">¥223,008</td><td class="cv sep" data-v="476.8">476.8</td><td class="cv" data-v="467.7">¥468</td></tr>
+<tr><td class="l">esim 海外</td><td>なし</td><td>検索</td><td data-v="2879">2,879</td><td data-v="622095">¥622,095</td><td class="cv sep" data-v="465.2">465.2</td><td class="cv" data-v="1337.3">¥1,337</td></tr>
+<tr><td class="l">e sim</td><td>なし</td><td>P-MAX</td><td data-v="1281">1,281</td><td data-v="340058">¥340,058</td><td class="cv sep" data-v="322.2">322.2</td><td class="cv" data-v="1055.5">¥1,055</td></tr>
+<tr><td class="l">台湾 esim</td><td>追加済み</td><td>検索</td><td data-v="1311">1,311</td><td data-v="265276">¥265,276</td><td class="cv sep" data-v="305.0">305.0</td><td class="cv" data-v="869.8">¥870</td></tr>
+<tr><td class="l">ワールド シム</td><td>なし</td><td>P-MAX</td><td data-v="1063">1,063</td><td data-v="112198">¥112,198</td><td class="cv sep" data-v="255.5">255.5</td><td class="cv" data-v="439.2">¥439</td></tr>
+<tr><td class="l">価格 ドット コム esim</td><td>なし</td><td>P-MAX</td><td data-v="653">653</td><td data-v="255077">¥255,077</td><td class="cv sep" data-v="254.4">254.4</td><td class="cv" data-v="1002.7">¥1,003</td></tr>
+<tr><td class="l">イーシム</td><td>なし</td><td>P-MAX</td><td data-v="1123">1,123</td><td data-v="254314">¥254,314</td><td class="cv sep" data-v="243.7">243.7</td><td class="cv" data-v="1043.6">¥1,044</td></tr>
+<tr><td class="l">esim 海外 旅行</td><td>追加済み</td><td>検索</td><td data-v="1416">1,416</td><td data-v="198604">¥198,604</td><td class="cv sep" data-v="227.5">227.5</td><td class="cv" data-v="872.9">¥873</td></tr>
+<tr><td class="l">esim 台湾</td><td>なし</td><td>P-MAX</td><td data-v="829">829</td><td data-v="181455">¥181,455</td><td class="cv sep" data-v="201.2">201.2</td><td class="cv" data-v="902.0">¥902</td></tr>
+<tr><td class="l">タイ esim</td><td>追加済み</td><td>検索</td><td data-v="655">655</td><td data-v="122291">¥122,291</td><td class="cv sep" data-v="200.0">200.0</td><td class="cv" data-v="611.4">¥611</td></tr>
+<tr><td class="l">グローバル wifi esim</td><td>なし</td><td>検索</td><td data-v="910">910</td><td data-v="109332">¥109,332</td><td class="cv sep" data-v="193.8">193.8</td><td class="cv" data-v="564.1">¥564</td></tr>
+<tr><td class="l">world sim</td><td>なし</td><td>P-MAX</td><td data-v="675">675</td><td data-v="193368">¥193,368</td><td class="cv sep" data-v="190.3">190.3</td><td class="cv" data-v="1016.1">¥1,016</td></tr>
+<tr><td class="l">アメリカ esim</td><td>追加済み</td><td>検索</td><td data-v="708">708</td><td data-v="224675">¥224,675</td><td class="cv sep" data-v="172.4">172.4</td><td class="cv" data-v="1302.9">¥1,303</td></tr>
+<tr><td class="l">グローバル esim</td><td>なし</td><td>P-MAX</td><td data-v="844">844</td><td data-v="143115">¥143,115</td><td class="cv sep" data-v="170.9">170.9</td><td class="cv" data-v="837.4">¥837</td></tr>
+<tr><td class="l">ハワイ esim</td><td>追加済み</td><td>検索</td><td data-v="828">828</td><td data-v="209406">¥209,406</td><td class="cv sep" data-v="163.0">163.0</td><td class="cv" data-v="1284.9">¥1,285</td></tr>
+<tr><td class="l">わーるど い ー しむ</td><td>なし</td><td>P-MAX</td><td data-v="446">446</td><td data-v="49918">¥49,918</td><td class="cv sep" data-v="159.8">159.8</td><td class="cv" data-v="312.4">¥312</td></tr>
+<tr><td class="l">esim タイ</td><td>なし</td><td>P-MAX</td><td data-v="426">426</td><td data-v="114156">¥114,156</td><td class="cv sep" data-v="152.8">152.8</td><td class="cv" data-v="747.2">¥747</td></tr>
+<tr><td class="l">海外 旅行 esim</td><td>なし</td><td>P-MAX</td><td data-v="845">845</td><td data-v="147728">¥147,728</td><td class="cv sep" data-v="149.6">149.6</td><td class="cv" data-v="987.4">¥987</td></tr>
+<tr><td class="l">ワールド い ー しむ</td><td>なし</td><td>P-MAX</td><td data-v="623">623</td><td data-v="64359">¥64,359</td><td class="cv sep" data-v="141.5">141.5</td><td class="cv" data-v="454.9">¥455</td></tr>
+<tr><td class="l">中国 esim</td><td>追加済み</td><td>検索</td><td data-v="655">655</td><td data-v="175085">¥175,085</td><td class="cv sep" data-v="139.8">139.8</td><td class="cv" data-v="1252.8">¥1,253</td></tr>
+<tr><td class="l">海外 esim おすすめ</td><td>なし</td><td>P-MAX</td><td data-v="679">679</td><td data-v="123875">¥123,875</td><td class="cv sep" data-v="121.2">121.2</td><td class="cv" data-v="1021.7">¥1,022</td></tr>
+<tr><td class="l">ワールド sim</td><td>なし</td><td>P-MAX</td><td data-v="461">461</td><td data-v="135980">¥135,980</td><td class="cv sep" data-v="121.0">121.0</td><td class="cv" data-v="1123.4">¥1,123</td></tr>
+<tr><td class="l">esim おすすめ</td><td>なし</td><td>P-MAX</td><td data-v="716">716</td><td data-v="142535">¥142,535</td><td class="cv sep" data-v="119.1">119.1</td><td class="cv" data-v="1197.1">¥1,197</td></tr>
+<tr><td class="l">esim ハワイ</td><td>なし</td><td>検索</td><td data-v="426">426</td><td data-v="124252">¥124,252</td><td class="cv sep" data-v="118.1">118.1</td><td class="cv" data-v="1052.1">¥1,052</td></tr>
+<tr><td class="l">world e sim</td><td>なし</td><td>P-MAX</td><td data-v="403">403</td><td data-v="61957">¥61,957</td><td class="cv sep" data-v="117.5">117.5</td><td class="cv" data-v="527.4">¥527</td></tr>
+<tr><td class="l">ベトナム esim</td><td>追加済み</td><td>検索</td><td data-v="495">495</td><td data-v="105222">¥105,222</td><td class="cv sep" data-v="117.3">117.3</td><td class="cv" data-v="897.2">¥897</td></tr>
+<tr><td class="l">韓国 esim おすすめ</td><td>なし</td><td>P-MAX</td><td data-v="694">694</td><td data-v="116329">¥116,329</td><td class="cv sep" data-v="116.9">116.9</td><td class="cv" data-v="995.3">¥995</td></tr>
+<tr><td class="l">world esim 使い方</td><td>なし</td><td>P-MAX</td><td data-v="584">584</td><td data-v="73964">¥73,964</td><td class="cv sep" data-v="105.1">105.1</td><td class="cv" data-v="703.6">¥704</td></tr>
+<tr><td class="l">esim アメリカ</td><td>なし</td><td>P-MAX</td><td data-v="450">450</td><td data-v="149769">¥149,769</td><td class="cv sep" data-v="104.5">104.5</td><td class="cv" data-v="1433.3">¥1,433</td></tr>
+<tr><td class="l">海外 sim</td><td>なし</td><td>P-MAX</td><td data-v="782">782</td><td data-v="150610">¥150,610</td><td class="cv sep" data-v="103.5">103.5</td><td class="cv" data-v="1454.6">¥1,455</td></tr>
+<tr><td class="l">global wifi esim</td><td>なし</td><td>検索</td><td data-v="267">267</td><td data-v="24569">¥24,569</td><td class="cv sep" data-v="103.1">103.1</td><td class="cv" data-v="238.3">¥238</td></tr>
+<tr><td class="l">ヨーロッパ esim</td><td>追加済み</td><td>検索</td><td data-v="524">524</td><td data-v="145308">¥145,308</td><td class="cv sep" data-v="100.2">100.2</td><td class="cv" data-v="1450.9">¥1,451</td></tr>
+<tr><td class="l">esim ヨーロッパ</td><td>追加済み</td><td>検索</td><td data-v="427">427</td><td data-v="121268">¥121,268</td><td class="cv sep" data-v="99.1">99.1</td><td class="cv" data-v="1223.4">¥1,223</td></tr>
+<tr><td class="l">esim 価格 ドット コム</td><td>なし</td><td>P-MAX</td><td data-v="228">228</td><td data-v="96212">¥96,212</td><td class="cv sep" data-v="97.6">97.6</td><td class="cv" data-v="985.9">¥986</td></tr>
+<tr><td class="l">esim とは</td><td>なし</td><td>P-MAX</td><td data-v="865">865</td><td data-v="92216">¥92,216</td><td class="cv sep" data-v="96.0">96.0</td><td class="cv" data-v="960.9">¥961</td></tr>
+<tr><td class="l">global esim</td><td>なし</td><td>P-MAX</td><td data-v="333">333</td><td data-v="50173">¥50,173</td><td class="cv sep" data-v="92.3">92.3</td><td class="cv" data-v="543.4">¥543</td></tr>
+<tr><td class="l">グアム esim</td><td>なし</td><td>P-MAX</td><td data-v="297">297</td><td data-v="68690">¥68,690</td><td class="cv sep" data-v="90.0">90.0</td><td class="cv" data-v="763.0">¥763</td></tr>
+<tr><td class="l">esim 中国</td><td>なし</td><td>検索</td><td data-v="390">390</td><td data-v="103404">¥103,404</td><td class="cv sep" data-v="89.5">89.5</td><td class="cv" data-v="1155.7">¥1,156</td></tr>
+<tr><td class="l">ワールド esim 使い方</td><td>なし</td><td>P-MAX</td><td data-v="537">537</td><td data-v="59068">¥59,068</td><td class="cv sep" data-v="81.0">81.0</td><td class="cv" data-v="729.5">¥730</td></tr>
+<tr><td class="l">esim 海外 おすすめ</td><td>なし</td><td>検索</td><td data-v="570">570</td><td data-v="99277">¥99,277</td><td class="cv sep" data-v="80.6">80.6</td><td class="cv" data-v="1232.0">¥1,232</td></tr>
+<tr><td class="l">e シム</td><td>なし</td><td>P-MAX</td><td data-v="477">477</td><td data-v="90672">¥90,672</td><td class="cv sep" data-v="78.1">78.1</td><td class="cv" data-v="1160.5">¥1,161</td></tr>
+<tr><td class="l">esim ベトナム</td><td>なし</td><td>P-MAX</td><td data-v="302">302</td><td data-v="73675">¥73,675</td><td class="cv sep" data-v="77.7">77.7</td><td class="cv" data-v="948.0">¥948</td></tr>
+<tr><td class="l">esim フィリピン</td><td>なし</td><td>P-MAX</td><td data-v="173">173</td><td data-v="48488">¥48,488</td><td class="cv sep" data-v="65.7">65.7</td><td class="cv" data-v="738.0">¥738</td></tr>
+<tr><td class="l">シンガポール esim</td><td>なし</td><td>P-MAX</td><td data-v="328">328</td><td data-v="71040">¥71,040</td><td class="cv sep" data-v="65.1">65.1</td><td class="cv" data-v="1090.9">¥1,091</td></tr>
+<tr><td class="l">e sim 海外</td><td>なし</td><td>P-MAX</td><td data-v="318">318</td><td data-v="62619">¥62,619</td><td class="cv sep" data-v="62.2">62.2</td><td class="cv" data-v="1006.1">¥1,006</td></tr>
+<tr><td class="l">イタリア esim</td><td>追加済み</td><td>検索</td><td data-v="260">260</td><td data-v="69568">¥69,568</td><td class="cv sep" data-v="59.4">59.4</td><td class="cv" data-v="1171.0">¥1,171</td></tr>
+<tr><td class="l">esim 海外 旅行 おすすめ</td><td>なし</td><td>検索</td><td data-v="417">417</td><td data-v="68249">¥68,249</td><td class="cv sep" data-v="53.5">53.5</td><td class="cv" data-v="1275.0">¥1,275</td></tr>
+<tr><td class="l">ワールド esim クーポン</td><td>なし</td><td>検索</td><td data-v="200">200</td><td data-v="145963">¥145,963</td><td class="cv sep" data-v="45.9">45.9</td><td class="cv" data-v="3180.0">¥3,180</td></tr>
+<tr><td class="l">world esim クーポン</td><td>なし</td><td>検索</td><td data-v="79">79</td><td data-v="92074">¥92,074</td><td class="cv sep" data-v="32.0">32.0</td><td class="cv" data-v="2875.5">¥2,876</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（56行）。</p></div>
+<div class="advblk" data-a="Xモバイル">
+<h3 class="adv" id="query-Xモバイル" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル <span class="badge">取得 2026-05-18</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="25">25</td><td data-v="1193">1,193</td><td data-v="265970">¥265,970</td><td data-v="0.5778">57.8%</td><td class="cv sep" data-v="40.0">40.0</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="117">117</td><td data-v="404">404</td><td data-v="194306">¥194,306</td><td data-v="0.4222">42.2%</td><td class="cv sep" data-v="68.2">68.2</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="Xモバイル"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">限界 突破 wifi</td><td>追加済み</td><td>検索</td><td data-v="572">572</td><td data-v="148664">¥148,664</td><td class="cv sep" data-v="16.7">16.7</td><td class="cv" data-v="8918.1">¥8,918</td></tr>
+<tr><td class="l">限界 突破 wi fi</td><td>追加済み</td><td>検索</td><td data-v="222">222</td><td data-v="54554">¥54,554</td><td class="cv sep" data-v="10.8">10.8</td><td class="cv" data-v="5037.3">¥5,037</td></tr>
+<tr><td class="l">エックス モバイル esim</td><td>なし</td><td>検索</td><td data-v="41">41</td><td data-v="40833">¥40,833</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="6805.5">¥6,806</td></tr>
+<tr><td class="l">タックルベリー モバイル</td><td>追加済み</td><td>検索</td><td data-v="280">280</td><td data-v="10736">¥10,736</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="2147.2">¥2,147</td></tr>
+<tr><td class="l">x モバイル esim</td><td>なし</td><td>検索</td><td data-v="19">19</td><td data-v="13284">¥13,284</td><td class="cv sep" data-v="4.5">4.5</td><td class="cv" data-v="2952.0">¥2,952</td></tr>
+<tr><td class="l">エックス モバイル 限界 突破 wifi</td><td>なし</td><td>検索</td><td data-v="35">35</td><td data-v="8370">¥8,370</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="2092.5">¥2,092</td></tr>
+<tr><td class="l">x モバイル wi fi</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="3400">¥3,400</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1133.3">¥1,133</td></tr>
+<tr><td class="l">エックス モバイル ワイファイ</td><td>なし</td><td>検索</td><td data-v="58">58</td><td data-v="32503">¥32,503</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="10834.3">¥10,834</td></tr>
+<tr><td class="l">x モバイル ワイファイ</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="6513">¥6,513</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="2171.0">¥2,171</td></tr>
+<tr><td class="l">ポケット wi fi</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="3542">¥3,542</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1771.0">¥1,771</td></tr>
+<tr><td class="l">x モバイル wifi</td><td>追加済み</td><td>検索</td><td data-v="34">34</td><td data-v="15601">¥15,601</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="7800.5">¥7,800</td></tr>
+<tr><td class="l">タックルベリー モバイル 口コミ</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="3229">¥3,229</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1614.5">¥1,614</td></tr>
+<tr><td class="l">タックルベリー アプリ</td><td>なし</td><td>検索</td><td data-v="77">77</td><td data-v="11649">¥11,649</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="5824.5">¥5,824</td></tr>
+<tr><td class="l">限界 wi fi</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="2317">¥2,317</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1158.5">¥1,158</td></tr>
+<tr><td class="l">ベリー ネット クーポン</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="3152">¥3,152</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1576.0">¥1,576</td></tr>
+<tr><td class="l">エックス モバイル キャンペーン</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="11483">¥11,483</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="5741.5">¥5,742</td></tr>
+<tr><td class="l">限界 突破 wifi 2</td><td>追加済み</td><td>検索</td><td data-v="16">16</td><td data-v="6588">¥6,588</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="4392.0">¥4,392</td></tr>
+<tr><td class="l">モバイル ルーター レンタル</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1152">¥1,152</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1152.0">¥1,152</td></tr>
+<tr><td class="l">タックルベリー ネット</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="2308">¥2,308</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2308.0">¥2,308</td></tr>
+<tr><td class="l">xmobile esim</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="4289">¥4,289</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4289.0">¥4,289</td></tr>
+<tr><td class="l">エックス モバイル 回線</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1108">¥1,108</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1108.0">¥1,108</td></tr>
+<tr><td class="l">エクス モバイル wi fi</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="1115">¥1,115</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1115.0">¥1,115</td></tr>
+<tr><td class="l">レンタル wi fi 口座 振替</td><td>追加済み</td><td>検索</td><td data-v="2">2</td><td data-v="454">¥454</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="454.0">¥454</td></tr>
+<tr><td class="l">ポケット wifi ドコモ 回線</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="913">¥913</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="913.0">¥913</td></tr>
+<tr><td class="l">格安 sim</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="1151">¥1,151</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1151.0">¥1,151</td></tr>
+<tr><td class="l">エックス モバイル ポケット wifi</td><td>追加済み</td><td>検索</td><td data-v="34">34</td><td data-v="9361">¥9,361</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="9361.0">¥9,361</td></tr>
+<tr><td class="l">ドンキ ポケット wi fi</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="3399">¥3,399</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3399.0">¥3,399</td></tr>
+<tr><td class="l">esim</td><td>追加済み</td><td>検索</td><td data-v="16">16</td><td data-v="9396">¥9,396</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="9396.0">¥9,396</td></tr>
+<tr><td class="l">fujisoft モバイル ルーター</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="119">¥119</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="119.0">¥119</td></tr>
+<tr><td class="l">tackle berry japan</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="2362">¥2,362</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2362.0">¥2,362</td></tr>
+<tr><td class="l">ポケット wifi 契約 なし 楽天</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="337">¥337</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="337.0">¥337</td></tr>
+<tr><td class="l">ポケット wifi 無制限</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="2713">¥2,713</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2713.0">¥2,713</td></tr>
+<tr><td class="l">限界 突破 wifi 海外</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="1965">¥1,965</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1965.0">¥1,965</td></tr>
+<tr><td class="l">ホリエ モバイル esim</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="493">¥493</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="493.0">¥493</td></tr>
+<tr><td class="l">タックルベリー 買取 価格</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="89">¥89</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="89.0">¥89</td></tr>
+<tr><td class="l">エックス モバイル 海外</td><td>追加済み</td><td>検索</td><td data-v="17">17</td><td data-v="10616">¥10,616</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="10616.0">¥10,616</td></tr>
+<tr><td class="l">ゼウス wi fi</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="1399">¥1,399</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1399.0">¥1,399</td></tr>
+<tr><td class="l">ポケット wifi レンタル クレカ なし</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="208">¥208</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="208.0">¥208</td></tr>
+<tr><td class="l">wi fi 限界 突破</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="1290">¥1,290</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1290.0">¥1,290</td></tr>
+<tr><td class="l">即日 esim</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="590">¥590</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="590.0">¥590</td></tr>
+<tr><td class="l">限界 突破 wifi 契約</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="1139">¥1,139</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1139.0">¥1,139</td></tr>
+<tr><td class="l">ポケット wifi 無制限 最強</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="779">¥779</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="779.0">¥779</td></tr>
+<tr><td class="l">新規 sim 契約</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="829">¥829</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="829.0">¥829</td></tr>
+<tr><td class="l">イモト の wifi</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="617">¥617</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="617.0">¥617</td></tr>
+<tr><td class="l">モバイル wifi</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="1155">¥1,155</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1155.0">¥1,155</td></tr>
+<tr><td class="l">xmobile 評判</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="743">¥743</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="743.0">¥743</td></tr>
+<tr><td class="l">限界 突破 スマホ</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="872">¥872</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="872.0">¥872</td></tr>
+<tr><td class="l">sim 即日 発送</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1131">¥1,131</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1131.0">¥1,131</td></tr>
+<tr><td class="l">限界 突破 wi fi 申し込み</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="846">¥846</td><td class="cv sep" data-v="0.7">0.7</td><td class="cv" data-v="1262.7">¥1,263</td></tr>
+<tr><td class="l">esim クレジット カード なし</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="472">¥472</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="944.0">¥944</td></tr>
+<tr><td class="l">ホリエ の wi fi</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="6327">¥6,327</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="12654.0">¥12,654</td></tr>
+<tr><td class="l">格安 esim</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="3818">¥3,818</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="7636.0">¥7,636</td></tr>
+<tr><td class="l">堀江 の wi fi</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="1911">¥1,911</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="3822.0">¥3,822</td></tr>
+<tr><td class="l">wifi 口座 振替 端末 無料</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1052">¥1,052</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="2104.0">¥2,104</td></tr>
+<tr><td class="l">トライ wimax</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="2562">¥2,562</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="5124.0">¥5,124</td></tr>
+<tr><td class="l">イモト の ワイファイ</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2534">¥2,534</td><td class="cv sep" data-v="0.3">0.3</td><td class="cv" data-v="7678.8">¥7,679</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（56行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2026-05-18 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">指名</td><td data-v="84330">84,330</td><td data-v="15505">15,505</td><td data-v="0.1839">18.4%</td><td data-v="234.1">¥234</td><td data-v="3630015">¥3,630,015</td><td data-v="0.2399">24.0%</td><td class="cv sep" data-v="3820">3,820</td><td class="cv" data-v="0.2464">24.6%</td><td class="cv" data-v="950.3">¥950</td></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td class="l">一般</td><td data-v="425657">425,657</td><td data-v="54600">54,600</td><td data-v="0.1283">12.8%</td><td data-v="210.6">¥211</td><td data-v="11499132">¥11,499,132</td><td data-v="0.7601">76.0%</td><td class="cv sep" data-v="10799">10,799</td><td class="cv" data-v="0.1978">19.8%</td><td class="cv" data-v="1064.8">¥1,065</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l">指名</td><td data-v="16170">16,170</td><td data-v="2777">2,777</td><td data-v="0.1717">17.2%</td><td data-v="352.2">¥352</td><td data-v="977926">¥977,926</td><td data-v="0.5910">59.1%</td><td class="cv sep" data-v="87">87</td><td class="cv" data-v="0.0313">3.1%</td><td class="cv" data-v="11240.5">¥11,241</td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td class="l">一般</td><td data-v="23997">23,997</td><td data-v="1725">1,725</td><td data-v="0.0719">7.2%</td><td data-v="392.3">¥392</td><td data-v="676689">¥676,689</td><td data-v="0.4090">40.9%</td><td class="cv sep" data-v="55">55</td><td class="cv" data-v="0.0319">3.2%</td><td class="cv" data-v="12305.7">¥12,306</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2026-05-18</th></tr>
+<tr data-a="World esim"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>World esim</td><td><div class="bar"><div class="mt-i" style="width:25.5%" title="インテント マッチ 25.5%"></div><div class="mt-p" style="width:28.3%" title="フレーズ一致 28.3%"></div><div class="mt-e" style="width:46.2%" title="完全一致 46.2%"></div></div><div class="note">インテント26% / フレーズ28% / 完全46%</div></td></tr>
+<tr data-a="Xモバイル"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>Xモバイル</td><td><div class="bar"><div class="mt-i" style="width:23.6%" title="インテント マッチ 23.6%"></div><div class="mt-p" style="width:44.0%" title="フレーズ一致 44.0%"></div><div class="mt-e" style="width:32.4%" title="完全一致 32.4%"></div></div><div class="note">インテント24% / フレーズ44% / 完全32%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2026-05-18</b>（20260518_レポート依頼用_【eSIM】_セレス様__1CFv0h2N.xlsx）<br>取得不可（空タブ）: グローバルesim<br>端数月: 2026-05（18日まで）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

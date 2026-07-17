@@ -1,0 +1,749 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜予約システム</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>予約システム業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">2社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2025-12-12</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥1,632,321</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥423</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">4.4〜6.4</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="KaruteKun" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</button><button class="achip" data-t="RE:RE" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2025-12-12（期間 2025年10月1日 - 2025年12月15日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td data-v="1002916">¥1,002,916</td><td data-v="1914">1,914</td><td data-v="0.0614">6.1%</td><td data-v="524.0">¥524</td><td data-v="4.39">4.39</td><td data-v="0.0">--</td><td data-v="0.1691">16.9%</td><td><div class="bar"><div class="mt-i" style="width:60.3%" title="インテント マッチ 60.3%"></div><div class="mt-p" style="width:26.8%" title="フレーズ一致 26.8%"></div><div class="mt-e" style="width:12.9%" title="完全一致 12.9%"></div></div></td><td class="cv sep" data-v="55">55</td><td class="cv" data-v="0.0289">2.9%</td><td class="cv" data-v="18126.1">¥18,126</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td data-v="629405">¥629,405</td><td data-v="1948">1,948</td><td data-v="0.0455">4.5%</td><td data-v="323.1">¥323</td><td data-v="6.36">6.36</td><td data-v="0.0">--</td><td data-v="0.1584">15.8%</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div></td><td class="cv sep" data-v="29">29</td><td class="cv" data-v="0.0150">1.5%</td><td class="cv" data-v="21503.4">¥21,503</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: ワンモアハンド</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td data-v="202510">2025-10</td><td data-v="9192">9,192</td><td data-v="529">529</td><td data-v="0.0576">5.8%</td><td data-v="522.9">¥523</td><td data-v="276594">¥276,594</td><td class="cv sep" data-v="17">17</td><td class="cv" data-v="0.0321">3.2%</td><td class="cv" data-v="16270.2">¥16,270</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td data-v="202511">2025-11</td><td data-v="15294">15,294</td><td data-v="1006">1,006</td><td data-v="0.0658">6.6%</td><td data-v="540.1">¥540</td><td data-v="543371">¥543,371</td><td class="cv sep" data-v="28">28</td><td class="cv" data-v="0.0278">2.8%</td><td class="cv" data-v="19406.1">¥19,406</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td data-v="202512">2025-12 ⚠</td><td data-v="6711">6,711</td><td data-v="379">379</td><td data-v="0.0565">5.6%</td><td data-v="482.7">¥483</td><td data-v="182951">¥182,951</td><td class="cv sep" data-v="10">10</td><td class="cv" data-v="0.0273">2.7%</td><td class="cv" data-v="17710.6">¥17,711</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td data-v="202510">2025-10</td><td data-v="17520">17,520</td><td data-v="595">595</td><td data-v="0.0340">3.4%</td><td data-v="439.1">¥439</td><td data-v="261261">¥261,261</td><td class="cv sep" data-v="14">14</td><td class="cv" data-v="0.0231">2.3%</td><td class="cv" data-v="19000.8">¥19,001</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td data-v="202511">2025-11</td><td data-v="17429">17,429</td><td data-v="756">756</td><td data-v="0.0434">4.3%</td><td data-v="320.4">¥320</td><td data-v="242187">¥242,187</td><td class="cv sep" data-v="12">12</td><td class="cv" data-v="0.0152">1.5%</td><td class="cv" data-v="21023.2">¥21,023</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td data-v="202512">2025-12 ⚠</td><td data-v="7878">7,878</td><td data-v="597">597</td><td data-v="0.0758">7.6%</td><td data-v="211.0">¥211</td><td data-v="125957">¥125,957</td><td class="cv sep" data-v="4">4</td><td class="cv" data-v="0.0067">0.7%</td><td class="cv" data-v="31489.2">¥31,489</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="KaruteKun">
+<h3 class="adv" id="struct-KaruteKun" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun <span class="badge">取得 2025-12-12</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</span><span class="st">📁 CPN <b>2</b></span><span class="st">📂 ADG <b>13</b></span><span class="st">🔑 KW <b>16</b></span><span class="st">✏️ 広告 <b>15</b></span><span class="st">🔗 LP <b>10</b></span><span class="st">💰 <b>¥1,002,916</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="02_業種職種×機能">02_業種職種×機能</span><span class="share"><div style="width:83%"></div></span><span class="st">83.1%</span><span class="st">📂 <b>12</b></span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>13</b></span><span class="st">🔗 <b>10</b></span><span class="st">💰 <b>¥833,342</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="011_エステ_機能_予約">011_エステ_機能_予約</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥560,436</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="030_競合名">030_競合名</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥193,630</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="031_競合名_予約">031_競合名_予約</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥29,701</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="005_ヘア_機能_予約">005_ヘア_機能_予約</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥27,226</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="010_エステ_機能">010_エステ_機能</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥9,129</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="014_ネイル_機能_予約">014_ネイル_機能_予約</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥7,120</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="007_整体_機能">007_整体_機能</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥6,100</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="019_美容_機能">019_美容_機能</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>2</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><details><summary>… 残り 4 広告グループ（🔑 0 / ✏️ 4 / 💰 ¥0）</summary><ul>
+<li><span class="node adg"><span class="nm" title="016_アイラッシュ_機能">016_アイラッシュ_機能</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="013_ネイル_機能">013_ネイル_機能</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="008_整体_機能_予約">008_整体_機能_予約</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="004_ヘア_機能">004_ヘア_機能</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></details></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="01_指名">01_指名</span><span class="share"><div style="width:17%"></div></span><span class="st">16.9%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>2</b></span><span class="st">💰 <b>¥169,574</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="01_指名">01_指名</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>2</b></span><span class="st">💰 <b>¥169,574</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="RE:RE">
+<h3 class="adv" id="struct-RERE" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE <span class="badge">取得 2025-12-12</span></h3>
+<div class="tree" style="--ac:var(--adv-1)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</span><span class="st">📁 CPN <b>5</b></span><span class="st">📂 ADG <b>7</b></span><span class="st">🔑 KW <b>218</b></span><span class="st">✏️ 広告 <b>7</b></span><span class="st">🔗 LP <b>1</b></span><span class="st">💰 <b>¥629,405</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="RE:RE LP (最新)">RE:RE LP (最新)</span><span class="share"><div style="width:83%"></div></span><span class="st">82.6%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>125</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥520,000</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="RE:RE LP (最新)">RE:RE LP (最新)</span><span class="st">🔑 <b>125</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥520,000</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="LINE×予約">LINE×予約</span><span class="share"><div style="width:12%"></div></span><span class="st">12.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>51</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥75,690</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="LINE × 予約">LINE × 予約</span><span class="st">🔑 <b>51</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥75,690</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="RERE 指名">RERE 指名</span><span class="share"><div style="width:5%"></div></span><span class="st">5.4%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>49</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥33,715</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="RERE 指名">RERE 指名</span><span class="st">🔑 <b>49</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥33,715</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="RE:RE LP (最新) コンバージョン数最大化（目標単価無し）">RE:RE LP (最新) コンバージョン数最大化（目標単価無し）</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>131</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="RE:RE LP (最新)">RE:RE LP (最新)</span><span class="st">🔑 <b>131</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="LINE予約管理ツール「RE:RE」">LINE予約管理ツール「RE:RE」</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>3</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="manually-added-ja">manually-added-ja</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="business_name">business_name</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="dsa">dsa</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:81.6%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="KaruteKun｜エステ 予約管理 / QS7 / CPC¥630 / COST¥181,502"></span>
+<span class="dot" style="left:84.7%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="KaruteKun｜エステ 予約システム / QS5 / CPC¥654 / COST¥196,806"></span>
+<span class="dot" style="left:88.1%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="KaruteKun｜美容室 LINE予約システム / QS5 / CPC¥681 / COST¥27,226"></span>
+<span class="dot" style="left:69.1%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="KaruteKun｜リピッテ / QS1 / CPC¥533 / COST¥193,630"></span>
+<span class="dot" style="left:100.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="KaruteKun｜エステ LINE予約システム / QS7 / CPC¥772 / COST¥54,838"></span>
+<span class="dot" style="left:37.0%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="KaruteKun｜かるてくん / QS8 / CPC¥285 / COST¥10,276"></span>
+<span class="dot" style="left:38.4%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="KaruteKun｜[カルテくん] / QS10 / CPC¥297 / COST¥74,474"></span>
+<span class="dot" style="left:34.3%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="KaruteKun｜[かるてくん] / QS8 / CPC¥265 / COST¥11,905"></span>
+<span class="dot" style="left:36.5%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="KaruteKun｜[KaruteKun] / QS10 / CPC¥282 / COST¥27,033"></span>
+<span class="dot" style="left:33.0%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="KaruteKun｜カルテくん / QS10 / CPC¥255 / COST¥34,886"></span>
+<span class="dot" style="left:76.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="KaruteKun｜coming-soon 予約 / QS3 / CPC¥594 / COST¥29,701"></span>
+<span class="dot" style="left:6.3%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="RE:RE｜クリニック 予約システム LINE / QS3 / CPC¥49 / COST¥2,631"></span>
+<span class="dot" style="left:48.5%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="RE:RE｜RE:RE / QS8 / CPC¥375 / COST¥79,807"></span>
+<span class="dot" style="left:40.2%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="RE:RE｜予約システム LINE / QS5 / CPC¥310 / COST¥14,577"></span>
+<span class="dot" style="left:46.6%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="RE:RE｜LINE 予約システム / QS5 / CPC¥360 / COST¥53,276"></span>
+<span class="dot" style="left:51.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="RE:RE｜サロン 予約管理 / QS7 / CPC¥400 / COST¥86,753"></span>
+<span class="dot" style="left:25.1%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="RE:RE｜予約システム 導入 / QS7 / CPC¥194 / COST¥21,099"></span>
+<span class="dot" style="left:56.3%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="RE:RE｜クリニック 予約システム / QS3 / CPC¥434 / COST¥13,904"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥193</span>
+<span class="ax" style="left:50%;bottom:-22px">¥386</span>
+<span class="ax" style="left:75%;bottom:-22px">¥579</span>
+<span class="ax" style="left:100%;bottom:-22px">¥772</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>KaruteKun</span><span><i style="background:var(--adv-1)"></i>RE:RE</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l">予約システム 導入</td><td data-v="7">7</td><td data-v="194">¥194</td><td data-v="109">109</td><td data-v="21099">¥21,099</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l">カルテくん</td><td data-v="10">10</td><td data-v="255">¥255</td><td data-v="137">137</td><td data-v="34886">¥34,886</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l">[かるてくん]</td><td data-v="8">8</td><td data-v="265">¥265</td><td data-v="45">45</td><td data-v="11905">¥11,905</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l">[KaruteKun]</td><td data-v="10">10</td><td data-v="282">¥282</td><td data-v="96">96</td><td data-v="27033">¥27,033</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l">かるてくん</td><td data-v="8">8</td><td data-v="285">¥285</td><td data-v="36">36</td><td data-v="10276">¥10,276</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l">[カルテくん]</td><td data-v="10">10</td><td data-v="297">¥297</td><td data-v="251">251</td><td data-v="74474">¥74,474</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l">RE:RE</td><td data-v="8">8</td><td data-v="375">¥375</td><td data-v="213">213</td><td data-v="79807">¥79,807</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l">サロン 予約管理</td><td data-v="7">7</td><td data-v="400">¥400</td><td data-v="217">217</td><td data-v="86753">¥86,753</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l">エステ 予約管理</td><td data-v="7">7</td><td data-v="630">¥630</td><td data-v="288">288</td><td data-v="181502">¥181,502</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l">エステ LINE予約システム</td><td data-v="7">7</td><td data-v="772">¥772</td><td data-v="71">71</td><td data-v="54838">¥54,838</td></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l">リピッテ</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="533">¥533</td><td data-v="193630">¥193,630</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l">coming-soon 予約</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="594">¥594</td><td data-v="29701">¥29,701</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l">クリニック 予約システム</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="434">¥434</td><td data-v="13904">¥13,904</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l">クリニック 予約システム LINE</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="49">¥49</td><td data-v="2631">¥2,631</td></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td data-v="4.39">4.39</td><td data-v="22.1"><b>22.1%</b></td><td data-v="26.5"><b>26.5%</b></td><td data-v="80.6"><b>80.6%</b></td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td data-v="6.36">6.36</td><td data-v="0.8">0.8%</td><td data-v="19.7">19.7%</td><td data-v="39.7">39.7%</td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="KaruteKun">
+<h3 class="adv" id="kwqs-KaruteKun" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun <span class="badge">取得 2025-12-12</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>4.39</b></span><span class="chip">関連性↓<b>22.1%</b></span><span class="chip">推定CTR↓<b>26.5%</b></span><span class="chip bad">LP利便性↓<b>80.6%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="KaruteKun"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">エステ 予約システム</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="6481">6,481</td><td data-v="301">301</td><td data-v="0.0464">4.6%</td><td data-v="653.8">¥654</td><td data-v="196806">¥196,806</td><td class="cv sep" data-v="6.5">6.5</td><td class="cv" data-v="30277.8">¥30,278</td><td class="l">02_業種職種×機能</td></tr>
+<tr><td class="l">リピッテ</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="10000">10,000</td><td data-v="363">363</td><td data-v="0.0363">3.6%</td><td data-v="533.4">¥533</td><td data-v="193630">¥193,630</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="64543.3">¥64,543</td><td class="l">02_業種職種×機能</td></tr>
+<tr><td class="l">エステ 予約管理</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="5692">5,692</td><td data-v="288">288</td><td data-v="0.0506">5.1%</td><td data-v="630.2">¥630</td><td data-v="181502">¥181,502</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="60500.7">¥60,501</td><td class="l">02_業種職種×機能</td></tr>
+<tr><td class="l">エステ LINE予約管理</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="3594">3,594</td><td data-v="174">174</td><td data-v="0.0484">4.8%</td><td data-v="731.6">¥732</td><td data-v="127290">¥127,290</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="63645.0">¥63,645</td><td class="l">02_業種職種×機能</td></tr>
+<tr><td class="l">[カルテくん]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="822">822</td><td data-v="251">251</td><td data-v="0.3054">30.5%</td><td data-v="296.7">¥297</td><td data-v="74474">¥74,474</td><td class="cv sep" data-v="10.5">10.5</td><td class="cv" data-v="7092.8">¥7,093</td><td class="l">01_指名</td></tr>
+<tr><td class="l">エステ LINE予約システム</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="1474">1,474</td><td data-v="71">71</td><td data-v="0.0482">4.8%</td><td data-v="772.4">¥772</td><td data-v="54838">¥54,838</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="36558.7">¥36,559</td><td class="l">02_業種職種×機能</td></tr>
+<tr><td class="l">カルテくん</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="513">513</td><td data-v="137">137</td><td data-v="0.2671">26.7%</td><td data-v="254.6">¥255</td><td data-v="34886">¥34,886</td><td class="cv sep" data-v="4.8">4.8</td><td class="cv" data-v="7222.8">¥7,223</td><td class="l">01_指名</td></tr>
+<tr><td class="l">coming-soon 予約</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="602">602</td><td data-v="50">50</td><td data-v="0.0831">8.3%</td><td data-v="594.0">¥594</td><td data-v="29701">¥29,701</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="14850.5">¥14,850</td><td class="l">02_業種職種×機能</td></tr>
+<tr><td class="l">美容室 LINE予約システム</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="644">644</td><td data-v="40">40</td><td data-v="0.0621">6.2%</td><td data-v="680.6">¥681</td><td data-v="27226">¥27,226</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="9075.3">¥9,075</td><td class="l">02_業種職種×機能</td></tr>
+<tr><td class="l">[KaruteKun]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="284">284</td><td data-v="96">96</td><td data-v="0.3380">33.8%</td><td data-v="281.6">¥282</td><td data-v="27033">¥27,033</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="6758.2">¥6,758</td><td class="l">01_指名</td></tr>
+<tr><td class="l">[かるてくん]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="155">155</td><td data-v="45">45</td><td data-v="0.2903">29.0%</td><td data-v="264.6">¥265</td><td data-v="11905">¥11,905</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="3968.3">¥3,968</td><td class="l">01_指名</td></tr>
+<tr><td class="l">カルテくん</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="267">267</td><td data-v="23">23</td><td data-v="0.0861">8.6%</td><td data-v="478.3">¥478</td><td data-v="11000">¥11,000</td><td class="cv sep" data-v="3.5">3.5</td><td class="cv" data-v="3142.9">¥3,143</td><td class="l">01_指名</td></tr>
+<tr><td class="l">かるてくん</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="168">168</td><td data-v="36">36</td><td data-v="0.2143">21.4%</td><td data-v="285.4">¥285</td><td data-v="10276">¥10,276</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="5138.0">¥5,138</td><td class="l">01_指名</td></tr>
+<tr><td class="l">[エステ カルテ]</td><td>完全</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="174">174</td><td data-v="18">18</td><td data-v="0.1034">10.3%</td><td data-v="507.2">¥507</td><td data-v="9129">¥9,129</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="3651.6">¥3,652</td><td class="l">02_業種職種×機能</td></tr>
+<tr><td class="l">[ネイル 予約システム]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="59">59</td><td data-v="10">10</td><td data-v="0.1695">16.9%</td><td data-v="712.0">¥712</td><td data-v="7120">¥7,120</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3560.0">¥3,560</td><td class="l">02_業種職種×機能</td></tr>
+<tr><td class="l">接骨院 システム</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="268">268</td><td data-v="11">11</td><td data-v="0.0410">4.1%</td><td data-v="554.5">¥555</td><td data-v="6100">¥6,100</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3050.0">¥3,050</td><td class="l">02_業種職種×機能</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="RE:RE">
+<h3 class="adv" id="kwqs-RERE" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE <span class="badge">取得 2025-12-12</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>6.36</b></span><span class="chip">関連性↓<b>0.8%</b></span><span class="chip">推定CTR↓<b>19.7%</b></span><span class="chip bad">LP利便性↓<b>39.7%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="RE:RE"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">サロン 予約管理</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="6227">6,227</td><td data-v="217">217</td><td data-v="0.0348">3.5%</td><td data-v="399.8">¥400</td><td data-v="86753">¥86,753</td><td class="cv sep" data-v="2.9">2.9</td><td class="cv" data-v="30439.6">¥30,440</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">RE:RE</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="9190">9,190</td><td data-v="213">213</td><td data-v="0.0232">2.3%</td><td data-v="374.7">¥375</td><td data-v="79807">¥79,807</td><td class="cv sep" data-v="11.8">11.8</td><td class="cv" data-v="6734.8">¥6,735</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">LINE 予約システム</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="2581">2,581</td><td data-v="148">148</td><td data-v="0.0573">5.7%</td><td data-v="360.0">¥360</td><td data-v="53276">¥53,276</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="17758.7">¥17,759</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">ヘアサロン 予約</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2030">2,030</td><td data-v="111">111</td><td data-v="0.0547">5.5%</td><td data-v="292.5">¥292</td><td data-v="32465">¥32,465</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="32465.0">¥32,465</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">ヘアサロン 探す</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1048">1,048</td><td data-v="59">59</td><td data-v="0.0563">5.6%</td><td data-v="370.3">¥370</td><td data-v="21846">¥21,846</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">予約システム 導入</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="2460">2,460</td><td data-v="109">109</td><td data-v="0.0443">4.4%</td><td data-v="193.6">¥194</td><td data-v="21099">¥21,099</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">セミナー 予約システム</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="325">325</td><td data-v="10">10</td><td data-v="0.0308">3.1%</td><td data-v="1913.1">¥1,913</td><td data-v="19131">¥19,131</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="19131.0">¥19,131</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">クリニック 顧客管理</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1040">1,040</td><td data-v="186">186</td><td data-v="0.1788">17.9%</td><td data-v="102.7">¥103</td><td data-v="19109">¥19,109</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">ライン 顧客管理</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="728">728</td><td data-v="14">14</td><td data-v="0.0192">1.9%</td><td data-v="1337.3">¥1,337</td><td data-v="18722">¥18,722</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="9361.0">¥9,361</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">ジム 予約システム</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="590">590</td><td data-v="21">21</td><td data-v="0.0356">3.6%</td><td data-v="802.7">¥803</td><td data-v="16856">¥16,856</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">予約システム LINE</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="913">913</td><td data-v="47">47</td><td data-v="0.0515">5.1%</td><td data-v="310.1">¥310</td><td data-v="14577">¥14,577</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="7288.5">¥7,288</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">施設 予約管理</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1173">1,173</td><td data-v="58">58</td><td data-v="0.0494">4.9%</td><td data-v="248.2">¥248</td><td data-v="14393">¥14,393</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">クリニック 予約システム</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="542">542</td><td data-v="32">32</td><td data-v="0.0590">5.9%</td><td data-v="434.5">¥434</td><td data-v="13904">¥13,904</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">LINE公式 運用</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1122">1,122</td><td data-v="36">36</td><td data-v="0.0321">3.2%</td><td data-v="336.4">¥336</td><td data-v="12110">¥12,110</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="12110.0">¥12,110</td><td class="l">LINE×予約</td></tr>
+<tr><td class="l">クリニック 電子カルテ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="455">455</td><td data-v="58">58</td><td data-v="0.1275">12.7%</td><td data-v="165.5">¥165</td><td data-v="9597">¥9,597</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="9597.0">¥9,597</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">フィットネス 顧客管理</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="304">304</td><td data-v="12">12</td><td data-v="0.0395">3.9%</td><td data-v="740.7">¥741</td><td data-v="8888">¥8,888</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">エステサロン カルテ管理</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="418">418</td><td data-v="18">18</td><td data-v="0.0431">4.3%</td><td data-v="482.8">¥483</td><td data-v="8690">¥8,690</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">美容室 予約管理</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="448">448</td><td data-v="13">13</td><td data-v="0.0290">2.9%</td><td data-v="661.9">¥662</td><td data-v="8605">¥8,605</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">サロン 予約システム</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="294">294</td><td data-v="16">16</td><td data-v="0.0544">5.4%</td><td data-v="510.4">¥510</td><td data-v="8166">¥8,166</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">RERE 予約システム</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="85">85</td><td data-v="29">29</td><td data-v="0.3412">34.1%</td><td data-v="258.6">¥259</td><td data-v="7500">¥7,500</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RERE 指名</td></tr>
+<tr><td class="l">LINE 予約</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="665">665</td><td data-v="22">22</td><td data-v="0.0331">3.3%</td><td data-v="295.9">¥296</td><td data-v="6510">¥6,510</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LINE×予約</td></tr>
+<tr><td class="l">RE:RE LINE予約システム</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="218">218</td><td data-v="19">19</td><td data-v="0.0872">8.7%</td><td data-v="311.3">¥311</td><td data-v="5915">¥5,915</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RERE 指名</td></tr>
+<tr><td class="l">フィットネス 予約システム</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="245">245</td><td data-v="8">8</td><td data-v="0.0327">3.3%</td><td data-v="701.5">¥702</td><td data-v="5612">¥5,612</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">LINE 予約管理</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="169">169</td><td data-v="10">10</td><td data-v="0.0592">5.9%</td><td data-v="514.3">¥514</td><td data-v="5143">¥5,143</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">LINE公式 集客</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="399">399</td><td data-v="21">21</td><td data-v="0.0526">5.3%</td><td data-v="244.3">¥244</td><td data-v="5130">¥5,130</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LINE×予約</td></tr>
+<tr><td class="l">クリニック向け 電子カルテ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="318">318</td><td data-v="27">27</td><td data-v="0.0849">8.5%</td><td data-v="189.8">¥190</td><td data-v="5124">¥5,124</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">エステ 顧客管理</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="393">393</td><td data-v="17">17</td><td data-v="0.0433">4.3%</td><td data-v="278.2">¥278</td><td data-v="4730">¥4,730</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">施設 顧客管理</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="382">382</td><td data-v="18">18</td><td data-v="0.0471">4.7%</td><td data-v="247.6">¥248</td><td data-v="4456">¥4,456</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">LINE 予約 サロン</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="412">412</td><td data-v="9">9</td><td data-v="0.0218">2.2%</td><td data-v="461.7">¥462</td><td data-v="4155">¥4,155</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LINE×予約</td></tr>
+<tr><td class="l">公式LINE 予約</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="318">318</td><td data-v="14">14</td><td data-v="0.0440">4.4%</td><td data-v="284.5">¥284</td><td data-v="3983">¥3,983</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">予約 管理 line</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="208">208</td><td data-v="10">10</td><td data-v="0.0481">4.8%</td><td data-v="394.7">¥395</td><td data-v="3947">¥3,947</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LINE×予約</td></tr>
+<tr><td class="l">スクール 予約管理</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="135">135</td><td data-v="9">9</td><td data-v="0.0667">6.7%</td><td data-v="411.4">¥411</td><td data-v="3703">¥3,703</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">整体 予約管理</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="148">148</td><td data-v="7">7</td><td data-v="0.0473">4.7%</td><td data-v="522.6">¥523</td><td data-v="3658">¥3,658</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">整体 カルテ</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="118">118</td><td data-v="7">7</td><td data-v="0.0593">5.9%</td><td data-v="499.0">¥499</td><td data-v="3493">¥3,493</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">ジム 予約管理</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="97">97</td><td data-v="7">7</td><td data-v="0.0722">7.2%</td><td data-v="481.4">¥481</td><td data-v="3370">¥3,370</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">ライン 予約 システム</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="137">137</td><td data-v="8">8</td><td data-v="0.0584">5.8%</td><td data-v="418.1">¥418</td><td data-v="3345">¥3,345</td><td class="cv sep" data-v="0.7">0.7</td><td class="cv" data-v="4992.5">¥4,993</td><td class="l">LINE×予約</td></tr>
+<tr><td class="l">RE:RE 予約</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="47">47</td><td data-v="15">15</td><td data-v="0.3191">31.9%</td><td data-v="222.7">¥223</td><td data-v="3341">¥3,341</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3341.0">¥3,341</td><td class="l">RERE 指名</td></tr>
+<tr><td class="l">クリニック カルテ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="90">90</td><td data-v="17">17</td><td data-v="0.1889">18.9%</td><td data-v="183.5">¥183</td><td data-v="3119">¥3,119</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">公式line 予約</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="146">146</td><td data-v="10">10</td><td data-v="0.0685">6.8%</td><td data-v="308.7">¥309</td><td data-v="3087">¥3,087</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LINE×予約</td></tr>
+<tr><td class="l">クリニック 電カル</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="137">137</td><td data-v="14">14</td><td data-v="0.1022">10.2%</td><td data-v="213.0">¥213</td><td data-v="2982">¥2,982</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">ホットペッパー 連携 予約システム</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="84">84</td><td data-v="5">5</td><td data-v="0.0595">6.0%</td><td data-v="594.6">¥595</td><td data-v="2973">¥2,973</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">スクール 予約システム</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="7">7</td><td data-v="1">1</td><td data-v="0.1429">14.3%</td><td data-v="2959.0">¥2,959</td><td data-v="2959">¥2,959</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">予約管理システム 導入</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="700">700</td><td data-v="18">18</td><td data-v="0.0257">2.6%</td><td data-v="161.1">¥161</td><td data-v="2900">¥2,900</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">美容室 顧客管理ソフト ランキング</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="77">77</td><td data-v="7">7</td><td data-v="0.0909">9.1%</td><td data-v="408.6">¥409</td><td data-v="2860">¥2,860</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">レッスン 予約システム</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="94">94</td><td data-v="6">6</td><td data-v="0.0638">6.4%</td><td data-v="466.7">¥467</td><td data-v="2800">¥2,800</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">美容室 予約システム</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="185">185</td><td data-v="12">12</td><td data-v="0.0649">6.5%</td><td data-v="223.7">¥224</td><td data-v="2684">¥2,684</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">クリニック 予約システム LINE</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="350">350</td><td data-v="54">54</td><td data-v="0.1543">15.4%</td><td data-v="48.7">¥49</td><td data-v="2631">¥2,631</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">ホットペッパー 連携</td><td>インテント</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="100">100</td><td data-v="7">7</td><td data-v="0.0700">7.0%</td><td data-v="375.0">¥375</td><td data-v="2625">¥2,625</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">RE:RE LP (最新)</td></tr>
+<tr><td class="l">リリ 予約システム</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="21">21</td><td data-v="9">9</td><td data-v="0.4286">42.9%</td><td data-v="271.8">¥272</td><td data-v="2446">¥2,446</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2446.0">¥2,446</td><td class="l">RERE 指名</td></tr>
+<tr><td class="l">LINE 公式 予約</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="256">256</td><td data-v="9">9</td><td data-v="0.0352">3.5%</td><td data-v="266.7">¥267</td><td data-v="2400">¥2,400</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">LINE×予約</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="KaruteKun" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">karutekun.com<br><span>karutekun.com › lp_102</span></div><div class="t">初期費用0円で契約の縛りもなし - 月額サブスクのみの明快料金 - 月額5,500円～</div><div class="d">サロン向けカルテアプリの決定版！顧客管理、予約管理、売上管理を全て1つでカバー。 LINEから予約受付を実現！担当者ごとの予約枠の設定、煩雑な予約台帳の管理をアプリで簡単に。</div><div class="meta2">IMP 31,174 ／ CTR 3.6% ／ COST ¥612,433<br>02_業種職種×機能</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">karutekun.com<br><span>karutekun.com › lp_201 › beauty</span></div><div class="t">初期費用0円で契約の縛りもなし - 月額サブスクのみの明快料金 - 月額5,500円～のサロン予約管理</div><div class="d">サロン向け予約管理カルテアプリの決定版！顧客管理、予約管理、売上管理を全て1つでカバー。 LINEから予約受付を実現！担当者ごとの予約枠の設定、煩雑な予約台帳の管理をアプリで簡単に。</div><div class="meta2">IMP 19,559 ／ CTR 5.0% ／ COST ¥669,000<br>02_業種職種×機能</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">karutekun.com<br><span>karutekun.com › lp_201 › hair</span></div><div class="t">初期費用0円で契約の縛りもなし - 月額サブスクのみの明快料金 - 月額5,500円～のサロン予約管理</div><div class="d">サロン向け予約管理カルテアプリの決定版！顧客管理、予約管理、売上管理を全て1つでカバー。 LINEから予約受付を実現！担当者ごとの予約枠の設定、煩雑な予約台帳の管理をアプリで簡単に。</div><div class="meta2">IMP 11,036 ／ CTR 6.0% ／ COST ¥374,006<br>02_業種職種×機能</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">karutekun.com<br><span>karutekun.com › lp_102</span></div><div class="t">初期費用0円で契約の縛りもなし - 月額サブスクのみの明快料金 - 月額5,500円～</div><div class="d">サロン向けカルテアプリの決定版！顧客管理、予約管理、売上管理を全て1つでカバー。 LINEから予約受付を実現！担当者ごとの予約枠の設定、煩雑な予約台帳の管理をアプリで簡単に。</div><div class="meta2">IMP 7,875 ／ CTR 7.0% ／ COST ¥281,978<br>02_業種職種×機能</div></div>
+</div>
+<div class="serp-col advblk" data-a="RE:RE" style="--ac:var(--adv-1)"><h4><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">rere-salon.com<br><span>rere-salon.com</span></div><div class="t">予約システムの導入検討の方必見 - 【美容室向け】LINE予約システム - LINE1つで予約・顧客管理が完結</div><div class="d">【予約/顧客管理・カルテ】美容室・サロン・エステ・ジム・整体・クリニック等の業種で利用可。 【LINE公式アカウントで予約受付】自動リマインド,事前決済,物販,カレンダー連携など機能も充実</div><div class="meta2">IMP 34,675 ／ CTR 4.7% ／ COST ¥537,798<br>RE:RE LP (最新)</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">rere-salon.com<br><span>rere-salon.com</span></div><div class="t">決定版予約システム - 新規お申込み限定、初期費用無料 - LINE1つで予約・顧客管理が完結</div><div class="d">【予約/顧客管理・カルテ】美容室・サロン・エステ・ジム・整体・クリニック等の業種で利用可。 【LINE公式アカウントで予約受付】自動リマインド,事前決済,物販,カレンダー連携など機能も充実</div><div class="meta2">IMP 6,059 ／ CTR 4.4% ／ COST ¥75,690<br>LINE×予約</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">rere-salon.com<br><span>rere-salon.com</span></div><div class="t">LINE予約システム「RE：RE」 - 予約システム導入の方必見 - 複数の業界で選ばれる予約管理</div><div class="d">【予約/顧客管理・カルテ】美容室・サロン・エステ・ジム・整体・クリニック等の業種で利用可。 【LINE公式アカウントで予約受付】自動リマインド,事前決済,物販,カレンダー連携など機能も充実</div><div class="meta2">IMP 3,961 ／ CTR 3.7% ／ COST ¥38,030<br>RERE 指名</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">rere-salon.com<br><span>rere-salon.com</span></div><div class="t">予約システムの導入検討の方必見 - 【美容室向け】LINE予約システム - LINE1つで予約・顧客管理が完結</div><div class="d">【予約/顧客管理・カルテ】美容室・サロン・エステ・ジム・整体・クリニック等の業種で利用可。 【LINE公式アカウントで予約受付】自動リマインド,事前決済,物販,カレンダー連携など機能も充実</div><div class="meta2">IMP 0 ／ CTR 0.0% ／ COST ¥0<br>RE:RE LP (最新) コンバージョン数最大化（目標単価無し）</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">LINEからサロン予約受付や連絡も</td><td data-v="15">15</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">【公式】KaruteKun</td><td data-v="15">15</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">初期費用0円で契約の縛りもなし</td><td data-v="15">15</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">月額サブスクのみの明快料金</td><td data-v="15">15</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">{KeyWord:サロン向け顧客管理アプリ}</td><td data-v="13">13</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">{KeyWord:サロン向け顧客管理アプリ}なら</td><td data-v="13">13</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">{KeyWord:サロン向け顧客管理}アプリ</td><td data-v="13">13</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">サロン向け顧客管理アプリ</td><td data-v="11">11</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">サロン向け会計管理アプリ</td><td data-v="11">11</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">サロン向け問診アプリ</td><td data-v="11">11</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">サロン向け予約受付アプリ</td><td data-v="11">11</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">月額5,500円～</td><td data-v="11">11</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">サロン向けカルテ管理アプリ</td><td data-v="11">11</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">サロン向け予約管理アプリ</td><td data-v="11">11</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">LINEでお客様のアフターフォロー</td><td data-v="7">7</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">無料で全国出張サポート</td><td data-v="4">4</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">月額5,500円～のサロン予約管理</td><td data-v="4">4</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">サロンの予約管理業務を楽に</td><td data-v="4">4</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">予約情報を自動でカルテに連携</td><td data-v="4">4</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">ヘアサロン向け予約管理アプリ</td><td data-v="3">3</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">エステサロン向け予約管理アプリ</td><td data-v="3">3</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">LINE予約システム「RE：RE」</td><td data-v="3">3</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">LINE1つで予約・顧客管理が完結</td><td data-v="3">3</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">公式LINEアカウントで予約管理</td><td data-v="3">3</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">店舗・施設の予約管理システム</td><td data-v="3">3</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">LINE予約管理ツール「RE:RE」</td><td data-v="3">3</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">外部サイトと自動連携で効率UP</td><td data-v="3">3</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">美容 ネイル 整骨などサロン向け</td><td data-v="3">3</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">エステサロン向け顧客管理アプリ</td><td data-v="2">2</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">エステサロン向け会計管理アプリ</td><td data-v="2">2</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">エステサロン向けカルテアプリ</td><td data-v="2">2</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">エステサロン向け予約受付アプリ</td><td data-v="2">2</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">ヘアサロン向け予約受付アプリ</td><td data-v="2">2</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">ヘアサロン向け会計管理アプリ</td><td data-v="2">2</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">ヘアサロン向けカルテ管理アプリ</td><td data-v="2">2</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">ヘアサロン向け顧客管理アプリ</td><td data-v="2">2</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">【無料期間有】全機能使い放題</td><td data-v="2">2</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">初期費用無料キャンペーン</td><td data-v="2">2</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">LINEで自動予約受付が可能</td><td data-v="2">2</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">ラインで予約システムならRE:RE</td><td data-v="2">2</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">美容室,サロン,クリニック,整体</td><td data-v="2">2</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">【美容室向け】LINE予約システム</td><td data-v="2">2</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">予約システムの導入検討の方必見</td><td data-v="2">2</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">{Keyword:美容室予約システム}</td><td data-v="2">2</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">月額９８００円で全機能使い放題</td><td data-v="2">2</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">外部予約サイトとカレンダー連携</td><td data-v="2">2</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">予約・カルテ・顧客管理を一元化</td><td data-v="2">2</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">ネイルサロン向け予約管理アプリ</td><td data-v="1">1</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">サロン向け予約管理アプリなら</td><td data-v="1">1</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l wrap">サロン向け顧客管理アプリなら</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">無料トライアル実施中</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">複数の業界で選ばれる予約管理</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">複数の業種に幅広くオーダー可能</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">月額利用料9,800円</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">予約システム導入の方必見</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">ユーザー目線で使いやすさを特化</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">{KeyWord:LINE予約システム}導入検討</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">{keyword:re:re顧客管理}複数業界で採用</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">顧客の使いやすさを追求</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">予約管理をすべて解決</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">キャンペーン実施で初期費用無料</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">導入件数1,000店舗突破</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">予約管理/電子カルテ/商品販売</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">{KEYWORD:顧客管理システム}</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">月額9,800円で全機能使い放題</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">新規お申込み限定、初期費用無料</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">経営支援キャンペーン実施中</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">予約管理に関するすべてを解決</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">決定版{KeyWord:予約システム}</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">導入店舗数1,000店舗突破</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">【無料期間】全機能使い放題</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">圧倒的な使いやすさ</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">外部サイトも連携で予約一元管理</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">初期費用50,000OFFキャンペーン</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">顧客管理を簡単システム</td><td data-v="1">1</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l wrap">ユーザー目線の簡単予約システム</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="KaruteKun">
+<h3 class="adv" id="adlib-KaruteKun" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun <span class="badge">取得 2025-12-12</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>15本</b></span><span class="chip">CPN<b>2個</b></span><span class="chip">ADG<b>13個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>10本</b></span></div>
+<p class="note">主要LP: <span title="https://karutekun.com/lp_102">https://karutekun.com/lp_102（4本）</span> ／ <span title="https://karutekun.com/lp_101">https://karutekun.com/lp_101（2本）</span> ／ <span title="https://karutekun.com/lp_201">https://karutekun.com/lp_201（2本）</span> ／ <span title="https://karutekun.com/lp_101/eyelash">https://karutekun.com/lp_101/eyelash（1本）</span> ／ <span title="https://karutekun.com/lp_201/nail">https://karutekun.com/lp_201/nail（1本）</span></p>
+<p class="note">カスタマイザ: {KeyWord}×39</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="KaruteKun"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">LINEからサロン予約受付や連絡も</td><td data-v="15">15</td></tr>
+<tr><td class="l wrap">【公式】KaruteKun</td><td data-v="15">15</td></tr>
+<tr><td class="l wrap">初期費用0円で契約の縛りもなし</td><td data-v="15">15</td></tr>
+<tr><td class="l wrap">月額サブスクのみの明快料金</td><td data-v="15">15</td></tr>
+<tr><td class="l wrap">{KeyWord:サロン向け顧客管理アプリ}</td><td data-v="13">13</td></tr>
+<tr><td class="l wrap">{KeyWord:サロン向け顧客管理アプリ}なら</td><td data-v="13">13</td></tr>
+<tr><td class="l wrap">{KeyWord:サロン向け顧客管理}アプリ</td><td data-v="13">13</td></tr>
+<tr><td class="l wrap">サロン向け顧客管理アプリ</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">サロン向け会計管理アプリ</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">サロン向け問診アプリ</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">サロン向け予約受付アプリ</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">月額5,500円～</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">サロン向けカルテ管理アプリ</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">サロン向け予約管理アプリ</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">LINEでお客様のアフターフォロー</td><td data-v="7">7</td></tr>
+</table></div></div><div>
+<table data-adv="KaruteKun"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">LINEから予約受付を実現！担当者ごとの予約枠の設定、煩雑な予約台帳の管理をアプリで簡単に。</td><td data-v="15">15</td></tr>
+<tr><td class="l wrap">サロン向けカルテアプリの決定版！顧客管理、予約管理、売上管理を全て1つでカバー。</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">月5,500円～の{KeyWord:サロン向け顧客管理}アプリ。初期費用、長期契約、途中解約金なく圧倒的な低コスト</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">30日間無料でトライアル可能な{KeyWord:サロン向け顧客管理}アプリ。予約、カルテ、売上管理をこれ1つで。</td><td data-v="9">9</td></tr>
+<tr><td class="l wrap">月5,500円～の{KeyWord:サロン向け予約管理}アプリ。初期費用、長期契約、途中解約金なく圧倒的な低コスト</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">サロン向け予約管理カルテアプリの決定版！顧客管理、予約管理、売上管理を全て1つでカバー。</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">30日間無料でトライアル可能な{KeyWord:サロン向け予約管理}アプリ。予約、カルテ、売上管理をこれ1つで。</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">30日間無料でトライアル可能なサロン向け顧客管理アプリ。予約、カルテ、売上管理をこれ1つで。</td><td data-v="2">2</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="RE:RE">
+<h3 class="adv" id="adlib-RERE" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE <span class="badge">取得 2025-12-12</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>7本</b></span><span class="chip">CPN<b>5個</b></span><span class="chip">ADG<b>7個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>1本</b></span></div>
+<p class="note">主要LP: <span title="https://rere-salon.com/">https://rere-salon.com/（7本）</span></p>
+<p class="note">カスタマイザ: {KeyWord}×2 ／ {Keyword}×2 ／ {keyword}×1 ／ {KEYWORD}×1</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="RE:RE"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">LINE予約システム「RE：RE」</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">LINE1つで予約・顧客管理が完結</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">公式LINEアカウントで予約管理</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">店舗・施設の予約管理システム</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">LINE予約管理ツール「RE:RE」</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">外部サイトと自動連携で効率UP</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">美容 ネイル 整骨などサロン向け</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">【無料期間有】全機能使い放題</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">初期費用無料キャンペーン</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">LINEで自動予約受付が可能</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">ラインで予約システムならRE:RE</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">美容室,サロン,クリニック,整体</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【美容室向け】LINE予約システム</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">予約システムの導入検討の方必見</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">{Keyword:美容室予約システム}</td><td data-v="2">2</td></tr>
+</table></div></div><div>
+<table data-adv="RE:RE"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">【初期費用無料】1ヶ月の無料期間有。全機能使い放題。リピート率を増加させるLINE予約システム</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">【予約/顧客管理・カルテ】美容室・サロン・エステ・ジム・整体・クリニック等の業種で利用可。</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">【LINE公式アカウントで予約受付】自動リマインド,事前決済,物販,カレンダー連携など機能も充実</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">カルテ管理、電話対応などの負担を減らしてコストカット。またリピーターの囲い込みにも効果的。</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">LINEで簡単予約ができるサービス「RE:RE」。シンプル設計で使い易さは抜群。</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">あらゆる業種に向けの幅広くカスタマイズ可能！予約管理をLINEで自動化、一度、お試しください</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【導入実績多数】個人経営から大企業まで様々な分野で幅広く導入されている予約管理システム</td><td data-v="2">2</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="KaruteKun">
+<h3 class="adv" id="query-KaruteKun" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun <span class="badge">取得 2025-12-12</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="12">12</td><td data-v="658">658</td><td data-v="263851">¥263,851</td><td data-v="0.9026">90.3%</td><td class="cv sep" data-v="20.5">20.5</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="18">18</td><td data-v="84">84</td><td data-v="28465">¥28,465</td><td data-v="0.0974">9.7%</td><td class="cv sep" data-v="11.3">11.3</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="KaruteKun"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">カルテ くん</td><td>追加済み</td><td>検索</td><td data-v="227">227</td><td data-v="67672">¥67,672</td><td class="cv sep" data-v="10.5">10.5</td><td class="cv" data-v="6445.0">¥6,445</td></tr>
+<tr><td class="l">karutekun</td><td>追加済み</td><td>検索</td><td data-v="91">91</td><td data-v="25670">¥25,670</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="6417.5">¥6,418</td></tr>
+<tr><td class="l">かる て くん</td><td>追加済み</td><td>検索</td><td data-v="30">30</td><td data-v="7506">¥7,506</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="2502.0">¥2,502</td></tr>
+<tr><td class="l">リピッテ</td><td>追加済み</td><td>検索</td><td data-v="310">310</td><td data-v="163003">¥163,003</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="54334.3">¥54,334</td></tr>
+<tr><td class="l">カルテ くん 料金</td><td>なし</td><td>検索</td><td data-v="60">60</td><td data-v="13990">¥13,990</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="4663.3">¥4,663</td></tr>
+<tr><td class="l">ライン 予約 システム</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="2876">¥2,876</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1438.0">¥1,438</td></tr>
+<tr><td class="l">ネイル サロン 予約 システム</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="4282">¥4,282</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2141.0">¥2,141</td></tr>
+<tr><td class="l">電子 カルテ</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="899">¥899</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="599.3">¥599</td></tr>
+<tr><td class="l">電子 カルテ エステ</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="2879">¥2,879</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="1919.3">¥1,919</td></tr>
+<tr><td class="l">カルテ くん 口コミ</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="3539">¥3,539</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="2660.9">¥2,661</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（10行）。</p></div>
+<div class="advblk" data-a="RE:RE">
+<h3 class="adv" id="query-RERE" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE <span class="badge">取得 2025-12-12</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="45">45</td><td data-v="64">64</td><td data-v="119198">¥119,198</td><td data-v="0.5358">53.6%</td><td class="cv sep" data-v="19.0">19.0</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="10">10</td><td data-v="161">161</td><td data-v="60053">¥60,053</td><td data-v="0.2700">27.0%</td><td class="cv sep" data-v="10.7">10.7</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="22">22</td><td data-v="22">22</td><td data-v="43200">¥43,200</td><td data-v="0.1942">19.4%</td><td class="cv sep" data-v="10.1">10.1</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="RE:RE"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">re re</td><td>追加済み</td><td>検索</td><td data-v="156">156</td><td data-v="56860">¥56,860</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="6317.8">¥6,318</td></tr>
+<tr><td class="l">フリー ランス 美容 師 予約</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="788">¥788</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="394.0">¥394</td></tr>
+<tr><td class="l">rere 予約</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="1963">¥1,963</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="981.5">¥982</td></tr>
+<tr><td class="l">symview</td><td>なし</td><td>P-MAX</td><td data-v="5">5</td><td data-v="21259">¥21,259</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="10629.5">¥10,630</td></tr>
+<tr><td class="l">rere</td><td>なし</td><td>P-MAX</td><td data-v="8">8</td><td data-v="8369">¥8,369</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="8369.0">¥8,369</td></tr>
+<tr><td class="l">v manage</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="23046">¥23,046</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="23046.0">¥23,046</td></tr>
+<tr><td class="l">line ミニ アプリ 予約</td><td>なし</td><td>P-MAX</td><td data-v="3">3</td><td data-v="1040">¥1,040</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1040.0">¥1,040</td></tr>
+<tr><td class="l">ライン 予約 アプリ</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="868">¥868</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="868.0">¥868</td></tr>
+<tr><td class="l">イーベ</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="18186">¥18,186</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="18186.0">¥18,186</td></tr>
+<tr><td class="l">サロエボ 口コミ</td><td>なし</td><td>P-MAX</td><td data-v="5">5</td><td data-v="3246">¥3,246</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3246.0">¥3,246</td></tr>
+<tr><td class="l">かんざし 予約</td><td>なし</td><td>P-MAX</td><td data-v="4">4</td><td data-v="1656">¥1,656</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1656.0">¥1,656</td></tr>
+<tr><td class="l">デジスマ</td><td>なし</td><td>P-MAX</td><td data-v="3">3</td><td data-v="10172">¥10,172</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="10172.0">¥10,172</td></tr>
+<tr><td class="l">ハコモノ 予約</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="419">¥419</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="419.0">¥419</td></tr>
+<tr><td class="l">re re 予約</td><td>追加済み</td><td>検索</td><td data-v="12">12</td><td data-v="2676">¥2,676</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2676.0">¥2,676</td></tr>
+<tr><td class="l">line 予約 システム</td><td>追加済み</td><td>検索</td><td data-v="1">1</td><td data-v="1135">¥1,135</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1135.0">¥1,135</td></tr>
+<tr><td class="l">square ホットペッパー 連携</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="170">¥170</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="170.0">¥170</td></tr>
+<tr><td class="l">lime 予約</td><td>なし</td><td>P-MAX</td><td data-v="4">4</td><td data-v="2001">¥2,001</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2001.0">¥2,001</td></tr>
+<tr><td class="l">reserva 予約 システム 評判</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="266">¥266</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="266.0">¥266</td></tr>
+<tr><td class="l">homis</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="4707">¥4,707</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4707.0">¥4,707</td></tr>
+<tr><td class="l">チャット ブースト 評判</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="912">¥912</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="912.0">¥912</td></tr>
+<tr><td class="l">ワンモア ハンド</td><td>なし</td><td>P-MAX</td><td data-v="10">10</td><td data-v="32602">¥32,602</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="32602.0">¥32,602</td></tr>
+<tr><td class="l">電子 カルテ 予約 システム</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="355">¥355</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="355.0">¥355</td></tr>
+<tr><td class="l">ligla</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="14285">¥14,285</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="14285.0">¥14,285</td></tr>
+<tr><td class="l">ライン 予約 システム 無料</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="163">¥163</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="163.0">¥163</td></tr>
+<tr><td class="l">サロン 予約 サイト</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="1707">¥1,707</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1707.0">¥1,707</td></tr>
+<tr><td class="l">medicalforce</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="8706">¥8,706</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="8706.0">¥8,706</td></tr>
+<tr><td class="l">line 予約 美容 室</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="987">¥987</td><td class="cv sep" data-v="0.9">0.9</td><td class="cv" data-v="1096.7">¥1,097</td></tr>
+<tr><td class="l">ビューティー メリット ホットペッパー 連携</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="849">¥849</td><td class="cv sep" data-v="0.8">0.8</td><td class="cv" data-v="998.8">¥999</td></tr>
+<tr><td class="l">ライン 予約 システム</td><td>追加済み</td><td>検索</td><td data-v="3">3</td><td data-v="2080">¥2,080</td><td class="cv sep" data-v="0.7">0.7</td><td class="cv" data-v="3104.5">¥3,104</td></tr>
+<tr><td class="l">l ステップ 予約 管理</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="978">¥978</td><td class="cv sep" data-v="0.3">0.3</td><td class="cv" data-v="2963.6">¥2,964</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（30行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2025-12-12 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l">指名</td><td data-v="2209">2,209</td><td data-v="588">588</td><td data-v="0.2662">26.6%</td><td data-v="288.4">¥288</td><td data-v="169574">¥169,574</td><td data-v="0.1691">16.9%</td><td class="cv sep" data-v="28">28</td><td class="cv" data-v="0.0473">4.7%</td><td class="cv" data-v="6093.2">¥6,093</td></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td class="l">一般</td><td data-v="28988">28,988</td><td data-v="1326">1,326</td><td data-v="0.0457">4.6%</td><td data-v="628.5">¥628</td><td data-v="833342">¥833,342</td><td data-v="0.8309">83.1%</td><td class="cv sep" data-v="28">28</td><td class="cv" data-v="0.0207">2.1%</td><td class="cv" data-v="30303.3">¥30,303</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l">指名</td><td data-v="9575">9,575</td><td data-v="288">288</td><td data-v="0.0301">3.0%</td><td data-v="346.2">¥346</td><td data-v="99718">¥99,718</td><td data-v="0.1584">15.8%</td><td class="cv sep" data-v="14">14</td><td class="cv" data-v="0.0481">4.8%</td><td class="cv" data-v="7199.9">¥7,200</td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td class="l">一般</td><td data-v="33252">33,252</td><td data-v="1660">1,660</td><td data-v="0.0499">5.0%</td><td data-v="319.1">¥319</td><td data-v="529687">¥529,687</td><td data-v="0.8416">84.2%</td><td class="cv sep" data-v="15">15</td><td class="cv" data-v="0.0093">0.9%</td><td class="cv" data-v="34350.6">¥34,351</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2025-12-12</th></tr>
+<tr data-a="KaruteKun"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>KaruteKun</td><td><div class="bar"><div class="mt-i" style="width:60.3%" title="インテント マッチ 60.3%"></div><div class="mt-p" style="width:26.8%" title="フレーズ一致 26.8%"></div><div class="mt-e" style="width:12.9%" title="完全一致 12.9%"></div></div><div class="note">インテント60% / フレーズ27% / 完全13%</div></td></tr>
+<tr data-a="RE:RE"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>RE:RE</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div><div class="note">インテント100%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2025-12-12</b>（20251212_レポート依頼用（予約システム）_セレス様__1rPyoCIU.xlsx）<br>取得不可（空タブ）: ワンモアハンド<br>端数月: 2025-12（15日まで）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

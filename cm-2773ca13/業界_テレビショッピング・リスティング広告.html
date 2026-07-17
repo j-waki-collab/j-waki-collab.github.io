@@ -1,0 +1,680 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜テレビショッピング・リスティング広告</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>テレビショッピング・リスティング広告業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">1社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2026-02-16</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥21,384,768</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥595</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">3.7〜3.7</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="ヴァンテージ" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2026-02-16（期間 2025年12月1日 - 2026年2月19日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td data-v="21384768">¥21,384,768</td><td data-v="35956">35,956</td><td data-v="0.0665">6.6%</td><td data-v="594.7">¥595</td><td data-v="3.66">3.66</td><td data-v="0.0">--</td><td data-v="0.0000">0.0%</td><td><div class="bar"><div class="mt-i" style="width:36.6%" title="インテント マッチ 36.6%"></div><div class="mt-p" style="width:63.4%" title="フレーズ一致 63.4%"></div></div></td><td class="cv sep" data-v="143">143</td><td class="cv" data-v="0.0040">0.4%</td><td class="cv" data-v="149095.5">¥149,096</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: ダイレクトテレショップ・ショップチャンネル・ショップジャパン</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td data-v="202512">2025-12</td><td data-v="287107">287,107</td><td data-v="18508">18,508</td><td data-v="0.0645">6.4%</td><td data-v="633.8">¥634</td><td data-v="11730260">¥11,730,260</td><td class="cv sep" data-v="62">62</td><td class="cv" data-v="0.0034">0.3%</td><td class="cv" data-v="188559.1">¥188,559</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td data-v="202601">2026-01</td><td data-v="188313">188,313</td><td data-v="13290">13,290</td><td data-v="0.0706">7.1%</td><td data-v="515.1">¥515</td><td data-v="6845210">¥6,845,210</td><td class="cv sep" data-v="54">54</td><td class="cv" data-v="0.0041">0.4%</td><td class="cv" data-v="126599.0">¥126,599</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td data-v="202602">2026-02 ⚠</td><td data-v="65327">65,327</td><td data-v="4158">4,158</td><td data-v="0.0636">6.4%</td><td data-v="675.6">¥676</td><td data-v="2809298">¥2,809,298</td><td class="cv sep" data-v="27">27</td><td class="cv" data-v="0.0065">0.7%</td><td class="cv" data-v="103473.2">¥103,473</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="ヴァンテージ">
+<h3 class="adv" id="struct-ヴァンテージ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ <span class="badge">取得 2026-02-16</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</span><span class="st">📁 CPN <b>5</b></span><span class="st">📂 ADG <b>6</b></span><span class="st">🔑 KW <b>46</b></span><span class="st">✏️ 広告 <b>6</b></span><span class="st">🔗 LP <b>5</b></span><span class="st">💰 <b>¥21,384,768</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="リスティング">リスティング</span><span class="share"><div style="width:92%"></div></span><span class="st">92.2%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>24</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥19,716,879</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【インテントマッチ】【wonLP】【リス】最低無しwonLPに飛ばす">【インテントマッチ】【wonLP】【リス】最低無しwonLPに飛ばす</span><span class="st">🔑 <b>24</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥18,779,975</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="【フレーズ一致】【wonLP】【リス】最低無しwonLPに飛ばす">【フレーズ一致】【wonLP】【リス】最低無しwonLPに飛ばす</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥936,904</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="Instagram広告">Instagram広告</span><span class="share"><div style="width:3%"></div></span><span class="st">3.2%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>8</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥690,990</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【インテントマッチ】【wonLP】Instagram広告">【インテントマッチ】【wonLP】Instagram広告</span><span class="st">🔑 <b>8</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥690,990</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="リスティング【FVに簡易問い合わせフォーム】">リスティング【FVに簡易問い合わせフォーム】</span><span class="share"><div style="width:2%"></div></span><span class="st">2.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥438,351</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【インテントマッチ】【wonLP】【リス】最低無しwonLPに飛ばす【FVに簡易問い合わせフォーム】">【インテントマッチ】【wonLP】【リス】最低無しwonLPに飛ばす【FVに簡易問い合わせフォーム】</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥438,351</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="LP系">LP系</span><span class="share"><div style="width:2%"></div></span><span class="st">1.9%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>9</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥401,208</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【インテントマッチ】【wonLP】【最低無し】LP系kw">【インテントマッチ】【wonLP】【最低無し】LP系kw</span><span class="st">🔑 <b>9</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥401,208</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="Facebook広告">Facebook広告</span><span class="share"><div style="width:1%"></div></span><span class="st">0.6%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥137,340</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="【インテントマッチ】【wonLP】Facebook広告">【インテントマッチ】【wonLP】Facebook広告</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥137,340</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:35.2%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="ヴァンテージ｜広告 運用 / QS3 / CPC¥639 / COST¥1,529,275"></span>
+<span class="dot" style="left:35.9%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="ヴァンテージ｜リスティング / QS3 / CPC¥652 / COST¥714,716"></span>
+<span class="dot" style="left:17.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜ネット 広告 / QS3 / CPC¥326 / COST¥407,214"></span>
+<span class="dot" style="left:14.6%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="ヴァンテージ｜インターネット 広告 / QS3 / CPC¥265 / COST¥574,985"></span>
+<span class="dot" style="left:17.3%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="ヴァンテージ｜web 広告 / QS3 / CPC¥314 / COST¥1,153,620"></span>
+<span class="dot" style="left:26.8%;bottom:44.4%;width:18px;height:18px;background:var(--adv-0)" title="ヴァンテージ｜広告 / QS5 / CPC¥487 / COST¥5,221,058"></span>
+<span class="dot" style="left:19.1%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜リスティング広告 運用 / QS3 / CPC¥348 / COST¥394,764"></span>
+<span class="dot" style="left:49.9%;bottom:22.2%;width:18px;height:18px;background:var(--adv-0)" title="ヴァンテージ｜広告 代行 / QS3 / CPC¥906 / COST¥4,216,588"></span>
+<span class="dot" style="left:50.6%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜lp サイト 制作 / QS5 / CPC¥920 / COST¥62,542"></span>
+<span class="dot" style="left:35.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜lp ランディング ページ / QS3 / CPC¥652 / COST¥23,457"></span>
+<span class="dot" style="left:96.6%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="ヴァンテージ｜広告 運用 代行 / QS3 / CPC¥1,755 / COST¥1,281,084"></span>
+<span class="dot" style="left:100.0%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="ヴァンテージ｜リスティング 広告 / QS3 / CPC¥1,817 / COST¥995,657"></span>
+<span class="dot" style="left:46.5%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜lp 作成 / QS3 / CPC¥844 / COST¥107,251"></span>
+<span class="dot" style="left:49.8%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜LP 制作 / QS3 / CPC¥906 / COST¥88,753"></span>
+<span class="dot" style="left:100.0%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜リスティング 代行 / QS5 / CPC¥2,016 / COST¥409,207"></span>
+<span class="dot" style="left:49.9%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜ランディングページ 制作 / QS5 / CPC¥907 / COST¥47,160"></span>
+<span class="dot" style="left:23.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜ppc 広告 代行 / QS3 / CPC¥434 / COST¥366,094"></span>
+<span class="dot" style="left:54.7%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜インスタ 広告 代理 店 / QS3 / CPC¥995 / COST¥58,681"></span>
+<span class="dot" style="left:33.3%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜Instagram広告 運用代行 / QS5 / CPC¥605 / COST¥45,999"></span>
+<span class="dot" style="left:25.4%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜リスティング 広告 代理 店 / QS3 / CPC¥462 / COST¥319,176"></span>
+<span class="dot" style="left:51.4%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜インスタ 代行 / QS5 / CPC¥933 / COST¥108,247"></span>
+<span class="dot" style="left:45.2%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜Instagram 代行 / QS5 / CPC¥821 / COST¥118,283"></span>
+<span class="dot" style="left:38.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜インスタグラム 運用 / QS3 / CPC¥707 / COST¥66,463"></span>
+<span class="dot" style="left:44.3%;bottom:11.1%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜リスティング広告 代行 / QS2 / CPC¥804 / COST¥272,563"></span>
+<span class="dot" style="left:31.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜インスタ 運用 / QS3 / CPC¥579 / COST¥101,346"></span>
+<span class="dot" style="left:29.8%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜Instagram広告 運用 / QS3 / CPC¥541 / COST¥84,370"></span>
+<span class="dot" style="left:27.3%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜facebook 運用 / QS3 / CPC¥496 / COST¥17,350"></span>
+<span class="dot" style="left:21.3%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜FB 広告 / QS3 / CPC¥386 / COST¥31,279"></span>
+<span class="dot" style="left:25.4%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜広告 グーグル / QS3 / CPC¥461 / COST¥244,289"></span>
+<span class="dot" style="left:35.7%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜google 広告 / QS3 / CPC¥649 / COST¥236,297"></span>
+<span class="dot" style="left:30.1%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="ヴァンテージ｜リスティング 広告 / QS3 / CPC¥546 / COST¥546,604"></span>
+<span class="dot" style="left:34.3%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜Facebook 広告 / QS3 / CPC¥623 / COST¥47,328"></span>
+<span class="dot" style="left:24.5%;bottom:11.1%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜ウェブ サイト 広告 / QS2 / CPC¥445 / COST¥270,664"></span>
+<span class="dot" style="left:94.8%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜広告 Yahoo / QS3 / CPC¥1,722 / COST¥220,406"></span>
+<span class="dot" style="left:32.3%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜リスティング 広告 運用 / QS3 / CPC¥587 / COST¥202,640"></span>
+<span class="dot" style="left:55.3%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜リスティング 広告 費用 / QS3 / CPC¥1,004 / COST¥98,420"></span>
+<span class="dot" style="left:77.1%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜リスティング 広告 運用 代行 / QS3 / CPC¥1,400 / COST¥187,614"></span>
+<span class="dot" style="left:21.1%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜グーグル 広告 / QS3 / CPC¥384 / COST¥229,519"></span>
+<span class="dot" style="left:46.1%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="ヴァンテージ｜グーグル 広告 費用 / QS1 / CPC¥837 / COST¥62,776"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥454</span>
+<span class="ax" style="left:50%;bottom:-22px">¥908</span>
+<span class="ax" style="left:75%;bottom:-22px">¥1,363</span>
+<span class="ax" style="left:100%;bottom:-22px">¥1,817</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>ヴァンテージ</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">広告 代行</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="906">¥906</td><td data-v="4216588">¥4,216,588</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">広告 運用</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="639">¥639</td><td data-v="1529275">¥1,529,275</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">広告 運用 代行</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="1755">¥1,755</td><td data-v="1281084">¥1,281,084</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">web 広告</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="314">¥314</td><td data-v="1153620">¥1,153,620</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">リスティング 広告</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="1817">¥1,817</td><td data-v="995657">¥995,657</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">リスティング</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="652">¥652</td><td data-v="714716">¥714,716</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">インターネット 広告</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="265">¥265</td><td data-v="574985">¥574,985</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">リスティング 広告</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="546">¥546</td><td data-v="546604">¥546,604</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">ネット 広告</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="326">¥326</td><td data-v="407214">¥407,214</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">リスティング広告 運用</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="348">¥348</td><td data-v="394764">¥394,764</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">ppc 広告 代行</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="434">¥434</td><td data-v="366094">¥366,094</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">リスティング 広告 代理 店</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="462">¥462</td><td data-v="319176">¥319,176</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">リスティング広告 代行</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="804">¥804</td><td data-v="272563">¥272,563</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">ウェブ サイト 広告</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="445">¥445</td><td data-v="270664">¥270,664</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">広告 グーグル</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="461">¥461</td><td data-v="244289">¥244,289</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">google 広告</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="649">¥649</td><td data-v="236297">¥236,297</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">グーグル 広告</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="384">¥384</td><td data-v="229519">¥229,519</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">広告 Yahoo</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="1722">¥1,722</td><td data-v="220406">¥220,406</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">リスティング 広告 運用</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="587">¥587</td><td data-v="202640">¥202,640</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">リスティング 広告 運用 代行</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="1400">¥1,400</td><td data-v="187614">¥187,614</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">lp 作成</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="844">¥844</td><td data-v="107251">¥107,251</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">インスタ 運用</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="579">¥579</td><td data-v="101346">¥101,346</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">リスティング 広告 費用</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="1004">¥1,004</td><td data-v="98420">¥98,420</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">LP 制作</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="906">¥906</td><td data-v="88753">¥88,753</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">Instagram広告 運用</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="541">¥541</td><td data-v="84370">¥84,370</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">インスタグラム 運用</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="707">¥707</td><td data-v="66463">¥66,463</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">グーグル 広告 費用</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="837">¥837</td><td data-v="62776">¥62,776</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">インスタ 広告 代理 店</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="995">¥995</td><td data-v="58681">¥58,681</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">Facebook 広告</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="623">¥623</td><td data-v="47328">¥47,328</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">FB 広告</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="386">¥386</td><td data-v="31279">¥31,279</td></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td data-v="3.66">3.66</td><td data-v="0.3"><b>0.3%</b></td><td data-v="96.2"><b>96.2%</b></td><td data-v="75.4"><b>75.4%</b></td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="ヴァンテージ">
+<h3 class="adv" id="kwqs-ヴァンテージ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ <span class="badge">取得 2026-02-16</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>3.66</b></span><span class="chip">関連性↓<b>0.3%</b></span><span class="chip bad">推定CTR↓<b>96.2%</b></span><span class="chip bad">LP利便性↓<b>75.4%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="ヴァンテージ"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">広告</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="161689">161,689</td><td data-v="10728">10,728</td><td data-v="0.0663">6.6%</td><td data-v="486.7">¥487</td><td data-v="5221058">¥5,221,058</td><td class="cv sep" data-v="28.6">28.6</td><td class="cv" data-v="182874.2">¥182,874</td><td class="l">リスティング</td></tr>
+<tr><td class="l">広告 代行</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="88908">88,908</td><td data-v="4653">4,653</td><td data-v="0.0523">5.2%</td><td data-v="906.2">¥906</td><td data-v="4216588">¥4,216,588</td><td class="cv sep" data-v="19.9">19.9</td><td class="cv" data-v="211888.8">¥211,889</td><td class="l">リスティング</td></tr>
+<tr><td class="l">広告 運用</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="27564">27,564</td><td data-v="2394">2,394</td><td data-v="0.0869">8.7%</td><td data-v="638.8">¥639</td><td data-v="1529275">¥1,529,275</td><td class="cv sep" data-v="6.3">6.3</td><td class="cv" data-v="244293.1">¥244,293</td><td class="l">リスティング</td></tr>
+<tr><td class="l">広告 運用 代行</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="13484">13,484</td><td data-v="730">730</td><td data-v="0.0541">5.4%</td><td data-v="1754.9">¥1,755</td><td data-v="1281084">¥1,281,084</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="425609.3">¥425,609</td><td class="l">リスティング</td></tr>
+<tr><td class="l">web 広告</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="32090">32,090</td><td data-v="3676">3,676</td><td data-v="0.1146">11.5%</td><td data-v="313.8">¥314</td><td data-v="1153620">¥1,153,620</td><td class="cv sep" data-v="9.9">9.9</td><td class="cv" data-v="115941.7">¥115,942</td><td class="l">リスティング</td></tr>
+<tr><td class="l">リスティング 広告</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="24127">24,127</td><td data-v="548">548</td><td data-v="0.0227">2.3%</td><td data-v="1816.9">¥1,817</td><td data-v="995657">¥995,657</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="497828.5">¥497,828</td><td class="l">リスティング</td></tr>
+<tr><td class="l">リスティング</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="19149">19,149</td><td data-v="1097">1,097</td><td data-v="0.0573">5.7%</td><td data-v="651.5">¥652</td><td data-v="714716">¥714,716</td><td class="cv sep" data-v="0.3">0.3</td><td class="cv" data-v="2552557.1">¥2,552,557</td><td class="l">リスティング</td></tr>
+<tr><td class="l">インターネット 広告</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="19874">19,874</td><td data-v="2166">2,166</td><td data-v="0.1090">10.9%</td><td data-v="265.5">¥265</td><td data-v="574985">¥574,985</td><td class="cv sep" data-v="6.6">6.6</td><td class="cv" data-v="86987.1">¥86,987</td><td class="l">リスティング</td></tr>
+<tr><td class="l">リスティング 広告</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="10150">10,150</td><td data-v="1001">1,001</td><td data-v="0.0986">9.9%</td><td data-v="546.1">¥546</td><td data-v="546604">¥546,604</td><td class="cv sep" data-v="3.7">3.7</td><td class="cv" data-v="146150.8">¥146,151</td><td class="l">リスティング</td></tr>
+<tr><td class="l">リスティング 代行</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="2907">2,907</td><td data-v="203">203</td><td data-v="0.0698">7.0%</td><td data-v="2015.8">¥2,016</td><td data-v="409207">¥409,207</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="203585.6">¥203,586</td><td class="l">リスティング</td></tr>
+<tr><td class="l">ネット 広告</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="13694">13,694</td><td data-v="1251">1,251</td><td data-v="0.0914">9.1%</td><td data-v="325.5">¥326</td><td data-v="407214">¥407,214</td><td class="cv sep" data-v="5.5">5.5</td><td class="cv" data-v="74173.8">¥74,174</td><td class="l">リスティング</td></tr>
+<tr><td class="l">リスティング広告 運用</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="11986">11,986</td><td data-v="1136">1,136</td><td data-v="0.0948">9.5%</td><td data-v="347.5">¥348</td><td data-v="394764">¥394,764</td><td class="cv sep" data-v="3.6">3.6</td><td class="cv" data-v="109050.8">¥109,051</td><td class="l">リスティング</td></tr>
+<tr><td class="l">ppc 広告 代行</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="9541">9,541</td><td data-v="844">844</td><td data-v="0.0885">8.8%</td><td data-v="433.8">¥434</td><td data-v="366094">¥366,094</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="183966.8">¥183,967</td><td class="l">リスティング</td></tr>
+<tr><td class="l">リスティング 広告 代理 店</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="4828">4,828</td><td data-v="691">691</td><td data-v="0.1431">14.3%</td><td data-v="461.9">¥462</td><td data-v="319176">¥319,176</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="319176.0">¥319,176</td><td class="l">リスティング</td></tr>
+<tr><td class="l">リスティング広告 代行</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="5012">5,012</td><td data-v="339">339</td><td data-v="0.0676">6.8%</td><td data-v="804.0">¥804</td><td data-v="272563">¥272,563</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="204934.6">¥204,935</td><td class="l">リスティング</td></tr>
+<tr><td class="l">ウェブ サイト 広告</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="9392">9,392</td><td data-v="608">608</td><td data-v="0.0647">6.5%</td><td data-v="445.2">¥445</td><td data-v="270664">¥270,664</td><td class="cv sep" data-v="2.9">2.9</td><td class="cv" data-v="92062.6">¥92,063</td><td class="l">リスティング</td></tr>
+<tr><td class="l">広告 グーグル</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="9352">9,352</td><td data-v="530">530</td><td data-v="0.0567">5.7%</td><td data-v="460.9">¥461</td><td data-v="244289">¥244,289</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="48857.8">¥48,858</td><td class="l">リスティング</td></tr>
+<tr><td class="l">google 広告</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="8620">8,620</td><td data-v="364">364</td><td data-v="0.0422">4.2%</td><td data-v="649.2">¥649</td><td data-v="236297">¥236,297</td><td class="cv sep" data-v="0.8">0.8</td><td class="cv" data-v="315062.7">¥315,063</td><td class="l">リスティング</td></tr>
+<tr><td class="l">グーグル 広告</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="8431">8,431</td><td data-v="598">598</td><td data-v="0.0709">7.1%</td><td data-v="383.8">¥384</td><td data-v="229519">¥229,519</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="153012.7">¥153,013</td><td class="l">リスティング</td></tr>
+<tr><td class="l">広告 Yahoo</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="11976">11,976</td><td data-v="128">128</td><td data-v="0.0107">1.1%</td><td data-v="1721.9">¥1,722</td><td data-v="220406">¥220,406</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="146937.3">¥146,937</td><td class="l">リスティング</td></tr>
+<tr><td class="l">リスティング 広告 運用</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="3120">3,120</td><td data-v="345">345</td><td data-v="0.1106">11.1%</td><td data-v="587.4">¥587</td><td data-v="202640">¥202,640</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="101829.1">¥101,829</td><td class="l">リスティング</td></tr>
+<tr><td class="l">リスティング 広告 運用 代行</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1549">1,549</td><td data-v="134">134</td><td data-v="0.0865">8.7%</td><td data-v="1400.1">¥1,400</td><td data-v="187614">¥187,614</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="187614.0">¥187,614</td><td class="l">リスティング</td></tr>
+<tr><td class="l">Instagram 代行</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="2255">2,255</td><td data-v="144">144</td><td data-v="0.0639">6.4%</td><td data-v="821.4">¥821</td><td data-v="118283">¥118,283</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="59141.5">¥59,142</td><td class="l">Instagram広告</td></tr>
+<tr><td class="l">インスタ 代行</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="2119">2,119</td><td data-v="116">116</td><td data-v="0.0547">5.5%</td><td data-v="933.2">¥933</td><td data-v="108247">¥108,247</td><td class="cv sep" data-v="3.5">3.5</td><td class="cv" data-v="30927.7">¥30,928</td><td class="l">Instagram広告</td></tr>
+<tr><td class="l">イン スタ グラム 広告 運用 代行</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1582">1,582</td><td data-v="108">108</td><td data-v="0.0683">6.8%</td><td data-v="996.3">¥996</td><td data-v="107601">¥107,601</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="53800.5">¥53,800</td><td class="l">Instagram広告</td></tr>
+<tr><td class="l">lp 作成</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="2052">2,052</td><td data-v="127">127</td><td data-v="0.0619">6.2%</td><td data-v="844.5">¥844</td><td data-v="107251">¥107,251</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="43072.7">¥43,073</td><td class="l">LP系</td></tr>
+<tr><td class="l">インスタ 運用</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="4359">4,359</td><td data-v="175">175</td><td data-v="0.0401">4.0%</td><td data-v="579.1">¥579</td><td data-v="101346">¥101,346</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="101346.0">¥101,346</td><td class="l">Instagram広告</td></tr>
+<tr><td class="l">リスティング 広告 費用</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="2709">2,709</td><td data-v="98">98</td><td data-v="0.0362">3.6%</td><td data-v="1004.3">¥1,004</td><td data-v="98420">¥98,420</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="32806.7">¥32,807</td><td class="l">リスティング</td></tr>
+<tr><td class="l">LP 制作</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1729">1,729</td><td data-v="98">98</td><td data-v="0.0567">5.7%</td><td data-v="905.6">¥906</td><td data-v="88753">¥88,753</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="88753.0">¥88,753</td><td class="l">LP系</td></tr>
+<tr><td class="l">Instagram広告 運用</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="6257">6,257</td><td data-v="156">156</td><td data-v="0.0249">2.5%</td><td data-v="540.8">¥541</td><td data-v="84370">¥84,370</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="84370.0">¥84,370</td><td class="l">Instagram広告</td></tr>
+<tr><td class="l">インスタグラム 運用</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="2835">2,835</td><td data-v="94">94</td><td data-v="0.0332">3.3%</td><td data-v="707.1">¥707</td><td data-v="66463">¥66,463</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="132926.0">¥132,926</td><td class="l">Instagram広告</td></tr>
+<tr><td class="l">グーグル 広告 費用</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1491">1,491</td><td data-v="75">75</td><td data-v="0.0503">5.0%</td><td data-v="837.0">¥837</td><td data-v="62776">¥62,776</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="62776.0">¥62,776</td><td class="l">リスティング</td></tr>
+<tr><td class="l">lp サイト 制作</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="1211">1,211</td><td data-v="68">68</td><td data-v="0.0562">5.6%</td><td data-v="919.7">¥920</td><td data-v="62542">¥62,542</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="41974.5">¥41,974</td><td class="l">LP系</td></tr>
+<tr><td class="l">インスタ 広告 代理 店</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1329">1,329</td><td data-v="59">59</td><td data-v="0.0444">4.4%</td><td data-v="994.6">¥995</td><td data-v="58681">¥58,681</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="58681.0">¥58,681</td><td class="l">Instagram広告</td></tr>
+<tr><td class="l">Facebook 広告</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="2947">2,947</td><td data-v="76">76</td><td data-v="0.0258">2.6%</td><td data-v="622.7">¥623</td><td data-v="47328">¥47,328</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="47328.0">¥47,328</td><td class="l">Facebook広告</td></tr>
+<tr><td class="l">ランディングページ 制作</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="921">921</td><td data-v="52">52</td><td data-v="0.0565">5.6%</td><td data-v="906.9">¥907</td><td data-v="47160">¥47,160</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="47636.4">¥47,636</td><td class="l">LP系</td></tr>
+<tr><td class="l">Instagram広告 運用代行</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="2996">2,996</td><td data-v="76">76</td><td data-v="0.0254">2.5%</td><td data-v="605.2">¥605</td><td data-v="45999">¥45,999</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="45999.0">¥45,999</td><td class="l">Instagram広告</td></tr>
+<tr><td class="l">facebook 代行</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="713">713</td><td data-v="26">26</td><td data-v="0.0365">3.6%</td><td data-v="1445.3">¥1,445</td><td data-v="37579">¥37,579</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="18696.0">¥18,696</td><td class="l">Facebook広告</td></tr>
+<tr><td class="l">web ランディング ページ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="981">981</td><td data-v="40">40</td><td data-v="0.0408">4.1%</td><td data-v="900.3">¥900</td><td data-v="36011">¥36,011</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="36011.0">¥36,011</td><td class="l">LP系</td></tr>
+<tr><td class="l">FB 広告</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1781">1,781</td><td data-v="81">81</td><td data-v="0.0455">4.5%</td><td data-v="386.2">¥386</td><td data-v="31279">¥31,279</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="31279.0">¥31,279</td><td class="l">Facebook広告</td></tr>
+<tr><td class="l">ランディング ページ 会社</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="364">364</td><td data-v="23">23</td><td data-v="0.0632">6.3%</td><td data-v="1041.3">¥1,041</td><td data-v="23949">¥23,949</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="23949.0">¥23,949</td><td class="l">LP系</td></tr>
+<tr><td class="l">lp ランディング ページ</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="599">599</td><td data-v="36">36</td><td data-v="0.0601">6.0%</td><td data-v="651.6">¥652</td><td data-v="23457">¥23,457</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="23457.0">¥23,457</td><td class="l">LP系</td></tr>
+<tr><td class="l">facebook 運用</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1056">1,056</td><td data-v="35">35</td><td data-v="0.0331">3.3%</td><td data-v="495.7">¥496</td><td data-v="17350">¥17,350</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="8675.0">¥8,675</td><td class="l">Facebook広告</td></tr>
+<tr><td class="l">lp制作 相場</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="186">186</td><td data-v="13">13</td><td data-v="0.0699">7.0%</td><td data-v="703.4">¥703</td><td data-v="9144">¥9,144</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="304800.0">¥304,800</td><td class="l">LP系</td></tr>
+<tr><td class="l">フェイスブック 活用</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="750">750</td><td data-v="15">15</td><td data-v="0.0200">2.0%</td><td data-v="253.6">¥254</td><td data-v="3804">¥3,804</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3804.0">¥3,804</td><td class="l">Facebook広告</td></tr>
+<tr><td class="l">web 広告 lp</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="82">82</td><td data-v="1">1</td><td data-v="0.0122">1.2%</td><td data-v="2941.0">¥2,941</td><td data-v="2941">¥2,941</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2941.0">¥2,941</td><td class="l">LP系</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="ヴァンテージ" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">vantage-management.jp<br><span>vantage-management.jp › lp0 › google</span></div><div class="t">の方も手数料10％運用 - 他社にはない週1回の細かな報告 - 公式／ヴァンテージマネジメント</div><div class="d">リスティング広告運用能力の証明。自社反響件数は月に250社。競合よりも先にぜひお問い合わせを 成果に自信があるのは上級資格保有者の運用だから。平均費用対効果上昇率141%。反響獲得数156%増</div><div class="meta2">IMP 484,583 ／ CTR 7.3% ／ COST ¥19,976,204<br>リスティング</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">vantage-management.jp<br><span>vantage-management.jp › lp2 › google</span></div><div class="t">の方も手数料10％運用 - 他社にはない週1回の細かな報告 - 公式／ヴァンテージマネジメント</div><div class="d">リスティング広告運用能力の証明。自社反響件数は月に250社。競合よりも先にぜひお問い合わせを 成果に自信があるのは上級資格保有者の運用だから。平均費用対効果上昇率141%。反響獲得数156%増</div><div class="meta2">IMP 36,711 ／ CTR 8.7% ／ COST ¥1,021,466<br>リスティング【FVに簡易問い合わせフォーム】</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">vantage-management.jp<br><span>vantage-management.jp › lp0 › google</span></div><div class="t">の方も手数料10％運用 - 他社にはない週1回の細かな報告 - 公式／ヴァンテージマネジメント</div><div class="d">リスティング広告運用能力の証明。自社反響件数は月に250社。競合よりも先にぜひお問い合わせを 成果に自信があるのは上級資格保有者の運用だから。平均費用対効果上昇率141%。反響獲得数156%増</div><div class="meta2">IMP 28,808 ／ CTR 4.0% ／ COST ¥1,275,972<br>リスティング</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">vantage-management.jp<br><span>vantage-management.jp › lp1 › instagramlp</span></div><div class="t">Instagram広告の運用代行です。 - ヴァンテージマネジメント - Instagram広告の代行手数料10％</div><div class="d">20～40代女性男性をターゲットに集客。反響率の改善、緻密な分析と課題抽出をご支援。 あなたの商品を狙いたいターゲットユーザーに直接届けるWebプロモーションをサポート致します</div><div class="meta2">IMP 27,066 ／ CTR 3.9% ／ COST ¥797,995<br>Instagram広告</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">公式／ヴァンテージマネジメント</td><td data-v="4">4</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">他社にはない週1回の細かな報告</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">{Keyword:ネット広告}がずーっと手数料10％</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">{LOCATION(State)}の方も手数料10％運用</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">ずっと手数料10％のリスティング</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">激動のネット広告界で創業2008年</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">LP43万円相当も併せてプレゼント</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">3か月だけ5％は見せ方が嫌な方へ</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">ランディングページが0円でつく</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">リスティング広告の運用代理店</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">広告をYやGに手数料10％で出稿可</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">継続率が高いからこの代行料です</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">なんとCVデータ一致率100％実現</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">{Keyword:広告}ならヴァンテージにおまかせ</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">ずーーーっと運用手数料10％です</td><td data-v="3">3</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">{LOCATION(City)}の方も無料相談受付中</td><td data-v="2">2</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">ずっと手数料10％の広告運用代行</td><td data-v="2">2</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">成果に自信があるからやります。</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">平均広告効果上昇率141%</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">ランディングページ制作【無料】</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">ランディングページの費用が無料</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">成果の出るランディングページ</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">{KeyWord:ランディングページ制作が無料}</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">{LOCATION(City)}の方もLPを無料で制作</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">デザインではなく成果重視の方へ</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">CVRの変化に驚いてください。</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">LPはデザインではなく成果が大事</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">レスポンシブ対応のLP制作</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">継続率がすごい上がるのでLP無料</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">月間約650社のご支援実績</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">43万円相当のLPを制作します</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">Instagram広告の運用代行です。</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">月間約650社のご支援実績があり</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">継続率が高いのでずっと10％です</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">若い世代をターゲットにするなら</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">ヴァンテージマネジメント</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">お困りごと無料でご相談下さい</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">複雑化している広告だから代行</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">同業他社の実例公開しています</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">ネット総合代理店だからご提案</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">最新機能が続々でるから代行です</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">{Keyword:Instagram広告なら}ヴァンテージ</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">他の広告とはターゲットが違う</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">Instagram広告の代行手数料10％</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">ずっと手数料10％のFacebook広告</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">平均反響獲得数156%増</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">初回限定／無料コンサルティング</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">Facebook広告運用はプロにお任せ</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">ヴァンテージマネジメントが提案</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">集客のお悩みごとご相談ください</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">{Keyword:Facebook広告はまずご相談下さい}</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">Facebook広告で集客向上狙えます</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">自社運用では他社に勝てません。</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">月間約650社のご支援実績あり。</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">広告代理店ならではのノウハウ</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">ビジネスに活用するならFacebook</td><td data-v="1">1</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l wrap">FB広告は間接的な効果も狙えます</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="ヴァンテージ">
+<h3 class="adv" id="adlib-ヴァンテージ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ <span class="badge">取得 2026-02-16</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>6本</b></span><span class="chip">CPN<b>5個</b></span><span class="chip">ADG<b>6個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>5本</b></span></div>
+<p class="note">主要LP: <span title="https://vantage-management.jp/lp0/google/">https://vantage-management.jp/lp0/google/（2本）</span> ／ <span title="https://vantage-management.jp/lp2/google/coupon/chat/fv_form/">https://vantage-management.jp/lp2/google/coupon/chat/fv_form/（1本）</span> ／ <span title="https://vantage-management.jp/lp0/google/LPSEISAKU/">https://vantage-management.jp/lp0/google/LPSEISAKU/（1本）</span> ／ <span title="https://vantage-management.jp/lp1/instagramlp/google/coupon/chat/">https://vantage-management.jp/lp1/instagramlp/google/coupon/chat/（1本）</span> ／ <span title="https://vantage-management.jp/lp1/facebooklp/google/coupon/chat/">https://vantage-management.jp/lp1/facebooklp/google/coupon/chat/（1本）</span></p>
+<p class="note">カスタマイザ: {Keyword}×8 ／ {LOCATION}×6 ／ {KeyWord}×1</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="ヴァンテージ"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">公式／ヴァンテージマネジメント</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">他社にはない週1回の細かな報告</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">{Keyword:ネット広告}がずーっと手数料10％</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">{LOCATION(State)}の方も手数料10％運用</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">ずっと手数料10％のリスティング</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">激動のネット広告界で創業2008年</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">LP43万円相当も併せてプレゼント</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">3か月だけ5％は見せ方が嫌な方へ</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">ランディングページが0円でつく</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">リスティング広告の運用代理店</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">広告をYやGに手数料10％で出稿可</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">継続率が高いからこの代行料です</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">なんとCVデータ一致率100％実現</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">{Keyword:広告}ならヴァンテージにおまかせ</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">ずーーーっと運用手数料10％です</td><td data-v="3">3</td></tr>
+</table></div></div><div>
+<table data-adv="ヴァンテージ"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">成果に自信があるのは上級資格保有者の運用だから。平均費用対効果上昇率141%。反響獲得数156%増</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">手数料がずっと10％のリスティング広告。LP43万円相当を無料制作。契約期間は3ヶ月で開始が可能</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">手数料がずっと10％で契約期間は3ヶ月から開始可能です。広告に必要なLPは43万円相当を無料制作</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">リスティング広告運用能力の証明。自社反響件数は月に250社。競合よりも先にぜひお問い合わせを</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">ランディングページを無料で制作すると、一年後に75％が継続くださるのでプレゼントできます。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">LP制作だとリピート率75％なのでやります。平均広告効果上昇率141%。平均反響獲得数156%増。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">契約期間3か月、手数料10％のリスティングで43万円相当のランディングページを無料プレゼント。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">手数料10％のリスティング運用をご依頼頂きますと、無料でランディングページがついてきます。</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="ヴァンテージ">
+<h3 class="adv" id="query-ヴァンテージ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ <span class="badge">取得 2026-02-16</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="30">30</td><td data-v="1096">1,096</td><td data-v="1480768">¥1,480,768</td><td data-v="0.6645">66.5%</td><td class="cv sep" data-v="10.6">10.6</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="145">145</td><td data-v="858">858</td><td data-v="707932">¥707,932</td><td data-v="0.3177">31.8%</td><td class="cv sep" data-v="64.0">64.0</td></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="15">15</td><td data-v="56">56</td><td data-v="39571">¥39,571</td><td data-v="0.0178">1.8%</td><td class="cv sep" data-v="4.0">4.0</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="ヴァンテージ"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">広告</td><td>追加済み</td><td>検索</td><td data-v="86">86</td><td data-v="100635">¥100,635</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="50317.5">¥50,318</td></tr>
+<tr><td class="l">sns 広告 運用 代行</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="10966">¥10,966</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="5483.0">¥5,483</td></tr>
+<tr><td class="l">広告 代理 店</td><td>なし</td><td>検索</td><td data-v="105">105</td><td data-v="188001">¥188,001</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="94000.5">¥94,000</td></tr>
+<tr><td class="l">インスタ 広告</td><td>なし</td><td>P-MAX</td><td data-v="66">66</td><td data-v="35926">¥35,926</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="24111.4">¥24,111</td></tr>
+<tr><td class="l">インスタ 運用 代行</td><td>なし</td><td>P-MAX</td><td data-v="13">13</td><td data-v="18082">¥18,082</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="13698.5">¥13,698</td></tr>
+<tr><td class="l">パーソナル ジム 広告</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1218">¥1,218</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1171.2">¥1,171</td></tr>
+<tr><td class="l">成果 報酬 型 広告 一覧</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1420">¥1,420</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1420.0">¥1,420</td></tr>
+<tr><td class="l">meta 広告</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="10243">¥10,243</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="10243.0">¥10,243</td></tr>
+<tr><td class="l">web 広告</td><td>追加済み</td><td>検索</td><td data-v="62">62</td><td data-v="137366">¥137,366</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="137366.0">¥137,366</td></tr>
+<tr><td class="l">x 広告 出す に は</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="35707">¥35,707</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="35707.0">¥35,707</td></tr>
+<tr><td class="l">meo 業者</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2427">¥2,427</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2427.0">¥2,427</td></tr>
+<tr><td class="l">アマゾン 広告 代行</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="3379">¥3,379</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3379.0">¥3,379</td></tr>
+<tr><td class="l">メタ 広告 運用</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2747">¥2,747</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2747.0">¥2,747</td></tr>
+<tr><td class="l">リスティング 広告 費用</td><td>追加済み</td><td>検索</td><td data-v="22">22</td><td data-v="30744">¥30,744</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="30744.0">¥30,744</td></tr>
+<tr><td class="l">広告 運用 代行</td><td>追加済み</td><td>検索</td><td data-v="52">52</td><td data-v="144438">¥144,438</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="144438.0">¥144,438</td></tr>
+<tr><td class="l">web マーケティング 集客</td><td>なし</td><td>検索</td><td data-v="109">109</td><td data-v="8583">¥8,583</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="8583.0">¥8,583</td></tr>
+<tr><td class="l">外壁 塗装 リスティング 広告</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="10378">¥10,378</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="10378.0">¥10,378</td></tr>
+<tr><td class="l">ネット 広告 運用 代行</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="8838">¥8,838</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="8838.0">¥8,838</td></tr>
+<tr><td class="l">btoc 広告</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="3568">¥3,568</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3568.0">¥3,568</td></tr>
+<tr><td class="l">インスタ 広告 おすすめ</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="7885">¥7,885</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="7885.0">¥7,885</td></tr>
+<tr><td class="l">google リスティング</td><td>追加済み</td><td>検索</td><td data-v="49">49</td><td data-v="2992">¥2,992</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2992.0">¥2,992</td></tr>
+<tr><td class="l">youtube 広告 出し 方</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="10067">¥10,067</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="10067.0">¥10,067</td></tr>
+<tr><td class="l">lp 制作 格安</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1864">¥1,864</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1864.0">¥1,864</td></tr>
+<tr><td class="l">動画 マーケティング</td><td>なし</td><td>検索</td><td data-v="37">37</td><td data-v="2282">¥2,282</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2282.0">¥2,282</td></tr>
+<tr><td class="l">インスタ 広告 費用</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="4915">¥4,915</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4915.0">¥4,915</td></tr>
+<tr><td class="l">不動産 インスタ 広告</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="3164">¥3,164</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3164.0">¥3,164</td></tr>
+<tr><td class="l">インターネット 広告 出し 方</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="3795">¥3,795</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3795.0">¥3,795</td></tr>
+<tr><td class="l">ホームページ やってはいけない</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1982">¥1,982</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1982.0">¥1,982</td></tr>
+<tr><td class="l">飲食 店 sns 運用 代行</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="24105">¥24,105</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="24105.0">¥24,105</td></tr>
+<tr><td class="l">集客 の プロ</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="8392">¥8,392</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="8392.0">¥8,392</td></tr>
+<tr><td class="l">リスティング 広告</td><td>追加済み</td><td>検索</td><td data-v="168">168</td><td data-v="617250">¥617,250</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="617250.0">¥617,250</td></tr>
+<tr><td class="l">リスティング 広告 代理 店</td><td>追加済み</td><td>検索</td><td data-v="539">539</td><td data-v="178372">¥178,372</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="178372.0">¥178,372</td></tr>
+<tr><td class="l">アフィリエイト 広告 出稿</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="3097">¥3,097</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3097.0">¥3,097</td></tr>
+<tr><td class="l">facebook 運用 代行 会社</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2787">¥2,787</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2787.0">¥2,787</td></tr>
+<tr><td class="l">instagram 広告</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="11040">¥11,040</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="11040.0">¥11,040</td></tr>
+<tr><td class="l">グーグル リスティング 広告 費用</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="8376">¥8,376</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="8376.0">¥8,376</td></tr>
+<tr><td class="l">動画 プロモーション</td><td>なし</td><td>検索</td><td data-v="45">45</td><td data-v="3772">¥3,772</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3772.0">¥3,772</td></tr>
+<tr><td class="l">web 広告 の 運用</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1675">¥1,675</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1675.0">¥1,675</td></tr>
+<tr><td class="l">集客 改善</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2352">¥2,352</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2352.0">¥2,352</td></tr>
+<tr><td class="l">リスティング 広告 運用 代行</td><td>追加済み</td><td>検索</td><td data-v="31">31</td><td data-v="165259">¥165,259</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="165259.0">¥165,259</td></tr>
+<tr><td class="l">seo lp</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1613">¥1,613</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1613.0">¥1,613</td></tr>
+<tr><td class="l">求人 広告 費用</td><td>なし</td><td>検索</td><td data-v="183">183</td><td data-v="19798">¥19,798</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="19798.0">¥19,798</td></tr>
+<tr><td class="l">naver 広告 出し 方</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1668">¥1,668</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1668.0">¥1,668</td></tr>
+<tr><td class="l">営業 代行 福岡</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="10998">¥10,998</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="10998.0">¥10,998</td></tr>
+<tr><td class="l">web 広告 依頼</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="4197">¥4,197</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4197.0">¥4,197</td></tr>
+<tr><td class="l">google premier partner</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="16838">¥16,838</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="16838.0">¥16,838</td></tr>
+<tr><td class="l">meta 広告 インスタ</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="4268">¥4,268</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4268.0">¥4,268</td></tr>
+<tr><td class="l">オンライン セミナー 集客</td><td>なし</td><td>検索</td><td data-v="68">68</td><td data-v="6179">¥6,179</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="6179.0">¥6,179</td></tr>
+<tr><td class="l">広告 安い</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="27841">¥27,841</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="27841.0">¥27,841</td></tr>
+<tr><td class="l">リスティング 会社</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="9867">¥9,867</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="9867.0">¥9,867</td></tr>
+<tr><td class="l">マーケティング 成果 報酬</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="4882">¥4,882</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4931.3">¥4,931</td></tr>
+<tr><td class="l">クドケン ppc</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="6914">¥6,914</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="6983.8">¥6,984</td></tr>
+<tr><td class="l">ソーシャル メディア 広告</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="3078">¥3,078</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3140.8">¥3,141</td></tr>
+<tr><td class="l">lp ai 作成</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="3037">¥3,037</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3099.0">¥3,099</td></tr>
+<tr><td class="l">リスティング 広告 運用</td><td>追加済み</td><td>検索</td><td data-v="4">4</td><td data-v="53661">¥53,661</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="101247.2">¥101,247</td></tr>
+<tr><td class="l">web 広告 名古屋</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="3323">¥3,323</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="6646.0">¥6,646</td></tr>
+<tr><td class="l">ヴァンテージ マネジメント</td><td>なし</td><td>検索</td><td data-v="161">161</td><td data-v="100906">¥100,906</td><td class="cv sep" data-v="0.5">0.5</td><td class="cv" data-v="205930.6">¥205,931</td></tr>
+<tr><td class="l">広告 代理 店 ランキング</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="8486">¥8,486</td><td class="cv sep" data-v="0.1">0.1</td><td class="cv" data-v="169720.0">¥169,720</td></tr>
+<tr><td class="l">リスティング</td><td>追加済み</td><td>検索</td><td data-v="50">50</td><td data-v="23954">¥23,954</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="798466.7">¥798,467</td></tr>
+<tr><td class="l">lp 制作 相場</td><td>追加済み</td><td>検索</td><td data-v="10">10</td><td data-v="8738">¥8,738</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="291266.7">¥291,267</td></tr>
+<tr><td class="l">meta 広告 運用 代行</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="19594">¥19,594</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="1959400.0">¥1,959,400</td></tr>
+<tr><td class="l">web 広告 運用</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="11849">¥11,849</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="1184900.0">¥1,184,900</td></tr>
+<tr><td class="l">リスティング 広告 運用 代行 おすすめ</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="35620">¥35,620</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="3562000.0">¥3,562,000</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（63行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2026-02-16 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td class="l">一般</td><td data-v="540747">540,747</td><td data-v="35956">35,956</td><td data-v="0.0665">6.6%</td><td data-v="594.7">¥595</td><td data-v="21384768">¥21,384,768</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="143">143</td><td class="cv" data-v="0.0040">0.4%</td><td class="cv" data-v="149095.5">¥149,096</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2026-02-16</th></tr>
+<tr data-a="ヴァンテージ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ヴァンテージ</td><td><div class="bar"><div class="mt-i" style="width:36.6%" title="インテント マッチ 36.6%"></div><div class="mt-p" style="width:63.4%" title="フレーズ一致 63.4%"></div></div><div class="note">インテント37% / フレーズ63%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2026-02-16</b>（260216_レポート依頼用【テレビショッピング・リスティング広告】_セレス様__12NkKqIa.xlsx）<br>取得不可（空タブ）: ダイレクトテレショップ・ショップチャンネル・ショップジャパン<br>端数月: 2026-02（19日まで）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

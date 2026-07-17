@@ -1,0 +1,963 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜不妊治療＆占い</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>不妊治療＆占い業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">2社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2026-03-05</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥13,593,257</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥477</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">2.3〜4.4</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="星ひとみ" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</button><button class="achip" data-t="生殖医療クリニック錦糸町駅前院" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2026-03-05（期間 2026年1月15日 - 2026年3月9日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td data-v="11468817">¥11,468,817</td><td data-v="12915">12,915</td><td data-v="0.0384">3.8%</td><td data-v="888.0">¥888</td><td data-v="2.30">2.30</td><td data-v="0.0">--</td><td data-v="0.0000">0.0%</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div></td><td class="cv sep" data-v="6304">6,304</td><td class="cv" data-v="0.4881">48.8%</td><td class="cv" data-v="1819.2">¥1,819</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td data-v="2124440">¥2,124,440</td><td data-v="15555">15,555</td><td data-v="0.0723">7.2%</td><td data-v="136.6">¥137</td><td data-v="4.38">4.38</td><td data-v="0.0">--</td><td data-v="0.0000">0.0%</td><td><div class="bar"><div class="mt-i" style="width:45.1%" title="インテント マッチ 45.1%"></div><div class="mt-p" style="width:53.8%" title="フレーズ一致 53.8%"></div><div class="mt-e" style="width:1.1%" title="完全一致 1.1%"></div></div></td><td class="cv sep" data-v="2072">2,072</td><td class="cv" data-v="0.1332">13.3%</td><td class="cv" data-v="1025.3">¥1,025</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: ゲッターズ飯田</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td data-v="202601">2026-01 ⚠</td><td data-v="183409">183,409</td><td data-v="6676">6,676</td><td data-v="0.0364">3.6%</td><td data-v="855.2">¥855</td><td data-v="5709098">¥5,709,098</td><td class="cv sep" data-v="3328">3,328</td><td class="cv" data-v="0.4985">49.8%</td><td class="cv" data-v="1715.5">¥1,715</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td data-v="202602">2026-02</td><td data-v="115717">115,717</td><td data-v="4936">4,936</td><td data-v="0.0427">4.3%</td><td data-v="917.5">¥918</td><td data-v="4529022">¥4,529,022</td><td class="cv sep" data-v="2544">2,544</td><td class="cv" data-v="0.5154">51.5%</td><td class="cv" data-v="1780.3">¥1,780</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td data-v="202603">2026-03 ⚠</td><td data-v="37261">37,261</td><td data-v="1303">1,303</td><td data-v="0.0350">3.5%</td><td data-v="944.5">¥945</td><td data-v="1230697">¥1,230,697</td><td class="cv sep" data-v="432">432</td><td class="cv" data-v="0.3318">33.2%</td><td class="cv" data-v="2846.9">¥2,847</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td data-v="202601">2026-01 ⚠</td><td data-v="15870">15,870</td><td data-v="1323">1,323</td><td data-v="0.0834">8.3%</td><td data-v="190.5">¥190</td><td data-v="251981">¥251,981</td><td class="cv sep" data-v="293">293</td><td class="cv" data-v="0.2218">22.2%</td><td class="cv" data-v="858.8">¥859</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td data-v="202602">2026-02</td><td data-v="135628">135,628</td><td data-v="9751">9,751</td><td data-v="0.0719">7.2%</td><td data-v="143.9">¥144</td><td data-v="1402687">¥1,402,687</td><td class="cv sep" data-v="1439">1,439</td><td class="cv" data-v="0.1476">14.8%</td><td class="cv" data-v="974.5">¥974</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td data-v="202603">2026-03 ⚠</td><td data-v="63501">63,501</td><td data-v="4481">4,481</td><td data-v="0.0706">7.1%</td><td data-v="104.8">¥105</td><td data-v="469772">¥469,772</td><td class="cv sep" data-v="339">339</td><td class="cv" data-v="0.0757">7.6%</td><td class="cv" data-v="1384.7">¥1,385</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="星ひとみ">
+<h3 class="adv" id="struct-星ひとみ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ <span class="badge">取得 2026-03-05</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</span><span class="st">📁 CPN <b>1</b></span><span class="st">📂 ADG <b>1</b></span><span class="st">🔑 KW <b>28</b></span><span class="st">✏️ 広告 <b>1</b></span><span class="st">🔗 LP <b>1</b></span><span class="st">💰 <b>¥11,468,817</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="001_検索">001_検索</span><span class="share"><div style="width:100%"></div></span><span class="st">100.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>28</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥11,468,817</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="001_電話占い">001_電話占い</span><span class="st">🔑 <b>28</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥11,468,817</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="生殖医療クリニック錦糸町駅前院">
+<h3 class="adv" id="struct-生殖医療クリニック錦糸町駅前院" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院 <span class="badge">取得 2026-03-05</span></h3>
+<div class="tree" style="--ac:var(--adv-1)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</span><span class="st">📁 CPN <b>3</b></span><span class="st">📂 ADG <b>15</b></span><span class="st">🔑 KW <b>133</b></span><span class="st">✏️ 広告 <b>15</b></span><span class="st">🔗 LP <b>3</b></span><span class="st">💰 <b>¥2,124,440</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="不妊治療_検索">不妊治療_検索</span><span class="share"><div style="width:65%"></div></span><span class="st">65.4%</span><span class="st">📂 <b>13</b></span><span class="st">🔑 <b>109</b></span><span class="st">✏️ <b>13</b></span><span class="st">🔗 <b>2</b></span><span class="st">💰 <b>¥1,389,764</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="12_不妊検査_エリア">12_不妊検査_エリア</span><span class="st">🔑 <b>56</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥623,526</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="01_錦糸町_不妊治療">01_錦糸町_不妊治療</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥200,934</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="10_人工授精_エリア">10_人工授精_エリア</span><span class="st">🔑 <b>8</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥109,779</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="02_墨田区_不妊治療">02_墨田区_不妊治療</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥91,711</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="04_周辺区_不妊治療">04_周辺区_不妊治療</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥82,538</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="13_比較検討">13_比較検討</span><span class="st">🔑 <b>8</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥76,706</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="07_千葉埼玉">07_千葉埼玉</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥58,940</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="03_江東区_不妊治療">03_江東区_不妊治療</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥47,162</b></span></span></li>
+<li><details><summary>… 残り 5 広告グループ（🔑 18 / ✏️ 5 / 💰 ¥98,468）</summary><ul>
+<li><span class="node adg"><span class="nm" title="05_周辺駅_近距離">05_周辺駅_近距離</span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥37,256</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="06_周辺駅_中距離">06_周辺駅_中距離</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥36,623</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="08_体外受精_エリア">08_体外受精_エリア</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥24,589</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="09_顕微授精_エリア">09_顕微授精_エリア</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="11_タイミング法_エリア">11_タイミング法_エリア</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></details></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="卵子凍結_検索">卵子凍結_検索</span><span class="share"><div style="width:18%"></div></span><span class="st">18.4%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>9</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥390,496</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="卵子凍結_エリア">卵子凍結_エリア</span><span class="st">🔑 <b>9</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥390,496</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="競合">競合</span><span class="share"><div style="width:16%"></div></span><span class="st">16.2%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>15</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥344,180</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="広告グループ 1 個">広告グループ 1 個</span><span class="st">🔑 <b>15</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥344,180</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:100.0%;bottom:11.1%;width:18px;height:18px;background:var(--adv-0)" title="星ひとみ｜占い / QS2 / CPC¥797 / COST¥7,643,026"></span>
+<span class="dot" style="left:100.0%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="星ひとみ｜電話占い / QS3 / CPC¥3,113 / COST¥1,880,305"></span>
+<span class="dot" style="left:100.0%;bottom:66.7%;width:14px;height:14px;background:var(--adv-0)" title="星ひとみ｜電話 占い 無料 / QS7 / CPC¥2,367 / COST¥714,910"></span>
+<span class="dot" style="left:53.4%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="星ひとみ｜うららか 占い / QS10 / CPC¥379 / COST¥402,618"></span>
+<span class="dot" style="left:38.4%;bottom:100.0%;width:10px;height:10px;background:var(--adv-0)" title="星ひとみ｜ウララカ 占い / QS10 / CPC¥273 / COST¥37,399"></span>
+<span class="dot" style="left:95.1%;bottom:11.1%;width:10px;height:10px;background:var(--adv-0)" title="星ひとみ｜無料 占い / QS2 / CPC¥676 / COST¥139,875"></span>
+<span class="dot" style="left:73.6%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="星ひとみ｜タロット 占い / QS1 / CPC¥523 / COST¥124,399"></span>
+<span class="dot" style="left:81.5%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="星ひとみ｜電話 占い 無料 当たる / QS6 / CPC¥579 / COST¥37,634"></span>
+<span class="dot" style="left:100.0%;bottom:33.3%;width:10px;height:10px;background:var(--adv-0)" title="星ひとみ｜電話占い 当たる / QS4 / CPC¥1,749 / COST¥68,219"></span>
+<span class="dot" style="left:100.0%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="星ひとみ｜占い 相談 / QS5 / CPC¥710 / COST¥52,569"></span>
+<span class="dot" style="left:64.1%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="星ひとみ｜不思議 な ほど 当たる 占い 恋愛 完全 無料 / QS5 / CPC¥456 / COST¥47,834"></span>
+<span class="dot" style="left:86.5%;bottom:33.3%;width:10px;height:10px;background:var(--adv-0)" title="星ひとみ｜縁結び 占い / QS4 / CPC¥615 / COST¥51,016"></span>
+<span class="dot" style="left:78.4%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="星ひとみ｜電話 占い おすすめ / QS3 / CPC¥557 / COST¥44,002"></span>
+<span class="dot" style="left:92.4%;bottom:33.3%;width:10px;height:10px;background:var(--adv-0)" title="星ひとみ｜恋愛 占い 電話 / QS4 / CPC¥657 / COST¥51,874"></span>
+<span class="dot" style="left:35.7%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="星ひとみ｜タロット / QS1 / CPC¥254 / COST¥7,871"></span>
+<span class="dot" style="left:17.3%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜豊洲 不妊治療 / QS3 / CPC¥123 / COST¥14,147"></span>
+<span class="dot" style="left:11.0%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜葛西 不妊治療 / QS3 / CPC¥78 / COST¥8,788"></span>
+<span class="dot" style="left:15.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜新小岩 不妊治療 / QS3 / CPC¥113 / COST¥4,511"></span>
+<span class="dot" style="left:36.6%;bottom:33.3%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜押上 不妊治療 / QS4 / CPC¥260 / COST¥8,580"></span>
+<span class="dot" style="left:28.8%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜門前仲町 不妊治療 / QS3 / CPC¥205 / COST¥6,757"></span>
+<span class="dot" style="left:17.1%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜浅草 不妊治療 / QS1 / CPC¥122 / COST¥5,957"></span>
+<span class="dot" style="left:3.4%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜日暮里 不妊治療 / QS1 / CPC¥24 / COST¥9,873"></span>
+<span class="dot" style="left:12.4%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜上野 不妊治療 / QS1 / CPC¥88 / COST¥4,853"></span>
+<span class="dot" style="left:23.5%;bottom:33.3%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜江東区 不妊治療クリニック / QS4 / CPC¥167 / COST¥10,021"></span>
+<span class="dot" style="left:21.3%;bottom:33.3%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜江東区 不妊治療 / QS4 / CPC¥151 / COST¥37,141"></span>
+<span class="dot" style="left:23.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜荒川区 不妊治療 / QS7 / CPC¥169 / COST¥6,412"></span>
+<span class="dot" style="left:29.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜葛飾区 不妊治療 / QS7 / CPC¥212 / COST¥11,014"></span>
+<span class="dot" style="left:27.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜江戸川区 不妊治療 / QS7 / CPC¥193 / COST¥37,032"></span>
+<span class="dot" style="left:23.4%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜台東区 不妊治療 / QS5 / CPC¥166 / COST¥10,623"></span>
+<span class="dot" style="left:27.7%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜足立区 不妊治療 / QS5 / CPC¥197 / COST¥11,420"></span>
+<span class="dot" style="left:30.2%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜北千住 卵子凍結 / QS3 / CPC¥215 / COST¥47,643"></span>
+<span class="dot" style="left:24.6%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜市川 卵子凍結 / QS5 / CPC¥175 / COST¥5,240"></span>
+<span class="dot" style="left:26.2%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜足立区 卵子凍結 / QS1 / CPC¥186 / COST¥23,045"></span>
+<span class="dot" style="left:34.0%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜卵子凍結 錦糸町 / QS10 / CPC¥241 / COST¥13,275"></span>
+<span class="dot" style="left:29.5%;bottom:33.3%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜卵子凍結 東京 / QS4 / CPC¥210 / COST¥50,127"></span>
+<span class="dot" style="left:28.3%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜市川 不妊治療 / QS5 / CPC¥201 / COST¥25,146"></span>
+<span class="dot" style="left:20.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜柏 不妊治療 / QS3 / CPC¥148 / COST¥6,678"></span>
+<span class="dot" style="left:26.5%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜船橋 不妊治療 / QS5 / CPC¥188 / COST¥14,505"></span>
+<span class="dot" style="left:27.9%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜松戸 不妊治療 / QS5 / CPC¥198 / COST¥9,724"></span>
+<span class="dot" style="left:7.8%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜足立区 体外受精 / QS5 / CPC¥56 / COST¥3,005"></span>
+<span class="dot" style="left:7.8%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜台東区 体外受精 / QS1 / CPC¥56 / COST¥3,998"></span>
+<span class="dot" style="left:6.5%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜[体外受精 錦糸町] / QS8 / CPC¥46 / COST¥6,026"></span>
+<span class="dot" style="left:1.9%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜住吉 体外受精 / QS5 / CPC¥13 / COST¥6,992"></span>
+<span class="dot" style="left:15.5%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜松戸 不妊治療 おすすめ / QS5 / CPC¥110 / COST¥3,406"></span>
+<span class="dot" style="left:21.3%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜江戸川区 不妊治療 おすすめ / QS5 / CPC¥152 / COST¥7,578"></span>
+<span class="dot" style="left:18.4%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜江東区 不妊治療 おすすめ / QS3 / CPC¥131 / COST¥4,711"></span>
+<span class="dot" style="left:30.7%;bottom:33.3%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜墨田区 不妊治療 おすすめ / QS4 / CPC¥218 / COST¥26,588"></span>
+<span class="dot" style="left:14.6%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜台東区 不妊治療 おすすめ / QS1 / CPC¥103 / COST¥4,861"></span>
+<span class="dot" style="left:24.9%;bottom:55.6%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜浅草 ブライダルチェック / QS6 / CPC¥177 / COST¥9,202"></span>
+<span class="dot" style="left:25.0%;bottom:55.6%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜足立区 ブライダルチェック / QS6 / CPC¥178 / COST¥12,431"></span>
+<span class="dot" style="left:8.8%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜足立区 精液検査 / QS3 / CPC¥62 / COST¥2,123"></span>
+<span class="dot" style="left:27.2%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜荒川区 ブライダルチェック / QS3 / CPC¥194 / COST¥5,806"></span>
+<span class="dot" style="left:33.0%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜江戸川区 ブライダルチェック / QS5 / CPC¥235 / COST¥17,595"></span>
+<span class="dot" style="left:27.3%;bottom:55.6%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜台東区 ブライダルチェック / QS6 / CPC¥194 / COST¥19,590"></span>
+<span class="dot" style="left:26.9%;bottom:11.1%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜草加 ブライダルチェック / QS2 / CPC¥191 / COST¥7,264"></span>
+<span class="dot" style="left:31.7%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜市川 ブライダルチェック / QS3 / CPC¥225 / COST¥7,665"></span>
+<span class="dot" style="left:30.8%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜江東区 不妊検査 / QS5 / CPC¥219 / COST¥7,212"></span>
+<span class="dot" style="left:29.6%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜江東区 ブライダルチェック / QS5 / CPC¥211 / COST¥20,431"></span>
+<span class="dot" style="left:35.2%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜ブライダルチェック 錦糸町 / QS8 / CPC¥250 / COST¥30,474"></span>
+<span class="dot" style="left:27.5%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜亀戸 精液検査 / QS3 / CPC¥196 / COST¥12,518"></span>
+<span class="dot" style="left:27.7%;bottom:11.1%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜小岩 ブライダルチェック / QS2 / CPC¥197 / COST¥15,567"></span>
+<span class="dot" style="left:21.2%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜日暮里 ブライダルチェック / QS3 / CPC¥151 / COST¥4,972"></span>
+<span class="dot" style="left:25.0%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜両国 ブライダルチェック / QS5 / CPC¥178 / COST¥27,929"></span>
+<span class="dot" style="left:32.7%;bottom:33.3%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜豊洲 ブライダルチェック / QS4 / CPC¥232 / COST¥14,162"></span>
+<span class="dot" style="left:23.1%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜豊洲 不妊検査 / QS5 / CPC¥164 / COST¥10,017"></span>
+<span class="dot" style="left:16.6%;bottom:88.9%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜不妊検査 錦糸町 / QS9 / CPC¥118 / COST¥64,418"></span>
+<span class="dot" style="left:38.7%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜ブライダルチェック 墨田区 / QS7 / CPC¥275 / COST¥12,915"></span>
+<span class="dot" style="left:13.9%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜住吉 ブライダルチェック / QS8 / CPC¥99 / COST¥10,503"></span>
+<span class="dot" style="left:28.6%;bottom:88.9%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜押上 ブライダルチェック / QS9 / CPC¥203 / COST¥28,273"></span>
+<span class="dot" style="left:30.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜亀戸 ブライダルチェック / QS7 / CPC¥213 / COST¥18,734"></span>
+<span class="dot" style="left:15.3%;bottom:33.3%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜江戸川区 精液検査 / QS4 / CPC¥109 / COST¥29,858"></span>
+<span class="dot" style="left:31.1%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜墨田区 不妊治療クリニック / QS8 / CPC¥221 / COST¥9,494"></span>
+<span class="dot" style="left:35.7%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜墨田区 不妊治療 / QS7 / CPC¥254 / COST¥82,217"></span>
+<span class="dot" style="left:28.5%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜錦糸町駅 不妊治療 / QS8 / CPC¥202 / COST¥10,315"></span>
+<span class="dot" style="left:24.8%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜錦糸町 不妊治療クリニック / QS8 / CPC¥176 / COST¥10,556"></span>
+<span class="dot" style="left:36.9%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜錦糸町 不妊治療 / QS10 / CPC¥262 / COST¥152,779"></span>
+<span class="dot" style="left:32.1%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜東京ARTクリニック / QS1 / CPC¥228 / COST¥35,804"></span>
+<span class="dot" style="left:29.8%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜にしたんARTクリニック / QS1 / CPC¥212 / COST¥83,169"></span>
+<span class="dot" style="left:27.4%;bottom:22.2%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜川崎レディースクリニック / QS3 / CPC¥195 / COST¥88,108"></span>
+<span class="dot" style="left:27.3%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜本八幡レディースクリニック / QS1 / CPC¥194 / COST¥39,973"></span>
+<span class="dot" style="left:24.5%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜銀座レディースクリニック / QS1 / CPC¥174 / COST¥61,085"></span>
+<span class="dot" style="left:9.8%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜杉山産婦人科 / QS1 / CPC¥69 / COST¥4,098"></span>
+<span class="dot" style="left:25.6%;bottom:0.0%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜中野レディースクリニック / QS1 / CPC¥182 / COST¥12,385"></span>
+<span class="dot" style="left:6.1%;bottom:55.6%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜[人工授精 錦糸町] / QS6 / CPC¥43 / COST¥17,629"></span>
+<span class="dot" style="left:12.4%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜江戸川区 人工授精 / QS5 / CPC¥88 / COST¥5,653"></span>
+<span class="dot" style="left:9.8%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜日暮里 人工授精 / QS8 / CPC¥70 / COST¥10,635"></span>
+<span class="dot" style="left:18.2%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜上野 人工授精 / QS7 / CPC¥130 / COST¥12,303"></span>
+<span class="dot" style="left:17.8%;bottom:55.6%;width:10px;height:10px;background:var(--adv-1)" title="生殖医療クリニック錦糸町駅前院｜人工授精 墨田区 / QS6 / CPC¥126 / COST¥34,600"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥178</span>
+<span class="ax" style="left:50%;bottom:-22px">¥355</span>
+<span class="ax" style="left:75%;bottom:-22px">¥533</span>
+<span class="ax" style="left:100%;bottom:-22px">¥710</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>星ひとみ</span><span><i style="background:var(--adv-1)"></i>生殖医療クリニック錦糸町駅前院</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">[体外受精 錦糸町]</td><td data-v="8">8</td><td data-v="46">¥46</td><td data-v="130">130</td><td data-v="6026">¥6,026</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">日暮里 人工授精</td><td data-v="8">8</td><td data-v="70">¥70</td><td data-v="153">153</td><td data-v="10635">¥10,635</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">住吉 ブライダルチェック</td><td data-v="8">8</td><td data-v="99">¥99</td><td data-v="106">106</td><td data-v="10503">¥10,503</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">不妊検査 錦糸町</td><td data-v="9">9</td><td data-v="118">¥118</td><td data-v="547">547</td><td data-v="64418">¥64,418</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">上野 人工授精</td><td data-v="7">7</td><td data-v="130">¥130</td><td data-v="95">95</td><td data-v="12303">¥12,303</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">荒川区 不妊治療</td><td data-v="7">7</td><td data-v="169">¥169</td><td data-v="38">38</td><td data-v="6412">¥6,412</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">錦糸町 不妊治療クリニック</td><td data-v="8">8</td><td data-v="176">¥176</td><td data-v="60">60</td><td data-v="10556">¥10,556</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">江戸川区 不妊治療</td><td data-v="7">7</td><td data-v="193">¥193</td><td data-v="192">192</td><td data-v="37032">¥37,032</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">錦糸町駅 不妊治療</td><td data-v="8">8</td><td data-v="202">¥202</td><td data-v="51">51</td><td data-v="10315">¥10,315</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">押上 ブライダルチェック</td><td data-v="9">9</td><td data-v="203">¥203</td><td data-v="139">139</td><td data-v="28273">¥28,273</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">葛飾区 不妊治療</td><td data-v="7">7</td><td data-v="212">¥212</td><td data-v="52">52</td><td data-v="11014">¥11,014</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">亀戸 ブライダルチェック</td><td data-v="7">7</td><td data-v="213">¥213</td><td data-v="88">88</td><td data-v="18734">¥18,734</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">墨田区 不妊治療クリニック</td><td data-v="8">8</td><td data-v="221">¥221</td><td data-v="43">43</td><td data-v="9494">¥9,494</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">卵子凍結 錦糸町</td><td data-v="10">10</td><td data-v="241">¥241</td><td data-v="55">55</td><td data-v="13275">¥13,275</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">ブライダルチェック 錦糸町</td><td data-v="8">8</td><td data-v="250">¥250</td><td data-v="122">122</td><td data-v="30474">¥30,474</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">墨田区 不妊治療</td><td data-v="7">7</td><td data-v="254">¥254</td><td data-v="324">324</td><td data-v="82217">¥82,217</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">錦糸町 不妊治療</td><td data-v="10">10</td><td data-v="262">¥262</td><td data-v="583">583</td><td data-v="152779">¥152,779</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">ウララカ 占い</td><td data-v="10">10</td><td data-v="273">¥273</td><td data-v="137">137</td><td data-v="37399">¥37,399</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">ブライダルチェック 墨田区</td><td data-v="7">7</td><td data-v="275">¥275</td><td data-v="47">47</td><td data-v="12915">¥12,915</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">うららか 占い</td><td data-v="10">10</td><td data-v="379">¥379</td><td data-v="1062">1,062</td><td data-v="402618">¥402,618</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">電話 占い 無料</td><td data-v="7">7</td><td data-v="2367">¥2,367</td><td data-v="302">302</td><td data-v="714910">¥714,910</td></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">占い</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="797">¥797</td><td data-v="7643026">¥7,643,026</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">電話占い</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="3113">¥3,113</td><td data-v="1880305">¥1,880,305</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">無料 占い</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="676">¥676</td><td data-v="139875">¥139,875</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">タロット 占い</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="523">¥523</td><td data-v="124399">¥124,399</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">川崎レディースクリニック</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="195">¥195</td><td data-v="88108">¥88,108</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">にしたんARTクリニック</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="212">¥212</td><td data-v="83169">¥83,169</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">電話占い 当たる</td><td data-v="4">4</td><td>LP</td><td data-v="1749">¥1,749</td><td data-v="68219">¥68,219</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">銀座レディースクリニック</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="174">¥174</td><td data-v="61085">¥61,085</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">恋愛 占い 電話</td><td data-v="4">4</td><td>LP</td><td data-v="657">¥657</td><td data-v="51874">¥51,874</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">縁結び 占い</td><td data-v="4">4</td><td>LP</td><td data-v="615">¥615</td><td data-v="51016">¥51,016</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">卵子凍結 東京</td><td data-v="4">4</td><td>推定CTR</td><td data-v="210">¥210</td><td data-v="50127">¥50,127</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">北千住 卵子凍結</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="215">¥215</td><td data-v="47643">¥47,643</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">電話 占い おすすめ</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="557">¥557</td><td data-v="44002">¥44,002</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">本八幡レディースクリニック</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="194">¥194</td><td data-v="39973">¥39,973</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">江東区 不妊治療</td><td data-v="4">4</td><td>推定CTR</td><td data-v="151">¥151</td><td data-v="37141">¥37,141</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">東京ARTクリニック</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="228">¥228</td><td data-v="35804">¥35,804</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">江戸川区 精液検査</td><td data-v="4">4</td><td>推定CTR</td><td data-v="109">¥109</td><td data-v="29858">¥29,858</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">墨田区 不妊治療 おすすめ</td><td data-v="4">4</td><td>推定CTR</td><td data-v="218">¥218</td><td data-v="26588">¥26,588</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">足立区 卵子凍結</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="186">¥186</td><td data-v="23045">¥23,045</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">小岩 ブライダルチェック</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="197">¥197</td><td data-v="15567">¥15,567</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">豊洲 ブライダルチェック</td><td data-v="4">4</td><td>推定CTR</td><td data-v="232">¥232</td><td data-v="14162">¥14,162</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">豊洲 不妊治療</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="123">¥123</td><td data-v="14147">¥14,147</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">亀戸 精液検査</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="196">¥196</td><td data-v="12518">¥12,518</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">中野レディースクリニック</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="182">¥182</td><td data-v="12385">¥12,385</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">江東区 不妊治療クリニック</td><td data-v="4">4</td><td>推定CTR</td><td data-v="167">¥167</td><td data-v="10021">¥10,021</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">日暮里 不妊治療</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="24">¥24</td><td data-v="9873">¥9,873</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">葛西 不妊治療</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="78">¥78</td><td data-v="8788">¥8,788</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">押上 不妊治療</td><td data-v="4">4</td><td>推定CTR</td><td data-v="260">¥260</td><td data-v="8580">¥8,580</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">タロット</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="254">¥254</td><td data-v="7871">¥7,871</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">市川 ブライダルチェック</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="225">¥225</td><td data-v="7665">¥7,665</td></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td data-v="2.30">2.30</td><td data-v="2.3">2.3%</td><td data-v="86.4"><b>86.4%</b></td><td data-v="89.4"><b>89.4%</b></td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td data-v="4.38">4.38</td><td data-v="41.2"><b>41.2%</b></td><td data-v="69.3">69.3%</td><td data-v="28.0">28.0%</td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="星ひとみ">
+<h3 class="adv" id="kwqs-星ひとみ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ <span class="badge">取得 2026-03-05</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>2.30</b></span><span class="chip">関連性↓<b>2.3%</b></span><span class="chip bad">推定CTR↓<b>86.4%</b></span><span class="chip bad">LP利便性↓<b>89.4%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="星ひとみ"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">占い</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="276057">276,057</td><td data-v="9595">9,595</td><td data-v="0.0348">3.5%</td><td data-v="796.6">¥797</td><td data-v="7643026">¥7,643,026</td><td class="cv sep" data-v="3950.3">3,950.3</td><td class="cv" data-v="1934.8">¥1,935</td><td class="l">001_検索</td></tr>
+<tr><td class="l">電話占い</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="14223">14,223</td><td data-v="604">604</td><td data-v="0.0425">4.2%</td><td data-v="3113.1">¥3,113</td><td data-v="1880305">¥1,880,305</td><td class="cv sep" data-v="702.4">702.4</td><td class="cv" data-v="2677.1">¥2,677</td><td class="l">001_検索</td></tr>
+<tr><td class="l">電話 占い 無料</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="6394">6,394</td><td data-v="302">302</td><td data-v="0.0472">4.7%</td><td data-v="2367.3">¥2,367</td><td data-v="714910">¥714,910</td><td class="cv sep" data-v="271.1">271.1</td><td class="cv" data-v="2636.6">¥2,637</td><td class="l">001_検索</td></tr>
+<tr><td class="l">うららか 占い</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="4181">4,181</td><td data-v="1062">1,062</td><td data-v="0.2540">25.4%</td><td data-v="379.1">¥379</td><td data-v="402618">¥402,618</td><td class="cv sep" data-v="820.2">820.2</td><td class="cv" data-v="490.9">¥491</td><td class="l">001_検索</td></tr>
+<tr><td class="l">無料 占い</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="6449">6,449</td><td data-v="207">207</td><td data-v="0.0321">3.2%</td><td data-v="675.7">¥676</td><td data-v="139875">¥139,875</td><td class="cv sep" data-v="78.3">78.3</td><td class="cv" data-v="1787.1">¥1,787</td><td class="l">001_検索</td></tr>
+<tr><td class="l">タロット 占い</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="9206">9,206</td><td data-v="238">238</td><td data-v="0.0259">2.6%</td><td data-v="522.7">¥523</td><td data-v="124399">¥124,399</td><td class="cv sep" data-v="58.2">58.2</td><td class="cv" data-v="2136.3">¥2,136</td><td class="l">001_検索</td></tr>
+<tr><td class="l">電話占い 当たる</td><td>インテント</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="1058">1,058</td><td data-v="39">39</td><td data-v="0.0369">3.7%</td><td data-v="1749.2">¥1,749</td><td data-v="68219">¥68,219</td><td class="cv sep" data-v="32.7">32.7</td><td class="cv" data-v="2086.8">¥2,087</td><td class="l">001_検索</td></tr>
+<tr><td class="l">占い 相談</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="1893">1,893</td><td data-v="74">74</td><td data-v="0.0391">3.9%</td><td data-v="710.4">¥710</td><td data-v="52569">¥52,569</td><td class="cv sep" data-v="17.3">17.3</td><td class="cv" data-v="3038.7">¥3,039</td><td class="l">001_検索</td></tr>
+<tr><td class="l">恋愛 占い 電話</td><td>インテント</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="1627">1,627</td><td data-v="79">79</td><td data-v="0.0486">4.9%</td><td data-v="656.6">¥657</td><td data-v="51874">¥51,874</td><td class="cv sep" data-v="31.5">31.5</td><td class="cv" data-v="1646.8">¥1,647</td><td class="l">001_検索</td></tr>
+<tr><td class="l">縁結び 占い</td><td>インテント</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="1314">1,314</td><td data-v="83">83</td><td data-v="0.0632">6.3%</td><td data-v="614.7">¥615</td><td data-v="51016">¥51,016</td><td class="cv sep" data-v="30.0">30.0</td><td class="cv" data-v="1700.5">¥1,701</td><td class="l">001_検索</td></tr>
+<tr><td class="l">不思議 な ほど 当たる 占い 恋愛 完全 無料</td><td>インテント</td><td data-v="5">5</td><td>平均より下</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="1603">1,603</td><td data-v="105">105</td><td data-v="0.0655">6.6%</td><td data-v="455.6">¥456</td><td data-v="47834">¥47,834</td><td class="cv sep" data-v="15.7">15.7</td><td class="cv" data-v="3046.8">¥3,047</td><td class="l">001_検索</td></tr>
+<tr><td class="l">電話 占い おすすめ</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="3124">3,124</td><td data-v="79">79</td><td data-v="0.0253">2.5%</td><td data-v="557.0">¥557</td><td data-v="44002">¥44,002</td><td class="cv sep" data-v="68.4">68.4</td><td class="cv" data-v="642.9">¥643</td><td class="l">001_検索</td></tr>
+<tr><td class="l">電話 占い 無料 当たる</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="1777">1,777</td><td data-v="65">65</td><td data-v="0.0366">3.7%</td><td data-v="579.0">¥579</td><td data-v="37634">¥37,634</td><td class="cv sep" data-v="49.4">49.4</td><td class="cv" data-v="762.0">¥762</td><td class="l">001_検索</td></tr>
+<tr><td class="l">ウララカ 占い</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="426">426</td><td data-v="137">137</td><td data-v="0.3216">32.2%</td><td data-v="273.0">¥273</td><td data-v="37399">¥37,399</td><td class="cv sep" data-v="77.1">77.1</td><td class="cv" data-v="485.1">¥485</td><td class="l">001_検索</td></tr>
+<tr><td class="l">電話 占い 復縁 当たる 先生</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="570">570</td><td data-v="27">27</td><td data-v="0.0474">4.7%</td><td data-v="760.9">¥761</td><td data-v="20543">¥20,543</td><td class="cv sep" data-v="18.3">18.3</td><td class="cv" data-v="1120.7">¥1,121</td><td class="l">001_検索</td></tr>
+<tr><td class="l">電話 占い 今 すぐ</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="118">118</td><td data-v="28">28</td><td data-v="0.2373">23.7%</td><td data-v="713.5">¥714</td><td data-v="19978">¥19,978</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="3995.6">¥3,996</td><td class="l">001_検索</td></tr>
+<tr><td class="l">無料 電話 占い 霊 視</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="239">239</td><td data-v="15">15</td><td data-v="0.0628">6.3%</td><td data-v="1320.2">¥1,320</td><td data-v="19803">¥19,803</td><td class="cv sep" data-v="7.9">7.9</td><td class="cv" data-v="2494.1">¥2,494</td><td class="l">001_検索</td></tr>
+<tr><td class="l">縁結び 占い 当たる</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="395">395</td><td data-v="27">27</td><td data-v="0.0684">6.8%</td><td data-v="723.6">¥724</td><td data-v="19537">¥19,537</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="2170.8">¥2,171</td><td class="l">001_検索</td></tr>
+<tr><td class="l">電話 占い 安い</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="81">81</td><td data-v="8">8</td><td data-v="0.0988">9.9%</td><td data-v="2241.2">¥2,241</td><td data-v="17930">¥17,930</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="2561.4">¥2,561</td><td class="l">001_検索</td></tr>
+<tr><td class="l">縁切り 占い</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="325">325</td><td data-v="23">23</td><td data-v="0.0708">7.1%</td><td data-v="720.6">¥721</td><td data-v="16574">¥16,574</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="5524.7">¥5,525</td><td class="l">001_検索</td></tr>
+<tr><td class="l">当たる 恋愛</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="638">638</td><td data-v="21">21</td><td data-v="0.0329">3.3%</td><td data-v="693.5">¥693</td><td data-v="14563">¥14,563</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="2080.4">¥2,080</td><td class="l">001_検索</td></tr>
+<tr><td class="l">恐ろしい 程 当たる 電話 占い師</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="521">521</td><td data-v="16">16</td><td data-v="0.0307">3.1%</td><td data-v="641.8">¥642</td><td data-v="10268">¥10,268</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="3377.6">¥3,378</td><td class="l">001_検索</td></tr>
+<tr><td class="l">タロット</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="3017">3,017</td><td data-v="31">31</td><td data-v="0.0103">1.0%</td><td data-v="253.9">¥254</td><td data-v="7871">¥7,871</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3935.5">¥3,936</td><td class="l">001_検索</td></tr>
+<tr><td class="l">タロット 電話 占い</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="152">152</td><td data-v="6">6</td><td data-v="0.0395">3.9%</td><td data-v="1251.5">¥1,252</td><td data-v="7509">¥7,509</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="1251.5">¥1,252</td><td class="l">001_検索</td></tr>
+<tr><td class="l">占い オンライン</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="696">696</td><td data-v="18">18</td><td data-v="0.0259">2.6%</td><td data-v="380.2">¥380</td><td data-v="6843">¥6,843</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="1368.6">¥1,369</td><td class="l">001_検索</td></tr>
+<tr><td class="l">生霊 占い 無料</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="233">233</td><td data-v="15">15</td><td data-v="0.0644">6.4%</td><td data-v="360.9">¥361</td><td data-v="5414">¥5,414</td><td class="cv sep" data-v="4.8">4.8</td><td class="cv" data-v="1139.8">¥1,140</td><td class="l">001_検索</td></tr>
+<tr><td class="l">電話 占い 人気 ランキング</td><td>インテント</td><td data-v="5">5</td><td>平均より下</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="26">26</td><td data-v="9">9</td><td data-v="0.3462">34.6%</td><td data-v="569.1">¥569</td><td data-v="5122">¥5,122</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2561.0">¥2,561</td><td class="l">001_検索</td></tr>
+<tr><td class="l">復縁 占い師</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="44">44</td><td data-v="2">2</td><td data-v="0.0455">4.5%</td><td data-v="591.0">¥591</td><td data-v="1182">¥1,182</td><td class="cv sep" data-v="21.5">21.5</td><td class="cv" data-v="54.9">¥55</td><td class="l">001_検索</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="生殖医療クリニック錦糸町駅前院">
+<h3 class="adv" id="kwqs-生殖医療クリニック錦糸町駅前院" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院 <span class="badge">取得 2026-03-05</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>4.38</b></span><span class="chip bad">関連性↓<b>41.2%</b></span><span class="chip bad">推定CTR↓<b>69.3%</b></span><span class="chip">LP利便性↓<b>28.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="生殖医療クリニック錦糸町駅前院"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">卵子 質</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="39061">39,061</td><td data-v="3056">3,056</td><td data-v="0.0782">7.8%</td><td data-v="77.7">¥78</td><td data-v="237570">¥237,570</td><td class="cv sep" data-v="75.7">75.7</td><td class="cv" data-v="3140.0">¥3,140</td><td class="l">卵子凍結_検索</td></tr>
+<tr><td class="l">錦糸町 不妊治療</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="3962">3,962</td><td data-v="583">583</td><td data-v="0.1471">14.7%</td><td data-v="262.1">¥262</td><td data-v="152779">¥152,779</td><td class="cv sep" data-v="261.7">261.7</td><td class="cv" data-v="583.8">¥584</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">川崎レディースクリニック</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="8691">8,691</td><td data-v="452">452</td><td data-v="0.0520">5.2%</td><td data-v="194.9">¥195</td><td data-v="88108">¥88,108</td><td class="cv sep" data-v="74.3">74.3</td><td class="cv" data-v="1186.2">¥1,186</td><td class="l">競合</td></tr>
+<tr><td class="l">にしたんARTクリニック</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="8156">8,156</td><td data-v="393">393</td><td data-v="0.0482">4.8%</td><td data-v="211.6">¥212</td><td data-v="83169">¥83,169</td><td class="cv sep" data-v="52.0">52.0</td><td class="cv" data-v="1598.5">¥1,598</td><td class="l">競合</td></tr>
+<tr><td class="l">墨田区 不妊治療</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="2588">2,588</td><td data-v="324">324</td><td data-v="0.1252">12.5%</td><td data-v="253.8">¥254</td><td data-v="82217">¥82,217</td><td class="cv sep" data-v="107.6">107.6</td><td class="cv" data-v="763.8">¥764</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">不妊検査 錦糸町</td><td>フレーズ</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="7271">7,271</td><td data-v="547">547</td><td data-v="0.0752">7.5%</td><td data-v="117.8">¥118</td><td data-v="64418">¥64,418</td><td class="cv sep" data-v="91.9">91.9</td><td class="cv" data-v="701.0">¥701</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">銀座レディースクリニック</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="4189">4,189</td><td data-v="351">351</td><td data-v="0.0838">8.4%</td><td data-v="174.0">¥174</td><td data-v="61085">¥61,085</td><td class="cv sep" data-v="37.6">37.6</td><td class="cv" data-v="1625.5">¥1,625</td><td class="l">競合</td></tr>
+<tr><td class="l">卵子凍結 東京</td><td>インテント</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="4059">4,059</td><td data-v="239">239</td><td data-v="0.0589">5.9%</td><td data-v="209.7">¥210</td><td data-v="50127">¥50,127</td><td class="cv sep" data-v="20.1">20.1</td><td class="cv" data-v="2491.4">¥2,491</td><td class="l">卵子凍結_検索</td></tr>
+<tr><td class="l">北千住 卵子凍結</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="3327">3,327</td><td data-v="222">222</td><td data-v="0.0667">6.7%</td><td data-v="214.6">¥215</td><td data-v="47643">¥47,643</td><td class="cv sep" data-v="19.3">19.3</td><td class="cv" data-v="2468.5">¥2,469</td><td class="l">卵子凍結_検索</td></tr>
+<tr><td class="l">門前仲町 ブライダルチェック</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2536">2,536</td><td data-v="188">188</td><td data-v="0.0741">7.4%</td><td data-v="240.8">¥241</td><td data-v="45271">¥45,271</td><td class="cv sep" data-v="40.3">40.3</td><td class="cv" data-v="1124.2">¥1,124</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">本八幡レディースクリニック</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="4309">4,309</td><td data-v="206">206</td><td data-v="0.0478">4.8%</td><td data-v="194.0">¥194</td><td data-v="39973">¥39,973</td><td class="cv sep" data-v="30.6">30.6</td><td class="cv" data-v="1305.9">¥1,306</td><td class="l">競合</td></tr>
+<tr><td class="l">江東区 不妊治療</td><td>フレーズ</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="3720">3,720</td><td data-v="246">246</td><td data-v="0.0661">6.6%</td><td data-v="151.0">¥151</td><td data-v="37141">¥37,141</td><td class="cv sep" data-v="68.3">68.3</td><td class="cv" data-v="543.4">¥543</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">江戸川区 不妊治療</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="2322">2,322</td><td data-v="192">192</td><td data-v="0.0827">8.3%</td><td data-v="192.9">¥193</td><td data-v="37032">¥37,032</td><td class="cv sep" data-v="46.1">46.1</td><td class="cv" data-v="803.5">¥803</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">東京ARTクリニック</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="3263">3,263</td><td data-v="157">157</td><td data-v="0.0481">4.8%</td><td data-v="228.1">¥228</td><td data-v="35804">¥35,804</td><td class="cv sep" data-v="39.5">39.5</td><td class="cv" data-v="907.1">¥907</td><td class="l">競合</td></tr>
+<tr><td class="l">人工授精 墨田区</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="4127">4,127</td><td data-v="274">274</td><td data-v="0.0664">6.6%</td><td data-v="126.3">¥126</td><td data-v="34600">¥34,600</td><td class="cv sep" data-v="39.1">39.1</td><td class="cv" data-v="885.8">¥886</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">亀戸 不妊検査</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="3178">3,178</td><td data-v="188">188</td><td data-v="0.0592">5.9%</td><td data-v="168.6">¥169</td><td data-v="31693">¥31,693</td><td class="cv sep" data-v="32.6">32.6</td><td class="cv" data-v="973.1">¥973</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">ブライダルチェック 錦糸町</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="1432">1,432</td><td data-v="122">122</td><td data-v="0.0852">8.5%</td><td data-v="249.8">¥250</td><td data-v="30474">¥30,474</td><td class="cv sep" data-v="36.3">36.3</td><td class="cv" data-v="840.2">¥840</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">江戸川区 精液検査</td><td>インテント</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="3758">3,758</td><td data-v="275">275</td><td data-v="0.0732">7.3%</td><td data-v="108.6">¥109</td><td data-v="29858">¥29,858</td><td class="cv sep" data-v="28.6">28.6</td><td class="cv" data-v="1042.5">¥1,043</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">押上 ブライダルチェック</td><td>インテント</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="2301">2,301</td><td data-v="139">139</td><td data-v="0.0604">6.0%</td><td data-v="203.4">¥203</td><td data-v="28273">¥28,273</td><td class="cv sep" data-v="22.2">22.2</td><td class="cv" data-v="1275.3">¥1,275</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">両国 ブライダルチェック</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="1871">1,871</td><td data-v="157">157</td><td data-v="0.0839">8.4%</td><td data-v="177.9">¥178</td><td data-v="27929">¥27,929</td><td class="cv sep" data-v="41.3">41.3</td><td class="cv" data-v="676.1">¥676</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">仕事 ストレス 不妊</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2883">2,883</td><td data-v="129">129</td><td data-v="0.0447">4.5%</td><td data-v="211.5">¥212</td><td data-v="27284">¥27,284</td><td class="cv sep" data-v="15.0">15.0</td><td class="cv" data-v="1820.1">¥1,820</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">墨田区 不妊治療 おすすめ</td><td>フレーズ</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="1374">1,374</td><td data-v="122">122</td><td data-v="0.0888">8.9%</td><td data-v="217.9">¥218</td><td data-v="26588">¥26,588</td><td class="cv sep" data-v="44.4">44.4</td><td class="cv" data-v="599.5">¥600</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">市川 不妊治療</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="1415">1,415</td><td data-v="125">125</td><td data-v="0.0883">8.8%</td><td data-v="201.2">¥201</td><td data-v="25146">¥25,146</td><td class="cv sep" data-v="24.6">24.6</td><td class="cv" data-v="1020.1">¥1,020</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">荒川区 不妊治療 おすすめ</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1876">1,876</td><td data-v="140">140</td><td data-v="0.0746">7.5%</td><td data-v="169.7">¥170</td><td data-v="23751">¥23,751</td><td class="cv sep" data-v="21.1">21.1</td><td class="cv" data-v="1128.3">¥1,128</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">足立区 卵子凍結</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="2301">2,301</td><td data-v="124">124</td><td data-v="0.0539">5.4%</td><td data-v="185.8">¥186</td><td data-v="23045">¥23,045</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="5761.2">¥5,761</td><td class="l">卵子凍結_検索</td></tr>
+<tr><td class="l">台東区 人工授精</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2565">2,565</td><td data-v="183">183</td><td data-v="0.0713">7.1%</td><td data-v="118.0">¥118</td><td data-v="21595">¥21,595</td><td class="cv sep" data-v="34.6">34.6</td><td class="cv" data-v="623.8">¥624</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">江東区 ブライダルチェック</td><td>インテント</td><td data-v="5">5</td><td>平均より下</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="1311">1,311</td><td data-v="97">97</td><td data-v="0.0740">7.4%</td><td data-v="210.6">¥211</td><td data-v="20431">¥20,431</td><td class="cv sep" data-v="24.8">24.8</td><td class="cv" data-v="822.8">¥823</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">台東区 ブライダルチェック</td><td>フレーズ</td><td data-v="6">6</td><td>平均</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="1183">1,183</td><td data-v="101">101</td><td data-v="0.0854">8.5%</td><td data-v="194.0">¥194</td><td data-v="19590">¥19,590</td><td class="cv sep" data-v="22.6">22.6</td><td class="cv" data-v="868.7">¥869</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">住吉 精液検査</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="3178">3,178</td><td data-v="237">237</td><td data-v="0.0746">7.5%</td><td data-v="81.2">¥81</td><td data-v="19248">¥19,248</td><td class="cv sep" data-v="22.2">22.2</td><td class="cv" data-v="866.6">¥867</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">亀戸 ブライダルチェック</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均</td><td>平均より上</td><td class="sep" data-v="1201">1,201</td><td data-v="88">88</td><td data-v="0.0733">7.3%</td><td data-v="212.9">¥213</td><td data-v="18734">¥18,734</td><td class="cv sep" data-v="22.3">22.3</td><td class="cv" data-v="839.7">¥840</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">江東区 精液検査</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2136">2,136</td><td data-v="149">149</td><td data-v="0.0698">7.0%</td><td data-v="123.2">¥123</td><td data-v="18355">¥18,355</td><td class="cv sep" data-v="14.3">14.3</td><td class="cv" data-v="1279.1">¥1,279</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">[人工授精 錦糸町]</td><td>完全</td><td data-v="6">6</td><td>平均</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="5350">5,350</td><td data-v="407">407</td><td data-v="0.0761">7.6%</td><td data-v="43.3">¥43</td><td data-v="17629">¥17,629</td><td class="cv sep" data-v="35.6">35.6</td><td class="cv" data-v="494.8">¥495</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">江戸川区 ブライダルチェック</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="1013">1,013</td><td data-v="75">75</td><td data-v="0.0740">7.4%</td><td data-v="234.6">¥235</td><td data-v="17595">¥17,595</td><td class="cv sep" data-v="16.5">16.5</td><td class="cv" data-v="1067.0">¥1,067</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">小岩 ブライダルチェック</td><td>フレーズ</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1187">1,187</td><td data-v="79">79</td><td data-v="0.0666">6.7%</td><td data-v="197.1">¥197</td><td data-v="15567">¥15,567</td><td class="cv sep" data-v="12.6">12.6</td><td class="cv" data-v="1232.5">¥1,233</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">船橋 不妊治療</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="1533">1,533</td><td data-v="77">77</td><td data-v="0.0502">5.0%</td><td data-v="188.4">¥188</td><td data-v="14505">¥14,505</td><td class="cv sep" data-v="11.3">11.3</td><td class="cv" data-v="1279.1">¥1,279</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">豊洲 ブライダルチェック</td><td>フレーズ</td><td data-v="4">4</td><td>平均</td><td>平均より下</td><td>平均</td><td class="sep" data-v="685">685</td><td data-v="61">61</td><td data-v="0.0891">8.9%</td><td data-v="232.2">¥232</td><td data-v="14162">¥14,162</td><td class="cv sep" data-v="8.8">8.8</td><td class="cv" data-v="1609.3">¥1,609</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">豊洲 不妊治療</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="2012">2,012</td><td data-v="115">115</td><td data-v="0.0572">5.7%</td><td data-v="123.0">¥123</td><td data-v="14147">¥14,147</td><td class="cv sep" data-v="6.8">6.8</td><td class="cv" data-v="2083.5">¥2,084</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">卵子凍結 錦糸町</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="928">928</td><td data-v="55">55</td><td data-v="0.0593">5.9%</td><td data-v="241.4">¥241</td><td data-v="13275">¥13,275</td><td class="cv sep" data-v="3.7">3.7</td><td class="cv" data-v="3617.2">¥3,617</td><td class="l">卵子凍結_検索</td></tr>
+<tr><td class="l">ブライダルチェック 墨田区</td><td>フレーズ</td><td data-v="7">7</td><td>平均</td><td>平均</td><td>平均より上</td><td class="sep" data-v="493">493</td><td data-v="47">47</td><td data-v="0.0953">9.5%</td><td data-v="274.8">¥275</td><td data-v="12915">¥12,915</td><td class="cv sep" data-v="21.0">21.0</td><td class="cv" data-v="614.1">¥614</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">亀戸 精液検査</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="778">778</td><td data-v="64">64</td><td data-v="0.0823">8.2%</td><td data-v="195.6">¥196</td><td data-v="12518">¥12,518</td><td class="cv sep" data-v="15.4">15.4</td><td class="cv" data-v="813.9">¥814</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">足立区 ブライダルチェック</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="1245">1,245</td><td data-v="70">70</td><td data-v="0.0562">5.6%</td><td data-v="177.6">¥178</td><td data-v="12431">¥12,431</td><td class="cv sep" data-v="13.3">13.3</td><td class="cv" data-v="932.6">¥933</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">中野レディースクリニック</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1210">1,210</td><td data-v="68">68</td><td data-v="0.0562">5.6%</td><td data-v="182.1">¥182</td><td data-v="12385">¥12,385</td><td class="cv sep" data-v="7.5">7.5</td><td class="cv" data-v="1651.3">¥1,651</td><td class="l">競合</td></tr>
+<tr><td class="l">上野 人工授精</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="1284">1,284</td><td data-v="95">95</td><td data-v="0.0740">7.4%</td><td data-v="129.5">¥130</td><td data-v="12303">¥12,303</td><td class="cv sep" data-v="20.2">20.2</td><td class="cv" data-v="609.1">¥609</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">足立区 不妊治療</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="1080">1,080</td><td data-v="58">58</td><td data-v="0.0537">5.4%</td><td data-v="196.9">¥197</td><td data-v="11420">¥11,420</td><td class="cv sep" data-v="9.3">9.3</td><td class="cv" data-v="1225.3">¥1,225</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">両国 不妊検査</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="758">758</td><td data-v="51">51</td><td data-v="0.0673">6.7%</td><td data-v="222.8">¥223</td><td data-v="11361">¥11,361</td><td class="cv sep" data-v="5.7">5.7</td><td class="cv" data-v="1979.3">¥1,979</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">葛飾区 不妊治療</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="817">817</td><td data-v="52">52</td><td data-v="0.0636">6.4%</td><td data-v="211.8">¥212</td><td data-v="11014">¥11,014</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="2202.8">¥2,203</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">日暮里 人工授精</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="1617">1,617</td><td data-v="153">153</td><td data-v="0.0946">9.5%</td><td data-v="69.5">¥70</td><td data-v="10635">¥10,635</td><td class="cv sep" data-v="10.2">10.2</td><td class="cv" data-v="1040.6">¥1,041</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">台東区 不妊治療</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="892">892</td><td data-v="64">64</td><td data-v="0.0717">7.2%</td><td data-v="166.0">¥166</td><td data-v="10623">¥10,623</td><td class="cv sep" data-v="20.8">20.8</td><td class="cv" data-v="510.2">¥510</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">錦糸町 不妊治療クリニック</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="486">486</td><td data-v="60">60</td><td data-v="0.1235">12.3%</td><td data-v="175.9">¥176</td><td data-v="10556">¥10,556</td><td class="cv sep" data-v="14.1">14.1</td><td class="cv" data-v="749.7">¥750</td><td class="l">不妊治療_検索</td></tr>
+<tr><td class="l">住吉 ブライダルチェック</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="1937">1,937</td><td data-v="106">106</td><td data-v="0.0547">5.5%</td><td data-v="99.1">¥99</td><td data-v="10503">¥10,503</td><td class="cv sep" data-v="4.1">4.1</td><td class="cv" data-v="2574.3">¥2,574</td><td class="l">不妊治療_検索</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="星ひとみ" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">uraraca-web.jp<br><span>uraraca-web.jp › lp › top2404</span></div><div class="t">＜口コミ続々＞当たる電話占い - 24時間相談OKの電話占い - 【登録無料】おトクに電話相談</div><div class="d">電話占いなら24時間相談ＯＫ。人生の相談から複雑な恋の悩みまでプロの占い師にお任せください 今すぐ知りたい彼の本当の気持ち。未来に起こる出来事。占い師に聞けば解決に導いてくれます。</div><div class="meta2">IMP 342,022 ／ CTR 3.8% ／ COST ¥11,516,523<br>001_検索</div></div>
+</div>
+<div class="serp-col advblk" data-a="生殖医療クリニック錦糸町駅前院" style="--ac:var(--adv-1)"><h4><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">seishoku-clinic.com<br><span>seishoku-clinic.com</span></div><div class="t">ﾌﾞﾗｲﾀﾞﾙﾁｪｯｸ錦糸町/住吉/上野 - 検査だけでもOK/台東区/墨田区 - 女性医師・土日祝対応</div><div class="d">AMH検査・超音波・卵管造影・精液検査など基本不妊検査を実施。保険適用で費用を抑えられます。 検査結果は独自アプリで自宅確認OK。朝8時〜夜21時診療。LINE予約で24時間受付中です。</div><div class="meta2">IMP 78,129 ／ CTR 7.0% ／ COST ¥872,816<br>不妊治療_検索</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">seishoku-clinic.com<br><span>seishoku-clinic.com › menu › egg-freezing</span></div><div class="t">錦糸町で卵子凍結 - 将来の妊娠に備える - 女性医師が丁寧に説明</div><div class="d">将来の妊娠・出産に備えて卵子を凍結保存。女性医師が丁寧にカウンセリングいたします。 朝8時〜夜21時、土日祝も診療。仕事と両立しながら卵子凍結が可能。LINE予約で24時間受付中です</div><div class="meta2">IMP 63,080 ／ CTR 6.9% ／ COST ¥513,086<br>卵子凍結_検索</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">seishoku-clinic.com<br><span>seishoku-clinic.com</span></div><div class="t">錦糸町の不妊治療専門クリニック - 駅徒歩4分・土日祝も診療 - 女性医師が担当で安心</div><div class="d">朝8時〜夜21時まで診療。仕事帰りも通いやすい。24時間予約可。事後決済で会計待ち0。駅徒歩4分 1000名の患者様の声から生まれたｸﾘﾆｯｸ。心理士常駐で心のｹｱも万全。女性医師が丁寧に対応します</div><div class="meta2">IMP 44,433 ／ CTR 4.6% ／ COST ¥398,784<br>競合</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">seishoku-clinic.com<br><span>seishoku-clinic.com</span></div><div class="t">日暮里/上野/台東区/人工授精 - 錦糸町駅徒歩4分 - 女性医師・土日祝対応</div><div class="d">洗浄・濃縮した精子を子宮内に注入し妊娠率を高める治療。保険適用で費用負担も軽減できます。 朝8時〜夜21時まで診療。事後決済で待ち時間ゼロ。臨床心理士常駐で心のケアも万全です。</div><div class="meta2">IMP 41,021 ／ CTR 7.7% ／ COST ¥249,474<br>不妊治療_検索</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">LINE予約24時間受付</td><td data-v="15">15</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">卵子凍結_助成金の登録医療機関</td><td data-v="14">14</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">仕事と治療を両立</td><td data-v="13">13</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">事後決済で待ち時間ゼロ</td><td data-v="12">12</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">体外受精・顕微授精対応</td><td data-v="10">10</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">顕微授精受精率94.6%</td><td data-v="10">10</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">1000名の経験者の声から生まれた</td><td data-v="9">9</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">臨床心理士・助産師常駐</td><td data-v="9">9</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">朝8時〜夜21時まで診療</td><td data-v="7">7</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">保険適用の不妊治療</td><td data-v="7">7</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">女性医師が担当で安心</td><td data-v="7">7</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">錦糸町の不妊治療専門クリニック</td><td data-v="6">6</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">個室待合でプライバシー安心</td><td data-v="6">6</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">朝8時〜夜21時診療</td><td data-v="5">5</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">駅徒歩4分・土日祝も診療</td><td data-v="5">5</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">女性医師・土日祝対応</td><td data-v="3">3</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">駅から徒歩4分</td><td data-v="3">3</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">保険適用で費用軽減</td><td data-v="3">3</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">検査だけでもOK</td><td data-v="3">3</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">精液検査対応</td><td data-v="2">2</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">熟練の胚培養士が対応</td><td data-v="2">2</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">心理士・助産師常駐</td><td data-v="2">2</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">結果はアプリで確認</td><td data-v="2">2</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">ブライダルチェック対応</td><td data-v="2">2</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">AMH検査対応</td><td data-v="2">2</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">半個室待合でプライバシー安心</td><td data-v="2">2</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">錦糸町駅徒歩4分</td><td data-v="2">2</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">熟練の胚培養士チーム</td><td data-v="2">2</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">朝8時〜夜21時診療/土日祝も診療</td><td data-v="2">2</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">全刺激法に対応可能</td><td data-v="2">2</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">最新タイムラプス完備</td><td data-v="2">2</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">半個室待合完備</td><td data-v="2">2</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">＜口コミ続々＞当たる電話占い</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">【特典5500pt】電話占いウララカ</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">秘密厳守で相談したいあなたに</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">【占い結果が現実に】口コミ続々</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">彼が本当のツインレイか見極める</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">強い縁結びを望むあなたに</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">実力ある占い師に頼ってください</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">諦めかけた恋、動き出す予感</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">縁結びも縁切りもお任せください</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">今すぐ初回特典で電話占い</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">今すぐ相談したいなら電話占いで</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">【実力トップクラス】人気占い師</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">複雑な恋や復縁に強い占い師</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">24時間相談OKの電話占い</td><td data-v="1">1</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l wrap">【登録無料】おトクに電話相談</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">不妊治療専門クリニック</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">仕事帰りに通える</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">卵子凍結・助成金認定医療機関</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">半個室待合でプライバシーへ配慮</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">全て込みパッケージプランで安心</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">30代からの卵子凍結</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">初診WEB予約受付中</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">AMH検査で適切な時期を</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">女性医師が丁寧に説明</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">将来の妊娠に備える</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">駅徒歩4分・土日祝対応</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">心理士によるサポート</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">錦糸町で卵子凍結</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">最新の凍結技術を採用</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">日暮里/上野/台東区/人工授精</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">洗浄・濃縮精子を注入</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">妊娠率を高める治療</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">検査から治療まで一貫</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">体外受精なら錦糸町の生殖医療</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">受精率71.5%の実績</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">半個室待合完備/心理士常駐</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">住吉/船橋/新小岩/上野 体外受精</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">保険適用・女性医師対応</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">江東区/台東区/足立区/体外受精</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">電車で10-15分の好立地</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">台東区 不妊治療</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">荒川区 不妊治療</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">足立区 不妊治療</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">土日祝/朝8時〜夜21時まで診療</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">江戸川区 不妊治療</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">錦糸町駅徒歩4分/女性医師で安心</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">葛飾区 不妊治療</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">錦糸町駅から徒歩4分</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">卵管造影検査対応</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">検査だけでもOK/台東区/墨田区</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">ﾌﾞﾗｲﾀﾞﾙﾁｪｯｸ錦糸町/住吉/上野</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">保険適用・土日祝対応</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">錦糸町駅4分の専門クリニック</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">男性不妊にも対応</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">女性医師が担当</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">電車・バスで数分の好アクセス</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">電車で10分圏内</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">江東区から好アクセス</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">墨田区の不妊治療専門クリニック</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">排卵日を正確に予測</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">タイミング法 錦糸町駅徒歩4分</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">女性医師が丁寧に指導</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">妊活の第一歩をサポート</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">船橋/松戸/市川/柏 タイミング法</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">超音波・ホルモン検査</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">船橋/市川/松戸/柏 不妊治療</td><td data-v="1">1</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l wrap">総武線・半蔵門線で好アクセス</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="星ひとみ">
+<h3 class="adv" id="adlib-星ひとみ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ <span class="badge">取得 2026-03-05</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>1本</b></span><span class="chip">CPN<b>1個</b></span><span class="chip">ADG<b>1個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>1本</b></span></div>
+<p class="note">主要LP: <span title="https://uraraca-web.jp/lp/top2404">https://uraraca-web.jp/lp/top2404（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="星ひとみ"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">＜口コミ続々＞当たる電話占い</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【特典5500pt】電話占いウララカ</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">秘密厳守で相談したいあなたに</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【占い結果が現実に】口コミ続々</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">彼が本当のツインレイか見極める</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">強い縁結びを望むあなたに</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">実力ある占い師に頼ってください</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">諦めかけた恋、動き出す予感</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">縁結びも縁切りもお任せください</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">今すぐ初回特典で電話占い</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">今すぐ相談したいなら電話占いで</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【実力トップクラス】人気占い師</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">複雑な恋や復縁に強い占い師</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">24時間相談OKの電話占い</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【登録無料】おトクに電話相談</td><td data-v="1">1</td></tr>
+</table></div></div><div>
+<table data-adv="星ひとみ"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">口コミで話題 当たると評判の電話占い。初回特典でお得に相談してみませんか？</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">電話占いなら24時間相談ＯＫ。人生の相談から複雑な恋の悩みまでプロの占い師にお任せください</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">迷いの先に、本当の自分が待っている。あなたの幸せを真剣に願う占い師がいます。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">今すぐ知りたい彼の本当の気持ち。未来に起こる出来事。占い師に聞けば解決に導いてくれます。</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="生殖医療クリニック錦糸町駅前院">
+<h3 class="adv" id="adlib-生殖医療クリニック錦糸町駅前院" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院 <span class="badge">取得 2026-03-05</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>15本</b></span><span class="chip">CPN<b>3個</b></span><span class="chip">ADG<b>15個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>3本</b></span></div>
+<p class="note">主要LP: <span title="https://seishoku-clinic.com/">https://seishoku-clinic.com/（12本）</span> ／ <span title="https://seishoku-clinic.com/menu/art/">https://seishoku-clinic.com/menu/art/（2本）</span> ／ <span title="https://seishoku-clinic.com/menu/egg-freezing/">https://seishoku-clinic.com/menu/egg-freezing/（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="生殖医療クリニック錦糸町駅前院"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">LINE予約24時間受付</td><td data-v="15">15</td></tr>
+<tr><td class="l wrap">卵子凍結_助成金の登録医療機関</td><td data-v="14">14</td></tr>
+<tr><td class="l wrap">仕事と治療を両立</td><td data-v="13">13</td></tr>
+<tr><td class="l wrap">事後決済で待ち時間ゼロ</td><td data-v="12">12</td></tr>
+<tr><td class="l wrap">体外受精・顕微授精対応</td><td data-v="10">10</td></tr>
+<tr><td class="l wrap">顕微授精受精率94.6%</td><td data-v="10">10</td></tr>
+<tr><td class="l wrap">1000名の経験者の声から生まれた</td><td data-v="9">9</td></tr>
+<tr><td class="l wrap">臨床心理士・助産師常駐</td><td data-v="9">9</td></tr>
+<tr><td class="l wrap">朝8時〜夜21時まで診療</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">保険適用の不妊治療</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">女性医師が担当で安心</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">錦糸町の不妊治療専門クリニック</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">個室待合でプライバシー安心</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">朝8時〜夜21時診療</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">駅徒歩4分・土日祝も診療</td><td data-v="5">5</td></tr>
+</table></div></div><div>
+<table data-adv="生殖医療クリニック錦糸町駅前院"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">1000名の経験者の声から生まれたクリニック。半個室待合・心理士常駐で安心して通院できます。</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">朝8時〜夜21時まで診療。出勤前・昼休み・仕事帰りに通えます。事後決済で会計待ちもゼロです。</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">タイミング法から体外受精・顕微授精まで全治療に対応。保険適用で費用負担も軽減できます。</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">AMH検査・超音波・卵管造影・精液検査など基本不妊検査を実施。保険適用で費用を抑えられます。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">検査結果は独自アプリで自宅確認OK。朝8時〜夜21時診療。LINE予約で24時間受付中です。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">女性医師が丁寧にご説明。検査だけでも歓迎します。まずは原因を調べることから始めましょう。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">1000名の経験者の声から生まれたクリニック。半個室待合・土日祝診療でご夫婦揃っての検査可能。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">ﾀｲﾐﾝｸﾞ法から顕微授精まで全治療に対応。保険適用で費用負担を軽減。まずは検査からどうぞ。</td><td data-v="2">2</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="星ひとみ">
+<h3 class="adv" id="query-星ひとみ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ <span class="badge">取得 2026-03-05</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜なし</td><td data-v="901">901</td><td data-v="4862">4,862</td><td data-v="4233976">¥4,233,976</td><td data-v="0.5773">57.7%</td><td class="cv sep" data-v="3575.1">3,575.1</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="42">42</td><td data-v="2047">2,047</td><td data-v="3100161">¥3,100,161</td><td data-v="0.4227">42.3%</td><td class="cv sep" data-v="1697.3">1,697.3</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="星ひとみ"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">電話 占い</td><td>追加済み</td><td>検索</td><td data-v="490">490</td><td data-v="1798113">¥1,798,113</td><td class="cv sep" data-v="667.8">667.8</td><td class="cv" data-v="2692.6">¥2,693</td></tr>
+<tr><td class="l">うらら か 占い</td><td>追加済み</td><td>検索</td><td data-v="752">752</td><td data-v="217034">¥217,034</td><td class="cv sep" data-v="558.1">558.1</td><td class="cv" data-v="388.9">¥389</td></tr>
+<tr><td class="l">ウララカ</td><td>なし</td><td>検索</td><td data-v="379">379</td><td data-v="200879">¥200,879</td><td class="cv sep" data-v="309.6">309.6</td><td class="cv" data-v="648.8">¥649</td></tr>
+<tr><td class="l">電話 占い 無料</td><td>追加済み</td><td>検索</td><td data-v="138">138</td><td data-v="626829">¥626,829</td><td class="cv sep" data-v="211.0">211.0</td><td class="cv" data-v="2971.3">¥2,971</td></tr>
+<tr><td class="l">電話 占い ウララカ</td><td>なし</td><td>検索</td><td data-v="361">361</td><td data-v="91045">¥91,045</td><td class="cv sep" data-v="199.8">199.8</td><td class="cv" data-v="455.6">¥456</td></tr>
+<tr><td class="l">大宮 占い</td><td>なし</td><td>検索</td><td data-v="18">18</td><td data-v="46759">¥46,759</td><td class="cv sep" data-v="175.5">175.5</td><td class="cv" data-v="266.4">¥266</td></tr>
+<tr><td class="l">占い ウララカ</td><td>なし</td><td>検索</td><td data-v="600">600</td><td data-v="47839">¥47,839</td><td class="cv sep" data-v="174.5">174.5</td><td class="cv" data-v="274.1">¥274</td></tr>
+<tr><td class="l">電話 占い ウィル</td><td>なし</td><td>検索</td><td data-v="76">76</td><td data-v="121873">¥121,873</td><td class="cv sep" data-v="109.9">109.9</td><td class="cv" data-v="1109.3">¥1,109</td></tr>
+<tr><td class="l">カリス</td><td>なし</td><td>検索</td><td data-v="51">51</td><td data-v="52867">¥52,867</td><td class="cv sep" data-v="80.8">80.8</td><td class="cv" data-v="654.6">¥655</td></tr>
+<tr><td class="l">ウララカ 占い</td><td>追加済み</td><td>検索</td><td data-v="135">135</td><td data-v="35701">¥35,701</td><td class="cv sep" data-v="77.1">77.1</td><td class="cv" data-v="463.0">¥463</td></tr>
+<tr><td class="l">無料 電話 占い</td><td>なし</td><td>検索</td><td data-v="45">45</td><td data-v="222418">¥222,418</td><td class="cv sep" data-v="71.9">71.9</td><td class="cv" data-v="3091.3">¥3,091</td></tr>
+<tr><td class="l">電話 占い うらら か</td><td>なし</td><td>検索</td><td data-v="366">366</td><td data-v="22841">¥22,841</td><td class="cv sep" data-v="71.5">71.5</td><td class="cv" data-v="319.6">¥320</td></tr>
+<tr><td class="l">うらら か</td><td>なし</td><td>検索</td><td data-v="25">25</td><td data-v="19934">¥19,934</td><td class="cv sep" data-v="71.3">71.3</td><td class="cv" data-v="279.5">¥279</td></tr>
+<tr><td class="l">占い</td><td>追加済み</td><td>検索</td><td data-v="328">328</td><td data-v="195292">¥195,292</td><td class="cv sep" data-v="66.7">66.7</td><td class="cv" data-v="2927.0">¥2,927</td></tr>
+<tr><td class="l">電話 占い ヴェルニ</td><td>なし</td><td>検索</td><td data-v="149">149</td><td data-v="141774">¥141,774</td><td class="cv sep" data-v="61.3">61.3</td><td class="cv" data-v="2313.5">¥2,314</td></tr>
+<tr><td class="l">エキサイト 電話 占い</td><td>なし</td><td>検索</td><td data-v="60">60</td><td data-v="51251">¥51,251</td><td class="cv sep" data-v="53.0">53.0</td><td class="cv" data-v="966.5">¥966</td></tr>
+<tr><td class="l">ニーケ 占い</td><td>なし</td><td>検索</td><td data-v="58">58</td><td data-v="80471">¥80,471</td><td class="cv sep" data-v="50.9">50.9</td><td class="cv" data-v="1581.0">¥1,581</td></tr>
+<tr><td class="l">占い 電話</td><td>なし</td><td>検索</td><td data-v="53">53</td><td data-v="169689">¥169,689</td><td class="cv sep" data-v="49.1">49.1</td><td class="cv" data-v="3458.1">¥3,458</td></tr>
+<tr><td class="l">占い うらら か</td><td>なし</td><td>検索</td><td data-v="185">185</td><td data-v="12866">¥12,866</td><td class="cv sep" data-v="46.7">46.7</td><td class="cv" data-v="275.3">¥275</td></tr>
+<tr><td class="l">ウララ か</td><td>なし</td><td>検索</td><td data-v="60">60</td><td data-v="30940">¥30,940</td><td class="cv sep" data-v="41.9">41.9</td><td class="cv" data-v="738.4">¥738</td></tr>
+<tr><td class="l">クロト</td><td>なし</td><td>検索</td><td data-v="79">79</td><td data-v="58961">¥58,961</td><td class="cv sep" data-v="40.0">40.0</td><td class="cv" data-v="1475.1">¥1,475</td></tr>
+<tr><td class="l">占い 無料</td><td>なし</td><td>検索</td><td data-v="89">89</td><td data-v="71049">¥71,049</td><td class="cv sep" data-v="39.0">39.0</td><td class="cv" data-v="1821.8">¥1,822</td></tr>
+<tr><td class="l">占い 電話 無料</td><td>なし</td><td>検索</td><td data-v="18">18</td><td data-v="70271">¥70,271</td><td class="cv sep" data-v="39.0">39.0</td><td class="cv" data-v="1801.8">¥1,802</td></tr>
+<tr><td class="l">ウララカ 電話 占い</td><td>なし</td><td>検索</td><td data-v="56">56</td><td data-v="25940">¥25,940</td><td class="cv sep" data-v="35.9">35.9</td><td class="cv" data-v="721.8">¥722</td></tr>
+<tr><td class="l">初回 無料 電話 占い</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="48840">¥48,840</td><td class="cv sep" data-v="35.5">35.5</td><td class="cv" data-v="1375.8">¥1,376</td></tr>
+<tr><td class="l">電話 占い ウララカ 口コミ</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="2702">¥2,702</td><td class="cv sep" data-v="35.3">35.3</td><td class="cv" data-v="76.5">¥76</td></tr>
+<tr><td class="l">無料 占い</td><td>追加済み</td><td>検索</td><td data-v="62">62</td><td data-v="47797">¥47,797</td><td class="cv sep" data-v="33.8">33.8</td><td class="cv" data-v="1412.9">¥1,413</td></tr>
+<tr><td class="l">シエロ 占い</td><td>なし</td><td>検索</td><td data-v="38">38</td><td data-v="41193">¥41,193</td><td class="cv sep" data-v="33.0">33.0</td><td class="cv" data-v="1248.3">¥1,248</td></tr>
+<tr><td class="l">電話 占い 当たる</td><td>追加済み</td><td>検索</td><td data-v="17">17</td><td data-v="53260">¥53,260</td><td class="cv sep" data-v="30.7">30.7</td><td class="cv" data-v="1735.4">¥1,735</td></tr>
+<tr><td class="l">叉 紗</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="5930">¥5,930</td><td class="cv sep" data-v="30.0">30.0</td><td class="cv" data-v="197.7">¥198</td></tr>
+<tr><td class="l">ニーケ</td><td>なし</td><td>検索</td><td data-v="47">47</td><td data-v="74742">¥74,742</td><td class="cv sep" data-v="28.6">28.6</td><td class="cv" data-v="2611.5">¥2,612</td></tr>
+<tr><td class="l">電話 占い マヒナ 当たる 先生</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="1425">¥1,425</td><td class="cv sep" data-v="28.0">28.0</td><td class="cv" data-v="50.9">¥51</td></tr>
+<tr><td class="l">電話 占い 10 分 無料</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="50832">¥50,832</td><td class="cv sep" data-v="28.0">28.0</td><td class="cv" data-v="1815.4">¥1,815</td></tr>
+<tr><td class="l">エキサイト 占い</td><td>なし</td><td>検索</td><td data-v="27">27</td><td data-v="20055">¥20,055</td><td class="cv sep" data-v="27.1">27.1</td><td class="cv" data-v="740.0">¥740</td></tr>
+<tr><td class="l">さとり 占い 電話</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="2787">¥2,787</td><td class="cv sep" data-v="26.0">26.0</td><td class="cv" data-v="107.2">¥107</td></tr>
+<tr><td class="l">みんなの 電話 占い</td><td>なし</td><td>検索</td><td data-v="65">65</td><td data-v="56104">¥56,104</td><td class="cv sep" data-v="25.4">25.4</td><td class="cv" data-v="2207.1">¥2,207</td></tr>
+<tr><td class="l">スター タロット リーディング</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="9126">¥9,126</td><td class="cv sep" data-v="25.0">25.0</td><td class="cv" data-v="365.0">¥365</td></tr>
+<tr><td class="l">クロト 占い</td><td>なし</td><td>検索</td><td data-v="64">64</td><td data-v="84185">¥84,185</td><td class="cv sep" data-v="24.3">24.3</td><td class="cv" data-v="3458.7">¥3,459</td></tr>
+<tr><td class="l">ピュアリ</td><td>なし</td><td>検索</td><td data-v="66">66</td><td data-v="71007">¥71,007</td><td class="cv sep" data-v="23.9">23.9</td><td class="cv" data-v="2974.7">¥2,975</td></tr>
+<tr><td class="l">彼 は 私 に 会 いたい タロット</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="10811">¥10,811</td><td class="cv sep" data-v="23.1">23.1</td><td class="cv" data-v="467.4">¥467</td></tr>
+<tr><td class="l">電話 占い 初回 無料</td><td>追加済み</td><td>検索</td><td data-v="13">13</td><td data-v="60427">¥60,427</td><td class="cv sep" data-v="20.1">20.1</td><td class="cv" data-v="3006.3">¥3,006</td></tr>
+<tr><td class="l">電話 占い 無料 登録 なし</td><td>なし</td><td>検索</td><td data-v="21">21</td><td data-v="59171">¥59,171</td><td class="cv sep" data-v="19.6">19.6</td><td class="cv" data-v="3014.3">¥3,014</td></tr>
+<tr><td class="l">スピカ 占い</td><td>なし</td><td>検索</td><td data-v="19">19</td><td data-v="26584">¥26,584</td><td class="cv sep" data-v="19.1">19.1</td><td class="cv" data-v="1392.6">¥1,393</td></tr>
+<tr><td class="l">チャット 占い</td><td>なし</td><td>検索</td><td data-v="26">26</td><td data-v="39953">¥39,953</td><td class="cv sep" data-v="19.0">19.0</td><td class="cv" data-v="2102.8">¥2,103</td></tr>
+<tr><td class="l">復縁 当たる</td><td>なし</td><td>検索</td><td data-v="80">80</td><td data-v="5785">¥5,785</td><td class="cv sep" data-v="18.0">18.0</td><td class="cv" data-v="321.4">¥321</td></tr>
+<tr><td class="l">一 二 三 先生</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="6758">¥6,758</td><td class="cv sep" data-v="17.9">17.9</td><td class="cv" data-v="378.2">¥378</td></tr>
+<tr><td class="l">カリス 占い</td><td>なし</td><td>検索</td><td data-v="29">29</td><td data-v="30640">¥30,640</td><td class="cv sep" data-v="17.7">17.7</td><td class="cv" data-v="1727.2">¥1,727</td></tr>
+<tr><td class="l">復縁 電話 占い</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="29207">¥29,207</td><td class="cv sep" data-v="17.3">17.3</td><td class="cv" data-v="1688.3">¥1,688</td></tr>
+<tr><td class="l">占い ヴェルニ</td><td>なし</td><td>検索</td><td data-v="24">24</td><td data-v="15691">¥15,691</td><td class="cv sep" data-v="16.0">16.0</td><td class="cv" data-v="980.7">¥981</td></tr>
+<tr><td class="l">電話 占い メル</td><td>なし</td><td>検索</td><td data-v="29">29</td><td data-v="32873">¥32,873</td><td class="cv sep" data-v="15.2">15.2</td><td class="cv" data-v="2161.3">¥2,161</td></tr>
+<tr><td class="l">電話 占い ニーケ</td><td>なし</td><td>検索</td><td data-v="20">20</td><td data-v="36524">¥36,524</td><td class="cv sep" data-v="13.3">13.3</td><td class="cv" data-v="2748.2">¥2,748</td></tr>
+<tr><td class="l">初回 無料 占い</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="33834">¥33,834</td><td class="cv sep" data-v="13.0">13.0</td><td class="cv" data-v="2602.6">¥2,603</td></tr>
+<tr><td class="l">無料 電話 占い 新規 オープン</td><td>なし</td><td>検索</td><td data-v="17">17</td><td data-v="52264">¥52,264</td><td class="cv sep" data-v="12.9">12.9</td><td class="cv" data-v="4042.1">¥4,042</td></tr>
+<tr><td class="l">復縁 占い</td><td>なし</td><td>検索</td><td data-v="40">40</td><td data-v="33308">¥33,308</td><td class="cv sep" data-v="12.0">12.0</td><td class="cv" data-v="2775.7">¥2,776</td></tr>
+<tr><td class="l">恋愛 相談 無料</td><td>なし</td><td>検索</td><td data-v="35">35</td><td data-v="29523">¥29,523</td><td class="cv sep" data-v="10.4">10.4</td><td class="cv" data-v="2838.8">¥2,839</td></tr>
+<tr><td class="l">電話 占い 30 分 無料</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="35125">¥35,125</td><td class="cv sep" data-v="10.3">10.3</td><td class="cv" data-v="3406.9">¥3,407</td></tr>
+<tr><td class="l">電話 占い 後払い</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="28608">¥28,608</td><td class="cv sep" data-v="10.2">10.2</td><td class="cv" data-v="2796.5">¥2,796</td></tr>
+<tr><td class="l">電話 占い フィール</td><td>なし</td><td>検索</td><td data-v="42">42</td><td data-v="37623">¥37,623</td><td class="cv sep" data-v="10.0">10.0</td><td class="cv" data-v="3762.3">¥3,762</td></tr>
+<tr><td class="l">電話 占い 新規</td><td>なし</td><td>検索</td><td data-v="13">13</td><td data-v="34850">¥34,850</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="4356.2">¥4,356</td></tr>
+<tr><td class="l">電話 占い クロト</td><td>なし</td><td>検索</td><td data-v="56">56</td><td data-v="47463">¥47,463</td><td class="cv sep" data-v="7.2">7.2</td><td class="cv" data-v="6573.8">¥6,574</td></tr>
+<tr><td class="l">電話 占い カリス</td><td>なし</td><td>検索</td><td data-v="26">26</td><td data-v="39864">¥39,864</td><td class="cv sep" data-v="7.1">7.1</td><td class="cv" data-v="5598.9">¥5,599</td></tr>
+<tr><td class="l">電話 占い マヒナ</td><td>なし</td><td>検索</td><td data-v="48">48</td><td data-v="44340">¥44,340</td><td class="cv sep" data-v="6.6">6.6</td><td class="cv" data-v="6708.0">¥6,708</td></tr>
+<tr><td class="l">電話 占い シエロ</td><td>なし</td><td>検索</td><td data-v="24">24</td><td data-v="34859">¥34,859</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="5819.5">¥5,820</td></tr>
+<tr><td class="l">チャット 占い 無料</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="28239">¥28,239</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="5647.8">¥5,648</td></tr>
+<tr><td class="l">無料 占い 電話</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="34203">¥34,203</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="25716.5">¥25,717</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（65行）。</p></div>
+<div class="advblk" data-a="生殖医療クリニック錦糸町駅前院">
+<h3 class="adv" id="query-生殖医療クリニック錦糸町駅前院" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院 <span class="badge">取得 2026-03-05</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜なし</td><td data-v="631">631</td><td data-v="2198">2,198</td><td data-v="455438">¥455,438</td><td data-v="0.8456">84.6%</td><td class="cv sep" data-v="1216.7">1,216.7</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="41">41</td><td data-v="367">367</td><td data-v="83137">¥83,137</td><td data-v="0.1544">15.4%</td><td class="cv sep" data-v="166.2">166.2</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="生殖医療クリニック錦糸町駅前院"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">生殖 医療 クリニック 錦糸 町 駅前 院</td><td>なし</td><td>検索</td><td data-v="426">426</td><td data-v="120136">¥120,136</td><td class="cv sep" data-v="208.2">208.2</td><td class="cv" data-v="577.0">¥577</td></tr>
+<tr><td class="l">錦糸 町 不妊 治療</td><td>追加済み</td><td>検索</td><td data-v="238">238</td><td data-v="51674">¥51,674</td><td class="cv sep" data-v="113.7">113.7</td><td class="cv" data-v="454.4">¥454</td></tr>
+<tr><td class="l">錦糸 町 生殖 医療 クリニック</td><td>なし</td><td>検索</td><td data-v="79">79</td><td data-v="26143">¥26,143</td><td class="cv sep" data-v="58.2">58.2</td><td class="cv" data-v="448.8">¥449</td></tr>
+<tr><td class="l">ブライダル チェック</td><td>なし</td><td>検索</td><td data-v="163">163</td><td data-v="28533">¥28,533</td><td class="cv sep" data-v="46.7">46.7</td><td class="cv" data-v="611.5">¥612</td></tr>
+<tr><td class="l">錦糸 町 婦人 科</td><td>なし</td><td>検索</td><td data-v="77">77</td><td data-v="19829">¥19,829</td><td class="cv sep" data-v="38.6">38.6</td><td class="cv" data-v="513.6">¥514</td></tr>
+<tr><td class="l">生殖 医療 クリニック</td><td>なし</td><td>検索</td><td data-v="58">58</td><td data-v="21937">¥21,937</td><td class="cv sep" data-v="32.1">32.1</td><td class="cv" data-v="684.0">¥684</td></tr>
+<tr><td class="l">生殖 医療 クリニック 錦糸 町</td><td>なし</td><td>検索</td><td data-v="62">62</td><td data-v="20304">¥20,304</td><td class="cv sep" data-v="22.7">22.7</td><td class="cv" data-v="896.0">¥896</td></tr>
+<tr><td class="l">生殖 医療 クリニック 錦糸 町 駅前 院 レビュー</td><td>なし</td><td>検索</td><td data-v="13">13</td><td data-v="6399">¥6,399</td><td class="cv sep" data-v="17.8">17.8</td><td class="cv" data-v="359.9">¥360</td></tr>
+<tr><td class="l">不妊 治療</td><td>なし</td><td>検索</td><td data-v="52">52</td><td data-v="15015">¥15,015</td><td class="cv sep" data-v="17.6">17.6</td><td class="cv" data-v="852.6">¥853</td></tr>
+<tr><td class="l">錦糸 町 ブライダル チェック</td><td>なし</td><td>検索</td><td data-v="17">17</td><td data-v="5474">¥5,474</td><td class="cv sep" data-v="15.5">15.5</td><td class="cv" data-v="354.1">¥354</td></tr>
+<tr><td class="l">不妊 治療 錦糸 町</td><td>なし</td><td>検索</td><td data-v="22">22</td><td data-v="5092">¥5,092</td><td class="cv sep" data-v="15.0">15.0</td><td class="cv" data-v="339.7">¥340</td></tr>
+<tr><td class="l">妊娠 しない 検査</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="54">¥54</td><td class="cv sep" data-v="14.0">14.0</td><td class="cv" data-v="3.9">¥4</td></tr>
+<tr><td class="l">錦糸 町 不妊 クリニック</td><td>なし</td><td>検索</td><td data-v="17">17</td><td data-v="4869">¥4,869</td><td class="cv sep" data-v="13.8">13.8</td><td class="cv" data-v="352.3">¥352</td></tr>
+<tr><td class="l">体外 受精 スケジュール</td><td>なし</td><td>検索</td><td data-v="227">227</td><td data-v="2405">¥2,405</td><td class="cv sep" data-v="13.3">13.3</td><td class="cv" data-v="180.3">¥180</td></tr>
+<tr><td class="l">近く の 産婦 人 科</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="1218">¥1,218</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="110.7">¥111</td></tr>
+<tr><td class="l">精液 検査 東京</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="2092">¥2,092</td><td class="cv sep" data-v="10.7">10.7</td><td class="cv" data-v="195.1">¥195</td></tr>
+<tr><td class="l">ブライダル チェック 助成 金</td><td>なし</td><td>検索</td><td data-v="16">16</td><td data-v="2337">¥2,337</td><td class="cv sep" data-v="10.2">10.2</td><td class="cv" data-v="229.1">¥229</td></tr>
+<tr><td class="l">錦糸 町 不妊</td><td>なし</td><td>検索</td><td data-v="17">17</td><td data-v="4251">¥4,251</td><td class="cv sep" data-v="9.7">9.7</td><td class="cv" data-v="436.9">¥437</td></tr>
+<tr><td class="l">精液 検査</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="2400">¥2,400</td><td class="cv sep" data-v="9.5">9.5</td><td class="cv" data-v="252.6">¥253</td></tr>
+<tr><td class="l">不妊 治療 女性</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="342">¥342</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="38.0">¥38</td></tr>
+<tr><td class="l">婦人 科</td><td>なし</td><td>検索</td><td data-v="37">37</td><td data-v="6628">¥6,628</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="736.4">¥736</td></tr>
+<tr><td class="l">産婦 人 科 近く</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="2583">¥2,583</td><td class="cv sep" data-v="8.5">8.5</td><td class="cv" data-v="305.3">¥305</td></tr>
+<tr><td class="l">ブライダル チェック 東京 おすすめ</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="1700">¥1,700</td><td class="cv sep" data-v="8.2">8.2</td><td class="cv" data-v="207.3">¥207</td></tr>
+<tr><td class="l">新小岩 art クリニック</td><td>追加済み</td><td>検索</td><td data-v="13">13</td><td data-v="4384">¥4,384</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="548.0">¥548</td></tr>
+<tr><td class="l">錦糸 町 産婦 人 科</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="1071">¥1,071</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="133.9">¥134</td></tr>
+<tr><td class="l">ブライダル チェック 男女 ペア 東京</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="904">¥904</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="113.0">¥113</td></tr>
+<tr><td class="l">ブライダル チェック 墨田 区</td><td>追加済み</td><td>検索</td><td data-v="18">18</td><td data-v="4883">¥4,883</td><td class="cv sep" data-v="7.8">7.8</td><td class="cv" data-v="623.6">¥624</td></tr>
+<tr><td class="l">婦人 科 近く</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="3638">¥3,638</td><td class="cv sep" data-v="7.3">7.3</td><td class="cv" data-v="496.3">¥496</td></tr>
+<tr><td class="l">ブライダル チェック 男性</td><td>なし</td><td>検索</td><td data-v="50">50</td><td data-v="7591">¥7,591</td><td class="cv sep" data-v="7.2">7.2</td><td class="cv" data-v="1058.7">¥1,059</td></tr>
+<tr><td class="l">体外 受精 何 回目 で 成功 した 39 歳</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="133">¥133</td><td class="cv sep" data-v="7.1">7.1</td><td class="cv" data-v="18.8">¥19</td></tr>
+<tr><td class="l">ブライダル チェック 結婚 後</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="878">¥878</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="125.4">¥125</td></tr>
+<tr><td class="l">ブライダル チェック 男女 ペア</td><td>なし</td><td>検索</td><td data-v="22">22</td><td data-v="3857">¥3,857</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="551.0">¥551</td></tr>
+<tr><td class="l">精 索 静脈 瘤 セルフ チェック</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="62">¥62</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="8.9">¥9</td></tr>
+<tr><td class="l">人工 授精 成功 率 高い 病院 東京</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="183">¥183</td><td class="cv sep" data-v="6.9">6.9</td><td class="cv" data-v="26.4">¥26</td></tr>
+<tr><td class="l">ブライダル チェック 錦糸 町</td><td>追加済み</td><td>検索</td><td data-v="17">17</td><td data-v="6802">¥6,802</td><td class="cv sep" data-v="6.8">6.8</td><td class="cv" data-v="1000.3">¥1,000</td></tr>
+<tr><td class="l">婦人 科 錦糸 町</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="1850">¥1,850</td><td class="cv sep" data-v="6.8">6.8</td><td class="cv" data-v="274.1">¥274</td></tr>
+<tr><td class="l">錦糸 町 不妊 治療 クリニック</td><td>追加済み</td><td>検索</td><td data-v="34">34</td><td data-v="6128">¥6,128</td><td class="cv sep" data-v="6.7">6.7</td><td class="cv" data-v="909.2">¥909</td></tr>
+<tr><td class="l">ブライダル チェック 葛飾 区</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="258">¥258</td><td class="cv sep" data-v="6.3">6.3</td><td class="cv" data-v="40.8">¥41</td></tr>
+<tr><td class="l">ブライダル チェック 予約</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="987">¥987</td><td class="cv sep" data-v="6.3">6.3</td><td class="cv" data-v="156.2">¥156</td></tr>
+<tr><td class="l">東京 ブライダル チェック</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="2713">¥2,713</td><td class="cv sep" data-v="6.2">6.2</td><td class="cv" data-v="434.1">¥434</td></tr>
+<tr><td class="l">妊 活 始め 方</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="458">¥458</td><td class="cv sep" data-v="6.2">6.2</td><td class="cv" data-v="73.6">¥74</td></tr>
+<tr><td class="l">妊 活 池袋</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="165">¥165</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="27.5">¥28</td></tr>
+<tr><td class="l">不妊 治療 クリニック</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="1022">¥1,022</td><td class="cv sep" data-v="5.9">5.9</td><td class="cv" data-v="172.9">¥173</td></tr>
+<tr><td class="l">男性 不妊 クリニック</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="747">¥747</td><td class="cv sep" data-v="5.4">5.4</td><td class="cv" data-v="137.3">¥137</td></tr>
+<tr><td class="l">木場 不妊 治療</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="624">¥624</td><td class="cv sep" data-v="5.3">5.3</td><td class="cv" data-v="117.1">¥117</td></tr>
+<tr><td class="l">今日 行ける 婦人 科</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="1472">¥1,472</td><td class="cv sep" data-v="5.3">5.3</td><td class="cv" data-v="276.2">¥276</td></tr>
+<tr><td class="l">不妊 治療 墨田 区</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="2634">¥2,634</td><td class="cv sep" data-v="5.2">5.2</td><td class="cv" data-v="507.5">¥508</td></tr>
+<tr><td class="l">婦人 科 評判 いい 女医 墨田 区</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="1250">¥1,250</td><td class="cv sep" data-v="5.2">5.2</td><td class="cv" data-v="240.8">¥241</td></tr>
+<tr><td class="l">生理 痛 婦人 科</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="226">¥226</td><td class="cv sep" data-v="5.1">5.1</td><td class="cv" data-v="44.1">¥44</td></tr>
+<tr><td class="l">不妊 治療 江戸川 区</td><td>なし</td><td>検索</td><td data-v="10">10</td><td data-v="4690">¥4,690</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="936.1">¥936</td></tr>
+<tr><td class="l">妊 活 鍼灸</td><td>なし</td><td>検索</td><td data-v="117">117</td><td data-v="8727">¥8,727</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="1745.4">¥1,745</td></tr>
+<tr><td class="l">産婦 人 科</td><td>なし</td><td>検索</td><td data-v="18">18</td><td data-v="2338">¥2,338</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="467.6">¥468</td></tr>
+<tr><td class="l">墨田 区 不妊 治療 クリニック</td><td>追加済み</td><td>検索</td><td data-v="8">8</td><td data-v="1706">¥1,706</td><td class="cv sep" data-v="4.8">4.8</td><td class="cv" data-v="356.2">¥356</td></tr>
+<tr><td class="l">生殖 医療 クリニック 錦糸 町 駅前 院 口コミ</td><td>なし</td><td>検索</td><td data-v="10">10</td><td data-v="4191">¥4,191</td><td class="cv sep" data-v="4.4">4.4</td><td class="cv" data-v="952.5">¥952</td></tr>
+<tr><td class="l">墨田 区 不妊 治療</td><td>追加済み</td><td>検索</td><td data-v="24">24</td><td data-v="3099">¥3,099</td><td class="cv sep" data-v="4.3">4.3</td><td class="cv" data-v="722.4">¥722</td></tr>
+<tr><td class="l">不妊 治療 市川 市</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="2281">¥2,281</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="570.2">¥570</td></tr>
+<tr><td class="l">不妊 治療 クリニック 東京</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="2098">¥2,098</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="524.5">¥524</td></tr>
+<tr><td class="l">卵 管 造影 検査</td><td>なし</td><td>検索</td><td data-v="10">10</td><td data-v="2353">¥2,353</td><td class="cv sep" data-v="3.5">3.5</td><td class="cv" data-v="664.7">¥665</td></tr>
+<tr><td class="l">ブライダル チェック 船橋</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="2044">¥2,044</td><td class="cv sep" data-v="3.5">3.5</td><td class="cv" data-v="584.0">¥584</td></tr>
+<tr><td class="l">はら メディカル クリニック レビュー</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="1875">¥1,875</td><td class="cv sep" data-v="3.2">3.2</td><td class="cv" data-v="580.5">¥580</td></tr>
+<tr><td class="l">錦糸 町 クリニック</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="1989">¥1,989</td><td class="cv sep" data-v="3.2">3.2</td><td class="cv" data-v="619.6">¥620</td></tr>
+<tr><td class="l">ブライダル チェック 東京</td><td>なし</td><td>検索</td><td data-v="10">10</td><td data-v="1950">¥1,950</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="650.0">¥650</td></tr>
+<tr><td class="l">あい ウイメンズ クリニック</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="2464">¥2,464</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="821.3">¥821</td></tr>
+<tr><td class="l">ブライダル チェック 台東 区</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="1810">¥1,810</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="603.3">¥603</td></tr>
+<tr><td class="l">卵 管 造影 検査 だけ したい</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="2494">¥2,494</td><td class="cv sep" data-v="2.8">2.8</td><td class="cv" data-v="881.3">¥881</td></tr>
+<tr><td class="l">なかなか 妊娠 出来 ない 30 代</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="1922">¥1,922</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="961.0">¥961</td></tr>
+<tr><td class="l">婦人 科 東京</td><td>なし</td><td>検索</td><td data-v="70">70</td><td data-v="2740">¥2,740</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1370.0">¥1,370</td></tr>
+<tr><td class="l">大宮 ブライダル チェック</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="1827">¥1,827</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="913.5">¥914</td></tr>
+<tr><td class="l">不妊 検査</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="2056">¥2,056</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="1343.8">¥1,344</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（69行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2026-03-05 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td class="l">一般</td><td data-v="336387">336,387</td><td data-v="12915">12,915</td><td data-v="0.0384">3.8%</td><td data-v="888.0">¥888</td><td data-v="11468817">¥11,468,817</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="6304">6,304</td><td class="cv" data-v="0.4881">48.8%</td><td class="cv" data-v="1819.2">¥1,819</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td class="l">一般</td><td data-v="214999">214,999</td><td data-v="15555">15,555</td><td data-v="0.0723">7.2%</td><td data-v="136.6">¥137</td><td data-v="2124440">¥2,124,440</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="2072">2,072</td><td class="cv" data-v="0.1332">13.3%</td><td class="cv" data-v="1025.3">¥1,025</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2026-03-05</th></tr>
+<tr data-a="星ひとみ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>星ひとみ</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div><div class="note">インテント100%</div></td></tr>
+<tr data-a="生殖医療クリニック錦糸町駅前院"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>生殖医療クリニック錦糸町駅前院</td><td><div class="bar"><div class="mt-i" style="width:45.1%" title="インテント マッチ 45.1%"></div><div class="mt-p" style="width:53.8%" title="フレーズ一致 53.8%"></div><div class="mt-e" style="width:1.1%" title="完全一致 1.1%"></div></div><div class="note">インテント45% / フレーズ54% / 完全1%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2026-03-05</b>（260305_レポート依頼用【不妊治療＆占い】_セレス様__1nCcp8wN.xlsx）<br>取得不可（空タブ）: ゲッターズ飯田<br>端数月: 2026-01（15日開始）・2026-03（9日まで）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

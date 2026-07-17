@@ -1,0 +1,983 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜通信販売</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>通信販売業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">3社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2026-02-23</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥4,125,023</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥143</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">4.2〜9.8</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="ダイレクトタイプ" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</button><button class="achip" data-t="トーカ堂ショッピング" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</button><button class="achip" data-t="ファミリーライフ" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2026-02-23（期間 2025年12月1日 - 2026年2月25日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td data-v="924440">¥924,440</td><td data-v="3104">3,104</td><td data-v="0.2137">21.4%</td><td data-v="297.8">¥298</td><td data-v="4.15">4.15</td><td data-v="0.0">--</td><td data-v="0.5905">59.0%</td><td><div class="bar"><div class="mt-i" style="width:41.0%" title="インテント マッチ 41.0%"></div><div class="mt-p" style="width:3.7%" title="フレーズ一致 3.7%"></div><div class="mt-e" style="width:55.3%" title="完全一致 55.3%"></div></div></td><td class="cv sep" data-v="99">99</td><td class="cv" data-v="0.0319">3.2%</td><td class="cv" data-v="9337.8">¥9,338</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td data-v="1333127">¥1,333,127</td><td data-v="9330">9,330</td><td data-v="0.3032">30.3%</td><td data-v="142.9">¥143</td><td data-v="9.84">9.84</td><td data-v="0.0">--</td><td data-v="1.0000">100.0%</td><td><div class="bar"><div class="mt-i" style="width:12.5%" title="インテント マッチ 12.5%"></div><div class="mt-p" style="width:47.7%" title="フレーズ一致 47.7%"></div><div class="mt-e" style="width:39.8%" title="完全一致 39.8%"></div></div></td><td class="cv sep" data-v="589">589</td><td class="cv" data-v="0.0632">6.3%</td><td class="cv" data-v="2262.4">¥2,262</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td data-v="1867456">¥1,867,456</td><td data-v="16337">16,337</td><td data-v="0.2507">25.1%</td><td data-v="114.3">¥114</td><td data-v="8.17">8.17</td><td data-v="0.0">--</td><td data-v="0.4042">40.4%</td><td><div class="bar"><div class="mt-e" style="width:100.0%" title="完全一致 100.0%"></div></div></td><td class="cv sep" data-v="732">732</td><td class="cv" data-v="0.0448">4.5%</td><td class="cv" data-v="2552.3">¥2,552</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: ディノス</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td data-v="202512">2025-12</td><td data-v="3539">3,539</td><td data-v="341">341</td><td data-v="0.0964">9.6%</td><td data-v="953.2">¥953</td><td data-v="325029">¥325,029</td><td class="cv sep" data-v="21">21</td><td class="cv" data-v="0.0616">6.2%</td><td class="cv" data-v="15477.6">¥15,478</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td data-v="202601">2026-01</td><td data-v="4572">4,572</td><td data-v="995">995</td><td data-v="0.2176">21.8%</td><td data-v="287.4">¥287</td><td data-v="285917">¥285,917</td><td class="cv sep" data-v="34">34</td><td class="cv" data-v="0.0342">3.4%</td><td class="cv" data-v="8409.3">¥8,409</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td data-v="202602">2026-02 ⚠</td><td data-v="6415">6,415</td><td data-v="1768">1,768</td><td data-v="0.2756">27.6%</td><td data-v="177.3">¥177</td><td data-v="313494">¥313,494</td><td class="cv sep" data-v="44">44</td><td class="cv" data-v="0.0249">2.5%</td><td class="cv" data-v="7124.9">¥7,125</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td data-v="202512">2025-12</td><td data-v="11537">11,537</td><td data-v="3838">3,838</td><td data-v="0.3327">33.3%</td><td data-v="128.5">¥129</td><td data-v="493261">¥493,261</td><td class="cv sep" data-v="260">260</td><td class="cv" data-v="0.0677">6.8%</td><td class="cv" data-v="1899.4">¥1,899</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td data-v="202601">2026-01</td><td data-v="10908">10,908</td><td data-v="3289">3,289</td><td data-v="0.3015">30.2%</td><td data-v="144.8">¥145</td><td data-v="476230">¥476,230</td><td class="cv sep" data-v="175">175</td><td class="cv" data-v="0.0531">5.3%</td><td class="cv" data-v="2728.0">¥2,728</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td data-v="202602">2026-02 ⚠</td><td data-v="8328">8,328</td><td data-v="2203">2,203</td><td data-v="0.2645">26.5%</td><td data-v="165.1">¥165</td><td data-v="363636">¥363,636</td><td class="cv sep" data-v="155">155</td><td class="cv" data-v="0.0704">7.0%</td><td class="cv" data-v="2346.0">¥2,346</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td data-v="202512">2025-12</td><td data-v="24378">24,378</td><td data-v="6573">6,573</td><td data-v="0.2696">27.0%</td><td data-v="106.2">¥106</td><td data-v="697924">¥697,924</td><td class="cv sep" data-v="312">312</td><td class="cv" data-v="0.0474">4.7%</td><td class="cv" data-v="2239.4">¥2,239</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td data-v="202601">2026-01</td><td data-v="29243">29,243</td><td data-v="6884">6,884</td><td data-v="0.2354">23.5%</td><td data-v="127.2">¥127</td><td data-v="875649">¥875,649</td><td class="cv sep" data-v="289">289</td><td class="cv" data-v="0.0420">4.2%</td><td class="cv" data-v="3026.6">¥3,027</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td data-v="202602">2026-02 ⚠</td><td data-v="11539">11,539</td><td data-v="2880">2,880</td><td data-v="0.2496">25.0%</td><td data-v="102.0">¥102</td><td data-v="293883">¥293,883</td><td class="cv sep" data-v="131">131</td><td class="cv" data-v="0.0454">4.5%</td><td class="cv" data-v="2248.2">¥2,248</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="ダイレクトタイプ">
+<h3 class="adv" id="struct-ダイレクトタイプ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ <span class="badge">取得 2026-02-23</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</span><span class="st">📁 CPN <b>3</b></span><span class="st">📂 ADG <b>3</b></span><span class="st">🔑 KW <b>9</b></span><span class="st">✏️ 広告 <b>3</b></span><span class="st">🔗 LP <b>3</b></span><span class="st">💰 <b>¥924,440</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="gsc_gereral">gsc_gereral</span><span class="share"><div style="width:41%"></div></span><span class="st">41.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥378,575</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="gsc_gereral">gsc_gereral</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥378,575</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="gsc_brand_test01">gsc_brand_test01</span><span class="share"><div style="width:31%"></div></span><span class="st">30.7%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥283,550</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="gsc_brand">gsc_brand</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥283,550</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="gsc_brand">gsc_brand</span><span class="share"><div style="width:28%"></div></span><span class="st">28.4%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥262,315</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="gsc_brand">gsc_brand</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥262,315</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="トーカ堂ショッピング">
+<h3 class="adv" id="struct-トーカ堂ショッピング" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング <span class="badge">取得 2026-02-23</span></h3>
+<div class="tree" style="--ac:var(--adv-1)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</span><span class="st">📁 CPN <b>5</b></span><span class="st">📂 ADG <b>5</b></span><span class="st">🔑 KW <b>19</b></span><span class="st">✏️ 広告 <b>5</b></span><span class="st">🔗 LP <b>5</b></span><span class="st">💰 <b>¥1,333,127</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="1td_AW/1_指名">1td_AW/1_指名</span><span class="share"><div style="width:80%"></div></span><span class="st">79.9%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,065,284</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="1td_1_1：指名">1td_1_1：指名</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,065,284</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="1td_AW/3_指名(鰻)">1td_AW/3_指名(鰻)</span><span class="share"><div style="width:8%"></div></span><span class="st">7.8%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥103,766</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="1td_3_1：鰻">1td_3_1：鰻</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥103,766</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="1td_AW/2_指名(加湿空気清浄機)">1td_AW/2_指名(加湿空気清浄機)</span><span class="share"><div style="width:5%"></div></span><span class="st">5.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥67,298</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="1td_2_1：加湿空気清浄機">1td_2_1：加湿空気清浄機</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥67,298</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="1td_AW/6_指名(夢枕)">1td_AW/6_指名(夢枕)</span><span class="share"><div style="width:5%"></div></span><span class="st">4.6%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥61,158</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="1td_6_1：夢枕">1td_6_1：夢枕</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥61,158</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="1td_AW/9_指名(ハンバーグ)">1td_AW/9_指名(ハンバーグ)</span><span class="share"><div style="width:3%"></div></span><span class="st">2.7%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥35,621</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="1td_9_1：ハンバーグ">1td_9_1：ハンバーグ</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥35,621</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="ファミリーライフ">
+<h3 class="adv" id="struct-ファミリーライフ" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ <span class="badge">取得 2026-02-23</span></h3>
+<div class="tree" style="--ac:var(--adv-2)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</span><span class="st">📁 CPN <b>5</b></span><span class="st">📂 ADG <b>5</b></span><span class="st">🔑 KW <b>31</b></span><span class="st">✏️ 広告 <b>5</b></span><span class="st">🔗 LP <b>5</b></span><span class="st">💰 <b>¥1,867,456</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="AW/01一般-ボクサーパンツ">AW/01一般-ボクサーパンツ</span><span class="share"><div style="width:41%"></div></span><span class="st">40.5%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥757,248</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="ボクサーパンツ_LP01">ボクサーパンツ_LP01</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥757,248</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="AW/18ウォーム寝袋">AW/18ウォーム寝袋</span><span class="share"><div style="width:26%"></div></span><span class="st">25.6%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>11</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥477,947</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="広告グループ 1 個">広告グループ 1 個</span><span class="st">🔑 <b>11</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥477,947</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="AW/00指名ブランド">AW/00指名ブランド</span><span class="share"><div style="width:25%"></div></span><span class="st">25.3%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥472,866</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="ファミリーライフ">ファミリーライフ</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥472,866</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="AW/01指名-ボクサーパンツ">AW/01指名-ボクサーパンツ</span><span class="share"><div style="width:9%"></div></span><span class="st">8.5%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>9</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥159,395</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="ボクサーパンツ_商品詳細">ボクサーパンツ_商品詳細</span><span class="st">🔑 <b>9</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥159,395</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="AW/33_5層毛布">AW/33_5層毛布</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="広告グループ 1 個">広告グループ 1 個</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:100.0%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="ダイレクトタイプ｜Direct type 転職 / QS8 / CPC¥1,113 / COST¥34,518"></span>
+<span class="dot" style="left:100.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="ダイレクトタイプ｜[Direct type] / QS7 / CPC¥1,236 / COST¥265,812"></span>
+<span class="dot" style="left:100.0%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="ダイレクトタイプ｜[ダイレクトタイプ] / QS8 / CPC¥1,068 / COST¥245,535"></span>
+<span class="dot" style="left:7.1%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ダイレクトタイプ｜エンジニア / QS3 / CPC¥75 / COST¥141,675"></span>
+<span class="dot" style="left:23.7%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="ダイレクトタイプ｜プログラミング / QS3 / CPC¥253 / COST¥16,979"></span>
+<span class="dot" style="left:7.0%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜[トーカ堂 ハンバーグ] / QS10 / CPC¥74 / COST¥17,885"></span>
+<span class="dot" style="left:14.6%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜トーカ堂 ハンバーグ / QS10 / CPC¥156 / COST¥17,736"></span>
+<span class="dot" style="left:32.3%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜[シャープ 空気 清浄 機 トーカ 堂] / QS8 / CPC¥345 / COST¥10,347"></span>
+<span class="dot" style="left:17.9%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜[トーカ 堂 プラズマ クラスター] / QS8 / CPC¥191 / COST¥9,363"></span>
+<span class="dot" style="left:13.9%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜[トーカ堂 空気清浄機] / QS10 / CPC¥148 / COST¥45,004"></span>
+<span class="dot" style="left:13.2%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜トーカ堂 夢枕 / QS10 / CPC¥141 / COST¥9,898"></span>
+<span class="dot" style="left:11.3%;bottom:88.9%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜[トーカ堂 枕] / QS9 / CPC¥121 / COST¥44,808"></span>
+<span class="dot" style="left:12.3%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜[トーカ 堂 鰻] / QS10 / CPC¥131 / COST¥6,297"></span>
+<span class="dot" style="left:3.8%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜[トーカ 堂 の うなぎ] / QS10 / CPC¥41 / COST¥2,350"></span>
+<span class="dot" style="left:10.6%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜#NAME? / QS10 / CPC¥113 / COST¥166,480"></span>
+<span class="dot" style="left:7.7%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜[トウカ堂] / QS10 / CPC¥82 / COST¥3,677"></span>
+<span class="dot" style="left:19.4%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜北さん 通販 / QS8 / CPC¥207 / COST¥77,643"></span>
+<span class="dot" style="left:38.6%;bottom:100.0%;width:14px;height:14px;background:var(--adv-1)" title="トーカ堂ショッピング｜トーカ堂 / QS10 / CPC¥412 / COST¥521,827"></span>
+<span class="dot" style="left:7.6%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="トーカ堂ショッピング｜[トーカ堂] / QS10 / CPC¥81 / COST¥390,619"></span>
+<span class="dot" style="left:14.0%;bottom:44.4%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[失禁パンツ 通販] / QS5 / CPC¥149 / COST¥319,825"></span>
+<span class="dot" style="left:11.9%;bottom:55.6%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[尿漏れパンツ 通販] / QS6 / CPC¥127 / COST¥29,677"></span>
+<span class="dot" style="left:14.1%;bottom:33.3%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[軽失禁パンツ] / QS4 / CPC¥150 / COST¥13,244"></span>
+<span class="dot" style="left:14.2%;bottom:55.6%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[尿漏れパンツ 男性用] / QS6 / CPC¥151 / COST¥375,308"></span>
+<span class="dot" style="left:9.4%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミラ ボクサーパンツ] / QS10 / CPC¥101 / COST¥5,537"></span>
+<span class="dot" style="left:15.4%;bottom:88.9%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミラ 尿漏れパンツ] / QS9 / CPC¥165 / COST¥10,046"></span>
+<span class="dot" style="left:8.4%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミラ 安心 ボクサー パンツ] / QS10 / CPC¥90 / COST¥17,733"></span>
+<span class="dot" style="left:11.9%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミラ 安心 ボクサー] / QS10 / CPC¥127 / COST¥64,864"></span>
+<span class="dot" style="left:23.9%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[安心ボクサーパンツ] / QS10 / CPC¥255 / COST¥27,793"></span>
+<span class="dot" style="left:12.8%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[さわやか安心ボクサーパンツ] / QS10 / CPC¥137 / COST¥23,953"></span>
+<span class="dot" style="left:7.3%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[寝袋 テレビショッピング] / QS10 / CPC¥78 / COST¥8,734"></span>
+<span class="dot" style="left:9.7%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[テレビ通販 寝袋] / QS10 / CPC¥104 / COST¥29,722"></span>
+<span class="dot" style="left:11.5%;bottom:88.9%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミリーライフ トリプルウォーム寝袋] / QS9 / CPC¥123 / COST¥114,665"></span>
+<span class="dot" style="left:5.8%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミラ 寝袋] / QS10 / CPC¥62 / COST¥5,762"></span>
+<span class="dot" style="left:8.3%;bottom:88.9%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミラ トリプルウォーム寝袋] / QS9 / CPC¥88 / COST¥114,837"></span>
+<span class="dot" style="left:7.9%;bottom:88.9%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミリーライフ 寝袋] / QS9 / CPC¥84 / COST¥7,835"></span>
+<span class="dot" style="left:13.2%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[あったか5WAYトリプルウォーム寝袋] / QS10 / CPC¥141 / COST¥35,824"></span>
+<span class="dot" style="left:12.7%;bottom:88.9%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[通販 寝袋] / QS9 / CPC¥135 / COST¥38,950"></span>
+<span class="dot" style="left:19.0%;bottom:55.6%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[通販 着る毛布] / QS6 / CPC¥203 / COST¥116,615"></span>
+<span class="dot" style="left:10.1%;bottom:88.9%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミリーライフ TVショッピング] / QS9 / CPC¥107 / COST¥7,843"></span>
+<span class="dot" style="left:9.4%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミリーライフ テレビショッピング] / QS10 / CPC¥101 / COST¥11,470"></span>
+<span class="dot" style="left:7.9%;bottom:88.9%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミラ 通販] / QS9 / CPC¥84 / COST¥19,283"></span>
+<span class="dot" style="left:4.6%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミリーライフ 通販] / QS10 / CPC¥50 / COST¥55,441"></span>
+<span class="dot" style="left:7.7%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミリーライフ] / QS10 / CPC¥82 / COST¥254,901"></span>
+<span class="dot" style="left:7.6%;bottom:88.9%;width:10px;height:10px;background:var(--adv-2)" title="ファミリーライフ｜[ファミラ] / QS9 / CPC¥81 / COST¥123,928"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥267</span>
+<span class="ax" style="left:50%;bottom:-22px">¥534</span>
+<span class="ax" style="left:75%;bottom:-22px">¥801</span>
+<span class="ax" style="left:100%;bottom:-22px">¥1,068</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>ダイレクトタイプ</span><span><i style="background:var(--adv-1)"></i>トーカ堂ショッピング</span><span><i style="background:var(--adv-2)"></i>ファミリーライフ</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">[トーカ 堂 の うなぎ]</td><td data-v="10">10</td><td data-v="41">¥41</td><td data-v="58">58</td><td data-v="2350">¥2,350</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミリーライフ 通販]</td><td data-v="10">10</td><td data-v="50">¥50</td><td data-v="1120">1,120</td><td data-v="55441">¥55,441</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミラ 寝袋]</td><td data-v="10">10</td><td data-v="62">¥62</td><td data-v="93">93</td><td data-v="5762">¥5,762</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">[トーカ堂 ハンバーグ]</td><td data-v="10">10</td><td data-v="74">¥74</td><td data-v="241">241</td><td data-v="17885">¥17,885</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[寝袋 テレビショッピング]</td><td data-v="10">10</td><td data-v="78">¥78</td><td data-v="112">112</td><td data-v="8734">¥8,734</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">[トーカ堂]</td><td data-v="10">10</td><td data-v="81">¥81</td><td data-v="4834">4,834</td><td data-v="390619">¥390,619</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミラ]</td><td data-v="9">9</td><td data-v="81">¥81</td><td data-v="1526">1,526</td><td data-v="123928">¥123,928</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">[トウカ堂]</td><td data-v="10">10</td><td data-v="82">¥82</td><td data-v="45">45</td><td data-v="3677">¥3,677</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミリーライフ]</td><td data-v="10">10</td><td data-v="82">¥82</td><td data-v="3093">3,093</td><td data-v="254901">¥254,901</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミラ 通販]</td><td data-v="9">9</td><td data-v="84">¥84</td><td data-v="230">230</td><td data-v="19283">¥19,283</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミリーライフ 寝袋]</td><td data-v="9">9</td><td data-v="84">¥84</td><td data-v="93">93</td><td data-v="7835">¥7,835</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミラ トリプルウォーム寝袋]</td><td data-v="9">9</td><td data-v="88">¥88</td><td data-v="1303">1,303</td><td data-v="114837">¥114,837</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミラ 安心 ボクサー パンツ]</td><td data-v="10">10</td><td data-v="90">¥90</td><td data-v="198">198</td><td data-v="17733">¥17,733</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミリーライフ テレビショッピング]</td><td data-v="10">10</td><td data-v="101">¥101</td><td data-v="114">114</td><td data-v="11470">¥11,470</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミラ ボクサーパンツ]</td><td data-v="10">10</td><td data-v="101">¥101</td><td data-v="55">55</td><td data-v="5537">¥5,537</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[テレビ通販 寝袋]</td><td data-v="10">10</td><td data-v="104">¥104</td><td data-v="287">287</td><td data-v="29722">¥29,722</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミリーライフ TVショッピング]</td><td data-v="9">9</td><td data-v="107">¥107</td><td data-v="73">73</td><td data-v="7843">¥7,843</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">#NAME?</td><td data-v="10">10</td><td data-v="113">¥113</td><td data-v="1470">1,470</td><td data-v="166480">¥166,480</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">[トーカ堂 枕]</td><td data-v="9">9</td><td data-v="121">¥121</td><td data-v="371">371</td><td data-v="44808">¥44,808</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミリーライフ トリプルウォーム寝袋]</td><td data-v="9">9</td><td data-v="123">¥123</td><td data-v="934">934</td><td data-v="114665">¥114,665</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミラ 安心 ボクサー]</td><td data-v="10">10</td><td data-v="127">¥127</td><td data-v="510">510</td><td data-v="64864">¥64,864</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">[トーカ 堂 鰻]</td><td data-v="10">10</td><td data-v="131">¥131</td><td data-v="48">48</td><td data-v="6297">¥6,297</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[通販 寝袋]</td><td data-v="9">9</td><td data-v="135">¥135</td><td data-v="288">288</td><td data-v="38950">¥38,950</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[さわやか安心ボクサーパンツ]</td><td data-v="10">10</td><td data-v="137">¥137</td><td data-v="175">175</td><td data-v="23953">¥23,953</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[あったか5WAYトリプルウォーム寝袋]</td><td data-v="10">10</td><td data-v="141">¥141</td><td data-v="254">254</td><td data-v="35824">¥35,824</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">トーカ堂 夢枕</td><td data-v="10">10</td><td data-v="141">¥141</td><td data-v="70">70</td><td data-v="9898">¥9,898</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">[トーカ堂 空気清浄機]</td><td data-v="10">10</td><td data-v="148">¥148</td><td data-v="304">304</td><td data-v="45004">¥45,004</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">トーカ堂 ハンバーグ</td><td data-v="10">10</td><td data-v="156">¥156</td><td data-v="114">114</td><td data-v="17736">¥17,736</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[ファミラ 尿漏れパンツ]</td><td data-v="9">9</td><td data-v="165">¥165</td><td data-v="61">61</td><td data-v="10046">¥10,046</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">[トーカ 堂 プラズマ クラスター]</td><td data-v="8">8</td><td data-v="191">¥191</td><td data-v="49">49</td><td data-v="9363">¥9,363</td></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l">エンジニア</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="75">¥75</td><td data-v="141675">¥141,675</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l">プログラミング</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="253">¥253</td><td data-v="16979">¥16,979</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">[軽失禁パンツ]</td><td data-v="4">4</td><td>LP</td><td data-v="150">¥150</td><td data-v="13244">¥13,244</td></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td data-v="4.15">4.15</td><td data-v="2.4">2.4%</td><td data-v="22.9"><b>22.9%</b></td><td data-v="23.9">23.9%</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td data-v="9.84">9.84</td><td data-v="7.9">7.9%</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td data-v="8.17">8.17</td><td data-v="19.3"><b>19.3%</b></td><td data-v="0.0">0.0%</td><td data-v="44.6"><b>44.6%</b></td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="ダイレクトタイプ">
+<h3 class="adv" id="kwqs-ダイレクトタイプ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ <span class="badge">取得 2026-02-23</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>4.15</b></span><span class="chip">関連性↓<b>2.4%</b></span><span class="chip">推定CTR↓<b>22.9%</b></span><span class="chip">LP利便性↓<b>23.9%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="ダイレクトタイプ"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">[Direct type]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="880">880</td><td data-v="215">215</td><td data-v="0.2443">24.4%</td><td data-v="1236.3">¥1,236</td><td data-v="265812">¥265,812</td><td class="cv sep" data-v="34.0">34.0</td><td class="cv" data-v="7818.0">¥7,818</td><td class="l">gsc_brand</td></tr>
+<tr><td class="l">[ダイレクトタイプ]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="921">921</td><td data-v="230">230</td><td data-v="0.2497">25.0%</td><td data-v="1067.5">¥1,068</td><td data-v="245535">¥245,535</td><td class="cv sep" data-v="26.0">26.0</td><td class="cv" data-v="9443.7">¥9,444</td><td class="l">gsc_brand</td></tr>
+<tr><td class="l">エンジニア</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="4239">4,239</td><td data-v="1877">1,877</td><td data-v="0.4428">44.3%</td><td data-v="75.5">¥75</td><td data-v="141675">¥141,675</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="17709.4">¥17,709</td><td class="l">gsc_gereral</td></tr>
+<tr><td class="l">東京 リモートワーク 求人</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="3019">3,019</td><td data-v="277">277</td><td data-v="0.0918">9.2%</td><td data-v="499.7">¥500</td><td data-v="138430">¥138,430</td><td class="cv sep" data-v="10.0">10.0</td><td class="cv" data-v="13843.0">¥13,843</td><td class="l">gsc_gereral</td></tr>
+<tr><td class="l">IT 転職</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="3049">3,049</td><td data-v="383">383</td><td data-v="0.1256">12.6%</td><td data-v="172.5">¥172</td><td data-v="66050">¥66,050</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="22016.7">¥22,017</td><td class="l">gsc_gereral</td></tr>
+<tr><td class="l">Direct type 転職</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="382">382</td><td data-v="31">31</td><td data-v="0.0812">8.1%</td><td data-v="1113.5">¥1,113</td><td data-v="34518">¥34,518</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="5753.0">¥5,753</td><td class="l">gsc_brand</td></tr>
+<tr><td class="l">プログラミング</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="930">930</td><td data-v="67">67</td><td data-v="0.0720">7.2%</td><td data-v="253.4">¥253</td><td data-v="16979">¥16,979</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="5659.7">¥5,660</td><td class="l">gsc_gereral</td></tr>
+<tr><td class="l">ラクス パートナーズ</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="989">989</td><td data-v="19">19</td><td data-v="0.0192">1.9%</td><td data-v="685.6">¥686</td><td data-v="13026">¥13,026</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="1860.9">¥1,861</td><td class="l">gsc_gereral</td></tr>
+<tr><td class="l">リモート SE 転職</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="117">117</td><td data-v="5">5</td><td data-v="0.0427">4.3%</td><td data-v="483.0">¥483</td><td data-v="2415">¥2,415</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1207.5">¥1,208</td><td class="l">gsc_gereral</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="トーカ堂ショッピング">
+<h3 class="adv" id="kwqs-トーカ堂ショッピング" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング <span class="badge">取得 2026-02-23</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>9.84</b></span><span class="chip">関連性↓<b>7.9%</b></span><span class="chip">推定CTR↓<b>0.0%</b></span><span class="chip">LP利便性↓<b>0.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="トーカ堂ショッピング"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">トーカ堂</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="5344">5,344</td><td data-v="1267">1,267</td><td data-v="0.2371">23.7%</td><td data-v="411.9">¥412</td><td data-v="521827">¥521,827</td><td class="cv sep" data-v="32.6">32.6</td><td class="cv" data-v="15982.5">¥15,982</td><td class="l">1td_AW/1_指名</td></tr>
+<tr><td class="l">[トーカ堂]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="15939">15,939</td><td data-v="4834">4,834</td><td data-v="0.3033">30.3%</td><td data-v="80.8">¥81</td><td data-v="390619">¥390,619</td><td class="cv sep" data-v="300.1">300.1</td><td class="cv" data-v="1301.4">¥1,301</td><td class="l">1td_AW/1_指名</td></tr>
+<tr><td class="l">#NAME?</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="5263">5,263</td><td data-v="1470">1,470</td><td data-v="0.2793">27.9%</td><td data-v="113.3">¥113</td><td data-v="166480">¥166,480</td><td class="cv sep" data-v="139.1">139.1</td><td class="cv" data-v="1196.8">¥1,197</td><td class="l">1td_AW/1_指名</td></tr>
+<tr><td class="l">北さん 通販</td><td>フレーズ</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="1475">1,475</td><td data-v="375">375</td><td data-v="0.2542">25.4%</td><td data-v="207.0">¥207</td><td data-v="77643">¥77,643</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="8588.8">¥8,589</td><td class="l">1td_AW/1_指名</td></tr>
+<tr><td class="l">[トーカ堂 空気清浄機]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="463">463</td><td data-v="304">304</td><td data-v="0.6566">65.7%</td><td data-v="148.0">¥148</td><td data-v="45004">¥45,004</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="9000.8">¥9,001</td><td class="l">1td_AW/2_指名(加湿空気清浄機)</td></tr>
+<tr><td class="l">[トーカ堂 枕]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="535">535</td><td data-v="371">371</td><td data-v="0.6935">69.3%</td><td data-v="120.8">¥121</td><td data-v="44808">¥44,808</td><td class="cv sep" data-v="35.3">35.3</td><td class="cv" data-v="1267.9">¥1,268</td><td class="l">1td_AW/6_指名(夢枕)</td></tr>
+<tr><td class="l">[トーカ堂 ハンバーグ]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="514">514</td><td data-v="241">241</td><td data-v="0.4689">46.9%</td><td data-v="74.2">¥74</td><td data-v="17885">¥17,885</td><td class="cv sep" data-v="25.0">25.0</td><td class="cv" data-v="715.4">¥715</td><td class="l">1td_AW/9_指名(ハンバーグ)</td></tr>
+<tr><td class="l">トーカ堂 ハンバーグ</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="322">322</td><td data-v="114">114</td><td data-v="0.3540">35.4%</td><td data-v="155.6">¥156</td><td data-v="17736">¥17,736</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="2217.0">¥2,217</td><td class="l">1td_AW/9_指名(ハンバーグ)</td></tr>
+<tr><td class="l">[シャープ 空気 清浄 機 トーカ 堂]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="52">52</td><td data-v="30">30</td><td data-v="0.5769">57.7%</td><td data-v="344.9">¥345</td><td data-v="10347">¥10,347</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="5173.5">¥5,174</td><td class="l">1td_AW/2_指名(加湿空気清浄機)</td></tr>
+<tr><td class="l">トーカ堂 夢枕</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="115">115</td><td data-v="70">70</td><td data-v="0.6087">60.9%</td><td data-v="141.4">¥141</td><td data-v="9898">¥9,898</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="1414.0">¥1,414</td><td class="l">1td_AW/6_指名(夢枕)</td></tr>
+<tr><td class="l">[トーカ 堂 プラズマ クラスター]</td><td>完全</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="65">65</td><td data-v="49">49</td><td data-v="0.7538">75.4%</td><td data-v="191.1">¥191</td><td data-v="9363">¥9,363</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="4681.5">¥4,682</td><td class="l">1td_AW/2_指名(加湿空気清浄機)</td></tr>
+<tr><td class="l">[トーカ 堂 鰻]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="203">203</td><td data-v="48">48</td><td data-v="0.2365">23.6%</td><td data-v="131.2">¥131</td><td data-v="6297">¥6,297</td><td class="cv sep" data-v="8.1">8.1</td><td class="cv" data-v="781.3">¥781</td><td class="l">1td_AW/3_指名(鰻)</td></tr>
+<tr><td class="l">夢枕 トーカ 堂</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="35">35</td><td data-v="23">23</td><td data-v="0.6571">65.7%</td><td data-v="179.0">¥179</td><td data-v="4116">¥4,116</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1372.0">¥1,372</td><td class="l">1td_AW/6_指名(夢枕)</td></tr>
+<tr><td class="l">[トウカ堂]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="145">145</td><td data-v="45">45</td><td data-v="0.3103">31.0%</td><td data-v="81.7">¥82</td><td data-v="3677">¥3,677</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1225.7">¥1,226</td><td class="l">1td_AW/1_指名</td></tr>
+<tr><td class="l">トーカ堂 加湿 空気清浄機</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="14">14</td><td data-v="13">13</td><td data-v="0.9286">92.9%</td><td data-v="198.8">¥199</td><td data-v="2584">¥2,584</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1305.1">¥1,305</td><td class="l">1td_AW/2_指名(加湿空気清浄機)</td></tr>
+<tr><td class="l">[トーカ 堂 の うなぎ]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="180">180</td><td data-v="58">58</td><td data-v="0.3222">32.2%</td><td data-v="40.5">¥41</td><td data-v="2350">¥2,350</td><td class="cv sep" data-v="1.9">1.9</td><td class="cv" data-v="1211.3">¥1,211</td><td class="l">1td_AW/3_指名(鰻)</td></tr>
+<tr><td class="l">トーカ 堂 まくら</td><td>フレーズ</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="7">7</td><td data-v="7">7</td><td data-v="1.0000">100.0%</td><td data-v="190.9">¥191</td><td data-v="1336">¥1,336</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="668.0">¥668</td><td class="l">1td_AW/6_指名(夢枕)</td></tr>
+<tr><td class="l">トーカ 堂 もっ ちり 枕</td><td>フレーズ</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="18">18</td><td data-v="9">9</td><td data-v="0.5000">50.0%</td><td data-v="111.1">¥111</td><td data-v="1000">¥1,000</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="500.0">¥500</td><td class="l">1td_AW/6_指名(夢枕)</td></tr>
+<tr><td class="l">トウカ堂</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="84">84</td><td data-v="2">2</td><td data-v="0.0238">2.4%</td><td data-v="78.5">¥78</td><td data-v="157">¥157</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="78.5">¥78</td><td class="l">1td_AW/1_指名</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="ファミリーライフ">
+<h3 class="adv" id="kwqs-ファミリーライフ" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ <span class="badge">取得 2026-02-23</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>8.17</b></span><span class="chip">関連性↓<b>19.3%</b></span><span class="chip">推定CTR↓<b>0.0%</b></span><span class="chip bad">LP利便性↓<b>44.6%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="ファミリーライフ"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">[尿漏れパンツ 男性用]</td><td>完全</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="8045">8,045</td><td data-v="2482">2,482</td><td data-v="0.3085">30.9%</td><td data-v="151.2">¥151</td><td data-v="375308">¥375,308</td><td class="cv sep" data-v="80.5">80.5</td><td class="cv" data-v="4660.5">¥4,660</td><td class="l">AW/01一般-ボクサーパンツ</td></tr>
+<tr><td class="l">[失禁パンツ 通販]</td><td>完全</td><td data-v="5">5</td><td>平均より下</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="8209">8,209</td><td data-v="2146">2,146</td><td data-v="0.2614">26.1%</td><td data-v="149.0">¥149</td><td data-v="319825">¥319,825</td><td class="cv sep" data-v="60.6">60.6</td><td class="cv" data-v="5273.3">¥5,273</td><td class="l">AW/01一般-ボクサーパンツ</td></tr>
+<tr><td class="l">[ファミリーライフ]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="14130">14,130</td><td data-v="3093">3,093</td><td data-v="0.2189">21.9%</td><td data-v="82.4">¥82</td><td data-v="254901">¥254,901</td><td class="cv sep" data-v="155.1">155.1</td><td class="cv" data-v="1643.3">¥1,643</td><td class="l">AW/00指名ブランド</td></tr>
+<tr><td class="l">[ファミラ]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="7511">7,511</td><td data-v="1526">1,526</td><td data-v="0.2032">20.3%</td><td data-v="81.2">¥81</td><td data-v="123928">¥123,928</td><td class="cv sep" data-v="62.0">62.0</td><td class="cv" data-v="1999.5">¥1,999</td><td class="l">AW/00指名ブランド</td></tr>
+<tr><td class="l">[通販 着る毛布]</td><td>完全</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="5241">5,241</td><td data-v="574">574</td><td data-v="0.1095">11.0%</td><td data-v="203.2">¥203</td><td data-v="116615">¥116,615</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="58307.5">¥58,308</td><td class="l">AW/18ウォーム寝袋</td></tr>
+<tr><td class="l">[ファミラ トリプルウォーム寝袋]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="5263">5,263</td><td data-v="1303">1,303</td><td data-v="0.2476">24.8%</td><td data-v="88.1">¥88</td><td data-v="114837">¥114,837</td><td class="cv sep" data-v="70.3">70.3</td><td class="cv" data-v="1634.2">¥1,634</td><td class="l">AW/18ウォーム寝袋</td></tr>
+<tr><td class="l">[ファミリーライフ トリプルウォーム寝袋]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="3582">3,582</td><td data-v="934">934</td><td data-v="0.2607">26.1%</td><td data-v="122.8">¥123</td><td data-v="114665">¥114,665</td><td class="cv sep" data-v="24.5">24.5</td><td class="cv" data-v="4680.2">¥4,680</td><td class="l">AW/18ウォーム寝袋</td></tr>
+<tr><td class="l">[ファミラ 安心 ボクサー]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="1490">1,490</td><td data-v="510">510</td><td data-v="0.3423">34.2%</td><td data-v="127.2">¥127</td><td data-v="64864">¥64,864</td><td class="cv sep" data-v="69.0">69.0</td><td class="cv" data-v="940.6">¥941</td><td class="l">AW/01指名-ボクサーパンツ</td></tr>
+<tr><td class="l">[ファミリーライフ 通販]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="4115">4,115</td><td data-v="1120">1,120</td><td data-v="0.2722">27.2%</td><td data-v="49.5">¥50</td><td data-v="55441">¥55,441</td><td class="cv sep" data-v="62.7">62.7</td><td class="cv" data-v="883.7">¥884</td><td class="l">AW/00指名ブランド</td></tr>
+<tr><td class="l">[通販 寝袋]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="703">703</td><td data-v="288">288</td><td data-v="0.4097">41.0%</td><td data-v="135.2">¥135</td><td data-v="38950">¥38,950</td><td class="cv sep" data-v="11.5">11.5</td><td class="cv" data-v="3392.9">¥3,393</td><td class="l">AW/18ウォーム寝袋</td></tr>
+<tr><td class="l">[あったか5WAYトリプルウォーム寝袋]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="1199">1,199</td><td data-v="254">254</td><td data-v="0.2118">21.2%</td><td data-v="141.0">¥141</td><td data-v="35824">¥35,824</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="3980.4">¥3,980</td><td class="l">AW/18ウォーム寝袋</td></tr>
+<tr><td class="l">[テレビ通販 寝袋]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="618">618</td><td data-v="287">287</td><td data-v="0.4644">46.4%</td><td data-v="103.6">¥104</td><td data-v="29722">¥29,722</td><td class="cv sep" data-v="18.8">18.8</td><td class="cv" data-v="1585.2">¥1,585</td><td class="l">AW/18ウォーム寝袋</td></tr>
+<tr><td class="l">[尿漏れパンツ 通販]</td><td>完全</td><td data-v="6">6</td><td>平均より下</td><td>平均より上</td><td>平均</td><td class="sep" data-v="912">912</td><td data-v="234">234</td><td data-v="0.2566">25.7%</td><td data-v="126.8">¥127</td><td data-v="29677">¥29,677</td><td class="cv sep" data-v="5.3">5.3</td><td class="cv" data-v="5610.0">¥5,610</td><td class="l">AW/01一般-ボクサーパンツ</td></tr>
+<tr><td class="l">[安心ボクサーパンツ]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="282">282</td><td data-v="109">109</td><td data-v="0.3865">38.7%</td><td data-v="255.0">¥255</td><td data-v="27793">¥27,793</td><td class="cv sep" data-v="2.7">2.7</td><td class="cv" data-v="10409.4">¥10,409</td><td class="l">AW/01指名-ボクサーパンツ</td></tr>
+<tr><td class="l">[さわやか安心ボクサーパンツ]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="518">518</td><td data-v="175">175</td><td data-v="0.3378">33.8%</td><td data-v="136.9">¥137</td><td data-v="23953">¥23,953</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="2661.4">¥2,661</td><td class="l">AW/01指名-ボクサーパンツ</td></tr>
+<tr><td class="l">[ファミラ 通販]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="612">612</td><td data-v="230">230</td><td data-v="0.3758">37.6%</td><td data-v="83.8">¥84</td><td data-v="19283">¥19,283</td><td class="cv sep" data-v="10.0">10.0</td><td class="cv" data-v="1928.3">¥1,928</td><td class="l">AW/00指名ブランド</td></tr>
+<tr><td class="l">[NOMORE]</td><td>完全</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="268">268</td><td data-v="98">98</td><td data-v="0.3657">36.6%</td><td data-v="195.9">¥196</td><td data-v="19194">¥19,194</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="4798.5">¥4,798</td><td class="l">AW/01一般-ボクサーパンツ</td></tr>
+<tr><td class="l">[ファミラ 安心 ボクサー パンツ]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="404">404</td><td data-v="198">198</td><td data-v="0.4901">49.0%</td><td data-v="89.6">¥90</td><td data-v="17733">¥17,733</td><td class="cv sep" data-v="29.6">29.6</td><td class="cv" data-v="598.3">¥598</td><td class="l">AW/01指名-ボクサーパンツ</td></tr>
+<tr><td class="l">[軽失禁パンツ]</td><td>完全</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="398">398</td><td data-v="88">88</td><td data-v="0.2211">22.1%</td><td data-v="150.5">¥150</td><td data-v="13244">¥13,244</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="6524.1">¥6,524</td><td class="l">AW/01一般-ボクサーパンツ</td></tr>
+<tr><td class="l">[ファミリーライフ テレビショッピング]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="259">259</td><td data-v="114">114</td><td data-v="0.4402">44.0%</td><td data-v="100.6">¥101</td><td data-v="11470">¥11,470</td><td class="cv sep" data-v="2.7">2.7</td><td class="cv" data-v="4232.5">¥4,232</td><td class="l">AW/00指名ブランド</td></tr>
+<tr><td class="l">[ファミラ 尿漏れパンツ]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="125">125</td><td data-v="61">61</td><td data-v="0.4880">48.8%</td><td data-v="164.7">¥165</td><td data-v="10046">¥10,046</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="2009.2">¥2,009</td><td class="l">AW/01指名-ボクサーパンツ</td></tr>
+<tr><td class="l">[寝袋 テレビショッピング]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="287">287</td><td data-v="112">112</td><td data-v="0.3902">39.0%</td><td data-v="78.0">¥78</td><td data-v="8734">¥8,734</td><td class="cv sep" data-v="3.3">3.3</td><td class="cv" data-v="2615.0">¥2,615</td><td class="l">AW/18ウォーム寝袋</td></tr>
+<tr><td class="l">[ファミリーライフ TVショッピング]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="163">163</td><td data-v="73">73</td><td data-v="0.4479">44.8%</td><td data-v="107.4">¥107</td><td data-v="7843">¥7,843</td><td class="cv sep" data-v="2.4">2.4</td><td class="cv" data-v="3254.4">¥3,254</td><td class="l">AW/00指名ブランド</td></tr>
+<tr><td class="l">[ファミリーライフ 寝袋]</td><td>完全</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="246">246</td><td data-v="93">93</td><td data-v="0.3780">37.8%</td><td data-v="84.2">¥84</td><td data-v="7835">¥7,835</td><td class="cv sep" data-v="4.5">4.5</td><td class="cv" data-v="1737.3">¥1,737</td><td class="l">AW/18ウォーム寝袋</td></tr>
+<tr><td class="l">[ファミラ 寝袋]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="254">254</td><td data-v="93">93</td><td data-v="0.3661">36.6%</td><td data-v="62.0">¥62</td><td data-v="5762">¥5,762</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="960.3">¥960</td><td class="l">AW/18ウォーム寝袋</td></tr>
+<tr><td class="l">[ファミラ ボクサーパンツ]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="94">94</td><td data-v="55">55</td><td data-v="0.5851">58.5%</td><td data-v="100.7">¥101</td><td data-v="5537">¥5,537</td><td class="cv sep" data-v="6.9">6.9</td><td class="cv" data-v="800.1">¥800</td><td class="l">AW/01指名-ボクサーパンツ</td></tr>
+<tr><td class="l">[ファミリーライフ 尿漏れパンツ]</td><td>完全</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="43">43</td><td data-v="19">19</td><td data-v="0.4419">44.2%</td><td data-v="230.2">¥230</td><td data-v="4373">¥4,373</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2186.5">¥2,186</td><td class="l">AW/01指名-ボクサーパンツ</td></tr>
+<tr><td class="l">[ウォーム寝袋]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="56">56</td><td data-v="20">20</td><td data-v="0.3571">35.7%</td><td data-v="174.5">¥174</td><td data-v="3490">¥3,490</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1745.0">¥1,745</td><td class="l">AW/18ウォーム寝袋</td></tr>
+<tr><td class="l">[さわやか安心パンツ]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="67">67</td><td data-v="16">16</td><td data-v="0.2388">23.9%</td><td data-v="171.5">¥172</td><td data-v="2744">¥2,744</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="914.7">¥915</td><td class="l">AW/01指名-ボクサーパンツ</td></tr>
+<tr><td class="l">[ファミリーライフ ボクサーパンツ]</td><td>完全</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="43">43</td><td data-v="18">18</td><td data-v="0.4186">41.9%</td><td data-v="130.7">¥131</td><td data-v="2352">¥2,352</td><td class="cv sep" data-v="3.5">3.5</td><td class="cv" data-v="672.0">¥672</td><td class="l">AW/01指名-ボクサーパンツ</td></tr>
+<tr><td class="l">[寝袋 テレビ通販]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="23">23</td><td data-v="14">14</td><td data-v="0.6087">60.9%</td><td data-v="108.1">¥108</td><td data-v="1513">¥1,513</td><td class="cv sep" data-v="1.7">1.7</td><td class="cv" data-v="895.3">¥895</td><td class="l">AW/18ウォーム寝袋</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="ダイレクトタイプ" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">directtype.jp<br><span>directtype.jp › st › campaign</span></div><div class="t">ITエンジニアの転職なら - エンジニア 転職ならDirect type - 企業が求める人材を直接スカウト</div><div class="d">職種や言語の選択などエンジニアに特化。企業から直接スカウトがくるからマッチング精度も高い。 精度の高いスカウトが届くから内定率も高い！エンジニアを求める企業から直接アプローチがくる。</div><div class="meta2">IMP 29,099 ／ CTR 16.9% ／ COST ¥686,947<br>gsc_gereral</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">directtype.jp<br><span>directtype.jp › st › campaign</span></div><div class="t">【公式】Direct type - Direct type (ダイレクトタイプ) - ダイレクトタイプ／公式</div><div class="d">職種や言語の選択などエンジニアに特化。企業から直接スカウトがくるからマッチング精度も高い！ 在宅勤務・リモートワークOKなど、柔軟な働き方が可能。あなたもスカウト転職で希望を叶えよう！</div><div class="meta2">IMP 1,251 ／ CTR 18.0% ／ COST ¥290,053<br>gsc_brand</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">directtype.jp<br><span>directtype.jp › st › campaign</span></div><div class="t">【公式】Direct type - Direct type (ダイレクトタイプ) - ダイレクトタイプ／公式</div><div class="d">職種や言語の選択などエンジニアに特化。企業から直接スカウトがくるからマッチング精度も高い！ 在宅勤務・リモートワークOKなど、柔軟な働き方が可能。あなたもスカウト転職で希望を叶えよう！</div><div class="meta2">IMP 1,195 ／ CTR 23.1% ／ COST ¥286,204<br>gsc_brand_test01</div></div>
+</div>
+<div class="serp-col advblk" data-a="トーカ堂ショッピング" style="--ac:var(--adv-1)"><h4><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.tokado.jp<br><span>www.tokado.jp</span></div><div class="t">【公式】トーカ堂ショッピング - テレビ紹介商品が大特価発売中 - TVで放映中の激安商品が満載</div><div class="d">トーカ堂テレビショッピング放映中！テレビで見たあの商品が大特価発売中 人気の加湿空気清浄機など約30商品が対象！まずは、サイトで対象商品をチェック！</div><div class="meta2">IMP 25,474 ／ CTR 28.1% ／ COST ¥1,065,293<br>1td_AW/1_指名</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.tokado.jp<br><span>www.tokado.jp › sp › unagi</span></div><div class="t">鰻楽うなぎ - 【公式】トーカ堂ショッピング - 国産うなぎ蒲焼1kgが10,280円</div><div class="d">「鰻楽」のお得なセット。湯煎や電子レンジで温めるだけで簡単に食べられます。 会員登録で今日から使える「500円」分プレゼント</div><div class="meta2">IMP 3,320 ／ CTR 30.5% ／ COST ¥112,873<br>1td_AW/3_指名(鰻)</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.tokado.jp<br><span>www.tokado.jp › product › detail</span></div><div class="t">【公式】トーカ堂ショッピング - もっちリフィット夢枕プレミアム - 96%の方が良い眠りを実感</div><div class="d">枕カバー2枚・洗濯ネット・ミニクッション1個付、会員登録で「500円」分ポイントプレゼント もちもちの中に芯があり、首をしっかり支える新素材「粒わた」を配合したプレミアムバージョン</div><div class="meta2">IMP 1,200 ／ CTR 53.2% ／ COST ¥150,128<br>1td_AW/6_指名(夢枕)</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.tokado.jp<br><span>www.tokado.jp › product › detail</span></div><div class="t">【公式】トーカ堂ショッピング - トーカ堂 唐津バーグ販売中 - いきや食品のハンバーグをお届け</div><div class="d">創業60年の老舗精肉店「いきや食品」ハンバーグ 九州産A4・A5ランクの黒毛和牛に、九州産の豚肉を使用</div><div class="meta2">IMP 836 ／ CTR 42.5% ／ COST ¥35,620<br>1td_AW/9_指名(ハンバーグ)</div></div>
+</div>
+<div class="serp-col advblk" data-a="ファミリーライフ" style="--ac:var(--adv-2)"><h4><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.family-life.biz<br><span>www.family-life.biz</span></div><div class="t">【公式】ファミリー・ライフ通販 - 【ファミリーライフ】通販サイト - 公式オンラインショップ</div><div class="d">ファミリー・ライフオンラインショップ／家族の生活と健康を応援する通信販売 新規会員登録で300ポイントプレゼント中。</div><div class="meta2">IMP 27,261 ／ CTR 22.9% ／ COST ¥491,962<br>AW/00指名ブランド</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.family-life.biz<br><span>www.family-life.biz › view › item</span></div><div class="t">【ファミリーライフ】通販サイト - 【ファミラ】5WAYウォーム寝袋 - TVショッピングで話題の商品</div><div class="d">あったか5WAYトリプルウォーム寝袋は、寒い冬にぴったりのアイテム。 蓄熱アルミ蒸着シートが輻射熱効果を発揮し、体から放出された温度を反射蓄熱！</div><div class="meta2">IMP 19,037 ／ CTR 22.8% ／ COST ¥545,754<br>AW/18ウォーム寝袋</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.family-life.biz<br><span>www.family-life.biz › view › page</span></div><div class="t">【ファミリーライフ】通販サイト - 【ファミラ】安心ボクサーパンツ - 男性用尿漏れパンツ</div><div class="d">パット付きの為サイドの横漏れも防止。シンプルなデザインで穿き心地にもこだわりました。 シニア世代のお悩みに寄り添った商品です。ご家族へのプレゼントにも最適</div><div class="meta2">IMP 18,020 ／ CTR 28.4% ／ COST ¥766,176<br>AW/01一般-ボクサーパンツ</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.family-life.biz<br><span>www.family-life.biz › view › item</span></div><div class="t">【ファミリーライフ】通販サイト - 【ファミラ】安心ボクサーパンツ - 男性用尿漏れパンツ</div><div class="d">パット付きの為サイドの横漏れも防止。シンプルなデザインで穿き心地にもこだわりました。 シニア世代のお悩みに寄り添った商品です。ご家族へのプレゼントにも最適</div><div class="meta2">IMP 3,349 ／ CTR 38.4% ／ COST ¥186,355<br>AW/01指名-ボクサーパンツ</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">【ファミリーライフ】通販サイト</td><td data-v="5">5</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">TVショッピングで話題の商品</td><td data-v="5">5</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">【公式】トーカ堂ショッピング</td><td data-v="4">4</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">テレビショッピングで大人気</td><td data-v="3">3</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">Direct type (ダイレクトタイプ)</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">【エンジニア】のスカウトに特化</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">まずはカンタン会員登録</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">スカウト受信率98％以上</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">ITエンジニア専門のスカウト転職</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">登録して待つだけ、スカウト転職</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">【ITエンジニア】の転職なら</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">経験・希望条件を登録するだけ</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">企業から直接スカウトが届く</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">ダイレクトタイプ／公式</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">スカウトが届くまで最短1時間</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">【公式】Direct type</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">あなたに合ったスカウトが届く</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">マッチング精度が高い転職なら</td><td data-v="2">2</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">さわやか安心ボクサーパンツ</td><td data-v="2">2</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">紙おむつに抵抗がある方に</td><td data-v="2">2</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">吸水量50cc／4層吸水パッド</td><td data-v="2">2</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">【WEB限定】特別価格でご案内</td><td data-v="2">2</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">これ1枚で長時間の外出も安心</td><td data-v="2">2</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">シンプルデザインで穿き心地抜群</td><td data-v="2">2</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">抗菌・消臭・防臭の軽失禁パンツ</td><td data-v="2">2</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">男性用尿漏れパンツ</td><td data-v="2">2</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">ちょい漏れ・追っかけ漏れ対策</td><td data-v="2">2</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">軽い尿漏れでお悩みの方</td><td data-v="2">2</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">シニアのための尿漏れ対策パンツ</td><td data-v="2">2</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">【ファミラ】安心ボクサーパンツ</td><td data-v="2">2</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">【フルリモート】求人600件以上</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">【IT転職サイト】プログラマー</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">【スカウト転職】年収UP事例多数</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">【アプリ開発】経験者歓迎</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">登録したらスカウトを待つだけ</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">{Keyword:エンジニア 転職}ならDirect type</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">ITエンジニア特化の転職サービス</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">{CUSTOMIZER.ITエンジニア系職種:ITエンジニアの転職なら}</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">企業が求める人材を直接スカウト</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">今すぐ簡単会員登録</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">フルリモートOKの企業多数</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">【東京都】リモートOKの求人なら</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">Python/Cエンジニアの求人多数</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">スカウト転職でキャリアアップを</td><td data-v="1">1</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l wrap">【積極スカウト中】ITエンジニア</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">トーカ堂 SHARP空気清浄機</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">19,800円（税込）</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">【公式】トーカ堂 空気清浄機</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">ウイルスの作用を抑制</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">トーカ堂 SHARP加湿空気清浄機</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">トーカ堂 加湿空気清浄機KC-35T7</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">今なら19,800円（税込）</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">KC-35T7</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">ホワイト・ブラック</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">すばやく除菌、浄化、脱臭</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">トーカ堂 シャープ空気清浄機</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">96%の方が良い眠りを実感</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">もっちリフィット夢枕プレミアム</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">トーカ堂厳選 唐津バーグ</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">トーカ堂 唐津バーグ販売中</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">いきや食品のハンバーグをお届け</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">鰻楽うなぎ</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">国産鰻をご自宅で簡単に美味しく</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">オススメ国産うなぎをご自宅で</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">国産うなぎ蒲焼1kgが10,280円</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">美味しい蒲焼を真空パック</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">累計850万食突破 うなぎ</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">購入はこちら</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">テレビ紹介商品が大特価発売中</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">TVで放映中の激安商品が満載</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">TV放映商品はこちら</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">会員登録で500ポイント贈呈</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">購入サイト</td><td data-v="1">1</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l wrap">会員登録で「500P」プレゼント</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">テレビで話題の温か毛布</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">家庭用洗濯機で丸洗いOK</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">3色展開でお好みの色が見つかる</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">まるで「ひなたのような暖かさ」</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">【寒がりさん】オススメ暖か毛布</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">【ファミラ】ぽかぽか5層毛布</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">メーカー希望価格から6980円OFF</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">【大活躍】暖か布団毛布セット</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">5層構造トリプルウォーム毛布</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">5分でポカポカ話題の暖か毛布</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">【電気不要】ずっと温か快適毛布</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">暖房無しでも朝までぐっすり</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">たった5分で全身ポカポカ</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">一年中使える快適アイテム</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">コンパクトで持ち運びも楽々</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">用途に合わせて使える5WAY仕様</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">軽量なのにずっとあったか</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">全長210cmと大柄な方でも安心</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">【ファミラ】5WAYウォーム寝袋</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">SNSでも話題の商品</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">収納袋付きで移動や保管も簡単</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">アウトドアや災害時の寝袋として</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">寝袋に入ったまま作業もできる</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">5WAYトリプルウォーム寝袋</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">蓄熱素材で暖かさを持続</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">布団や着る毛布として活用可能</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">生活に役立つ便利商品多数</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">ファミラ公式オンラインショップ</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">毎週水曜日は10％POINT還元</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">「家族の生活と健康」</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">お買い得な特別価格</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">テレビショッピングで紹介</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">公式オンラインショップ</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">人気の商品が特別価格で</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">【公式】ファミリー・ライフ通販</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">TV・WEB・新聞折込で大人気</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">今、話題のあの商品が勢ぞろい</td><td data-v="1">1</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l wrap">新規会員登録で300ポイント進呈</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="ダイレクトタイプ">
+<h3 class="adv" id="adlib-ダイレクトタイプ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ <span class="badge">取得 2026-02-23</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>3本</b></span><span class="chip">CPN<b>3個</b></span><span class="chip">ADG<b>3個</b></span><span class="chip">ピン留め<b>67%</b></span><span class="chip">LP使い分け<b>3本</b></span></div>
+<p class="note">主要LP: <span title="https://directtype.jp/st/campaign/others/form01.html?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=gsc_brand_test01_0059">https://directtype.jp/st/campaign/others/form01.html?utm_source=google&amp;utm_mediu（1本）</span> ／ <span title="https://directtype.jp/st/campaign/others/form01.html?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=gsc_general_0058">https://directtype.jp/st/campaign/others/form01.html?utm_source=google&amp;utm_mediu（1本）</span> ／ <span title="https://directtype.jp/st/campaign/others/form01.html?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=gsc_brand_0052">https://directtype.jp/st/campaign/others/form01.html?utm_source=google&amp;utm_mediu（1本）</span></p>
+<p class="note">カスタマイザ: {Keyword}×1 ／ {CUSTOMIZER.ITエンジニア系職種}×1</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="ダイレクトタイプ"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">Direct type (ダイレクトタイプ)</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【エンジニア】のスカウトに特化</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">まずはカンタン会員登録</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">スカウト受信率98％以上</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">ITエンジニア専門のスカウト転職</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">登録して待つだけ、スカウト転職</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【ITエンジニア】の転職なら</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">経験・希望条件を登録するだけ</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">企業から直接スカウトが届く</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">ダイレクトタイプ／公式</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">スカウトが届くまで最短1時間</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【公式】Direct type</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">あなたに合ったスカウトが届く</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">マッチング精度が高い転職なら</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【フルリモート】求人600件以上</td><td data-v="1">1</td></tr>
+</table></div></div><div>
+<table data-adv="ダイレクトタイプ"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">在宅勤務・リモートワークOKなど、柔軟な働き方が可能。あなたもスカウト転職で希望を叶えよう！</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">経験やスキル・希望条件の登録で、あなたにマッチした企業からスカウトが届く。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">職種や言語の選択などエンジニアに特化。企業から直接スカウトがくるからマッチング精度も高い！</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">ITエンジニアのためのスカウト転職サービス『Direct type』</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">精度の高いスカウトが届くから内定率も高い！エンジニアを求める企業から直接アプローチがくる。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">ITエンジニアのあなたを企業が直接スカウト！登録したらあとはスカウトを待つだけ。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">職種や言語の選択などエンジニアに特化。企業から直接スカウトがくるからマッチング精度も高い。</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="トーカ堂ショッピング">
+<h3 class="adv" id="adlib-トーカ堂ショッピング" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング <span class="badge">取得 2026-02-23</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>5本</b></span><span class="chip">CPN<b>5個</b></span><span class="chip">ADG<b>5個</b></span><span class="chip">ピン留め<b>60%</b></span><span class="chip">LP使い分け<b>5本</b></span></div>
+<p class="note">主要LP: <span title="https://www.tokado.jp/product/detail/4917">https://www.tokado.jp/product/detail/4917（1本）</span> ／ <span title="https://www.tokado.jp/product/detail/6150_6152">https://www.tokado.jp/product/detail/6150_6152（1本）</span> ／ <span title="https://www.tokado.jp/product/detail/MR51">https://www.tokado.jp/product/detail/MR51（1本）</span> ／ <span title="https://www.tokado.jp/sp/unagi/">https://www.tokado.jp/sp/unagi/（1本）</span> ／ <span title="https://www.tokado.jp/">https://www.tokado.jp/（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="トーカ堂ショッピング"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">【公式】トーカ堂ショッピング</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">トーカ堂 SHARP空気清浄機</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">19,800円（税込）</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【公式】トーカ堂 空気清浄機</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">ウイルスの作用を抑制</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">トーカ堂 SHARP加湿空気清浄機</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">トーカ堂 加湿空気清浄機KC-35T7</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">今なら19,800円（税込）</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">KC-35T7</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">ホワイト・ブラック</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">すばやく除菌、浄化、脱臭</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">トーカ堂 シャープ空気清浄機</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">96%の方が良い眠りを実感</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">もっちリフィット夢枕プレミアム</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">トーカ堂厳選 唐津バーグ</td><td data-v="1">1</td></tr>
+</table></div></div><div>
+<table data-adv="トーカ堂ショッピング"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">パワー浄化機能、湿度・温度表示機能付き加湿空気清浄機。お手入れラクラク。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">トーカ堂オリジナルモデル／SHARPプラズマクラスター KC-35T7</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">シャープ空気清浄機ですばやく除菌、浄化、脱臭。ホルムアルデヒド等の有害ガス(VOC)も低減。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">ウイルスの作用を抑えるシャープのプラズマクラスター。タバコ・ペット・カビ等のニオイ対策に。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">トーカ堂の人気商品「夢枕」がさらにバージョンアップ！お値段そのまま9,980 円(税込)でご提供</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">もちもちの中に芯があり、首をしっかり支える新素材「粒わた」を配合したプレミアムバージョン</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">ふわふわモチモチのフィット感で、頭・首・肩をしっかりサポート。96%の方が良い眠りを実感。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">枕カバー2枚・洗濯ネット・ミニクッション1個付、会員登録で「500円」分ポイントプレゼント</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="ファミリーライフ">
+<h3 class="adv" id="adlib-ファミリーライフ" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ <span class="badge">取得 2026-02-23</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>5本</b></span><span class="chip">CPN<b>5個</b></span><span class="chip">ADG<b>5個</b></span><span class="chip">ピン留め<b>20%</b></span><span class="chip">LP使い分け<b>5本</b></span></div>
+<p class="note">主要LP: <span title="https://www.family-life.biz/view/page/pants2_lp_01?utm_campaign=pants&amp;utm_medium=cpc&amp;utm_source=google&amp;utm_content=lp01&amp;argument=4ErsKVqL&amp;dmai=google_ippants201">https://www.family-life.biz/view/page/pants2_lp_01?utm_campaign=pants&amp;utm_medium（1本）</span> ／ <span title="https://www.family-life.biz/view/item/000000009223?utm_campaign=blanket&amp;utm_medium=cpc&amp;utm_source=google&amp;utm_content=9223&amp;argument=4ErsKVqL&amp;dmai=google_all9223">https://www.family-life.biz/view/item/000000009223?utm_campaign=blanket&amp;utm_medi（1本）</span> ／ <span title="https://www.family-life.biz/view/item/000000007236?utm_campaign=sleepingbag&amp;utm_medium=cpc&amp;utm_source=google&amp;utm_content=7236&amp;argument=4ErsKVqL&amp;dmai=google_all7236">https://www.family-life.biz/view/item/000000007236?utm_campaign=sleepingbag&amp;utm_（1本）</span> ／ <span title="https://www.family-life.biz/?utm_campaign=brand&amp;utm_medium=cpc&amp;utm_source=google&amp;utm_content=top&amp;argument=4ErsKVqL&amp;dmai=google_brtop">https://www.family-life.biz/?utm_campaign=brand&amp;utm_medium=cpc&amp;utm_source=google（1本）</span> ／ <span title="https://www.family-life.biz/view/item/000000004285?utm_campaign=pants&amp;utm_medium=cpc&amp;utm_source=google&amp;utm_content=4285&amp;argument=4ErsKVqL&amp;dmai=google_br4285">https://www.family-life.biz/view/item/000000004285?utm_campaign=pants&amp;utm_medium（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="ファミリーライフ"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">【ファミリーライフ】通販サイト</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">TVショッピングで話題の商品</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">テレビショッピングで大人気</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">さわやか安心ボクサーパンツ</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">紙おむつに抵抗がある方に</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">吸水量50cc／4層吸水パッド</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【WEB限定】特別価格でご案内</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">これ1枚で長時間の外出も安心</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">シンプルデザインで穿き心地抜群</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">抗菌・消臭・防臭の軽失禁パンツ</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">男性用尿漏れパンツ</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">ちょい漏れ・追っかけ漏れ対策</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">軽い尿漏れでお悩みの方</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">シニアのための尿漏れ対策パンツ</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【ファミラ】安心ボクサーパンツ</td><td data-v="2">2</td></tr>
+</table></div></div><div>
+<table data-adv="ファミリーライフ"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">しっかり吸水で、抗菌・消臭・防臭対策で長時間の外出でも安心です。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">パット付きの為サイドの横漏れも防止。シンプルなデザインで穿き心地にもこだわりました。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">シニア世代のお悩みに寄り添った商品です。ご家族へのプレゼントにも最適</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">見た目は普通のボクサーパンツで、年齢問わず使用可能。多くのお客様にお喜びいただいています。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">冬の就寝時に暖房器具への依存を減らせるため、毎日の電気代節約に大きく貢献</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">機能に徹底的にこだわった5層構造の毛布布団セット</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">柔らかなフランネル生地の心地よさはそのままに、冷たい外気を遮断し、体の熱を逃がさない機能</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">体温を反射するアルミシート、断熱保温素材、吸湿発熱わたを使用。5分でポカポカを実感</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="ダイレクトタイプ">
+<h3 class="adv" id="query-ダイレクトタイプ" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ <span class="badge">取得 2026-02-23</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="8">8</td><td data-v="268">268</td><td data-v="319506">¥319,506</td><td data-v="0.8566">85.7%</td><td class="cv sep" data-v="43.0">43.0</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="17">17</td><td data-v="54">54</td><td data-v="43659">¥43,659</td><td data-v="0.1171">11.7%</td><td class="cv sep" data-v="23.0">23.0</td></tr>
+<tr><td class="l">検索｜除外済み</td><td data-v="2">2</td><td data-v="133">133</td><td data-v="9813">¥9,813</td><td data-v="0.0263">2.6%</td><td class="cv sep" data-v="2.0">2.0</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="ダイレクトタイプ"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">direct type</td><td>追加済み</td><td>検索</td><td data-v="196">196</td><td data-v="240946">¥240,946</td><td class="cv sep" data-v="32.0">32.0</td><td class="cv" data-v="7529.6">¥7,530</td></tr>
+<tr><td class="l">ダイレクト タイプ</td><td>追加済み</td><td>検索</td><td data-v="72">72</td><td data-v="78560">¥78,560</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="7141.8">¥7,142</td></tr>
+<tr><td class="l">ランサーズ</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="3564">¥3,564</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="712.8">¥713</td></tr>
+<tr><td class="l">directtype</td><td>なし</td><td>検索</td><td data-v="23">23</td><td data-v="13232">¥13,232</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="3308.0">¥3,308</td></tr>
+<tr><td class="l">paiza ラーニング</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1159">¥1,159</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="386.3">¥386</td></tr>
+<tr><td class="l">directtyre</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="960">¥960</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="320.0">¥320</td></tr>
+<tr><td class="l">type ダイレクト</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="7194">¥7,194</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3597.0">¥3,597</td></tr>
+<tr><td class="l">direct type 評判</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="5520">¥5,520</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2760.0">¥2,760</td></tr>
+<tr><td class="l">ダイレクト type</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="10950">¥10,950</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="5475.0">¥5,475</td></tr>
+<tr><td class="l">プログラミング 学校</td><td>除外済み</td><td>検索</td><td data-v="133">133</td><td data-v="9813">¥9,813</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="4906.5">¥4,906</td></tr>
+<tr><td class="l">recruit agent</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1080">¥1,080</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="540.0">¥540</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（11行）。</p></div>
+<div class="advblk" data-a="トーカ堂ショッピング">
+<h3 class="adv" id="query-トーカ堂ショッピング" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング <span class="badge">取得 2026-02-23</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="48">48</td><td data-v="6718">6,718</td><td data-v="552750">¥552,750</td><td data-v="0.7951">79.5%</td><td class="cv sep" data-v="483.0">483.0</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="52">52</td><td data-v="562">562</td><td data-v="108314">¥108,314</td><td data-v="0.1558">15.6%</td><td class="cv sep" data-v="59.6">59.6</td></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="41">41</td><td data-v="424">424</td><td data-v="34111">¥34,111</td><td data-v="0.0491">4.9%</td><td class="cv sep" data-v="65.3">65.3</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="トーカ堂ショッピング"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">トーカ 堂</td><td>なし</td><td>P-MAX</td><td data-v="4614">4,614</td><td data-v="353453">¥353,453</td><td class="cv sep" data-v="299.6">299.6</td><td class="cv" data-v="1179.6">¥1,180</td></tr>
+<tr><td class="l">トーカ 堂 うなぎ</td><td>なし</td><td>P-MAX</td><td data-v="710">710</td><td data-v="50329">¥50,329</td><td class="cv sep" data-v="87.7">87.7</td><td class="cv" data-v="573.6">¥574</td></tr>
+<tr><td class="l">トーカ 堂 枕</td><td>追加済み</td><td>検索</td><td data-v="348">348</td><td data-v="43163">¥43,163</td><td class="cv sep" data-v="34.3">34.3</td><td class="cv" data-v="1256.9">¥1,257</td></tr>
+<tr><td class="l">トーカ 堂 ハンバーグ</td><td>追加済み</td><td>検索</td><td data-v="208">208</td><td data-v="15564">¥15,564</td><td class="cv sep" data-v="21.0">21.0</td><td class="cv" data-v="741.1">¥741</td></tr>
+<tr><td class="l">トーカ 堂 通販</td><td>追加済み</td><td>検索</td><td data-v="228">228</td><td data-v="14752">¥14,752</td><td class="cv sep" data-v="13.6">13.6</td><td class="cv" data-v="1083.1">¥1,083</td></tr>
+<tr><td class="l">通販 トーカ 堂</td><td>なし</td><td>検索</td><td data-v="117">117</td><td data-v="10642">¥10,642</td><td class="cv sep" data-v="10.8">10.8</td><td class="cv" data-v="983.5">¥984</td></tr>
+<tr><td class="l">トーカ 堂 テレビ ショッピング</td><td>追加済み</td><td>検索</td><td data-v="154">154</td><td data-v="12441">¥12,441</td><td class="cv sep" data-v="10.5">10.5</td><td class="cv" data-v="1184.9">¥1,185</td></tr>
+<tr><td class="l">鰻 楽 うなぎ</td><td>なし</td><td>P-MAX</td><td data-v="95">95</td><td data-v="8258">¥8,258</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="915.5">¥916</td></tr>
+<tr><td class="l">うなぎ 通販</td><td>なし</td><td>P-MAX</td><td data-v="71">71</td><td data-v="7045">¥7,045</td><td class="cv sep" data-v="7.2">7.2</td><td class="cv" data-v="978.5">¥978</td></tr>
+<tr><td class="l">トーカ 堂 とらふぐ</td><td>なし</td><td>検索</td><td data-v="75">75</td><td data-v="20640">¥20,640</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="2948.6">¥2,949</td></tr>
+<tr><td class="l">トーカ 堂 鰻</td><td>追加済み</td><td>検索</td><td data-v="20">20</td><td data-v="1689">¥1,689</td><td class="cv sep" data-v="5.6">5.6</td><td class="cv" data-v="303.8">¥304</td></tr>
+<tr><td class="l">トーカ 堂 とらふぐ セット</td><td>なし</td><td>検索</td><td data-v="64">64</td><td data-v="19193">¥19,193</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="3838.6">¥3,839</td></tr>
+<tr><td class="l">トーカ 堂 空気 清浄 機</td><td>追加済み</td><td>検索</td><td data-v="268">268</td><td data-v="37665">¥37,665</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="9416.2">¥9,416</td></tr>
+<tr><td class="l">テレビ 通販 トーカ 堂</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="367">¥367</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="91.8">¥92</td></tr>
+<tr><td class="l">北 さん 通販</td><td>追加済み</td><td>検索</td><td data-v="94">94</td><td data-v="8022">¥8,022</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="2647.5">¥2,648</td></tr>
+<tr><td class="l">鰻 楽</td><td>なし</td><td>P-MAX</td><td data-v="19">19</td><td data-v="1800">¥1,800</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="594.1">¥594</td></tr>
+<tr><td class="l">トーカ 堂 うなぎ 10000 円</td><td>なし</td><td>検索</td><td data-v="36">36</td><td data-v="5140">¥5,140</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1713.3">¥1,713</td></tr>
+<tr><td class="l">夢枕 トーカ 堂</td><td>追加済み</td><td>検索</td><td data-v="23">23</td><td data-v="4116">¥4,116</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1372.0">¥1,372</td></tr>
+<tr><td class="l">テレビ ショッピング 堂</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="176">¥176</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="58.7">¥59</td></tr>
+<tr><td class="l">テレビ ショッピング 鰻</td><td>なし</td><td>P-MAX</td><td data-v="3">3</td><td data-v="301">¥301</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="100.3">¥100</td></tr>
+<tr><td class="l">トーカ 堂 夢枕</td><td>追加済み</td><td>検索</td><td data-v="33">33</td><td data-v="2950">¥2,950</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="983.3">¥983</td></tr>
+<tr><td class="l">萬 楽 の うなぎ</td><td>なし</td><td>P-MAX</td><td data-v="8">8</td><td data-v="586">¥586</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="195.3">¥195</td></tr>
+<tr><td class="l">唐津 バーグ トーカ 堂</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="253">¥253</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="84.3">¥84</td></tr>
+<tr><td class="l">北 さん の 通販</td><td>なし</td><td>検索</td><td data-v="41">41</td><td data-v="2403">¥2,403</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="801.0">¥801</td></tr>
+<tr><td class="l">トーカ 堂 うなぎ 福岡</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="2554">¥2,554</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="851.3">¥851</td></tr>
+<tr><td class="l">トーカ 堂 うなぎ 評判</td><td>なし</td><td>P-MAX</td><td data-v="31">31</td><td data-v="2636">¥2,636</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="878.7">¥879</td></tr>
+<tr><td class="l">うなぎ 通販 テレビ</td><td>なし</td><td>P-MAX</td><td data-v="18">18</td><td data-v="1786">¥1,786</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="595.3">¥595</td></tr>
+<tr><td class="l">うなぎ の 通販</td><td>なし</td><td>P-MAX</td><td data-v="10">10</td><td data-v="885">¥885</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="295.0">¥295</td></tr>
+<tr><td class="l">もっ ちり フィット 夢枕</td><td>追加済み</td><td>検索</td><td data-v="5">5</td><td data-v="1029">¥1,029</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="343.0">¥343</td></tr>
+<tr><td class="l">万 楽 うなぎ トーカ 堂</td><td>なし</td><td>P-MAX</td><td data-v="4">4</td><td data-v="322">¥322</td><td class="cv sep" data-v="2.1">2.1</td><td class="cv" data-v="156.3">¥156</td></tr>
+<tr><td class="l">トーカ 堂 プラズマ クラスター</td><td>追加済み</td><td>検索</td><td data-v="26">26</td><td data-v="4507">¥4,507</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2253.5">¥2,254</td></tr>
+<tr><td class="l">トーカ 堂 まくら</td><td>追加済み</td><td>検索</td><td data-v="4">4</td><td data-v="358">¥358</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="179.0">¥179</td></tr>
+<tr><td class="l">トーカ 堂 唐津 ハンバーグ</td><td>なし</td><td>検索</td><td data-v="20">20</td><td data-v="628">¥628</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="314.0">¥314</td></tr>
+<tr><td class="l">テレビ 通販 うなぎ</td><td>なし</td><td>P-MAX</td><td data-v="9">9</td><td data-v="965">¥965</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="482.5">¥482</td></tr>
+<tr><td class="l">株式 会社 トーカ 堂</td><td>なし</td><td>検索</td><td data-v="32">32</td><td data-v="8857">¥8,857</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="4428.5">¥4,428</td></tr>
+<tr><td class="l">トーカ 堂 シャープ 空気 清浄 機</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="1803">¥1,803</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="901.5">¥902</td></tr>
+<tr><td class="l">トーカ 堂 tv ショッピング</td><td>追加済み</td><td>検索</td><td data-v="1">1</td><td data-v="146">¥146</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="73.0">¥73</td></tr>
+<tr><td class="l">トーカ 堂 ウナギ</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="1048">¥1,048</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="524.0">¥524</td></tr>
+<tr><td class="l">通販 北 さん</td><td>なし</td><td>検索</td><td data-v="65">65</td><td data-v="13496">¥13,496</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="6748.0">¥6,748</td></tr>
+<tr><td class="l">うなぎ</td><td>なし</td><td>P-MAX</td><td data-v="32">32</td><td data-v="3007">¥3,007</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1503.5">¥1,504</td></tr>
+<tr><td class="l">トーカ 堂 もっ ちり 枕</td><td>追加済み</td><td>検索</td><td data-v="9">9</td><td data-v="1000">¥1,000</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="500.0">¥500</td></tr>
+<tr><td class="l">鰻 まん らく</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="155">¥155</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="77.9">¥78</td></tr>
+<tr><td class="l">トーカ 堂 加湿 空気 清浄 機</td><td>追加済み</td><td>検索</td><td data-v="13">13</td><td data-v="2584">¥2,584</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1305.1">¥1,305</td></tr>
+<tr><td class="l">トーカ 堂 うなぎ 楽天</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="119">¥119</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="60.4">¥60</td></tr>
+<tr><td class="l">まん らく うなぎ 通販</td><td>なし</td><td>P-MAX</td><td data-v="9">9</td><td data-v="840">¥840</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="428.6">¥429</td></tr>
+<tr><td class="l">トーカ 堂 の うなぎ</td><td>追加済み</td><td>検索</td><td data-v="42">42</td><td data-v="1665">¥1,665</td><td class="cv sep" data-v="1.9">1.9</td><td class="cv" data-v="858.2">¥858</td></tr>
+<tr><td class="l">トーカ 堂 電話 番号</td><td>なし</td><td>検索</td><td data-v="41">41</td><td data-v="11146">¥11,146</td><td class="cv sep" data-v="1.9">1.9</td><td class="cv" data-v="5775.1">¥5,775</td></tr>
+<tr><td class="l">トーカ 堂 うなぎ テレビ ショッピング</td><td>なし</td><td>検索</td><td data-v="20">20</td><td data-v="4697">¥4,697</td><td class="cv sep" data-v="1.8">1.8</td><td class="cv" data-v="2684.0">¥2,684</td></tr>
+<tr><td class="l">うなぎ 鰻 楽</td><td>なし</td><td>P-MAX</td><td data-v="30">30</td><td data-v="2723">¥2,723</td><td class="cv sep" data-v="1.7">1.7</td><td class="cv" data-v="1611.2">¥1,611</td></tr>
+<tr><td class="l">トーカ 堂 インターネット ショッピング</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="390">¥390</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="260.0">¥260</td></tr>
+<tr><td class="l">トーカ 堂 クーポン</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="4829">¥4,829</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="3658.3">¥3,658</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（51行）。</p></div>
+<div class="advblk" data-a="ファミリーライフ">
+<h3 class="adv" id="query-ファミリーライフ" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ <span class="badge">取得 2026-02-23</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="75">75</td><td data-v="12606">12,606</td><td data-v="1347987">¥1,347,987</td><td data-v="0.6654">66.5%</td><td class="cv sep" data-v="582.7">582.7</td></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="215">215</td><td data-v="8686">8,686</td><td data-v="490656">¥490,656</td><td data-v="0.2422">24.2%</td><td class="cv sep" data-v="535.8">535.8</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="48">48</td><td data-v="1127">1,127</td><td data-v="142366">¥142,366</td><td data-v="0.0703">7.0%</td><td class="cv sep" data-v="62.2">62.2</td></tr>
+<tr><td class="l">P-MAX｜除外済み</td><td data-v="4">4</td><td data-v="455">455</td><td data-v="44733">¥44,733</td><td data-v="0.0221">2.2%</td><td class="cv sep" data-v="20.1">20.1</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="ファミリーライフ"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">ファミリー ライフ</td><td>なし</td><td>P-MAX</td><td data-v="3790">3,790</td><td data-v="297145">¥297,145</td><td class="cv sep" data-v="194.6">194.6</td><td class="cv" data-v="1526.7">¥1,527</td></tr>
+<tr><td class="l">ファミラ トリプル ウォーム 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="1474">1,474</td><td data-v="85283">¥85,283</td><td class="cv sep" data-v="120.2">120.2</td><td class="cv" data-v="709.7">¥710</td></tr>
+<tr><td class="l">ファミラ</td><td>なし</td><td>P-MAX</td><td data-v="2194">2,194</td><td data-v="165263">¥165,263</td><td class="cv sep" data-v="100.3">100.3</td><td class="cv" data-v="1647.4">¥1,647</td></tr>
+<tr><td class="l">ファミリー ライフ 通販</td><td>なし</td><td>P-MAX</td><td data-v="1390">1,390</td><td data-v="77836">¥77,836</td><td class="cv sep" data-v="90.1">90.1</td><td class="cv" data-v="863.6">¥864</td></tr>
+<tr><td class="l">尿 漏れ パンツ</td><td>なし</td><td>P-MAX</td><td data-v="2591">2,591</td><td data-v="338596">¥338,596</td><td class="cv sep" data-v="79.0">79.0</td><td class="cv" data-v="4288.2">¥4,288</td></tr>
+<tr><td class="l">ファミラ ひえ ぽか 温 冷 サーキュレーター</td><td>なし</td><td>P-MAX</td><td data-v="900">900</td><td data-v="54036">¥54,036</td><td class="cv sep" data-v="62.8">62.8</td><td class="cv" data-v="860.3">¥860</td></tr>
+<tr><td class="l">ファミラ 安心 ボクサー</td><td>追加済み</td><td>検索</td><td data-v="458">458</td><td data-v="53485">¥53,485</td><td class="cv sep" data-v="55.3">55.3</td><td class="cv" data-v="967.4">¥967</td></tr>
+<tr><td class="l">尿 漏れ パンツ 男性 用</td><td>なし</td><td>P-MAX</td><td data-v="1032">1,032</td><td data-v="167849">¥167,849</td><td class="cv sep" data-v="41.1">41.1</td><td class="cv" data-v="4082.9">¥4,083</td></tr>
+<tr><td class="l">ファミラ 安心 ボクサー パンツ</td><td>なし</td><td>P-MAX</td><td data-v="222">222</td><td data-v="19557">¥19,557</td><td class="cv sep" data-v="31.6">31.6</td><td class="cv" data-v="618.1">¥618</td></tr>
+<tr><td class="l">テレビ ショッピング 寝袋</td><td>なし</td><td>検索</td><td data-v="319">319</td><td data-v="25298">¥25,298</td><td class="cv sep" data-v="20.0">20.0</td><td class="cv" data-v="1264.3">¥1,264</td></tr>
+<tr><td class="l">ファミラ 通販</td><td>追加済み</td><td>検索</td><td data-v="267">267</td><td data-v="22073">¥22,073</td><td class="cv sep" data-v="17.3">17.3</td><td class="cv" data-v="1274.4">¥1,274</td></tr>
+<tr><td class="l">通販 寝袋</td><td>追加済み</td><td>検索</td><td data-v="223">223</td><td data-v="12169">¥12,169</td><td class="cv sep" data-v="17.2">17.2</td><td class="cv" data-v="708.7">¥709</td></tr>
+<tr><td class="l">トリプル ウォーム 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="763">763</td><td data-v="86191">¥86,191</td><td class="cv sep" data-v="17.0">17.0</td><td class="cv" data-v="5070.1">¥5,070</td></tr>
+<tr><td class="l">温 冷 サーキュレーター</td><td>なし</td><td>P-MAX</td><td data-v="624">624</td><td data-v="15793">¥15,793</td><td class="cv sep" data-v="15.5">15.5</td><td class="cv" data-v="1018.9">¥1,019</td></tr>
+<tr><td class="l">男性 用 尿 漏れ パンツ</td><td>なし</td><td>検索</td><td data-v="423">423</td><td data-v="51921">¥51,921</td><td class="cv sep" data-v="13.4">13.4</td><td class="cv" data-v="3866.0">¥3,866</td></tr>
+<tr><td class="l">寝袋 通販</td><td>なし</td><td>P-MAX</td><td data-v="267">267</td><td data-v="25793">¥25,793</td><td class="cv sep" data-v="13.1">13.1</td><td class="cv" data-v="1973.5">¥1,973</td></tr>
+<tr><td class="l">テレビ ショッピング 尿 漏れ パンツ</td><td>なし</td><td>P-MAX</td><td data-v="97">97</td><td data-v="24358">¥24,358</td><td class="cv sep" data-v="12.7">12.7</td><td class="cv" data-v="1911.9">¥1,912</td></tr>
+<tr><td class="l">ファミラ 布団 圧縮 袋</td><td>なし</td><td>P-MAX</td><td data-v="87">87</td><td data-v="11371">¥11,371</td><td class="cv sep" data-v="11.7">11.7</td><td class="cv" data-v="974.4">¥974</td></tr>
+<tr><td class="l">あったか 5way トリプル ウォーム 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="368">368</td><td data-v="46490">¥46,490</td><td class="cv sep" data-v="10.0">10.0</td><td class="cv" data-v="4649.0">¥4,649</td></tr>
+<tr><td class="l">ひえ ぽか 温 冷 サーキュレーター</td><td>なし</td><td>P-MAX</td><td data-v="354">354</td><td data-v="11561">¥11,561</td><td class="cv sep" data-v="9.6">9.6</td><td class="cv" data-v="1208.0">¥1,208</td></tr>
+<tr><td class="l">ふぁみ ら</td><td>なし</td><td>P-MAX</td><td data-v="46">46</td><td data-v="994">¥994</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="110.4">¥110</td></tr>
+<tr><td class="l">さわやか 安心 ボクサー パンツ</td><td>追加済み</td><td>検索</td><td data-v="163">163</td><td data-v="22566">¥22,566</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="2507.3">¥2,507</td></tr>
+<tr><td class="l">5way トリプル ウォーム 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="160">160</td><td data-v="15234">¥15,234</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="1897.1">¥1,897</td></tr>
+<tr><td class="l">ファミラ 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="135">135</td><td data-v="6850">¥6,850</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="856.2">¥856</td></tr>
+<tr><td class="l">ファミラ 牛革 ラチェット 式 ベルト</td><td>なし</td><td>P-MAX</td><td data-v="81">81</td><td data-v="11397">¥11,397</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="1424.6">¥1,425</td></tr>
+<tr><td class="l">通販 ファミリー ライフ</td><td>なし</td><td>検索</td><td data-v="105">105</td><td data-v="9195">¥9,195</td><td class="cv sep" data-v="7.5">7.5</td><td class="cv" data-v="1232.6">¥1,233</td></tr>
+<tr><td class="l">5way 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="59">59</td><td data-v="2051">¥2,051</td><td class="cv sep" data-v="6.7">6.7</td><td class="cv" data-v="307.5">¥307</td></tr>
+<tr><td class="l">テレビ 通販 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="105">105</td><td data-v="8373">¥8,373</td><td class="cv sep" data-v="6.5">6.5</td><td class="cv" data-v="1292.1">¥1,292</td></tr>
+<tr><td class="l">尿 漏れ パンツ 男性 用 通販</td><td>なし</td><td>検索</td><td data-v="23">23</td><td data-v="4818">¥4,818</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="803.0">¥803</td></tr>
+<tr><td class="l">ラチェット ベルト</td><td>なし</td><td>P-MAX</td><td data-v="91">91</td><td data-v="6987">¥6,987</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="1164.5">¥1,164</td></tr>
+<tr><td class="l">ファミラ ボクサー パンツ</td><td>追加済み</td><td>検索</td><td data-v="50">50</td><td data-v="4800">¥4,800</td><td class="cv sep" data-v="5.9">5.9</td><td class="cv" data-v="810.8">¥811</td></tr>
+<tr><td class="l">ファミラ トリプル ウォーム 寝袋 口コミ</td><td>なし</td><td>P-MAX</td><td data-v="57">57</td><td data-v="7225">¥7,225</td><td class="cv sep" data-v="5.9">5.9</td><td class="cv" data-v="1228.7">¥1,229</td></tr>
+<tr><td class="l">ファミラ 温 冷 サーキュレーター</td><td>なし</td><td>P-MAX</td><td data-v="97">97</td><td data-v="5928">¥5,928</td><td class="cv sep" data-v="5.7">5.7</td><td class="cv" data-v="1047.3">¥1,047</td></tr>
+<tr><td class="l">トリプル ウォーム 寝袋 口コミ</td><td>なし</td><td>P-MAX</td><td data-v="105">105</td><td data-v="2469">¥2,469</td><td class="cv sep" data-v="5.6">5.6</td><td class="cv" data-v="438.5">¥439</td></tr>
+<tr><td class="l">牛革 ラチェット 式 ベルト</td><td>なし</td><td>P-MAX</td><td data-v="24">24</td><td data-v="2051">¥2,051</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="410.2">¥410</td></tr>
+<tr><td class="l">ファミラ ベルト</td><td>なし</td><td>P-MAX</td><td data-v="10">10</td><td data-v="714">¥714</td><td class="cv sep" data-v="4.9">4.9</td><td class="cv" data-v="146.0">¥146</td></tr>
+<tr><td class="l">ファミリー ライフ カタログ</td><td>なし</td><td>P-MAX</td><td data-v="134">134</td><td data-v="6768">¥6,768</td><td class="cv sep" data-v="4.8">4.8</td><td class="cv" data-v="1410.0">¥1,410</td></tr>
+<tr><td class="l">ひえ ぽか 温 冷 サーキュレーター 口コミ</td><td>なし</td><td>P-MAX</td><td data-v="463">463</td><td data-v="6597">¥6,597</td><td class="cv sep" data-v="4.8">4.8</td><td class="cv" data-v="1383.0">¥1,383</td></tr>
+<tr><td class="l">着る 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="303">303</td><td data-v="14565">¥14,565</td><td class="cv sep" data-v="4.2">4.2</td><td class="cv" data-v="3501.2">¥3,501</td></tr>
+<tr><td class="l">ファミリー ライフ テレビ ショッピング</td><td>追加済み</td><td>検索</td><td data-v="155">155</td><td data-v="15727">¥15,727</td><td class="cv sep" data-v="4.1">4.1</td><td class="cv" data-v="3817.2">¥3,817</td></tr>
+<tr><td class="l">尿 漏れ 防止 パンツ</td><td>なし</td><td>検索</td><td data-v="59">59</td><td data-v="6902">¥6,902</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="1704.2">¥1,704</td></tr>
+<tr><td class="l">nomore パンツ</td><td>なし</td><td>検索</td><td data-v="79">79</td><td data-v="16235">¥16,235</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="4058.8">¥4,059</td></tr>
+<tr><td class="l">トリプル 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="42">42</td><td data-v="3483">¥3,483</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="870.8">¥871</td></tr>
+<tr><td class="l">5 ウェイ 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="53">53</td><td data-v="1504">¥1,504</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="376.0">¥376</td></tr>
+<tr><td class="l">寝袋 テレビ ショッピング</td><td>なし</td><td>P-MAX</td><td data-v="31">31</td><td data-v="3801">¥3,801</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="950.2">¥950</td></tr>
+<tr><td class="l">冷暖房 サーキュレーター</td><td>なし</td><td>P-MAX</td><td data-v="171">171</td><td data-v="3432">¥3,432</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="864.5">¥864</td></tr>
+<tr><td class="l">ひな壇 寝袋</td><td>除外済み</td><td>P-MAX</td><td data-v="55">55</td><td data-v="5409">¥5,409</td><td class="cv sep" data-v="3.6">3.6</td><td class="cv" data-v="1490.1">¥1,490</td></tr>
+<tr><td class="l">ファミリー 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="30">30</td><td data-v="1049">¥1,049</td><td class="cv sep" data-v="3.5">3.5</td><td class="cv" data-v="301.4">¥301</td></tr>
+<tr><td class="l">寝袋 ファミリー</td><td>なし</td><td>P-MAX</td><td data-v="27">27</td><td data-v="981">¥981</td><td class="cv sep" data-v="3.3">3.3</td><td class="cv" data-v="300.0">¥300</td></tr>
+<tr><td class="l">ファミリー ライフ 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="103">103</td><td data-v="6470">¥6,470</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="2135.3">¥2,135</td></tr>
+<tr><td class="l">ファミラ サーキュレーター</td><td>なし</td><td>P-MAX</td><td data-v="91">91</td><td data-v="4955">¥4,955</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1651.7">¥1,652</td></tr>
+<tr><td class="l">ファミラ 尿 漏れ パンツ</td><td>追加済み</td><td>検索</td><td data-v="27">27</td><td data-v="5607">¥5,607</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1869.0">¥1,869</td></tr>
+<tr><td class="l">ファミラ あったか 5way トリプル ウォーム 寝袋</td><td>なし</td><td>P-MAX</td><td data-v="63">63</td><td data-v="5901">¥5,901</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1967.0">¥1,967</td></tr>
+<tr><td class="l">尿 漏れ パンツ メンズ</td><td>追加済み</td><td>検索</td><td data-v="125">125</td><td data-v="17786">¥17,786</td><td class="cv sep" data-v="2.4">2.4</td><td class="cv" data-v="7349.6">¥7,350</td></tr>
+<tr><td class="l">メンズ 尿 漏れ パンツ</td><td>なし</td><td>検索</td><td data-v="69">69</td><td data-v="12718">¥12,718</td><td class="cv sep" data-v="2.4">2.4</td><td class="cv" data-v="5389.0">¥5,389</td></tr>
+<tr><td class="l">失禁 パンツ</td><td>追加済み</td><td>検索</td><td data-v="46">46</td><td data-v="6627">¥6,627</td><td class="cv sep" data-v="2.2">2.2</td><td class="cv" data-v="2985.1">¥2,985</td></tr>
+<tr><td class="l">尿 漏れ パンツ 男性 用 おすすめ</td><td>なし</td><td>検索</td><td data-v="21">21</td><td data-v="3943">¥3,943</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1971.5">¥1,972</td></tr>
+<tr><td class="l">着る 毛布</td><td>追加済み</td><td>検索</td><td data-v="557">557</td><td data-v="113012">¥113,012</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="56506.0">¥56,506</td></tr>
+<tr><td class="l">ラチェット 式 ベルト</td><td>なし</td><td>P-MAX</td><td data-v="60">60</td><td data-v="4208">¥4,208</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2136.0">¥2,136</td></tr>
+<tr><td class="l">尿 漏れ パンツ 通販</td><td>追加済み</td><td>検索</td><td data-v="34">34</td><td data-v="6908">¥6,908</td><td class="cv sep" data-v="1.2">1.2</td><td class="cv" data-v="5756.7">¥5,757</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（60行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2026-02-23 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l">指名</td><td data-v="2183">2,183</td><td data-v="476">476</td><td data-v="0.2180">21.8%</td><td data-v="1146.8">¥1,147</td><td data-v="545865">¥545,865</td><td data-v="0.5905">59.0%</td><td class="cv sep" data-v="66">66</td><td class="cv" data-v="0.1387">13.9%</td><td class="cv" data-v="8270.7">¥8,271</td></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td class="l">一般</td><td data-v="12343">12,343</td><td data-v="2628">2,628</td><td data-v="0.2129">21.3%</td><td data-v="144.1">¥144</td><td data-v="378575">¥378,575</td><td data-v="0.4095">41.0%</td><td class="cv sep" data-v="33">33</td><td class="cv" data-v="0.0126">1.3%</td><td class="cv" data-v="11472.0">¥11,472</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">指名</td><td data-v="30773">30,773</td><td data-v="9330">9,330</td><td data-v="0.3032">30.3%</td><td data-v="142.9">¥143</td><td data-v="1333127">¥1,333,127</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="589">589</td><td class="cv" data-v="0.0632">6.3%</td><td class="cv" data-v="2262.4">¥2,262</td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td class="l">一般</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">指名</td><td data-v="33684">33,684</td><td data-v="8344">8,344</td><td data-v="0.2477">24.8%</td><td data-v="90.5">¥90</td><td data-v="754761">¥754,761</td><td data-v="0.4042">40.4%</td><td class="cv sep" data-v="455">455</td><td class="cv" data-v="0.0545">5.4%</td><td class="cv" data-v="1660.1">¥1,660</td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td class="l">一般</td><td data-v="31476">31,476</td><td data-v="7993">7,993</td><td data-v="0.2539">25.4%</td><td data-v="139.2">¥139</td><td data-v="1112695">¥1,112,695</td><td data-v="0.5958">59.6%</td><td class="cv sep" data-v="277">277</td><td class="cv" data-v="0.0347">3.5%</td><td class="cv" data-v="4016.5">¥4,017</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2026-02-23</th></tr>
+<tr data-a="ダイレクトタイプ"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ダイレクトタイプ</td><td><div class="bar"><div class="mt-i" style="width:41.0%" title="インテント マッチ 41.0%"></div><div class="mt-p" style="width:3.7%" title="フレーズ一致 3.7%"></div><div class="mt-e" style="width:55.3%" title="完全一致 55.3%"></div></div><div class="note">インテント41% / フレーズ4% / 完全55%</div></td></tr>
+<tr data-a="トーカ堂ショッピング"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>トーカ堂ショッピング</td><td><div class="bar"><div class="mt-i" style="width:12.5%" title="インテント マッチ 12.5%"></div><div class="mt-p" style="width:47.7%" title="フレーズ一致 47.7%"></div><div class="mt-e" style="width:39.8%" title="完全一致 39.8%"></div></div><div class="note">インテント12% / フレーズ48% / 完全40%</div></td></tr>
+<tr data-a="ファミリーライフ"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ファミリーライフ</td><td><div class="bar"><div class="mt-e" style="width:100.0%" title="完全一致 100.0%"></div></div><div class="note">完全100%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2026-02-23</b>（260223_レポート依頼用（通信販売）_セレス様__169frDh2.xlsx）<br>取得不可（空タブ）: ディノス<br>端数月: 2026-02（25日まで）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

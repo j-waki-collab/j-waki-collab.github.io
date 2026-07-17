@@ -1,0 +1,978 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜医療ダイエット</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>医療ダイエット業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">1社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2026-04-08</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥26,190,984</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥853</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">2.1〜2.1</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="elife" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2026-04-08（期間 2026年2月1日 - 2026年4月9日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td data-v="26190984">¥26,190,984</td><td data-v="30721">30,721</td><td data-v="0.0666">6.7%</td><td data-v="852.5">¥853</td><td data-v="2.05">2.05</td><td data-v="0.0">--</td><td data-v="0.0000">0.0%</td><td><div class="bar"><div class="mt-i" style="width:8.4%" title="インテント マッチ 8.4%"></div><div class="mt-p" style="width:43.4%" title="フレーズ一致 43.4%"></div><div class="mt-e" style="width:48.2%" title="完全一致 48.2%"></div></div></td><td class="cv sep" data-v="567">567</td><td class="cv" data-v="0.0185">1.8%</td><td class="cv" data-v="46170.2">¥46,170</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: Juniper・med.</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td data-v="202602">2026-02</td><td data-v="149274">149,274</td><td data-v="9637">9,637</td><td data-v="0.0646">6.5%</td><td data-v="694.9">¥695</td><td data-v="6696562">¥6,696,562</td><td class="cv sep" data-v="168">168</td><td class="cv" data-v="0.0174">1.7%</td><td class="cv" data-v="39824.9">¥39,825</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td data-v="202603">2026-03</td><td data-v="246568">246,568</td><td data-v="16471">16,471</td><td data-v="0.0668">6.7%</td><td data-v="984.5">¥985</td><td data-v="16215914">¥16,215,914</td><td class="cv sep" data-v="352">352</td><td class="cv" data-v="0.0214">2.1%</td><td class="cv" data-v="46091.5">¥46,092</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td data-v="202604">2026-04 ⚠</td><td data-v="65528">65,528</td><td data-v="4613">4,613</td><td data-v="0.0704">7.0%</td><td data-v="710.7">¥711</td><td data-v="3278508">¥3,278,508</td><td class="cv sep" data-v="47">47</td><td class="cv" data-v="0.0103">1.0%</td><td class="cv" data-v="69313.1">¥69,313</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="elife">
+<h3 class="adv" id="struct-elife" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>elife <span class="badge">取得 2026-04-08</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</span><span class="st">📁 CPN <b>15</b></span><span class="st">📂 ADG <b>24</b></span><span class="st">🔑 KW <b>74</b></span><span class="st">✏️ 広告 <b>45</b></span><span class="st">🔗 LP <b>17</b></span><span class="st">💰 <b>¥26,190,984</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="diet_JP_Search-CPA-Mou--19,800">diet_JP_Search-CPA-Mou--19,800</span><span class="share"><div style="width:68%"></div></span><span class="st">68.2%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>29</b></span><span class="st">✏️ <b>6</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥17,856,559</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="diet_mounjaro_female">diet_mounjaro_female</span><span class="st">🔑 <b>22</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥14,058,353</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="diet_mounjaro_male">diet_mounjaro_male</span><span class="st">🔑 <b>14</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥3,798,206</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="diet_JP_Search-CPA-Mou-19,800-high-intention">diet_JP_Search-CPA-Mou-19,800-high-intention</span><span class="share"><div style="width:15%"></div></span><span class="st">15.5%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>5</b></span><span class="st">🔗 <b>2</b></span><span class="st">💰 <b>¥4,052,907</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="diet_mounjaro_female 5">diet_mounjaro_female 5</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥2,902,114</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="diet_mounjaro_female 2.5">diet_mounjaro_female 2.5</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,150,793</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="diet_JP_Search-CPA-Mou-side effect relief">diet_JP_Search-CPA-Mou-side effect relief</span><span class="share"><div style="width:5%"></div></span><span class="st">5.5%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,428,077</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="diet_mounjaro_female">diet_mounjaro_female</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥1,428,077</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="diet_JP_Search-CPA-Oze/Weg">diet_JP_Search-CPA-Oze/Weg</span><span class="share"><div style="width:3%"></div></span><span class="st">2.7%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥711,417</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="diet_wegovy">diet_wegovy</span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥711,417</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="shopify_jp_search_cpa">shopify_jp_search_cpa</span><span class="share"><div style="width:3%"></div></span><span class="st">2.5%</span><span class="st">📂 <b>4</b></span><span class="st">🔑 <b>13</b></span><span class="st">✏️ <b>4</b></span><span class="st">🔗 <b>4</b></span><span class="st">💰 <b>¥661,202</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="Crystal Tomato 2">Crystal Tomato 2</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥302,789</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="shopify_クリスティーナ">shopify_クリスティーナ</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥219,017</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="shopify_NMN">shopify_NMN</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥139,396</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="shopify_プラセンタ #4">shopify_プラセンタ #4</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="shopify_jp_search_click">shopify_jp_search_click</span><span class="share"><div style="width:2%"></div></span><span class="st">2.2%</span><span class="st">📂 <b>4</b></span><span class="st">🔑 <b>13</b></span><span class="st">✏️ <b>4</b></span><span class="st">🔗 <b>4</b></span><span class="st">💰 <b>¥575,084</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="Crystal Tomato 2">Crystal Tomato 2</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥289,790</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="shopify_クリスティーナ">shopify_クリスティーナ</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥198,682</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="shopify_NMN">shopify_NMN</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥75,445</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="shopify_プラセンタ #4">shopify_プラセンタ #4</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥11,167</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="diet_EN_Search-CPA-Oze/Weg">diet_EN_Search-CPA-Oze/Weg</span><span class="share"><div style="width:2%"></div></span><span class="st">1.7%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥433,871</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="diet_weg-oze_female_noname">diet_weg-oze_female_noname</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥433,871</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="diet_JP_Search-CPA-Mou-Zep">diet_JP_Search-CPA-Mou-Zep</span><span class="share"><div style="width:1%"></div></span><span class="st">0.6%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥153,156</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="diet_zepbound_female_high-intention">diet_zepbound_female_high-intention</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥153,156</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="diet_EN_Search-CPA-Mou-high-doses">diet_EN_Search-CPA-Mou-high-doses</span><span class="share"><div style="width:1%"></div></span><span class="st">0.6%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥152,572</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="high-doses">high-doses</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥152,572</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="diet_EN_Search-CPA-Oze/Weg-high-intention">diet_EN_Search-CPA-Oze/Weg-high-intention</span><span class="share"><div style="width:0%"></div></span><span class="st">0.3%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥77,546</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="diet_weg-oze_female_noname">diet_weg-oze_female_noname</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥77,546</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="diet_JP_Search-CPA-Rybelsus Pre-LP">diet_JP_Search-CPA-Rybelsus Pre-LP</span><span class="share"><div style="width:0%"></div></span><span class="st">0.2%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥62,636</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="diet_rybelsus">diet_rybelsus</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥62,636</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="diet_CN_Search-CPA-Mounjaro-General">diet_CN_Search-CPA-Mounjaro-General</span><span class="share"><div style="width:0%"></div></span><span class="st">0.1%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥13,478</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="General">General</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥13,478</b></span></span></li>
+</ul></li>
+<li><details><summary>… 残り 3 キャンペーン（🔑 1 / 💰 ¥12,479＝費用の0.0%）を表示</summary><ul>
+<li><span class="node camp"><span class="nm" title="diet_JP_Search-CPA-Mou-high doses">diet_JP_Search-CPA-Mou-high doses</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>4</b></span><span class="st">🔗 <b>2</b></span><span class="st">💰 <b>¥12,479</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="diet_mounjaro_female_monthly">diet_mounjaro_female_monthly</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥12,479</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="diet_mounjaro_female_per-pen">diet_mounjaro_female_per-pen</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="diet_JP_Search-CPA-SGLT2">diet_JP_Search-CPA-SGLT2</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="diet_sglt2_female">diet_sglt2_female</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="diet_JP_Search-CPA-Sax">diet_JP_Search-CPA-Sax</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="diet_saxenda_female">diet_saxenda_female</span><span class="st">🔑 <b>0</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+</ul></details></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:73.7%;bottom:0.0%;width:18px;height:18px;background:var(--adv-0)" title="elife｜[マンジャロ] / QS1 / CPC¥1,125 / COST¥6,228,163"></span>
+<span class="dot" style="left:53.6%;bottom:0.0%;width:14px;height:14px;background:var(--adv-0)" title="elife｜マンジャロ / QS1 / CPC¥818 / COST¥2,499,951"></span>
+<span class="dot" style="left:67.9%;bottom:0.0%;width:14px;height:14px;background:var(--adv-0)" title="elife｜マンジャロ 薬 / QS1 / CPC¥1,036 / COST¥1,917,943"></span>
+<span class="dot" style="left:92.2%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="elife｜[マンジャロ 5mg] / QS3 / CPC¥1,406 / COST¥2,137,392"></span>
+<span class="dot" style="left:83.2%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="elife｜[マンジャロ 安い] / QS3 / CPC¥1,269 / COST¥973,098"></span>
+<span class="dot" style="left:100.0%;bottom:44.4%;width:14px;height:14px;background:var(--adv-0)" title="elife｜[マンジャロ 5ミリ] / QS5 / CPC¥1,538 / COST¥665,834"></span>
+<span class="dot" style="left:77.8%;bottom:44.4%;width:14px;height:14px;background:var(--adv-0)" title="elife｜マンジャロ 購入 / QS5 / CPC¥1,187 / COST¥829,685"></span>
+<span class="dot" style="left:100.0%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="elife｜[マンジャロ 2.5mg] / QS3 / CPC¥1,768 / COST¥618,673"></span>
+<span class="dot" style="left:47.6%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="elife｜マンジャロ 5mg / QS3 / CPC¥725 / COST¥932,922"></span>
+<span class="dot" style="left:63.0%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="elife｜マンジャロ 最 安値 / QS3 / CPC¥960 / COST¥1,018,739"></span>
+<span class="dot" style="left:40.1%;bottom:0.0%;width:14px;height:14px;background:var(--adv-0)" title="elife｜マンジャロ 注意点 / QS1 / CPC¥612 / COST¥801,829"></span>
+<span class="dot" style="left:87.5%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜[マンジャロ 安い オンライン] / QS3 / CPC¥1,335 / COST¥423,163"></span>
+<span class="dot" style="left:13.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="elife｜クリスタルトマト / QS7 / CPC¥210 / COST¥193,630"></span>
+<span class="dot" style="left:17.0%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="elife｜ドクターズコスメ / QS5 / CPC¥259 / COST¥114,179"></span>
+<span class="dot" style="left:18.2%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜シミ サプリ / QS1 / CPC¥278 / COST¥101,933"></span>
+<span class="dot" style="left:19.9%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="elife｜美白サプリメント / QS5 / CPC¥303 / COST¥86,691"></span>
+<span class="dot" style="left:29.4%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜サプリメント 通販 / QS1 / CPC¥449 / COST¥52,963"></span>
+<span class="dot" style="left:100.0%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜[マンジャロ 2.5] / QS3 / CPC¥1,525 / COST¥483,486"></span>
+<span class="dot" style="left:49.5%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜ダイエット 注射 マンジャロ / QS3 / CPC¥755 / COST¥388,711"></span>
+<span class="dot" style="left:58.1%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 割引 / QS3 / CPC¥886 / COST¥350,989"></span>
+<span class="dot" style="left:68.6%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="elife｜マンジャロ 安い / QS3 / CPC¥1,047 / COST¥542,345"></span>
+<span class="dot" style="left:53.4%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 価格 / QS1 / CPC¥815 / COST¥255,866"></span>
+<span class="dot" style="left:93.0%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 通販 / QS3 / CPC¥1,419 / COST¥480,963"></span>
+<span class="dot" style="left:44.9%;bottom:11.1%;width:10px;height:10px;background:var(--adv-0)" title="elife｜glp 1 / QS2 / CPC¥685 / COST¥195,267"></span>
+<span class="dot" style="left:43.2%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜glp 1 マンジャロ / QS1 / CPC¥659 / COST¥237,946"></span>
+<span class="dot" style="left:20.4%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜[ウゴービ] / QS3 / CPC¥312 / COST¥208,748"></span>
+<span class="dot" style="left:35.2%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜[マンジャロ 値段] / QS1 / CPC¥537 / COST¥153,628"></span>
+<span class="dot" style="left:18.7%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜[ゼップバウンド] / QS3 / CPC¥286 / COST¥153,156"></span>
+<span class="dot" style="left:61.0%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 大阪 / QS1 / CPC¥931 / COST¥152,632"></span>
+<span class="dot" style="left:36.3%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 5mg 値段 / QS3 / CPC¥553 / COST¥148,210"></span>
+<span class="dot" style="left:66.4%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="elife｜[マンジャロ 安い 5mg] / QS5 / CPC¥1,013 / COST¥106,402"></span>
+<span class="dot" style="left:24.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜ウゴービ / QS3 / CPC¥379 / COST¥122,813"></span>
+<span class="dot" style="left:12.7%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 副作用 / QS3 / CPC¥194 / COST¥104,847"></span>
+<span class="dot" style="left:42.3%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜[オゼンピック] / QS3 / CPC¥645 / COST¥120,673"></span>
+<span class="dot" style="left:92.6%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜[マンジャロ 5] / QS3 / CPC¥1,413 / COST¥98,888"></span>
+<span class="dot" style="left:75.2%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 格安 / QS3 / CPC¥1,146 / COST¥124,966"></span>
+<span class="dot" style="left:64.2%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 東京 / QS1 / CPC¥979 / COST¥97,929"></span>
+<span class="dot" style="left:44.7%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 2.5 mg / QS3 / CPC¥681 / COST¥68,826"></span>
+<span class="dot" style="left:68.0%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 福岡 / QS1 / CPC¥1,037 / COST¥74,640"></span>
+<span class="dot" style="left:23.9%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 値段 / QS1 / CPC¥364 / COST¥54,641"></span>
+<span class="dot" style="left:38.0%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 安全 / QS1 / CPC¥580 / COST¥77,098"></span>
+<span class="dot" style="left:58.9%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 美容 クリニック / QS1 / CPC¥898 / COST¥52,068"></span>
+<span class="dot" style="left:75.7%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="elife｜[マンジャロ 買い たい] / QS5 / CPC¥1,155 / COST¥36,949"></span>
+<span class="dot" style="left:43.3%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="elife｜ウゴービ オンライン / QS6 / CPC¥660 / COST¥47,551"></span>
+<span class="dot" style="left:47.6%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 2.5 / QS3 / CPC¥726 / COST¥39,912"></span>
+<span class="dot" style="left:20.7%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜リベルサス 購入 / QS3 / CPC¥316 / COST¥35,977"></span>
+<span class="dot" style="left:41.5%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 薬価 / QS1 / CPC¥633 / COST¥51,290"></span>
+<span class="dot" style="left:27.3%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="elife｜[リベルサス] / QS3 / CPC¥417 / COST¥26,659"></span>
+<span class="dot" style="left:55.5%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ 大阪 安い / QS1 / CPC¥846 / COST¥43,155"></span>
+<span class="dot" style="left:25.4%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="elife｜マンジャロ ダイエット / QS5 / CPC¥388 / COST¥15,130"></span>
+<span class="dot" style="left:8.1%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="elife｜クリスティーナ / QS7 / CPC¥124 / COST¥72,950"></span>
+<span class="dot" style="left:28.4%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="elife｜飲む日焼け止め / QS1 / CPC¥433 / COST¥19,483"></span>
+<span class="dot" style="left:6.1%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="elife｜クリスティーナ 化粧品 / QS8 / CPC¥93 / COST¥26,966"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥381</span>
+<span class="ax" style="left:50%;bottom:-22px">¥763</span>
+<span class="ax" style="left:75%;bottom:-22px">¥1,144</span>
+<span class="ax" style="left:100%;bottom:-22px">¥1,525</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>elife</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">クリスティーナ 化粧品</td><td data-v="8">8</td><td data-v="93">¥93</td><td data-v="290">290</td><td data-v="26966">¥26,966</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">クリスティーナ</td><td data-v="7">7</td><td data-v="124">¥124</td><td data-v="588">588</td><td data-v="72950">¥72,950</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">クリスタルトマト</td><td data-v="7">7</td><td data-v="210">¥210</td><td data-v="922">922</td><td data-v="193630">¥193,630</td></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">[マンジャロ]</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="1125">¥1,125</td><td data-v="6228163">¥6,228,163</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="818">¥818</td><td data-v="2499951">¥2,499,951</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">[マンジャロ 5mg]</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="1406">¥1,406</td><td data-v="2137392">¥2,137,392</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 薬</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="1036">¥1,036</td><td data-v="1917943">¥1,917,943</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 最 安値</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="960">¥960</td><td data-v="1018739">¥1,018,739</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">[マンジャロ 安い]</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="1269">¥1,269</td><td data-v="973098">¥973,098</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 5mg</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="725">¥725</td><td data-v="932922">¥932,922</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 注意点</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="612">¥612</td><td data-v="801829">¥801,829</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">[マンジャロ 2.5mg]</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="1768">¥1,768</td><td data-v="618673">¥618,673</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 安い</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="1047">¥1,047</td><td data-v="542345">¥542,345</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">[マンジャロ 2.5]</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="1525">¥1,525</td><td data-v="483486">¥483,486</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 通販</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="1419">¥1,419</td><td data-v="480963">¥480,963</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">[マンジャロ 安い オンライン]</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="1335">¥1,335</td><td data-v="423163">¥423,163</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">ダイエット 注射 マンジャロ</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="755">¥755</td><td data-v="388711">¥388,711</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 割引</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="886">¥886</td><td data-v="350989">¥350,989</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 価格</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="815">¥815</td><td data-v="255866">¥255,866</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">glp 1 マンジャロ</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="659">¥659</td><td data-v="237946">¥237,946</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">[ウゴービ]</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="312">¥312</td><td data-v="208748">¥208,748</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">glp 1</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="685">¥685</td><td data-v="195267">¥195,267</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">[マンジャロ 値段]</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="537">¥537</td><td data-v="153628">¥153,628</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">[ゼップバウンド]</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="286">¥286</td><td data-v="153156">¥153,156</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 大阪</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="931">¥931</td><td data-v="152632">¥152,632</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 5mg 値段</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="553">¥553</td><td data-v="148210">¥148,210</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 格安</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="1146">¥1,146</td><td data-v="124966">¥124,966</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">ウゴービ</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="379">¥379</td><td data-v="122813">¥122,813</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">[オゼンピック]</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="645">¥645</td><td data-v="120673">¥120,673</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 副作用</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="194">¥194</td><td data-v="104847">¥104,847</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">シミ サプリ</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="278">¥278</td><td data-v="101933">¥101,933</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">[マンジャロ 5]</td><td data-v="3">3</td><td>関連性・LP</td><td data-v="1413">¥1,413</td><td data-v="98888">¥98,888</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">マンジャロ 東京</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="979">¥979</td><td data-v="97929">¥97,929</td></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td data-v="2.05">2.05</td><td data-v="97.2"><b>97.2%</b></td><td data-v="54.9"><b>54.9%</b></td><td data-v="96.1"><b>96.1%</b></td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="elife">
+<h3 class="adv" id="kwqs-elife" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>elife <span class="badge">取得 2026-04-08</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>2.05</b></span><span class="chip bad">関連性↓<b>97.2%</b></span><span class="chip bad">推定CTR↓<b>54.9%</b></span><span class="chip bad">LP利便性↓<b>96.1%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="elife"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">[マンジャロ]</td><td>完全</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="98488">98,488</td><td data-v="5538">5,538</td><td data-v="0.0562">5.6%</td><td data-v="1124.6">¥1,125</td><td data-v="6228163">¥6,228,163</td><td class="cv sep" data-v="81.5">81.5</td><td class="cv" data-v="76447.3">¥76,447</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">マンジャロ</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="67297">67,297</td><td data-v="3056">3,056</td><td data-v="0.0454">4.5%</td><td data-v="818.0">¥818</td><td data-v="2499951">¥2,499,951</td><td class="cv sep" data-v="24.2">24.2</td><td class="cv" data-v="103175.9">¥103,176</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">[マンジャロ 5mg]</td><td>完全</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="11728">11,728</td><td data-v="1520">1,520</td><td data-v="0.1296">13.0%</td><td data-v="1406.2">¥1,406</td><td data-v="2137392">¥2,137,392</td><td class="cv sep" data-v="106.3">106.3</td><td class="cv" data-v="20101.5">¥20,101</td><td class="l">diet_JP_Search-CPA-Mou-19,800-high-intention</td></tr>
+<tr><td class="l">マンジャロ 薬</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="42058">42,058</td><td data-v="1851">1,851</td><td data-v="0.0440">4.4%</td><td data-v="1036.2">¥1,036</td><td data-v="1917943">¥1,917,943</td><td class="cv sep" data-v="26.5">26.5</td><td class="cv" data-v="72293.4">¥72,293</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">マンジャロ 最 安値</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="9081">9,081</td><td data-v="1061">1,061</td><td data-v="0.1168">11.7%</td><td data-v="960.2">¥960</td><td data-v="1018739">¥1,018,739</td><td class="cv sep" data-v="13.3">13.3</td><td class="cv" data-v="76828.0">¥76,828</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">[マンジャロ 安い]</td><td>完全</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="6932">6,932</td><td data-v="767">767</td><td data-v="0.1106">11.1%</td><td data-v="1268.7">¥1,269</td><td data-v="973098">¥973,098</td><td class="cv sep" data-v="12.8">12.8</td><td class="cv" data-v="75845.5">¥75,846</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">マンジャロ 5mg</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="10388">10,388</td><td data-v="1286">1,286</td><td data-v="0.1238">12.4%</td><td data-v="725.4">¥725</td><td data-v="932922">¥932,922</td><td class="cv sep" data-v="16.1">16.1</td><td class="cv" data-v="57909.5">¥57,909</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">マンジャロ 購入</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="7260">7,260</td><td data-v="699">699</td><td data-v="0.0963">9.6%</td><td data-v="1187.0">¥1,187</td><td data-v="829685">¥829,685</td><td class="cv sep" data-v="12.5">12.5</td><td class="cv" data-v="66163.1">¥66,163</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">マンジャロ 注意点</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="20948">20,948</td><td data-v="1311">1,311</td><td data-v="0.0626">6.3%</td><td data-v="611.6">¥612</td><td data-v="801829">¥801,829</td><td class="cv sep" data-v="10.4">10.4</td><td class="cv" data-v="77247.5">¥77,247</td><td class="l">diet_JP_Search-CPA-Mou-side effect relief</td></tr>
+<tr><td class="l">[マンジャロ 5ミリ]</td><td>完全</td><td data-v="5">5</td><td>平均より下</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="2935">2,935</td><td data-v="433">433</td><td data-v="0.1475">14.8%</td><td data-v="1537.7">¥1,538</td><td data-v="665834">¥665,834</td><td class="cv sep" data-v="18.5">18.5</td><td class="cv" data-v="36010.5">¥36,010</td><td class="l">diet_JP_Search-CPA-Mou-19,800-high-intention</td></tr>
+<tr><td class="l">[マンジャロ 2.5mg]</td><td>完全</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="3683">3,683</td><td data-v="350">350</td><td data-v="0.0950">9.5%</td><td data-v="1767.6">¥1,768</td><td data-v="618673">¥618,673</td><td class="cv sep" data-v="21.6">21.6</td><td class="cv" data-v="28668.8">¥28,669</td><td class="l">diet_JP_Search-CPA-Mou-19,800-high-intention</td></tr>
+<tr><td class="l">マンジャロ 安い</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="4871">4,871</td><td data-v="518">518</td><td data-v="0.1063">10.6%</td><td data-v="1047.0">¥1,047</td><td data-v="542345">¥542,345</td><td class="cv sep" data-v="9.1">9.1</td><td class="cv" data-v="59795.5">¥59,795</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">[マンジャロ 2.5]</td><td>完全</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="2945">2,945</td><td data-v="317">317</td><td data-v="0.1076">10.8%</td><td data-v="1525.2">¥1,525</td><td data-v="483486">¥483,486</td><td class="cv sep" data-v="15.9">15.9</td><td class="cv" data-v="30350.7">¥30,351</td><td class="l">diet_JP_Search-CPA-Mou-19,800-high-intention</td></tr>
+<tr><td class="l">マンジャロ 通販</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="3670">3,670</td><td data-v="339">339</td><td data-v="0.0924">9.2%</td><td data-v="1418.8">¥1,419</td><td data-v="480963">¥480,963</td><td class="cv sep" data-v="5.8">5.8</td><td class="cv" data-v="83500.5">¥83,501</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">[マンジャロ 安い オンライン]</td><td>完全</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="3109">3,109</td><td data-v="317">317</td><td data-v="0.1020">10.2%</td><td data-v="1334.9">¥1,335</td><td data-v="423163">¥423,163</td><td class="cv sep" data-v="3.9">3.9</td><td class="cv" data-v="109627.7">¥109,628</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">ダイエット 注射 マンジャロ</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="7902">7,902</td><td data-v="515">515</td><td data-v="0.0652">6.5%</td><td data-v="754.8">¥755</td><td data-v="388711">¥388,711</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="155484.4">¥155,484</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">マンジャロ 割引</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="3993">3,993</td><td data-v="396">396</td><td data-v="0.0992">9.9%</td><td data-v="886.3">¥886</td><td data-v="350989">¥350,989</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="116607.6">¥116,608</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">weight loss pen japan</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2630">2,630</td><td data-v="196">196</td><td data-v="0.0745">7.5%</td><td data-v="1522.7">¥1,523</td><td data-v="298447">¥298,447</td><td class="cv sep" data-v="3.7">3.7</td><td class="cv" data-v="80012.6">¥80,013</td><td class="l">diet_EN_Search-CPA-Oze/Weg</td></tr>
+<tr><td class="l">マンジャロ 価格</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="4548">4,548</td><td data-v="314">314</td><td data-v="0.0690">6.9%</td><td data-v="814.9">¥815</td><td data-v="255866">¥255,866</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="127296.5">¥127,297</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">glp 1 マンジャロ</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="6671">6,671</td><td data-v="361">361</td><td data-v="0.0541">5.4%</td><td data-v="659.1">¥659</td><td data-v="237946">¥237,946</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="59486.5">¥59,486</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">[ウゴービ]</td><td>完全</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="12980">12,980</td><td data-v="670">670</td><td data-v="0.0516">5.2%</td><td data-v="311.6">¥312</td><td data-v="208748">¥208,748</td><td class="cv sep" data-v="6.6">6.6</td><td class="cv" data-v="31628.5">¥31,628</td><td class="l">diet_JP_Search-CPA-Oze/Weg</td></tr>
+<tr><td class="l">スキンケア</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="11132">11,132</td><td data-v="686">686</td><td data-v="0.0616">6.2%</td><td data-v="296.8">¥297</td><td data-v="203604">¥203,604</td><td class="cv sep" data-v="5.9">5.9</td><td class="cv" data-v="34744.7">¥34,745</td><td class="l">shopify_jp_search_click</td></tr>
+<tr><td class="l">glp 1</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="4820">4,820</td><td data-v="285">285</td><td data-v="0.0591">5.9%</td><td data-v="685.1">¥685</td><td data-v="195267">¥195,267</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="64872.8">¥64,873</td><td class="l">diet_JP_Search-CPA-Oze/Weg</td></tr>
+<tr><td class="l">クリスタルトマト</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="7979">7,979</td><td data-v="922">922</td><td data-v="0.1156">11.6%</td><td data-v="210.0">¥210</td><td data-v="193630">¥193,630</td><td class="cv sep" data-v="22.0">22.0</td><td class="cv" data-v="8801.4">¥8,801</td><td class="l">shopify_jp_search_cpa</td></tr>
+<tr><td class="l">[マンジャロ 値段]</td><td>完全</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="4234">4,234</td><td data-v="286">286</td><td data-v="0.0675">6.8%</td><td data-v="537.2">¥537</td><td data-v="153628">¥153,628</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="102418.7">¥102,419</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">[ゼップバウンド]</td><td>完全</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="9911">9,911</td><td data-v="536">536</td><td data-v="0.0541">5.4%</td><td data-v="285.7">¥286</td><td data-v="153156">¥153,156</td><td class="cv sep" data-v="3.6">3.6</td><td class="cv" data-v="42781.0">¥42,781</td><td class="l">diet_JP_Search-CPA-Mou-Zep</td></tr>
+<tr><td class="l">マンジャロ 大阪</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="2907">2,907</td><td data-v="164">164</td><td data-v="0.0564">5.6%</td><td data-v="930.7">¥931</td><td data-v="152632">¥152,632</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="114760.9">¥114,761</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">[mounjaro10]</td><td>完全</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2066">2,066</td><td data-v="125">125</td><td data-v="0.0605">6.1%</td><td data-v="1220.6">¥1,221</td><td data-v="152572">¥152,572</td><td class="cv sep" data-v="1.6">1.6</td><td class="cv" data-v="97802.6">¥97,803</td><td class="l">diet_EN_Search-CPA-Mou-high-doses</td></tr>
+<tr><td class="l">マンジャロ 5mg 値段</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="2592">2,592</td><td data-v="268">268</td><td data-v="0.1034">10.3%</td><td data-v="553.0">¥553</td><td data-v="148210">¥148,210</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="99469.8">¥99,470</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">マンジャロ 格安</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="1000">1,000</td><td data-v="109">109</td><td data-v="0.1090">10.9%</td><td data-v="1146.5">¥1,146</td><td data-v="124966">¥124,966</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="83310.7">¥83,311</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">ウゴービ</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="5651">5,651</td><td data-v="324">324</td><td data-v="0.0573">5.7%</td><td data-v="379.1">¥379</td><td data-v="122813">¥122,813</td><td class="cv sep" data-v="1.1">1.1</td><td class="cv" data-v="113715.7">¥113,716</td><td class="l">diet_JP_Search-CPA-Oze/Weg</td></tr>
+<tr><td class="l">[オゼンピック]</td><td>完全</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="5849">5,849</td><td data-v="187">187</td><td data-v="0.0320">3.2%</td><td data-v="645.3">¥645</td><td data-v="120673">¥120,673</td><td class="cv sep" data-v="2.1">2.1</td><td class="cv" data-v="57463.3">¥57,463</td><td class="l">diet_JP_Search-CPA-Oze/Weg</td></tr>
+<tr><td class="l">ドクターズコスメ</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="5610">5,610</td><td data-v="440">440</td><td data-v="0.0784">7.8%</td><td data-v="259.5">¥259</td><td data-v="114179">¥114,179</td><td class="cv sep" data-v="4.4">4.4</td><td class="cv" data-v="25949.8">¥25,950</td><td class="l">shopify_jp_search_cpa</td></tr>
+<tr><td class="l">[マンジャロ 安い 5mg]</td><td>完全</td><td data-v="5">5</td><td>平均より下</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="973">973</td><td data-v="105">105</td><td data-v="0.1079">10.8%</td><td data-v="1013.4">¥1,013</td><td data-v="106402">¥106,402</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="53201.0">¥53,201</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">マンジャロ 副作用</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="10970">10,970</td><td data-v="540">540</td><td data-v="0.0492">4.9%</td><td data-v="194.2">¥194</td><td data-v="104847">¥104,847</td><td class="cv sep" data-v="1.2">1.2</td><td class="cv" data-v="88106.7">¥88,107</td><td class="l">diet_JP_Search-CPA-Mou-side effect relief</td></tr>
+<tr><td class="l">nmn サプリ おすすめ</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2037">2,037</td><td data-v="226">226</td><td data-v="0.1109">11.1%</td><td data-v="458.5">¥459</td><td data-v="103626">¥103,626</td><td class="cv sep" data-v="12.1">12.1</td><td class="cv" data-v="8535.9">¥8,536</td><td class="l">shopify_jp_search_cpa</td></tr>
+<tr><td class="l">シミ サプリ</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="4877">4,877</td><td data-v="367">367</td><td data-v="0.0753">7.5%</td><td data-v="277.7">¥278</td><td data-v="101933">¥101,933</td><td class="cv sep" data-v="7.2">7.2</td><td class="cv" data-v="14196.8">¥14,197</td><td class="l">shopify_jp_search_cpa</td></tr>
+<tr><td class="l">[マンジャロ 5]</td><td>完全</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="504">504</td><td data-v="70">70</td><td data-v="0.1389">13.9%</td><td data-v="1412.7">¥1,413</td><td data-v="98888">¥98,888</td><td class="cv sep" data-v="2.3">2.3</td><td class="cv" data-v="42259.8">¥42,260</td><td class="l">diet_JP_Search-CPA-Mou-19,800-high-intention</td></tr>
+<tr><td class="l">マンジャロ 東京</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="2115">2,115</td><td data-v="100">100</td><td data-v="0.0473">4.7%</td><td data-v="979.3">¥979</td><td data-v="97929">¥97,929</td><td class="cv sep" data-v="2.3">2.3</td><td class="cv" data-v="42210.8">¥42,211</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">glp-1 online clinic japan</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="575">575</td><td data-v="58">58</td><td data-v="0.1009">10.1%</td><td data-v="1628.2">¥1,628</td><td data-v="94436">¥94,436</td><td class="cv sep" data-v="2.1">2.1</td><td class="cv" data-v="44756.4">¥44,756</td><td class="l">diet_EN_Search-CPA-Oze/Weg</td></tr>
+<tr><td class="l">美白サプリメント</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="3996">3,996</td><td data-v="286">286</td><td data-v="0.0716">7.2%</td><td data-v="303.1">¥303</td><td data-v="86691">¥86,691</td><td class="cv sep" data-v="3.9">3.9</td><td class="cv" data-v="22002.8">¥22,003</td><td class="l">shopify_jp_search_cpa</td></tr>
+<tr><td class="l">サプリ 美容</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="3197">3,197</td><td data-v="199">199</td><td data-v="0.0622">6.2%</td><td data-v="413.0">¥413</td><td data-v="82188">¥82,188</td><td class="cv sep" data-v="4.5">4.5</td><td class="cv" data-v="18264.0">¥18,264</td><td class="l">shopify_jp_search_cpa</td></tr>
+<tr><td class="l">マンジャロ 安全</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="2288">2,288</td><td data-v="133">133</td><td data-v="0.0581">5.8%</td><td data-v="579.7">¥580</td><td data-v="77098">¥77,098</td><td class="cv sep" data-v="1.1">1.1</td><td class="cv" data-v="72054.2">¥72,054</td><td class="l">diet_JP_Search-CPA-Mou-side effect relief</td></tr>
+<tr><td class="l">マンジャロ 福岡</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1410">1,410</td><td data-v="72">72</td><td data-v="0.0511">5.1%</td><td data-v="1036.7">¥1,037</td><td data-v="74640">¥74,640</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="49760.0">¥49,760</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">サプリ nmn</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1176">1,176</td><td data-v="151">151</td><td data-v="0.1284">12.8%</td><td data-v="493.0">¥493</td><td data-v="74441">¥74,441</td><td class="cv sep" data-v="9.8">9.8</td><td class="cv" data-v="7635.0">¥7,635</td><td class="l">shopify_jp_search_cpa</td></tr>
+<tr><td class="l">クリスティーナ</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="7897">7,897</td><td data-v="588">588</td><td data-v="0.0745">7.4%</td><td data-v="124.1">¥124</td><td data-v="72950">¥72,950</td><td class="cv sep" data-v="6.2">6.2</td><td class="cv" data-v="11766.1">¥11,766</td><td class="l">shopify_jp_search_cpa</td></tr>
+<tr><td class="l">マンジャロ 2.5 mg</td><td>フレーズ</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="1077">1,077</td><td data-v="101">101</td><td data-v="0.0938">9.4%</td><td data-v="681.4">¥681</td><td data-v="68826">¥68,826</td><td class="cv sep" data-v="1.1">1.1</td><td class="cv" data-v="62005.4">¥62,005</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">美肌ケア</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="1703">1,703</td><td data-v="108">108</td><td data-v="0.0634">6.3%</td><td data-v="515.7">¥516</td><td data-v="55691">¥55,691</td><td class="cv sep" data-v="1.1">1.1</td><td class="cv" data-v="48851.8">¥48,852</td><td class="l">shopify_jp_search_cpa</td></tr>
+<tr><td class="l">マンジャロ 値段</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="2231">2,231</td><td data-v="150">150</td><td data-v="0.0672">6.7%</td><td data-v="364.3">¥364</td><td data-v="54641">¥54,641</td><td class="cv sep" data-v="1.1">1.1</td><td class="cv" data-v="47930.7">¥47,931</td><td class="l">diet_JP_Search-CPA-Mou--19,800</td></tr>
+<tr><td class="l">サプリメント 通販</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1754">1,754</td><td data-v="118">118</td><td data-v="0.0673">6.7%</td><td data-v="448.8">¥449</td><td data-v="52963">¥52,963</td><td class="cv sep" data-v="1.6">1.6</td><td class="cv" data-v="33734.4">¥33,734</td><td class="l">shopify_jp_search_click</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="elife" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>elife</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">elife.clinic<br><span>elife.clinic › lp › pre-landing-lang-mou-special</span></div><div class="t">33%オフ 始めたいなら&quot;今&quot;がお得 - elifeなら診察料も送料も無料 - マンジャ ロ®最安追求お得プラン</div><div class="d">累計40万件以上の実績。副作用や体質の不安も相談可能。プライバシー厳守で安心。 【電話・メール・LINE】で対応。スキマ時間でも診察可能。</div><div class="meta2">IMP 78,876 ／ CTR 6.7% ／ COST ¥7,244,557<br>diet_JP_Search-CPA-Mou--19,800</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">elife.clinic<br><span>elife.clinic › lp › pre-landing-lang-mou-special</span></div><div class="t">マンジャ ロ® 医療ダイエット - マンジャ ロ®2.5mg: 4,950円/本 - マンジャ ロ® お得なプラン</div><div class="d">累計40万件以上の実績。副作用や体質の不安も相談可能。プライバシー厳守で安心。 日本全国無料配送。 最短当日発送。</div><div class="meta2">IMP 65,907 ／ CTR 5.0% ／ COST ¥2,763,070<br>diet_JP_Search-CPA-Mou--19,800</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">elife.clinic<br><span>elife.clinic › lp › diet_weg_ggl_01</span></div><div class="t">ウゴー ビ® ダイエット注射 - 夜11時半まで、すきま時間で診療 - オゼンピッ ク® 5,000円オフ</div><div class="d">【1ヶ月 19,980円〜】診察料送料0円！料金がかかるのはお薬代だけ。 専門医がオンラインで丁寧に診察。副作用や体質の不安も相談可能。プライバシー厳守で安心。</div><div class="meta2">IMP 59,949 ／ CTR 3.8% ／ COST ¥1,012,501<br>diet_JP_Search-CPA-Oze/Weg</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">elife.clinic<br><span>elife.clinic › lp › diet-mou-ggl-side-effect-relief</span></div><div class="t">お得な価格帯 診察料 送料0円 - 最短 当日予約・当日発送可能 - 累計40万件以上の実績</div><div class="d">副作用が心配で迷っている方に。ケアセット付きプランでスタートの不安を軽減。 専門医がオンラインで丁寧に診察。副作用や体質の不安も相談可能。プライバシー厳守で安心。</div><div class="meta2">IMP 38,468 ／ CTR 5.6% ／ COST ¥1,115,654<br>diet_JP_Search-CPA-Mou-side effect relie</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">5分でオンラインで完了/診察無料</td><td data-v="17">17</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">夜11時半まで、すきま時間で診療</td><td data-v="14">14</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">最短 当日予約・当日発送可能</td><td data-v="12">12</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">通販のようにオンラインで購入可</td><td data-v="10">10</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">累計40万件以上の実績</td><td data-v="10">10</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">お得な価格帯 診察料 送料0円</td><td data-v="9">9</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ 2.5mg 10,180円オフ</td><td data-v="8">8</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">話題のマンジャ ロ®オンラインで</td><td data-v="7">7</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 2.5mg 19,800円/月</td><td data-v="7">7</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【限定】マンジャ ロ最大33%オフ</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">24時間 診察予約可能（診察0円）</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">オンライン診察だから今すぐ可能</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Proven Care: 400,000+ cases</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Approved by MHLW for Obesity</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Weg® Oze® ¥5,000off</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Weg® Weight Loss Injection</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Weg® Pens from ¥19,980/Month</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【Limited-time ¥2,500 off】</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Oze® Pens from ¥21,900/Month</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Official Weg® Pens Provider</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Weg® Oze® Online in Japan</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Doctor-Supervised Weight Care</td><td data-v="6">6</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 医療ダイエット</td><td data-v="5">5</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® オンライン</td><td data-v="5">5</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">elifeなら診察料も送料も無料</td><td data-v="5">5</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 5mg 7,180円オフ</td><td data-v="4">4</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ®2.5mg: 4,950円/本</td><td data-v="4">4</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Get Weg® Delivered Tomorrow</td><td data-v="4">4</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Free Medical Diet Consultation</td><td data-v="4">4</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Next-Day Weg® Delivery</td><td data-v="4">4</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">日本全国無料配送 最短当日発送</td><td data-v="4">4</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ®7.5mg 10mg 12.5mg</td><td data-v="4">4</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【期間限定】 2,500円オフ</td><td data-v="4">4</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ2.5mgから12.5mgまで</td><td data-v="4">4</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">飲みやすい錠剤タイプ</td><td data-v="4">4</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">最短当日配送</td><td data-v="4">4</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">初回限定クーポンあり</td><td data-v="4">4</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【Limited-time ¥2,500 Off】</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Japan-wide Free Shipping</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Clear Pricing, No Extra Fee</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Mou® Pen 10mg: ¥74,980/mo</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Mou® Diet Pens 7.5mg -12.5mg</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Mou®New Users: ¥5,000 off</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Mou® Pen 12.5mg: ¥99,980/mo</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Buy {KeyWord: Diet} Pens in Japan</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Mou® Pen 7.5mg: ¥49,980/mo</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Mou® Diet Pens Online in Japan</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Safe Weight-Loss by Doctors</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ®5mg 1本8,200円から</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">期間限定・在庫限り</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">24/7 Online Medical Diet</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">New to Japan: Weg® Pens</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ®5mg1本8,200円から</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">33%オフ 始めたいなら&quot;今&quot;がお得</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">医師監修の安心ダイエット</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ2.5mg1本4,950円から</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 性別問わず効果的</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">医療の力で本気のラク痩せ</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">健康的に食欲を抑制しダイエット</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">診察からお届けまで自宅で完結</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">無料カウンセリング実施中</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">痩身目的で開発 最新の注射薬</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">診察も処方もオンラインで完結</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">朝7時～夜23時半まで医師が診察</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【全国配送可】 日本で新登場</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">一流美容クリニックで話題</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">24/7 Online Weight Loss Clinic</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">New &amp; Rare to Japan: Weg® Pens</td><td data-v="3">3</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Free Online Consultation</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Doctor-prescribed {KeyWord: Diet}</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">elife: 400k+ cases Supported</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【今だけ】初回最大10,180円オフ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">The Newest Medical Diet</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Science-backed Weight Loss</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">全国どこでもオンライン</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【限定】初月最大33%オフ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">食欲が下がり、自然な体重減少</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ®5mg 7,180円オフ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">話題のマンジャ ロ®お得な価格で</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® お得なプラン</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【限定】副作用ケアセット特典</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">2,500円オフ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 2.5mg</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">はじめての不安に寄り添う</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ®の副作用対策</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">人気の内服タイプ体重管理</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">10日間2,780円</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">お安く1日200円から始められる</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">注射不要のリベルサ錠</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">リベルサ錠3mg、7mg、14mg</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【全国配送可】リベルサ錠飲み薬</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">唯一の経口タイプを今だけお得に</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">リベルサ錠3ミリ オンライン診療</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">飲むタイプで手軽に摂取</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">3mg 30錠 5,980円〜</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">毎朝飲むだけで簡単に食欲抑制</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">リベルサ錠 7mg 月額 13,480円〜</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 12.5mg 24,165円</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 10mg 17,915円/本</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 7.5mg 12,495円/本</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">医師管理で高用量まで対応</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">高用量を検討中の方へ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">次のステップに高用量対応</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 10mg 74,980円</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 7.5mg 49,980円</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 12.5mg 99,980円</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">厚労省初承認 肥満のための注射</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">気軽にオンラインで医師に相談</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">来院不要で自宅にお薬が届く</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">オゼンピッ ク® 5,000円オフ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">世界で話題の最新医療ダイエット</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">取り扱いクリニックが限られ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ウゴー ビ®注射 19,980円〜/本</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">米国で話題の注射薬が日本上陸</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">初回500円オフクーポン</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">全品送料無料</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">医療用スキンケア 正規取扱品</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ドクターズコスメが最短翌日到着</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【27%OFF】定期便購入でお得</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ドクターズコスメ 正規取扱品</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【公式】elife（イーライフ）</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">日本初の医家専用NMNサプリ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【公式】elife-飲むプラセンタ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">シミ、しわなどの肌のトラブルに</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">最大28,000円OFF＆送料無料</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ピュアプラセンタDR</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">肌のハリ・弾力を実感</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">更年期症状におすすめプラセンタ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">更年期症状のお悩みにプラセンタ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">月¥17,980〜体の内側から若返る</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">日本女性のヒューマンプラセンタ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">おすすめプラセンタサプリメント</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">{Keyword:おすすめプラセンタ}</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">グルタチオン生成を促進</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">美白サプリの新定番</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">医療機関専売 クリスタルトマト</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">紫外線から肌を守る</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">即日発送・送料無料・全国対応</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">既存のシミ・そばかすをケア</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">お得な初回特別価格</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">お肌の状況に合わせて相談</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">DNA保護・美肌成分サポート</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">高い抗酸化・抗炎症作用</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">オンラインで簡単購入</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">透明感のある肌へ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">一人一人の肌悩みに</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">たった1日1粒だけの簡単ケア</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">LINEや電話でアフターフォローも</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【クリスティーナ正規販売店】</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">テラスキン ラインリペア</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">トータルセレニティーセラム</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">スタビライジングトナー</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">elife公式ショップ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">アブソリュートリラクサーで保湿</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">あの美のカリスマからのおすすめ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">{Keyword:クリスティーナ正規販売店}</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ストレス肌用の化粧品で肌改善</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ハーモナイジングナイトクリーム</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">クリスティーナで肌ストレス解消</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">肌を保護&amp;強化トリートメント</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">クリスティーナ買うならelife</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">乾燥肌の悩みにテラスキン美容液</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">今だけ初回2,000円割引中</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">{Keyword:メディカルダイエット}</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">スマホで完結最短翌日お薬が届く</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">オンラインでダイエット薬処方</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">糖の排出を進めてダイエット</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【全国配送可】阻害薬ダイエット</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">フォシー ガ®5mg 9,980円/月から</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">錠剤タイプのダイエット阻害薬</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ゼップ® 29,980円〜/月</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">期間限定 2,500円OFFクーポン</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ゼップ® 1本7,495円</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【今だけ】初回最大5,000円オフ</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">新登場 ゼップ®取扱い開始</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">最新の医療ダイエット注射</td><td data-v="2">2</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Easy Online Clinic Experience</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Stronger Medical Diet Options</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">For those with higher BMI</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Medical Diet Pens in JP</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">¥0 Consultation fee</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Weight Loss Injection in Japan</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">季節限定キャンペーン</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® お得な値段で</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ®2.5ミリ 4,950円/本</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 2.5ミリ 19,800円</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">通常より10,180円オフ</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Same-day Dispatch Possible</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">診察料 送料0円</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 5mg 32,800円/月</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">実績40万件の信頼</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ5mg: 32,800円</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【限定】 初月最大33%オフ</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【診察料・送料込】19,800円/月</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ 5mg 1本8,200円から</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® 限定キャンペーン</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ®5mg 1本8,200円〜</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ®2.5mg1本4,950円〜</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【全国配送可】マンジャ ロ®</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">朝7時から夜11時半まで受診可能</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ 始めやすい19,800円</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ®最安追求お得プラン</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">欧米実績の新世代医療ダイエット</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">医療の力で本気のダイエット</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ 2.5mg 19,800円/月</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">elifeだけの副作用ケアセット</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【elife 限定】副作用ケアセット</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ここだけの副作用対策セット</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">今だけ副作用対策セット付き</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">副作用が怖い方へケア付プラン</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">初めてでもケアセットで安心</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">リベルサ錠でダイエット</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">人気のお試しプランで開始</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">肥満症治療の高用量オプション</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">BMIが高めでお悩みの方へ</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">肥満症・BMIが高めの方へ</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">診察からお届けまで来院不要</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【公式】elifeクリニック</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">医療ダイエット始めるなら今</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">オゼンピック® ウゴー ビ® 注射</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">米国で話題の新医療ダイエット</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ウゴー ビ® ダイエット注射</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">Free Weg® Delivery</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">スー グラ® 5,980円/月からト</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">カナ グル® 100mg 8,980円/月</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">フォシー ガがお得に始められる</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">フォシー ガ/カナ グル</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">診察も処方もオンラインで楽々</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">フォシー ガで医療ダイエット</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">スー グラ® 25mg 5,980円/月から</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【最安値追求】200円〜/日</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">1日1錠飲むだけ</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">フォシー ガ カナグ ル 診察0円</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">メディカルダイエット 阻害薬</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ゼップ® 2.5mg 5mg</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">欧米実績の新しい肥満症ケア</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ® からの進化形</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">高効力の新注射薬、日本初上陸</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">次世代ゼップ®登場</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">体重管理の新しい選択肢 ゼップ®</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">日本でゼップ ® 医療ダイエット</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">欧米実績の新しい肥満症治療薬</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">マンジャ ロ®経験者の次に</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">今だけお得にゼップ®を開始</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【期間限定】 2,500円クーポン</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ゼップ® キャンペーン実施中</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">GLP1ダイエット ウゴー ビ 注射</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ウゴー ビ注射 19,980円〜/本</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">待ち時間なしで診察も時短</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">厚労省初承認 肥満のためのGLP-1</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">ウゴー ビ クール便配送も無料</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">週1回注射だけで簡単に食欲抑制</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">オンラインでGLP-1注射薬なら</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">メディカルダイエット 注射</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">替西5mg 限定初月48,980円</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">东京、大阪：日本全国免费配送</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">替西超值限时价格 网上诊疗</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">无运费，无隐藏费用，可当日发货</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">限時2,500円優惠券</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">专业持牌日本医生，英语诊疗服务</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">利用医学的力量，健康地减重</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">日本日英双语诊所 简单对话诊疗</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">只用手机就能实现的网上诊疗</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">40万+ 个案 广受信任的专业服务</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">免费初诊 0复诊费用 0运费</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">日本人气瘦身产品：マンジャ ロ</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">想减肥？ 试试人气GLP-1科学减重</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">替西2.5mg 一个月24,980円</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">替西 2.5mg-12.5mg 存货最全诊所</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">痩せホルモンと同じ働きをお薬で</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">サクセンダ1本から購入可能</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">毎日およそ1分で完了</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">GLP‐1サクセンダでダイエット</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">サクセンダ クール便配送も無料</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">サクセンダ ¥14,800〜/1本</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">冷蔵配送なので夏でも安心</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">1ヶ月の必要本数も医師に相談</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">【全国配送可】GLP-1サクセンダ</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">注射タイプのGLP-1サクセンダ</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">食欲抑制効果で自然な体重管理</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">オンラインで購入するならelife</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">使い方や使用量も医師に相談可能</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">GLP-1受容体作動薬 サクセンダ</td><td data-v="1">1</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l wrap">健康的に痩せるなら医療の力で</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="elife">
+<h3 class="adv" id="adlib-elife" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>elife <span class="badge">取得 2026-04-08</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>45本</b></span><span class="chip">CPN<b>15個</b></span><span class="chip">ADG<b>24個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>17本</b></span></div>
+<p class="note">主要LP: <span title="https://elife.clinic/lp/pre-landing-lang-mou-special">https://elife.clinic/lp/pre-landing-lang-mou-special（8本）</span> ／ <span title="https://elife.clinic/en/lp/diet-weg-ggl-h">https://elife.clinic/en/lp/diet-weg-ggl-h（6本）</span> ／ <span title="https://elife.clinic/en/lp/diet-mou-ggl-high-doses">https://elife.clinic/en/lp/diet-mou-ggl-high-doses（3本）</span> ／ <span title="https://elife.clinic/lp/pre-landing-mou-special-side-effect-relief">https://elife.clinic/lp/pre-landing-mou-special-side-effect-relief（3本）</span> ／ <span title="https://elife.clinic/lp/diet_weg_ggl_01">https://elife.clinic/lp/diet_weg_ggl_01（3本）</span></p>
+<p class="note">カスタマイザ: {Keyword}×6 ／ {KeyWord}×5</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="elife"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">5分でオンラインで完了/診察無料</td><td data-v="17">17</td></tr>
+<tr><td class="l wrap">夜11時半まで、すきま時間で診療</td><td data-v="14">14</td></tr>
+<tr><td class="l wrap">最短 当日予約・当日発送可能</td><td data-v="12">12</td></tr>
+<tr><td class="l wrap">通販のようにオンラインで購入可</td><td data-v="10">10</td></tr>
+<tr><td class="l wrap">累計40万件以上の実績</td><td data-v="10">10</td></tr>
+<tr><td class="l wrap">お得な価格帯 診察料 送料0円</td><td data-v="9">9</td></tr>
+<tr><td class="l wrap">マンジャ ロ 2.5mg 10,180円オフ</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">話題のマンジャ ロ®オンラインで</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">マンジャ ロ® 2.5mg 19,800円/月</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">【限定】マンジャ ロ最大33%オフ</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">24時間 診察予約可能（診察0円）</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">オンライン診察だから今すぐ可能</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">Proven Care: 400,000+ cases</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">Approved by MHLW for Obesity</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">Weg® Oze® ¥5,000off</td><td data-v="6">6</td></tr>
+</table></div></div><div>
+<table data-adv="elife"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">豊富な実績と万全のアフターサポート。カウンセリングでお客様のお悩みと希望に寄り添います。</td><td data-v="14">14</td></tr>
+<tr><td class="l wrap">累計40万件以上の実績。副作用や体質の不安も相談可能。プライバシー厳守で安心。</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">専門医がオンラインで丁寧に診察。副作用や体質の不安も相談可能。プライバシー厳守で安心。</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">【限定】マンジャ ロ® 2.5mg1本4,950円〜/ 月。診察料送料0円！料金がかかるのはお薬代だけ。</td><td data-v="7">7</td></tr>
+<tr><td class="l wrap">日本全国無料配送。 最短当日発送。</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">豊富な実績と万全のアフターサポート。カウンセリングでお客様のお悩みと希望に寄り添います</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">Fast, discreet weight loss – with 24/7 online booking and free next day delivery.</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">Our licensed online clinic offers personalised weight loss plans, trusted by 400K+ users.</td><td data-v="6">6</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="elife">
+<h3 class="adv" id="query-elife" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>elife <span class="badge">取得 2026-04-08</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">ショッピング｜なし</td><td data-v="566">566</td><td data-v="41271">41,271</td><td data-v="14568872">¥14,568,872</td><td data-v="0.3562">35.6%</td><td class="cv sep" data-v="6956.6">6,956.6</td></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="317">317</td><td data-v="33944">33,944</td><td data-v="11336277">¥11,336,277</td><td data-v="0.2772">27.7%</td><td class="cv sep" data-v="4134.1">4,134.1</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="24">24</td><td data-v="9623">9,623</td><td data-v="11175587">¥11,175,587</td><td data-v="0.2732">27.3%</td><td class="cv sep" data-v="259.8">259.8</td></tr>
+<tr><td class="l">P-MAX｜除外済み</td><td data-v="9">9</td><td data-v="2560">2,560</td><td data-v="3408639">¥3,408,639</td><td data-v="0.0833">8.3%</td><td class="cv sep" data-v="161.0">161.0</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="3">3</td><td data-v="139">139</td><td data-v="250211">¥250,211</td><td data-v="0.0061">0.6%</td><td class="cv sep" data-v="10.8">10.8</td></tr>
+<tr><td class="l">ショッピング｜除外済み</td><td data-v="8">8</td><td data-v="150">150</td><td data-v="160478">¥160,478</td><td data-v="0.0039">0.4%</td><td class="cv sep" data-v="107.3">107.3</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="elife"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">マンジャロ</td><td>追加済み</td><td>検索</td><td data-v="27814">27,814</td><td data-v="17304930">¥17,304,930</td><td class="cv sep" data-v="3367.7">3,367.7</td><td class="cv" data-v="5138.5">¥5,139</td></tr>
+<tr><td class="l">リベルサス</td><td>なし</td><td>P-MAX</td><td data-v="6706">6,706</td><td data-v="1491601">¥1,491,601</td><td class="cv sep" data-v="884.2">884.2</td><td class="cv" data-v="1686.9">¥1,687</td></tr>
+<tr><td class="l">elife</td><td>なし</td><td>P-MAX</td><td data-v="2227">2,227</td><td data-v="2456991">¥2,456,991</td><td class="cv sep" data-v="313.6">313.6</td><td class="cv" data-v="7833.8">¥7,834</td></tr>
+<tr><td class="l">マンジャロ 安い</td><td>追加済み</td><td>検索</td><td data-v="2119">2,119</td><td data-v="2221842">¥2,221,842</td><td class="cv sep" data-v="293.9">293.9</td><td class="cv" data-v="7558.8">¥7,559</td></tr>
+<tr><td class="l">白玉 ペプチド</td><td>なし</td><td>ショッピング</td><td data-v="1157">1,157</td><td data-v="236150">¥236,150</td><td class="cv sep" data-v="221.2">221.2</td><td class="cv" data-v="1067.4">¥1,067</td></tr>
+<tr><td class="l">マンジャロ 5mg</td><td>なし</td><td>ショッピング</td><td data-v="1694">1,694</td><td data-v="2041303">¥2,041,303</td><td class="cv sep" data-v="217.4">217.4</td><td class="cv" data-v="9391.8">¥9,392</td></tr>
+<tr><td class="l">マンジャロ 最 安値</td><td>なし</td><td>P-MAX</td><td data-v="754">754</td><td data-v="465325">¥465,325</td><td class="cv sep" data-v="208.5">208.5</td><td class="cv" data-v="2231.8">¥2,232</td></tr>
+<tr><td class="l">mounjaro</td><td>なし</td><td>P-MAX</td><td data-v="946">946</td><td data-v="754527">¥754,527</td><td class="cv sep" data-v="203.2">203.2</td><td class="cv" data-v="3713.4">¥3,713</td></tr>
+<tr><td class="l">ワカサプリ</td><td>なし</td><td>P-MAX</td><td data-v="2633">2,633</td><td data-v="546236">¥546,236</td><td class="cv sep" data-v="190.3">190.3</td><td class="cv" data-v="2869.9">¥2,870</td></tr>
+<tr><td class="l">イー ライフ</td><td>なし</td><td>P-MAX</td><td data-v="724">724</td><td data-v="990255">¥990,255</td><td class="cv sep" data-v="152.7">152.7</td><td class="cv" data-v="6486.7">¥6,487</td></tr>
+<tr><td class="l">elife マンジャロ</td><td>除外済み</td><td>ショッピング</td><td data-v="215">215</td><td data-v="256982">¥256,982</td><td class="cv sep" data-v="136.5">136.5</td><td class="cv" data-v="1882.8">¥1,883</td></tr>
+<tr><td class="l">メトホルミン</td><td>なし</td><td>ショッピング</td><td data-v="2311">2,311</td><td data-v="274509">¥274,509</td><td class="cv sep" data-v="122.3">122.3</td><td class="cv" data-v="2244.9">¥2,245</td></tr>
+<tr><td class="l">マンジャロ 安い オンライン</td><td>なし</td><td>P-MAX</td><td data-v="353">353</td><td data-v="315440">¥315,440</td><td class="cv sep" data-v="117.8">117.8</td><td class="cv" data-v="2676.6">¥2,677</td></tr>
+<tr><td class="l">glp 1</td><td>なし</td><td>P-MAX</td><td data-v="1081">1,081</td><td data-v="404301">¥404,301</td><td class="cv sep" data-v="112.8">112.8</td><td class="cv" data-v="3584.2">¥3,584</td></tr>
+<tr><td class="l">マンジャロ 効果</td><td>なし</td><td>P-MAX</td><td data-v="1198">1,198</td><td data-v="158119">¥158,119</td><td class="cv sep" data-v="106.5">106.5</td><td class="cv" data-v="1484.7">¥1,485</td></tr>
+<tr><td class="l">ワカサプリ ビタミン c d</td><td>なし</td><td>ショッピング</td><td data-v="786">786</td><td data-v="162515">¥162,515</td><td class="cv sep" data-v="96.5">96.5</td><td class="cv" data-v="1684.4">¥1,684</td></tr>
+<tr><td class="l">リベルサス 通販</td><td>なし</td><td>P-MAX</td><td data-v="262">262</td><td data-v="91889">¥91,889</td><td class="cv sep" data-v="92.8">92.8</td><td class="cv" data-v="990.7">¥991</td></tr>
+<tr><td class="l">リベルサス 効果</td><td>なし</td><td>P-MAX</td><td data-v="1565">1,565</td><td data-v="162191">¥162,191</td><td class="cv sep" data-v="90.7">90.7</td><td class="cv" data-v="1788.2">¥1,788</td></tr>
+<tr><td class="l">マンジャロ 2.5 mg</td><td>なし</td><td>P-MAX</td><td data-v="608">608</td><td data-v="804645">¥804,645</td><td class="cv sep" data-v="84.4">84.4</td><td class="cv" data-v="9537.1">¥9,537</td></tr>
+<tr><td class="l">マンジャロ オンライン</td><td>なし</td><td>P-MAX</td><td data-v="303">303</td><td data-v="309981">¥309,981</td><td class="cv sep" data-v="77.9">77.9</td><td class="cv" data-v="3981.3">¥3,981</td></tr>
+<tr><td class="l">マンジャロ 値段</td><td>なし</td><td>ショッピング</td><td data-v="1317">1,317</td><td data-v="320489">¥320,489</td><td class="cv sep" data-v="77.6">77.6</td><td class="cv" data-v="4127.9">¥4,128</td></tr>
+<tr><td class="l">クリスタル トマト</td><td>なし</td><td>ショッピング</td><td data-v="992">992</td><td data-v="441804">¥441,804</td><td class="cv sep" data-v="77.3">77.3</td><td class="cv" data-v="5715.4">¥5,715</td></tr>
+<tr><td class="l">白玉 ペプチド サプリ</td><td>なし</td><td>ショッピング</td><td data-v="380">380</td><td data-v="75359">¥75,359</td><td class="cv sep" data-v="76.1">76.1</td><td class="cv" data-v="990.3">¥990</td></tr>
+<tr><td class="l">ワカサプリ ビタミン c</td><td>なし</td><td>ショッピング</td><td data-v="662">662</td><td data-v="120002">¥120,002</td><td class="cv sep" data-v="74.6">74.6</td><td class="cv" data-v="1608.6">¥1,609</td></tr>
+<tr><td class="l">グルタチオン サプリ</td><td>なし</td><td>ショッピング</td><td data-v="801">801</td><td data-v="199849">¥199,849</td><td class="cv sep" data-v="74.1">74.1</td><td class="cv" data-v="2698.1">¥2,698</td></tr>
+<tr><td class="l">マンジェロ</td><td>なし</td><td>P-MAX</td><td data-v="578">578</td><td data-v="208124">¥208,124</td><td class="cv sep" data-v="72.6">72.6</td><td class="cv" data-v="2866.7">¥2,867</td></tr>
+<tr><td class="l">リベルサス 7mg 最 安値 オンライン</td><td>なし</td><td>P-MAX</td><td data-v="224">224</td><td data-v="43269">¥43,269</td><td class="cv sep" data-v="72.3">72.3</td><td class="cv" data-v="598.2">¥598</td></tr>
+<tr><td class="l">fucoidan</td><td>なし</td><td>P-MAX</td><td data-v="205">205</td><td data-v="42446">¥42,446</td><td class="cv sep" data-v="71.9">71.9</td><td class="cv" data-v="590.1">¥590</td></tr>
+<tr><td class="l">プラス リストア</td><td>なし</td><td>ショッピング</td><td data-v="1105">1,105</td><td data-v="175905">¥175,905</td><td class="cv sep" data-v="71.0">71.0</td><td class="cv" data-v="2479.3">¥2,479</td></tr>
+<tr><td class="l">マンジャロ ダイエット</td><td>なし</td><td>P-MAX</td><td data-v="1206">1,206</td><td data-v="435792">¥435,792</td><td class="cv sep" data-v="70.3">70.3</td><td class="cv" data-v="6196.4">¥6,196</td></tr>
+<tr><td class="l">グルタチオン</td><td>なし</td><td>ショッピング</td><td data-v="811">811</td><td data-v="196978">¥196,978</td><td class="cv sep" data-v="63.8">63.8</td><td class="cv" data-v="3086.5">¥3,086</td></tr>
+<tr><td class="l">ビタミン c</td><td>なし</td><td>ショッピング</td><td data-v="928">928</td><td data-v="215100">¥215,100</td><td class="cv sep" data-v="62.4">62.4</td><td class="cv" data-v="3447.7">¥3,448</td></tr>
+<tr><td class="l">focuidan</td><td>なし</td><td>ショッピング</td><td data-v="59">59</td><td data-v="6689">¥6,689</td><td class="cv sep" data-v="61.0">61.0</td><td class="cv" data-v="109.7">¥110</td></tr>
+<tr><td class="l">ワカサプリ ビタミン d</td><td>なし</td><td>ショッピング</td><td data-v="551">551</td><td data-v="113756">¥113,756</td><td class="cv sep" data-v="57.9">57.9</td><td class="cv" data-v="1963.7">¥1,964</td></tr>
+<tr><td class="l">リベルサス 14mg</td><td>なし</td><td>ショッピング</td><td data-v="273">273</td><td data-v="41374">¥41,374</td><td class="cv sep" data-v="54.5">54.5</td><td class="cv" data-v="758.6">¥759</td></tr>
+<tr><td class="l">マンジャロ と は</td><td>なし</td><td>ショッピング</td><td data-v="775">775</td><td data-v="55946">¥55,946</td><td class="cv sep" data-v="54.3">54.3</td><td class="cv" data-v="1029.6">¥1,030</td></tr>
+<tr><td class="l">マンジャロ 2.5</td><td>なし</td><td>ショッピング</td><td data-v="376">376</td><td data-v="505489">¥505,489</td><td class="cv sep" data-v="53.1">53.1</td><td class="cv" data-v="9517.8">¥9,518</td></tr>
+<tr><td class="l">glp 1 probiotic</td><td>なし</td><td>ショッピング</td><td data-v="1">1</td><td data-v="1271">¥1,271</td><td class="cv sep" data-v="52.5">52.5</td><td class="cv" data-v="24.2">¥24</td></tr>
+<tr><td class="l">ダイエット 薬</td><td>なし</td><td>P-MAX</td><td data-v="619">619</td><td data-v="164632">¥164,632</td><td class="cv sep" data-v="51.4">51.4</td><td class="cv" data-v="3205.5">¥3,205</td></tr>
+<tr><td class="l">ビタミン c サプリ</td><td>なし</td><td>P-MAX</td><td data-v="524">524</td><td data-v="124398">¥124,398</td><td class="cv sep" data-v="51.3">51.3</td><td class="cv" data-v="2425.4">¥2,425</td></tr>
+<tr><td class="l">ビタミン d サプリ</td><td>なし</td><td>ショッピング</td><td data-v="596">596</td><td data-v="123668">¥123,668</td><td class="cv sep" data-v="50.2">50.2</td><td class="cv" data-v="2466.0">¥2,466</td></tr>
+<tr><td class="l">リベルサス 安い</td><td>なし</td><td>P-MAX</td><td data-v="218">218</td><td data-v="93649">¥93,649</td><td class="cv sep" data-v="48.6">48.6</td><td class="cv" data-v="1928.1">¥1,928</td></tr>
+<tr><td class="l">マンジャロ 購入</td><td>なし</td><td>P-MAX</td><td data-v="127">127</td><td data-v="131620">¥131,620</td><td class="cv sep" data-v="44.9">44.9</td><td class="cv" data-v="2932.1">¥2,932</td></tr>
+<tr><td class="l">ダイエット</td><td>なし</td><td>ショッピング</td><td data-v="1609">1,609</td><td data-v="209462">¥209,462</td><td class="cv sep" data-v="44.5">44.5</td><td class="cv" data-v="4708.1">¥4,708</td></tr>
+<tr><td class="l">elife clinic</td><td>除外済み</td><td>P-MAX</td><td data-v="336">336</td><td data-v="530103">¥530,103</td><td class="cv sep" data-v="44.4">44.4</td><td class="cv" data-v="11936.6">¥11,937</td></tr>
+<tr><td class="l">イー ライフ マンジャロ</td><td>なし</td><td>P-MAX</td><td data-v="57">57</td><td data-v="34393">¥34,393</td><td class="cv sep" data-v="42.4">42.4</td><td class="cv" data-v="812.1">¥812</td></tr>
+<tr><td class="l">食欲 を 抑える 薬</td><td>なし</td><td>P-MAX</td><td data-v="463">463</td><td data-v="89570">¥89,570</td><td class="cv sep" data-v="42.3">42.3</td><td class="cv" data-v="2120.0">¥2,120</td></tr>
+<tr><td class="l">ダイエット パッチ</td><td>なし</td><td>P-MAX</td><td data-v="1121">1,121</td><td data-v="94549">¥94,549</td><td class="cv sep" data-v="42.1">42.1</td><td class="cv" data-v="2246.9">¥2,247</td></tr>
+<tr><td class="l">minoxidil</td><td>なし</td><td>ショッピング</td><td data-v="82">82</td><td data-v="28232">¥28,232</td><td class="cv sep" data-v="42.0">42.0</td><td class="cv" data-v="672.2">¥672</td></tr>
+<tr><td class="l">痩せる 薬</td><td>なし</td><td>P-MAX</td><td data-v="806">806</td><td data-v="142625">¥142,625</td><td class="cv sep" data-v="40.3">40.3</td><td class="cv" data-v="3535.6">¥3,536</td></tr>
+<tr><td class="l">防風 通 聖 散</td><td>なし</td><td>P-MAX</td><td data-v="891">891</td><td data-v="221367">¥221,367</td><td class="cv sep" data-v="33.8">33.8</td><td class="cv" data-v="6553.2">¥6,553</td></tr>
+<tr><td class="l">マンジャロ 5mg オンライン 最 安値</td><td>なし</td><td>ショッピング</td><td data-v="230">230</td><td data-v="188427">¥188,427</td><td class="cv sep" data-v="33.3">33.3</td><td class="cv" data-v="5663.6">¥5,664</td></tr>
+<tr><td class="l">マンジャロ 通販</td><td>なし</td><td>P-MAX</td><td data-v="205">205</td><td data-v="189327">¥189,327</td><td class="cv sep" data-v="29.2">29.2</td><td class="cv" data-v="6486.0">¥6,486</td></tr>
+<tr><td class="l">ダイエット サプリ</td><td>なし</td><td>P-MAX</td><td data-v="514">514</td><td data-v="132253">¥132,253</td><td class="cv sep" data-v="22.1">22.1</td><td class="cv" data-v="5976.2">¥5,976</td></tr>
+<tr><td class="l">飲む 日焼け 止め</td><td>なし</td><td>ショッピング</td><td data-v="406">406</td><td data-v="120171">¥120,171</td><td class="cv sep" data-v="22.1">22.1</td><td class="cv" data-v="5432.7">¥5,433</td></tr>
+<tr><td class="l">ビタミン d</td><td>なし</td><td>ショッピング</td><td data-v="358">358</td><td data-v="95428">¥95,428</td><td class="cv sep" data-v="16.5">16.5</td><td class="cv" data-v="5769.5">¥5,770</td></tr>
+<tr><td class="l">マンジャロ 5 ミリ</td><td>追加済み</td><td>検索</td><td data-v="351">351</td><td data-v="538029">¥538,029</td><td class="cv sep" data-v="16.1">16.1</td><td class="cv" data-v="33459.5">¥33,460</td></tr>
+<tr><td class="l">マンジャロ 最 安値 オンライン</td><td>なし</td><td>ショッピング</td><td data-v="90">90</td><td data-v="92076">¥92,076</td><td class="cv sep" data-v="13.2">13.2</td><td class="cv" data-v="6986.0">¥6,986</td></tr>
+<tr><td class="l">プラセンタ</td><td>なし</td><td>P-MAX</td><td data-v="161">161</td><td data-v="96499">¥96,499</td><td class="cv sep" data-v="11.3">11.3</td><td class="cv" data-v="8517.1">¥8,517</td></tr>
+<tr><td class="l">マンジャロ 五 ミリ</td><td>なし</td><td>検索</td><td data-v="139">139</td><td data-v="250211">¥250,211</td><td class="cv sep" data-v="10.8">10.8</td><td class="cv" data-v="23167.7">¥23,168</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（60行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2026-04-08 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td class="l">一般</td><td data-v="461370">461,370</td><td data-v="30721">30,721</td><td data-v="0.0666">6.7%</td><td data-v="852.5">¥853</td><td data-v="26190984">¥26,190,984</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="567">567</td><td class="cv" data-v="0.0185">1.8%</td><td class="cv" data-v="46170.2">¥46,170</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2026-04-08</th></tr>
+<tr data-a="elife"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>elife</td><td><div class="bar"><div class="mt-i" style="width:8.4%" title="インテント マッチ 8.4%"></div><div class="mt-p" style="width:43.4%" title="フレーズ一致 43.4%"></div><div class="mt-e" style="width:48.2%" title="完全一致 48.2%"></div></div><div class="note">インテント8% / フレーズ43% / 完全48%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2026-04-08</b>（20260408_レポート依頼用【医療ダイエット】_セレス様__1RIEvsre.xlsx）<br>取得不可（空タブ）: Juniper・med.<br>端数月: 2026-04（9日まで）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

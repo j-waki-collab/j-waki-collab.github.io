@@ -1,0 +1,870 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜ガラス修理</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>ガラス修理業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">2社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2026-03-24</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥0</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">--</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">--</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="ガラス修理のまもるくん" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</button><button class="achip" data-t="レスキューサービス24ガラス修理" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2026-03-24（期間 2026年1月1日 - 2026年3月26日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td data-v="0">¥0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0.00">--</td><td data-v="0.0">--</td><td data-v="-1">--</td><td><span class="note" title="このバッチのスプレッドシートに不在">--</span></td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td data-v="0">¥0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0.00">--</td><td data-v="0.0">--</td><td data-v="-1">--</td><td><span class="note" title="このバッチのスプレッドシートに不在">--</span></td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+</table></div>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td data-v="202601">2026-01</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td data-v="202602">2026-02</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td data-v="202603">2026-03 ⚠</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td data-v="202601">2026-01</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td data-v="202602">2026-02</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td data-v="202603">2026-03 ⚠</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="ガラス修理のまもるくん">
+<h3 class="adv" id="struct-ガラス修理のまもるくん" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん <span class="badge">取得 2026-03-24</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</span><span class="st">📁 CPN <b>9</b></span><span class="st">📂 ADG <b>14</b></span><span class="st">🔑 KW <b>171</b></span><span class="st">✏️ 広告 <b>14</b></span><span class="st">🔗 LP <b>8</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="屋根修理関東以外 260124_屋根">屋根修理関東以外 260124_屋根</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>19</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="雨漏り・屋根修理・雨どい">雨漏り・屋根修理・雨どい</span><span class="st">🔑 <b>17</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="指名">指名</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="金庫修理関東以外 260124_金庫">金庫修理関東以外 260124_金庫</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="非指名">非指名</span><span class="st">🔑 <b>10</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="屋根修理(カーポート)">屋根修理(カーポート)</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="カーポート">カーポート</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="給湯器交換 260124_テスト">給湯器交換 260124_テスト</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="非指名">非指名</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="給湯器交換">給湯器交換</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="非指名">非指名</span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="屋根修理関東以外">屋根修理関東以外</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>53</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="雨漏り・屋根修理・雨どい">雨漏り・屋根修理・雨どい</span><span class="st">🔑 <b>50</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="指名">指名</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="ガラス修理関東以外">ガラス修理関東以外</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>23</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="非指名">非指名</span><span class="st">🔑 <b>21</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="指名">指名</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="鍵修理関東以外">鍵修理関東以外</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>60</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="競合・トラブル・交換・修理">競合・トラブル・交換・修理</span><span class="st">🔑 <b>58</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="指名">指名</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="金庫修理関東以外">金庫修理関東以外</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>15</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="非指名">非指名</span><span class="st">🔑 <b>14</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="指名">指名</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="レスキューサービス24ガラス修理">
+<h3 class="adv" id="struct-レスキューサービス24ガラス修理" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理 <span class="badge">取得 2026-03-24</span></h3>
+<div class="tree" style="--ac:var(--adv-1)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</span><span class="st">📁 CPN <b>2</b></span><span class="st">📂 ADG <b>3</b></span><span class="st">🔑 KW <b>42</b></span><span class="st">✏️ 広告 <b>3</b></span><span class="st">🔗 LP <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="05_ガラス交換">05_ガラス交換</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>26</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="502_ガラス交換_地名">502_ガラス交換_地名</span><span class="st">🔑 <b>12</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="501_ガラス交換">501_ガラス交換</span><span class="st">🔑 <b>14</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="04_ガラス交換_完全フレ">04_ガラス交換_完全フレ</span><span class="share"><div style="width:0%"></div></span><span class="st">0.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>19</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="401_ガラス交換">401_ガラス交換</span><span class="st">🔑 <b>19</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥0</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<p class="note">クリック30以上のQS付きKWがありません。</p>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td data-v="0.00">--</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td data-v="0.00">--</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="ガラス修理のまもるくん">
+<h3 class="adv" id="kwqs-ガラス修理のまもるくん" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん <span class="badge">取得 2026-03-24</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>0.00</b></span><span class="chip">関連性↓<b>0.0%</b></span><span class="chip">推定CTR↓<b>0.0%</b></span><span class="chip">LP利便性↓<b>0.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="ガラス修理のまもるくん"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">天井 浸水</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外 260124_屋根</td></tr>
+<tr><td class="l">波 板 張替え 業者</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">波板 張替え</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">屋根葺き替え 費用</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外 260124_屋根</td></tr>
+<tr><td class="l">雨どい 修理</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">屋根 の 葺き替え 費用</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外 260124_屋根</td></tr>
+<tr><td class="l">屋根 直す</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">瓦 修理</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">雨漏り 補修</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">雨樋 修理 業者</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">[雨樋 修理]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">樋 修理</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">屋根 費用</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">天井 漏水</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">屋根 葺き替え</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外 260124_屋根</td></tr>
+<tr><td class="l">雨樋 詰まり</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外 260124_屋根</td></tr>
+<tr><td class="l">屋根 修理</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">[屋根修理のまもるくん]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">[屋根 修理 の まもるくん 口コミ]</td><td>完全</td><td data-v="6">6</td><td>平均</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">金庫 開か ない</td><td>フレーズ</td><td data-v="5">5</td><td>平均より下</td><td>平均</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">金庫修理関東以外</td></tr>
+<tr><td class="l">金庫 開ける 業者</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">金庫修理関東以外</td></tr>
+<tr><td class="l">金庫 の 鍵 が 開か ない</td><td>フレーズ</td><td data-v="6">6</td><td>平均より下</td><td>平均より上</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">金庫修理関東以外</td></tr>
+<tr><td class="l">金庫 の 鍵 開け</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">金庫修理関東以外</td></tr>
+<tr><td class="l">金庫 鍵 なくした</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">金庫修理関東以外</td></tr>
+<tr><td class="l">金庫 の 鍵</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">金庫修理関東以外</td></tr>
+<tr><td class="l">金庫 開け</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">金庫修理関東以外</td></tr>
+<tr><td class="l">金庫 修理</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">金庫修理関東以外</td></tr>
+<tr><td class="l">金庫 鍵</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">金庫修理関東以外</td></tr>
+<tr><td class="l">金庫 鍵 開け</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">金庫修理関東以外</td></tr>
+<tr><td class="l">カーポート修理 業者</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理(カーポート)</td></tr>
+<tr><td class="l">カーポート 修繕</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理(カーポート)</td></tr>
+<tr><td class="l">カーポート 修理</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理(カーポート)</td></tr>
+<tr><td class="l">カーポート 費用</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理(カーポート)</td></tr>
+<tr><td class="l">カーポート 設置</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理(カーポート)</td></tr>
+<tr><td class="l">キンライサー 給湯器</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">給湯器交換 260124_テスト</td></tr>
+<tr><td class="l">給湯器</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">給湯器交換</td></tr>
+<tr><td class="l">給湯器 壊れた</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">給湯器交換 260124_テスト</td></tr>
+<tr><td class="l">ノーリツ 給湯器</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">給湯器交換 260124_テスト</td></tr>
+<tr><td class="l">湯沸かし器 風呂</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">給湯器交換</td></tr>
+<tr><td class="l">ノーリツ 給湯器</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">給湯器交換</td></tr>
+<tr><td class="l">ノーリツ 給湯器 交換</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">給湯器交換</td></tr>
+<tr><td class="l">リンナイ 給湯器</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">給湯器交換</td></tr>
+<tr><td class="l">給湯器 交換</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">給湯器交換</td></tr>
+<tr><td class="l">リンナイ 給湯器</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">給湯器交換</td></tr>
+<tr><td class="l">近くの雨樋 屋</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">近くの屋根 修理屋</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">屋根 の 修理 屋</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">雨漏り 緊急対応</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">屋根 部分 修理</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+<tr><td class="l">庇 修理</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">屋根修理関東以外</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="レスキューサービス24ガラス修理">
+<h3 class="adv" id="kwqs-レスキューサービス24ガラス修理" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理 <span class="badge">取得 2026-03-24</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>0.00</b></span><span class="chip">関連性↓<b>0.0%</b></span><span class="chip">推定CTR↓<b>0.0%</b></span><span class="chip">LP利便性↓<b>0.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="レスキューサービス24ガラス修理"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">ガラス 交換 川口市</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 交換 渋谷区</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 交換 板橋区</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 交換 大田区</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 交換 中野区</td><td>インテント</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 交換 世田谷区</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 交換</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 交換 練馬区</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">窓 の 修理</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 交換 千葉</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 交換 葛飾区</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 屋</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">ガラス 交換 千葉市</td><td>インテント</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">[窓 ガラス 交換]</td><td>完全</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">ガラス 交換 杉並区</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 交換 埼玉</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">[ガラス 交換]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">[ガラス 修理 浴室]</td><td>完全</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 交換 業者</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">[ガラス 交換 マンション]</td><td>完全</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 修理 車</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">サッシ 窓 交換</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">[ガラス 修理]</td><td>完全</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ペアガラス 修理</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">ガラス 交換 修理</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">[窓 修理]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">ガラス の 修理</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">ガラス 修理</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">05_ガラス交換</td></tr>
+<tr><td class="l">窓 修理</td><td>フレーズ</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">[ガラス 修理 おすすめ]</td><td>完全</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">ガラス サッシ 修理</td><td>フレーズ</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">ガラス 交換 自動車</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">[ペアガラス 交換]</td><td>完全</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">[窓 ガラス 修理]</td><td>完全</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">ガラス 業者</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">[窓 ガラス 割れ た 修理]</td><td>完全</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">[ガラス 交換 車]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">窓 ガラス 修理</td><td>フレーズ</td><td data-v="4">4</td><td>平均</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">窓 ガラス 交換</td><td>フレーズ</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">[ガラス 交換 業者]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">[ガラス の 修理]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+<tr><td class="l">[サッシ ガラス 交換]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td class="cv sep" data-v="0.0">0.0</td><td class="cv" data-v="-1">--</td><td class="l">04_ガラス交換_完全フレ</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="ガラス修理のまもるくん" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">xn--y8j1c3bq9b9b8j3d6tu57w975d.com<br><span>xn--y8j1c3bq9b9b8j3d6tu57w975d.com</span></div><div class="t">のガラス修理屋さん - 最短5分で急行 - 即日対応ですぐ解決</div><div class="d">1円でも安く修理をしたいなら是非お任せください！ どんなガラスも対応可能。詳細はこちらから。 【即日対応】お電話いただいてから最短5分で駆け付けます。どんなガラスも対応いたします。</div><div class="meta2">IMP 176,017 ／ CTR 8.3% ／ COST ¥7,358,212<br>ガラス修理関東以外</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">xn--y8j1c3bq9b9bx858aoxulrygf0a.com<br><span>xn--y8j1c3bq9b9bx858aoxulrygf0a.com</span></div><div class="t">の屋根修理/1,980円～ - の雨漏りはお任せ - 【最安値に挑戦】1,980円～</div><div class="d">お電話一本ですぐ向かいます。出張/見積無料なので安心。詳しい料金/サービスはこちらから。 屋根修理のプロが屋根トラブルを解決します！まずはお気軽にお電話ください。</div><div class="meta2">IMP 92,627 ／ CTR 7.6% ／ COST ¥2,792,199<br>屋根修理関東以外</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">xn--y8j1c3bq9b9bx858a9l6cge1c.com<br><span>xn--y8j1c3bq9b9bx858a9l6cge1c.com</span></div><div class="t">【業者】鍵のトラブル解決します - あなたの町の鍵屋さん - 【鍵屋】鍵を無くしたなら</div><div class="d">鍵が開かない、壊れた、作りたいなど急な鍵トラブルも是非お任せください！まずは無料お電話を。 どんな鍵トラブルもおまかせください！業界相場の40％OFFで対応させていただきます。</div><div class="meta2">IMP 56,947 ／ CTR 7.7% ／ COST ¥2,931,743<br>鍵修理関東以外</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">xn--y8j1c3bq9b9bx858anwya3f4bcjxd.com<br><span>xn--y8j1c3bq9b9bx858anwya3f4bcjxd.com</span></div><div class="t">【2,000円～】どんな金庫もOK - 長期保証付きで安心 - 【業者】金庫が開かないなら</div><div class="d">【WEB限定割引中】金庫の鍵開け・修理・交換ならお任せください。どんな金庫も対応可能。 金庫の鍵開け・修理・交換ならお任せください！最短5分で駆けつけます。出張見積もりは無料。</div><div class="meta2">IMP 27,452 ／ CTR 7.7% ／ COST ¥1,859,124<br>金庫修理関東以外</div></div>
+</div>
+<div class="serp-col advblk" data-a="レスキューサービス24ガラス修理" style="--ac:var(--adv-1)"><h4><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">rescue-service24.net<br><span>rescue-service24.net › lp › glass</span></div><div class="t">東京でガラス交換／即日対応可 - 最短5分で駆付け／24時間受付中 - 【公式】レスキューサービス24</div><div class="d">丁寧でスピード対応のガラス交換なら【レスキューサービス24】10年以上の実績があるから安心。 マンションやアパート、戸建て、ビルや店舗のガラス交換工事、なんでもご相談ください。</div><div class="meta2">IMP 28,797 ／ CTR 7.7% ／ COST ¥1,431,562<br>05_ガラス交換</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">rescue-service24.net<br><span>rescue-service24.net › lp › glass</span></div><div class="t">東京でガラス交換／即日対応可 - 最短5分で駆付け／24時間受付中 - 【公式】レスキューサービス24</div><div class="d">丁寧でスピード対応のガラス交換なら【レスキューサービス24】10年以上の実績があるから安心。 マンションやアパート、戸建て、ビルや店舗のガラス交換工事、なんでもご相談ください。</div><div class="meta2">IMP 28,797 ／ CTR 7.9% ／ COST ¥1,819,505<br>04_ガラス交換_完全フレ</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">rescue-service24.net<br><span>rescue-service24.net › lp › glass</span></div><div class="t">東京でガラス交換／即日対応可 - 最短5分で駆付け／24時間受付中 - 【公式】レスキューサービス24</div><div class="d">丁寧でスピード対応のガラス交換なら【レスキューサービス24】10年以上の実績があるから安心。 マンションやアパート、戸建て、ビルや店舗のガラス交換工事、なんでもご相談ください。</div><div class="meta2">IMP 5,654 ／ CTR 6.2% ／ COST ¥339,401<br>05_ガラス交換</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【最安値に挑戦】1,980円～</td><td data-v="5">5</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【即日】急な屋根のトラブルに</td><td data-v="5">5</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【公式】屋根修理のまもるくん</td><td data-v="5">5</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">地域最安値に挑戦中です</td><td data-v="5">5</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}の屋根修理/1,980円～</td><td data-v="5">5</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【実績100,000件】屋根修理</td><td data-v="4">4</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}の屋根修理なら</td><td data-v="4">4</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}の雨漏り/屋根修理</td><td data-v="4">4</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}の雨漏りはお任せ</td><td data-v="4">4</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{Keyword:屋根修理}ならお任せください</td><td data-v="4">4</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【見積り・相談0円】屋根修理</td><td data-v="3">3</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【累計実績11万件】雨漏りの修理</td><td data-v="3">3</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">お客様満足度98％達成</td><td data-v="3">3</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">最短5分で急行</td><td data-v="3">3</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">【最短5分で到着】ガラス交換</td><td data-v="3">3</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">《即日可能》お見積り・ご訪問</td><td data-v="3">3</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">他社で断られた場合もお任せ</td><td data-v="3">3</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">{LOCATION(City):東京}でガラス交換／即日対応可</td><td data-v="3">3</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">10年以上の歴史があるから安心</td><td data-v="3">3</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">WEB限定1,000円クーポン配布中</td><td data-v="3">3</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">ご家庭から企業様のガラス交換</td><td data-v="3">3</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">最短5分で駆付け／24時間受付中</td><td data-v="3">3</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">ガラス修理【365日24時間対応】</td><td data-v="3">3</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">追加料金は一切なしで安心</td><td data-v="3">3</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">【公式】レスキューサービス24</td><td data-v="3">3</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">給湯器・エコキュート交換</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【公式】給湯器交換のまもるくん</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{Keyword:給湯器交換}はお任せください</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">10年保障付き／累計実績11万件</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City):あなたの町}まで5分で急行</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">給湯器交換ならお任せください</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【安心】給湯器トラブルなら</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【緊急】最短即日でお湯が出ます</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{Keyword:給湯器}のことなら</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【給湯器】出張・見積もり0円</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">多くのメーカーに対応しています</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【{LOCATION(City):あなたの街}】給湯器交換</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【{Keyword:給湯器}】のトラブルなら</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【最短即日】すぐにお湯が出ます</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【給湯器】交換・修理対応します</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">無料相談・お見積もりはこちら</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">最短5分で駆け付け</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">再発保証最長10年</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【見積り・相談無料】屋根修理</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">屋根の工事・修理はお任せ</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【最短10分】雨樋修理/補修</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【最短10分到着】累計実績11万件</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【雨漏り修理】再発保証最長10年</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}の金庫修理なら</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">長期保証付きで安心</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【即日対応】鍵開け2,000円～</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{Keyword:金庫の開錠}ならお任せください</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">どんなメーカーでも対応可能</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【業者】金庫が開かないなら</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">最短5分で駆けつけます</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【地域密着】最短5分で駆け付け</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City):あなたの街}の金庫修理なら</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【2,000円～】どんな金庫もOK</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{Keyword:金庫修理}ならお任せください</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">金庫の鍵開け2,000円～</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">お得なWEB割引キャンペーン中</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">金庫のトラブルならおまかせ</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">最安に挑戦2980円～/保証付き</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">安心で低価格のガラス修理</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">即日対応ですぐ解決</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">最安に挑戦中、低価格で安心</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">ガラスのトラブルならおまかせ</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">修理・交換ならおまかせください</td><td data-v="2">2</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">どんなガラスも最短30分で施工</td><td data-v="2">2</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">スピーディーかつ質の高い施工</td><td data-v="2">2</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">スピード・丁寧にこだわって10年</td><td data-v="2">2</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">どんなガラスでも【即日対応】</td><td data-v="2">2</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">作業料4400円から／クーポン有り</td><td data-v="2">2</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l wrap">ガラス修理・交換【即日対応可】</td><td data-v="2">2</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">最長10年の安心保証付き</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{Keyword:カーポート修理}はお任せください</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">お客様満足度98%達成</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">最短10糞で到着します</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">作業後の追加費用は一切なし</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}のカーポート修理</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【実績11万件】屋根修理</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【カーポート修理】出張見積0円</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">あらゆる金庫トラブルに対応</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【公式】金庫修理のまもるくん</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">お電話1本でスピード急行</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">鍵開け2,000円～/WEB割引実施中</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">鍵修理のまもるくんにおまかせ</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">[公式]鍵修理のまもるくん</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">≪公式≫鍵修理のまもるくん</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">鍵修理のまもるくん</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【最短5分駆け付け】鍵開け急行</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">開かなければ0円</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【公式】鍵修理のまもるくん</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">どんな鍵でも対応します</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">≪鍵開け≫最安に挑戦中</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">≪鍵修理≫最安に挑戦中</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【鍵修理/交換】2,000円～</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">安心のコミコミ価格でのお見積り</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">どんな種類のガラスも対応します</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{Keyword:ガラス修理}ならお任せください</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">まずは無料のお電話からご相談</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}のガラストラブルなら</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">ガラスの修理・交換ならおまかせ</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}のガラス修理屋さん</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">出張・現場見積りは0円</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【公式】ガラス修理のまもるくん</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">まずは無料電話から</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}のガラス修理なら</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">お得なWEB割引あり</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}のガラス修理屋</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}のガラス交換</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}のガラス修理</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">どんなガラスも対応可能です</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【業者】鍵のトラブル解決します</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">WEB限定キャンペーン実施中</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【{LOCATION(City):全国}】鍵開けの業者です</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">あらゆる場所の鍵トラブルに対応</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【鍵屋】鍵を無くしたなら</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【即日】鍵が開かないなら</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【鍵修理】作業費用2,000円～</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">各種カード・ペイ支払い可能</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">【即日】安心価格で対応します</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{Keyword:鍵修理}ならお任せください</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City):あなたの町}の鍵屋さん</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{LOCATION(City)}の鍵修理なら</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">鍵のトラブルならお任せください</td><td data-v="1">1</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l wrap">{Keyword:鍵トラブル}ならお任せください</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="ガラス修理のまもるくん">
+<h3 class="adv" id="adlib-ガラス修理のまもるくん" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん <span class="badge">取得 2026-03-24</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>14本</b></span><span class="chip">CPN<b>9個</b></span><span class="chip">ADG<b>14個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>8本</b></span></div>
+<p class="note">主要LP: <span title="https://xn--y8j1c3bq9b9bx858aoxulrygf0a.com/">https://xn--y8j1c3bq9b9bx858aoxulrygf0a.com/（3本）</span> ／ <span title="https://xn--y8j1c3bq9b9bx858aoxulrygf0a.com/01/">https://xn--y8j1c3bq9b9bx858aoxulrygf0a.com/01/（2本）</span> ／ <span title="https://xn--y8j1c3bq9b9bx858anwya3f4bcjxd.com/">https://xn--y8j1c3bq9b9bx858anwya3f4bcjxd.com/（2本）</span> ／ <span title="https://xn--y8j1c3bq9b9bx858a9l6cge1c.com/">https://xn--y8j1c3bq9b9bx858a9l6cge1c.com/（2本）</span> ／ <span title="https://xn--y8j1c3bq9b9b8j3d6tu57w975d.com/">https://xn--y8j1c3bq9b9b8j3d6tu57w975d.com/（2本）</span></p>
+<p class="note">カスタマイザ: {LOCATION}×35 ／ {Keyword}×18</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="ガラス修理のまもるくん"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">【最安値に挑戦】1,980円～</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">【即日】急な屋根のトラブルに</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">【公式】屋根修理のまもるくん</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">地域最安値に挑戦中です</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">{LOCATION(City)}の屋根修理/1,980円～</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">【実績100,000件】屋根修理</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">{LOCATION(City)}の屋根修理なら</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">{LOCATION(City)}の雨漏り/屋根修理</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">{LOCATION(City)}の雨漏りはお任せ</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">{Keyword:屋根修理}ならお任せください</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">【見積り・相談0円】屋根修理</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">【累計実績11万件】雨漏りの修理</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">お客様満足度98％達成</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">最短5分で急行</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">給湯器・エコキュート交換</td><td data-v="2">2</td></tr>
+</table></div></div><div>
+<table data-adv="ガラス修理のまもるくん"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">屋根修理のプロが屋根トラブルを解決します！まずはお気軽にお電話ください。</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">お電話一本ですぐ向かいます。出張/見積無料なので安心。詳しい料金/サービスはこちらから。</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">業界最安水準で対応します！出張・見積もり0円なので、まずは無料相談から！</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">最短5分で到着の給湯器交換の業者。地域最安値に挑戦中！</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">安心安全の明朗会計で、お客様満足度98%を達成。大手企業からも選ばれるサービスです。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【即日対応可】地域密着だから、最短5分で駆け付け。あらゆる屋根トラブルに対応いたします。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">屋根のトラブルならお任せください！有名企業とも取引多数の安心サービス。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">お電話一本ですぐ向かいます。出張/見積無料なので安心。詳しい料金/サービスはこちらから</td><td data-v="2">2</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="レスキューサービス24ガラス修理">
+<h3 class="adv" id="adlib-レスキューサービス24ガラス修理" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理 <span class="badge">取得 2026-03-24</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>3本</b></span><span class="chip">CPN<b>2個</b></span><span class="chip">ADG<b>3個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>1本</b></span></div>
+<p class="note">主要LP: <span title="https://rescue-service24.net/lp/glass/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=glass_gerenal&amp;utm_term={keyword}">https://rescue-service24.net/lp/glass/?utm_source=google&amp;utm_medium=cpc&amp;utm_camp（3本）</span></p>
+<p class="note">カスタマイザ: {LOCATION}×3</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="レスキューサービス24ガラス修理"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">【最短5分で到着】ガラス交換</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">《即日可能》お見積り・ご訪問</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">他社で断られた場合もお任せ</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">{LOCATION(City):東京}でガラス交換／即日対応可</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">10年以上の歴史があるから安心</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">WEB限定1,000円クーポン配布中</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">ご家庭から企業様のガラス交換</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">最短5分で駆付け／24時間受付中</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">ガラス修理【365日24時間対応】</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">追加料金は一切なしで安心</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">【公式】レスキューサービス24</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">どんなガラスも最短30分で施工</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">スピーディーかつ質の高い施工</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">スピード・丁寧にこだわって10年</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">どんなガラスでも【即日対応】</td><td data-v="2">2</td></tr>
+</table></div></div><div>
+<table data-adv="レスキューサービス24ガラス修理"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">丁寧でスピード対応のガラス交換なら【レスキューサービス24】10年以上の実績があるから安心。</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">マンションやアパート、戸建て、ビルや店舗のガラス交換工事、なんでもご相談ください。</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">365日24時間お電話受付中。スピード重視で最短5分で駆け付け、その場でお見積りをお出しします。</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">ペアガラスやアクリルガラスなど、小さなガラス修理でも対応。他社で断られた方もご相談ください</td><td data-v="3">3</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="ガラス修理のまもるくん">
+<h3 class="adv" id="query-ガラス修理のまもるくん" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん <span class="badge">取得 2026-03-24</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="210">210</td><td data-v="3573">3,573</td><td data-v="2132015">¥2,132,015</td><td data-v="0.5499">55.0%</td><td class="cv sep" data-v="572.3">572.3</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="997">997</td><td data-v="2697">2,697</td><td data-v="1658499">¥1,658,499</td><td data-v="0.4278">42.8%</td><td class="cv sep" data-v="1223.6">1,223.6</td></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="151">151</td><td data-v="244">244</td><td data-v="86395">¥86,395</td><td data-v="0.0223">2.2%</td><td class="cv sep" data-v="174.7">174.7</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="ガラス修理のまもるくん"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">ガラス 修理</td><td>追加済み</td><td>検索</td><td data-v="467">467</td><td data-v="370097">¥370,097</td><td class="cv sep" data-v="85.1">85.1</td><td class="cv" data-v="4349.5">¥4,349</td></tr>
+<tr><td class="l">ガラス 交換</td><td>追加済み</td><td>検索</td><td data-v="226">226</td><td data-v="148749">¥148,749</td><td class="cv sep" data-v="36.7">36.7</td><td class="cv" data-v="4053.1">¥4,053</td></tr>
+<tr><td class="l">ガラス 屋</td><td>追加済み</td><td>検索</td><td data-v="226">226</td><td data-v="131990">¥131,990</td><td class="cv sep" data-v="36.0">36.0</td><td class="cv" data-v="3666.4">¥3,666</td></tr>
+<tr><td class="l">近く の ガラス 屋 さん</td><td>なし</td><td>検索</td><td data-v="157">157</td><td data-v="116317">¥116,317</td><td class="cv sep" data-v="31.0">31.0</td><td class="cv" data-v="3749.7">¥3,750</td></tr>
+<tr><td class="l">鍵 開け</td><td>追加済み</td><td>検索</td><td data-v="47">47</td><td data-v="54352">¥54,352</td><td class="cv sep" data-v="31.0">31.0</td><td class="cv" data-v="1753.3">¥1,753</td></tr>
+<tr><td class="l">金庫 の 鍵 が 開か ない</td><td>追加済み</td><td>検索</td><td data-v="63">63</td><td data-v="78020">¥78,020</td><td class="cv sep" data-v="27.0">27.0</td><td class="cv" data-v="2889.6">¥2,890</td></tr>
+<tr><td class="l">雨 樋 修理</td><td>追加済み</td><td>検索</td><td data-v="349">349</td><td data-v="141675">¥141,675</td><td class="cv sep" data-v="26.6">26.6</td><td class="cv" data-v="5330.1">¥5,330</td></tr>
+<tr><td class="l">ガラス 屋 さん</td><td>追加済み</td><td>検索</td><td data-v="184">184</td><td data-v="150899">¥150,899</td><td class="cv sep" data-v="23.5">23.5</td><td class="cv" data-v="6421.2">¥6,421</td></tr>
+<tr><td class="l">カー ポート 修理</td><td>追加済み</td><td>検索</td><td data-v="242">242</td><td data-v="78731">¥78,731</td><td class="cv sep" data-v="22.3">22.3</td><td class="cv" data-v="3525.8">¥3,526</td></tr>
+<tr><td class="l">鍵 の 110 番</td><td>追加済み</td><td>検索</td><td data-v="68">68</td><td data-v="54311">¥54,311</td><td class="cv sep" data-v="19.5">19.5</td><td class="cv" data-v="2785.2">¥2,785</td></tr>
+<tr><td class="l">ガラス 屋 近く</td><td>なし</td><td>検索</td><td data-v="74">74</td><td data-v="53286">¥53,286</td><td class="cv sep" data-v="18.7">18.7</td><td class="cv" data-v="2855.6">¥2,856</td></tr>
+<tr><td class="l">窓 ガラス 修理</td><td>追加済み</td><td>検索</td><td data-v="172">172</td><td data-v="129833">¥129,833</td><td class="cv sep" data-v="18.5">18.5</td><td class="cv" data-v="7018.0">¥7,018</td></tr>
+<tr><td class="l">鍵 開け 緊急</td><td>なし</td><td>検索</td><td data-v="35">35</td><td data-v="53672">¥53,672</td><td class="cv sep" data-v="18.0">18.0</td><td class="cv" data-v="2981.8">¥2,982</td></tr>
+<tr><td class="l">雨 どい 修理</td><td>追加済み</td><td>検索</td><td data-v="299">299</td><td data-v="121976">¥121,976</td><td class="cv sep" data-v="17.1">17.1</td><td class="cv" data-v="7141.5">¥7,141</td></tr>
+<tr><td class="l">ガラス 交換 費用</td><td>なし</td><td>検索</td><td data-v="154">154</td><td data-v="51706">¥51,706</td><td class="cv sep" data-v="15.2">15.2</td><td class="cv" data-v="3401.7">¥3,402</td></tr>
+<tr><td class="l">窓 ガラス 割れ た</td><td>なし</td><td>検索</td><td data-v="33">33</td><td data-v="23304">¥23,304</td><td class="cv sep" data-v="15.0">15.0</td><td class="cv" data-v="1553.6">¥1,554</td></tr>
+<tr><td class="l">ガラス</td><td>追加済み</td><td>検索</td><td data-v="97">97</td><td data-v="41067">¥41,067</td><td class="cv sep" data-v="14.9">14.9</td><td class="cv" data-v="2754.3">¥2,754</td></tr>
+<tr><td class="l">金庫 鍵 無く した</td><td>なし</td><td>検索</td><td data-v="36">36</td><td data-v="25680">¥25,680</td><td class="cv sep" data-v="12.0">12.0</td><td class="cv" data-v="2140.0">¥2,140</td></tr>
+<tr><td class="l">ガラス 修理 相場</td><td>なし</td><td>検索</td><td data-v="58">58</td><td data-v="40015">¥40,015</td><td class="cv sep" data-v="11.5">11.5</td><td class="cv" data-v="3479.6">¥3,480</td></tr>
+<tr><td class="l">金庫 開け られ ない</td><td>なし</td><td>検索</td><td data-v="15">15</td><td data-v="20691">¥20,691</td><td class="cv sep" data-v="10.0">10.0</td><td class="cv" data-v="2069.1">¥2,069</td></tr>
+<tr><td class="l">鍵屋 さん 近く</td><td>追加済み</td><td>検索</td><td data-v="21">21</td><td data-v="21240">¥21,240</td><td class="cv sep" data-v="10.0">10.0</td><td class="cv" data-v="2124.0">¥2,124</td></tr>
+<tr><td class="l">鍵 開け 業者</td><td>追加済み</td><td>検索</td><td data-v="18">18</td><td data-v="19224">¥19,224</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="2136.0">¥2,136</td></tr>
+<tr><td class="l">ガラス 修理 業者</td><td>なし</td><td>検索</td><td data-v="48">48</td><td data-v="44973">¥44,973</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="4997.0">¥4,997</td></tr>
+<tr><td class="l">ガラス 修理 の まもるくん 評判</td><td>なし</td><td>検索</td><td data-v="42">42</td><td data-v="18327">¥18,327</td><td class="cv sep" data-v="8.7">8.7</td><td class="cv" data-v="2106.6">¥2,107</td></tr>
+<tr><td class="l">ガラス 修理 の まもるくん</td><td>追加済み</td><td>検索</td><td data-v="44">44</td><td data-v="19519">¥19,519</td><td class="cv sep" data-v="8.5">8.5</td><td class="cv" data-v="2288.3">¥2,288</td></tr>
+<tr><td class="l">金庫 の 鍵 を 無く した</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="8205">¥8,205</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="1025.6">¥1,026</td></tr>
+<tr><td class="l">金庫 が 開か ない</td><td>追加済み</td><td>検索</td><td data-v="25">25</td><td data-v="19507">¥19,507</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="2438.4">¥2,438</td></tr>
+<tr><td class="l">ガラス の 修理</td><td>追加済み</td><td>検索</td><td data-v="43">43</td><td data-v="28700">¥28,700</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="3587.5">¥3,588</td></tr>
+<tr><td class="l">窓 ガラス 交換</td><td>追加済み</td><td>検索</td><td data-v="44">44</td><td data-v="15735">¥15,735</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="1966.9">¥1,967</td></tr>
+<tr><td class="l">窓 ガラス 交換 料金 表</td><td>なし</td><td>検索</td><td data-v="49">49</td><td data-v="9770">¥9,770</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="1221.2">¥1,221</td></tr>
+<tr><td class="l">鍵 開ける 緊急 980 円</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="10305">¥10,305</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="1288.1">¥1,288</td></tr>
+<tr><td class="l">鍵 修理 近く</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="6022">¥6,022</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="752.8">¥753</td></tr>
+<tr><td class="l">窓 ガラス 交換 どこに 頼む</td><td>なし</td><td>検索</td><td data-v="61">61</td><td data-v="17794">¥17,794</td><td class="cv sep" data-v="7.5">7.5</td><td class="cv" data-v="2372.5">¥2,373</td></tr>
+<tr><td class="l">窓 ガラス</td><td>なし</td><td>検索</td><td data-v="35">35</td><td data-v="18421">¥18,421</td><td class="cv sep" data-v="7.3">7.3</td><td class="cv" data-v="2513.1">¥2,513</td></tr>
+<tr><td class="l">鍵 開ける 緊急</td><td>なし</td><td>検索</td><td data-v="12">12</td><td data-v="13998">¥13,998</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="1999.7">¥2,000</td></tr>
+<tr><td class="l">ガラス 店 近く</td><td>なし</td><td>検索</td><td data-v="18">18</td><td data-v="11095">¥11,095</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="1585.0">¥1,585</td></tr>
+<tr><td class="l">鍵 の 解 錠 料金</td><td>なし</td><td>検索</td><td data-v="10">10</td><td data-v="7671">¥7,671</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="1095.9">¥1,096</td></tr>
+<tr><td class="l">カー ポート 修理 業者</td><td>追加済み</td><td>検索</td><td data-v="68">68</td><td data-v="24192">¥24,192</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="3456.0">¥3,456</td></tr>
+<tr><td class="l">硝子 屋</td><td>なし</td><td>検索</td><td data-v="19">19</td><td data-v="11830">¥11,830</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="1690.0">¥1,690</td></tr>
+<tr><td class="l">金庫 鍵屋</td><td>追加済み</td><td>検索</td><td data-v="8">8</td><td data-v="9389">¥9,389</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="1341.3">¥1,341</td></tr>
+<tr><td class="l">家 鍵 開け</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="5801">¥5,801</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="828.7">¥829</td></tr>
+<tr><td class="l">食器 棚 ガラス 修理</td><td>なし</td><td>P-MAX</td><td data-v="8">8</td><td data-v="1046">¥1,046</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="149.4">¥149</td></tr>
+<tr><td class="l">近く の ガラス 屋</td><td>追加済み</td><td>検索</td><td data-v="60">60</td><td data-v="41929">¥41,929</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="5989.9">¥5,990</td></tr>
+<tr><td class="l">窓 ガラス 割れ た 修理</td><td>なし</td><td>検索</td><td data-v="22">22</td><td data-v="17249">¥17,249</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="2467.7">¥2,468</td></tr>
+<tr><td class="l">ガラス 交換 料金 表</td><td>なし</td><td>検索</td><td data-v="50">50</td><td data-v="12849">¥12,849</td><td class="cv sep" data-v="6.3">6.3</td><td class="cv" data-v="2029.9">¥2,030</td></tr>
+<tr><td class="l">岡山 鍵 開け</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="1817">¥1,817</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="302.8">¥303</td></tr>
+<tr><td class="l">家 の 鍵 無く した 賃貸</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="2536">¥2,536</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="422.7">¥423</td></tr>
+<tr><td class="l">金庫 開ける</td><td>追加済み</td><td>検索</td><td data-v="2">2</td><td data-v="3189">¥3,189</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="531.5">¥532</td></tr>
+<tr><td class="l">ガラス 割れ た 修理</td><td>なし</td><td>検索</td><td data-v="38">38</td><td data-v="29971">¥29,971</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="4995.2">¥4,995</td></tr>
+<tr><td class="l">金庫 の 鍵 開け</td><td>追加済み</td><td>検索</td><td data-v="11">11</td><td data-v="14763">¥14,763</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="2460.5">¥2,460</td></tr>
+<tr><td class="l">窓 取り外し 業者</td><td>追加済み</td><td>検索</td><td data-v="16">16</td><td data-v="14534">¥14,534</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="2422.3">¥2,422</td></tr>
+<tr><td class="l">窓 ガラス 交換 費用</td><td>追加済み</td><td>検索</td><td data-v="181">181</td><td data-v="45515">¥45,515</td><td class="cv sep" data-v="5.5">5.5</td><td class="cv" data-v="8275.5">¥8,275</td></tr>
+<tr><td class="l">窓 修理</td><td>追加済み</td><td>検索</td><td data-v="41">41</td><td data-v="24923">¥24,923</td><td class="cv sep" data-v="5.5">5.5</td><td class="cv" data-v="4531.5">¥4,531</td></tr>
+<tr><td class="l">鍵屋</td><td>追加済み</td><td>検索</td><td data-v="39">39</td><td data-v="23866">¥23,866</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="4773.2">¥4,773</td></tr>
+<tr><td class="l">鍵 交換</td><td>追加済み</td><td>検索</td><td data-v="26">26</td><td data-v="18470">¥18,470</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="3694.0">¥3,694</td></tr>
+<tr><td class="l">屋根 修理 の まもるくん 口コミ</td><td>追加済み</td><td>検索</td><td data-v="49">49</td><td data-v="14827">¥14,827</td><td class="cv sep" data-v="4.3">4.3</td><td class="cv" data-v="3432.2">¥3,432</td></tr>
+<tr><td class="l">窓 ガラス 修理 業者</td><td>なし</td><td>検索</td><td data-v="18">18</td><td data-v="18109">¥18,109</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="4527.2">¥4,527</td></tr>
+<tr><td class="l">ガラス 交換 業者</td><td>なし</td><td>検索</td><td data-v="23">23</td><td data-v="18271">¥18,271</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="4567.8">¥4,568</td></tr>
+<tr><td class="l">金庫 開ける 業者</td><td>追加済み</td><td>検索</td><td data-v="19">19</td><td data-v="20946">¥20,946</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="5236.5">¥5,236</td></tr>
+<tr><td class="l">ガラス 屋 さん 近く</td><td>なし</td><td>検索</td><td data-v="41">41</td><td data-v="20352">¥20,352</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="5088.0">¥5,088</td></tr>
+<tr><td class="l">ガラス 修理 の まもるくん 口コミ</td><td>追加済み</td><td>検索</td><td data-v="41">41</td><td data-v="15219">¥15,219</td><td class="cv sep" data-v="3.8">3.8</td><td class="cv" data-v="3994.5">¥3,994</td></tr>
+<tr><td class="l">金庫 修理</td><td>追加済み</td><td>検索</td><td data-v="27">27</td><td data-v="22221">¥22,221</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="7407.0">¥7,407</td></tr>
+<tr><td class="l">鍵屋 さん</td><td>追加済み</td><td>検索</td><td data-v="27">27</td><td data-v="21344">¥21,344</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="7114.7">¥7,115</td></tr>
+<tr><td class="l">雨漏り 修理</td><td>追加済み</td><td>検索</td><td data-v="57">57</td><td data-v="31239">¥31,239</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="15619.5">¥15,620</td></tr>
+<tr><td class="l">近く の ガラス 修理 屋 さん</td><td>なし</td><td>検索</td><td data-v="18">18</td><td data-v="18917">¥18,917</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="9458.5">¥9,458</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（65行）。</p></div>
+<div class="advblk" data-a="レスキューサービス24ガラス修理">
+<h3 class="adv" id="query-レスキューサービス24ガラス修理" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理 <span class="badge">取得 2026-03-24</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜なし</td><td data-v="197">197</td><td data-v="361">361</td><td data-v="366806">¥366,806</td><td data-v="0.5903">59.0%</td><td class="cv sep" data-v="123.5">123.5</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="29">29</td><td data-v="250">250</td><td data-v="252934">¥252,934</td><td data-v="0.4070">40.7%</td><td class="cv sep" data-v="16.3">16.3</td></tr>
+<tr><td class="l">検索｜除外済み</td><td data-v="2">2</td><td data-v="4">4</td><td data-v="1696">¥1,696</td><td data-v="0.0027">0.3%</td><td class="cv sep" data-v="3.0">3.0</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="レスキューサービス24ガラス修理"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">窓 ガラス 交換 費用</td><td>なし</td><td>検索</td><td data-v="58">58</td><td data-v="36335">¥36,335</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="4541.9">¥4,542</td></tr>
+<tr><td class="l">ガラス 交換</td><td>追加済み</td><td>検索</td><td data-v="60">60</td><td data-v="57506">¥57,506</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="9584.3">¥9,584</td></tr>
+<tr><td class="l">荒井 硝子 阿佐ヶ谷</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="1738">¥1,738</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="434.5">¥434</td></tr>
+<tr><td class="l">ガラス 110 番</td><td>なし</td><td>検索</td><td data-v="18">18</td><td data-v="26146">¥26,146</td><td class="cv sep" data-v="3.5">3.5</td><td class="cv" data-v="7470.3">¥7,470</td></tr>
+<tr><td class="l">窓 ガラス 交換</td><td>追加済み</td><td>検索</td><td data-v="101">101</td><td data-v="87705">¥87,705</td><td class="cv sep" data-v="3.5">3.5</td><td class="cv" data-v="25058.6">¥25,059</td></tr>
+<tr><td class="l">北 区 ガラス 交換</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="970">¥970</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="323.3">¥323</td></tr>
+<tr><td class="l">窓 開か ない 修理</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="3186">¥3,186</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1062.0">¥1,062</td></tr>
+<tr><td class="l">レスキュー サービス 24</td><td>なし</td><td>検索</td><td data-v="53">53</td><td data-v="28609">¥28,609</td><td class="cv sep" data-v="2.6">2.6</td><td class="cv" data-v="10836.7">¥10,837</td></tr>
+<tr><td class="l">ガラス 破損 修理</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="20363">¥20,363</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="8145.2">¥8,145</td></tr>
+<tr><td class="l">窓 ガラス 交換 東京</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2598">¥2,598</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="1039.2">¥1,039</td></tr>
+<tr><td class="l">窓 の サッシ 修理</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="2266">¥2,266</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1133.0">¥1,133</td></tr>
+<tr><td class="l">賃貸 ガラス 戸 割れ た</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1224">¥1,224</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="612.0">¥612</td></tr>
+<tr><td class="l">荒井 硝子</td><td>除外済み</td><td>検索</td><td data-v="2">2</td><td data-v="452">¥452</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="226.0">¥226</td></tr>
+<tr><td class="l">近く の ガラス 屋 さん</td><td>なし</td><td>検索</td><td data-v="20">20</td><td data-v="30202">¥30,202</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="15101.0">¥15,101</td></tr>
+<tr><td class="l">ガラス 交換 新宿</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2844">¥2,844</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1422.0">¥1,422</td></tr>
+<tr><td class="l">ガラス 窓 の 修理</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1175">¥1,175</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="587.5">¥588</td></tr>
+<tr><td class="l">車 ガラス 交換</td><td>なし</td><td>検索</td><td data-v="13">13</td><td data-v="8296">¥8,296</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="4148.0">¥4,148</td></tr>
+<tr><td class="l">町田 硝子 店 上 石神井</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="5296">¥5,296</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2648.0">¥2,648</td></tr>
+<tr><td class="l">ガラス 屋 さん</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="6440">¥6,440</td><td class="cv sep" data-v="1.9">1.9</td><td class="cv" data-v="3371.7">¥3,372</td></tr>
+<tr><td class="l">江戸川 区 ガラス 修理</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="2215">¥2,215</td><td class="cv sep" data-v="1.3">1.3</td><td class="cv" data-v="1665.4">¥1,665</td></tr>
+<tr><td class="l">ガラス お 助け 本舗</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="9066">¥9,066</td><td class="cv sep" data-v="1.2">1.2</td><td class="cv" data-v="7311.3">¥7,311</td></tr>
+<tr><td class="l">みんなの ガラス 屋 さん</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="882">¥882</td><td class="cv sep" data-v="1.2">1.2</td><td class="cv" data-v="728.9">¥729</td></tr>
+<tr><td class="l">お 風呂 ガラス 修理</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="12330">¥12,330</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="11970.9">¥11,971</td></tr>
+<tr><td class="l">サッシ 修理 業者</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="2889">¥2,889</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2889.0">¥2,889</td></tr>
+<tr><td class="l">二 重 ガラス 交換</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="554">¥554</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="554.0">¥554</td></tr>
+<tr><td class="l">大田 区 ガラス 屋</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="3029">¥3,029</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3029.0">¥3,029</td></tr>
+<tr><td class="l">ガラス の 王様</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="5343">¥5,343</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="5343.0">¥5,343</td></tr>
+<tr><td class="l">ガラス 修理 即日</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="3628">¥3,628</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3628.0">¥3,628</td></tr>
+<tr><td class="l">サッシ の ガラス 交換</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1202">¥1,202</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1202.0">¥1,202</td></tr>
+<tr><td class="l">サッシ の 修理</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="3006">¥3,006</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3006.0">¥3,006</td></tr>
+<tr><td class="l">川崎 市 ガラス 交換</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1086">¥1,086</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1086.0">¥1,086</td></tr>
+<tr><td class="l">ガラス 屋 近く</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="4178">¥4,178</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4178.0">¥4,178</td></tr>
+<tr><td class="l">ガラス サッシ 交換</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="5544">¥5,544</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="5544.0">¥5,544</td></tr>
+<tr><td class="l">窓 ガラス 修理</td><td>追加済み</td><td>検索</td><td data-v="30">30</td><td data-v="46002">¥46,002</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="46002.0">¥46,002</td></tr>
+<tr><td class="l">ガラス 張り替え</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="4468">¥4,468</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4468.0">¥4,468</td></tr>
+<tr><td class="l">ガラス 窓 修理</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="5843">¥5,843</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="5843.0">¥5,843</td></tr>
+<tr><td class="l">ガラス 屋</td><td>追加済み</td><td>検索</td><td data-v="29">29</td><td data-v="32083">¥32,083</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="32083.0">¥32,083</td></tr>
+<tr><td class="l">ガラス 店 板橋 区</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="1298">¥1,298</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1298.0">¥1,298</td></tr>
+<tr><td class="l">ガラス の 修理</td><td>追加済み</td><td>検索</td><td data-v="7">7</td><td data-v="7572">¥7,572</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="7572.0">¥7,572</td></tr>
+<tr><td class="l">小平 市 ガラス 屋</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="2880">¥2,880</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2880.0">¥2,880</td></tr>
+<tr><td class="l">窓 ガラス 交換 杉並 区</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="1636">¥1,636</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1636.0">¥1,636</td></tr>
+<tr><td class="l">窓 閉まら ない 修理</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="7044">¥7,044</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="7044.0">¥7,044</td></tr>
+<tr><td class="l">我孫子 市 ガラス 修理</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="7512">¥7,512</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="7512.0">¥7,512</td></tr>
+<tr><td class="l">窓 ガラス 交換 どこに 頼む</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="2438">¥2,438</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2438.0">¥2,438</td></tr>
+<tr><td class="l">ガラス の 割れ 方 原因</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="2502">¥2,502</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2502.0">¥2,502</td></tr>
+<tr><td class="l">稲毛 区 ガラス 修理</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2102">¥2,102</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2102.0">¥2,102</td></tr>
+<tr><td class="l">ガラス 交換 立川</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2260">¥2,260</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2260.0">¥2,260</td></tr>
+<tr><td class="l">ガラス 交換 業者</td><td>追加済み</td><td>検索</td><td data-v="2">2</td><td data-v="4311">¥4,311</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4311.0">¥4,311</td></tr>
+<tr><td class="l">窓 の ガラス 交換 費用</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="4608">¥4,608</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4608.0">¥4,608</td></tr>
+<tr><td class="l">辻本 ガラス 八千代</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="1619">¥1,619</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1619.0">¥1,619</td></tr>
+<tr><td class="l">ガラス 修理 神奈川 県</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2373">¥2,373</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2373.0">¥2,373</td></tr>
+<tr><td class="l">サッシ の 鍵 の 交換</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2875">¥2,875</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2875.0">¥2,875</td></tr>
+<tr><td class="l">目黒 区 ガラス 屋</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="3649">¥3,649</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3649.0">¥3,649</td></tr>
+<tr><td class="l">浦安 市 窓 ガラス 交換</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2575">¥2,575</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2575.0">¥2,575</td></tr>
+<tr><td class="l">出窓 ガラス 交換</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="170">¥170</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="170.0">¥170</td></tr>
+<tr><td class="l">ガラス 修理 安い</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="3585">¥3,585</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3585.0">¥3,585</td></tr>
+<tr><td class="l">株式 会社 ハウズ ポート</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="366">¥366</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="366.0">¥366</td></tr>
+<tr><td class="l">窓 ガラス 交換 大田 区</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2133">¥2,133</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2133.0">¥2,133</td></tr>
+<tr><td class="l">調布 市 ガラス 修理</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="2520">¥2,520</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2520.0">¥2,520</td></tr>
+<tr><td class="l">窓 猿</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="1628">¥1,628</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1628.0">¥1,628</td></tr>
+<tr><td class="l">ガラス 修理 千葉 市</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="6005">¥6,005</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="6005.0">¥6,005</td></tr>
+<tr><td class="l">ガラス レスキュー</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="4982">¥4,982</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4982.0">¥4,982</td></tr>
+<tr><td class="l">窓 ガラス 交換 値段</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="446">¥446</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="446.0">¥446</td></tr>
+<tr><td class="l">ガラス 修理 おすすめ</td><td>追加済み</td><td>検索</td><td data-v="2">2</td><td data-v="4203">¥4,203</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4203.0">¥4,203</td></tr>
+<tr><td class="l">扉 の ガラス 修理</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2542">¥2,542</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2542.0">¥2,542</td></tr>
+<tr><td class="l">風呂 窓 交換</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="509">¥509</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="509.0">¥509</td></tr>
+<tr><td class="l">出張 ガラス 交換</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="1306">¥1,306</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1306.0">¥1,306</td></tr>
+<tr><td class="l">ペア ガラス 交換</td><td>追加済み</td><td>検索</td><td data-v="15">15</td><td data-v="6636">¥6,636</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="6636.0">¥6,636</td></tr>
+<tr><td class="l">窓 の サッシ どこ</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="2186">¥2,186</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="2186.0">¥2,186</td></tr>
+<tr><td class="l">窓 ガラス 熱 割れ 修理</td><td>なし</td><td>検索</td><td data-v="7">7</td><td data-v="3284">¥3,284</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3284.0">¥3,284</td></tr>
+<tr><td class="l">浅井 ガラス 店</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="805">¥805</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="805.0">¥805</td></tr>
+<tr><td class="l">柏 市 ガラス 修理</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="6268">¥6,268</td><td class="cv sep" data-v="0.3">0.3</td><td class="cv" data-v="18993.9">¥18,994</td></tr>
+<tr><td class="l">ガラス 業者</td><td>追加済み</td><td>検索</td><td data-v="3">3</td><td data-v="6210">¥6,210</td><td class="cv sep" data-v="0.3">0.3</td><td class="cv" data-v="18818.2">¥18,818</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（73行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2026-03-24 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="-1">--</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td class="l">一般</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="-1">--</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l">指名</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="-1">--</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td class="l">一般</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="-1">--</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2026-03-24</th></tr>
+<tr data-a="ガラス修理のまもるくん"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>ガラス修理のまもるくん</td><td><span class="note" title="このバッチのスプレッドシートに不在">--</span><div class="note">--</div></td></tr>
+<tr data-a="レスキューサービス24ガラス修理"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>レスキューサービス24ガラス修理</td><td><span class="note" title="このバッチのスプレッドシートに不在">--</span><div class="note">--</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2026-03-24</b>（20260324_レポート依頼用【ガラス修理】_セレス様__1x28Mg2O.xlsx）<br>端数月: 2026-03（26日まで）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

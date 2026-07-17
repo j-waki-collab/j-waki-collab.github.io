@@ -1,0 +1,787 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜不動産クラファン</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>不動産クラファン業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">3社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2026-03-11</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥10,944,670</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥338</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">3.9〜9.8</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="CAMEL" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</button><button class="achip" data-t="FunFund" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</button><button class="achip" data-t="TORCHS" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2026-03-11（期間 2026年1月1日 - 2026年3月12日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td data-v="3787046">¥3,787,046</td><td data-v="7375">7,375</td><td data-v="0.0445">4.5%</td><td data-v="513.5">¥513</td><td data-v="3.88">3.88</td><td data-v="0.0">--</td><td data-v="0.2361">23.6%</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div></td><td class="cv sep" data-v="283">283</td><td class="cv" data-v="0.0384">3.8%</td><td class="cv" data-v="13381.8">¥13,382</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td data-v="249854">¥249,854</td><td data-v="658">658</td><td data-v="0.0475">4.7%</td><td data-v="379.7">¥380</td><td data-v="4.61">4.61</td><td data-v="0.0">--</td><td data-v="0.0359">3.6%</td><td><div class="bar"><div class="mt-i" style="width:94.3%" title="インテント マッチ 94.3%"></div><div class="mt-e" style="width:5.7%" title="完全一致 5.7%"></div></div></td><td class="cv sep" data-v="34">34</td><td class="cv" data-v="0.0517">5.2%</td><td class="cv" data-v="7348.6">¥7,349</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td data-v="6907770">¥6,907,770</td><td data-v="24309">24,309</td><td data-v="0.2615">26.2%</td><td data-v="284.2">¥284</td><td data-v="9.84">9.84</td><td data-v="0.0">--</td><td data-v="1.0000">100.0%</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div></td><td class="cv sep" data-v="1309">1,309</td><td class="cv" data-v="0.0538">5.4%</td><td class="cv" data-v="5277.5">¥5,277</td></tr>
+</table></div>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td data-v="202601">2026-01</td><td data-v="76944">76,944</td><td data-v="2310">2,310</td><td data-v="0.0300">3.0%</td><td data-v="402.3">¥402</td><td data-v="929203">¥929,203</td><td class="cv sep" data-v="38">38</td><td class="cv" data-v="0.0165">1.6%</td><td class="cv" data-v="24452.7">¥24,453</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td data-v="202602">2026-02</td><td data-v="67908">67,908</td><td data-v="3988">3,988</td><td data-v="0.0587">5.9%</td><td data-v="599.2">¥599</td><td data-v="2389466">¥2,389,466</td><td class="cv sep" data-v="222">222</td><td class="cv" data-v="0.0557">5.6%</td><td class="cv" data-v="10763.4">¥10,763</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td data-v="202603">2026-03 ⚠</td><td data-v="20811">20,811</td><td data-v="1077">1,077</td><td data-v="0.0518">5.2%</td><td data-v="434.9">¥435</td><td data-v="468377">¥468,377</td><td class="cv sep" data-v="23">23</td><td class="cv" data-v="0.0214">2.1%</td><td class="cv" data-v="20364.2">¥20,364</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td data-v="202601">2026-01</td><td data-v="5141">5,141</td><td data-v="246">246</td><td data-v="0.0479">4.8%</td><td data-v="487.3">¥487</td><td data-v="119876">¥119,876</td><td class="cv sep" data-v="13">13</td><td class="cv" data-v="0.0528">5.3%</td><td class="cv" data-v="9221.2">¥9,221</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td data-v="202602">2026-02</td><td data-v="5752">5,752</td><td data-v="316">316</td><td data-v="0.0549">5.5%</td><td data-v="290.4">¥290</td><td data-v="91781">¥91,781</td><td class="cv sep" data-v="19">19</td><td class="cv" data-v="0.0601">6.0%</td><td class="cv" data-v="4830.6">¥4,831</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td data-v="202603">2026-03 ⚠</td><td data-v="2964">2,964</td><td data-v="96">96</td><td data-v="0.0324">3.2%</td><td data-v="397.9">¥398</td><td data-v="38197">¥38,197</td><td class="cv sep" data-v="2">2</td><td class="cv" data-v="0.0208">2.1%</td><td class="cv" data-v="19098.5">¥19,098</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td data-v="202601">2026-01</td><td data-v="27683">27,683</td><td data-v="8689">8,689</td><td data-v="0.3139">31.4%</td><td data-v="232.7">¥233</td><td data-v="2021551">¥2,021,551</td><td class="cv sep" data-v="532">532</td><td class="cv" data-v="0.0612">6.1%</td><td class="cv" data-v="3798.8">¥3,799</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td data-v="202602">2026-02</td><td data-v="50224">50,224</td><td data-v="12045">12,045</td><td data-v="0.2398">24.0%</td><td data-v="338.4">¥338</td><td data-v="4075617">¥4,075,617</td><td class="cv sep" data-v="640">640</td><td class="cv" data-v="0.0531">5.3%</td><td class="cv" data-v="6371.5">¥6,372</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td data-v="202603">2026-03 ⚠</td><td data-v="15043">15,043</td><td data-v="3575">3,575</td><td data-v="0.2377">23.8%</td><td data-v="226.7">¥227</td><td data-v="810602">¥810,602</td><td class="cv sep" data-v="137">137</td><td class="cv" data-v="0.0383">3.8%</td><td class="cv" data-v="5912.5">¥5,912</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="CAMEL">
+<h3 class="adv" id="struct-CAMEL" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL <span class="badge">取得 2026-03-11</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</span><span class="st">📁 CPN <b>1</b></span><span class="st">📂 ADG <b>1</b></span><span class="st">🔑 KW <b>13</b></span><span class="st">✏️ 広告 <b>1</b></span><span class="st">🔗 LP <b>1</b></span><span class="st">💰 <b>¥3,787,046</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="CAMEL_リスティング">CAMEL_リスティング</span><span class="share"><div style="width:100%"></div></span><span class="st">100.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>13</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥3,787,046</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="広告グループ 1 個">広告グループ 1 個</span><span class="st">🔑 <b>13</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥3,787,046</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="FunFund">
+<h3 class="adv" id="struct-FunFund" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund <span class="badge">取得 2026-03-11</span></h3>
+<div class="tree" style="--ac:var(--adv-1)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</span><span class="st">📁 CPN <b>3</b></span><span class="st">📂 ADG <b>3</b></span><span class="st">🔑 KW <b>5</b></span><span class="st">✏️ 広告 <b>3</b></span><span class="st">🔗 LP <b>2</b></span><span class="st">💰 <b>¥249,854</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="リスティング大口">リスティング大口</span><span class="share"><div style="width:55%"></div></span><span class="st">55.4%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥138,352</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="リスティング大口">リスティング大口</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥138,352</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="リスティング小口">リスティング小口</span><span class="share"><div style="width:41%"></div></span><span class="st">41.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥102,544</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="リスティング小口">リスティング小口</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥102,544</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="指名KW">指名KW</span><span class="share"><div style="width:4%"></div></span><span class="st">3.6%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥8,958</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="指名KW">指名KW</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥8,958</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="TORCHS">
+<h3 class="adv" id="struct-TORCHS" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS <span class="badge">取得 2026-03-11</span></h3>
+<div class="tree" style="--ac:var(--adv-2)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</span><span class="st">📁 CPN <b>1</b></span><span class="st">📂 ADG <b>1</b></span><span class="st">🔑 KW <b>3</b></span><span class="st">✏️ 広告 <b>1</b></span><span class="st">🔗 LP <b>1</b></span><span class="st">💰 <b>¥6,907,770</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="GS_01_指名">GS_01_指名</span><span class="share"><div style="width:100%"></div></span><span class="st">100.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥6,907,770</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="GS_01-01_指名単体">GS_01-01_指名単体</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥6,907,770</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:100.0%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="CAMEL｜CAMEL / QS3 / CPC¥1,268 / COST¥894,180"></span>
+<span class="dot" style="left:50.7%;bottom:0.0%;width:10px;height:10px;background:var(--adv-0)" title="CAMEL｜マンション 投資 / QS1 / CPC¥643 / COST¥479,359"></span>
+<span class="dot" style="left:28.2%;bottom:44.4%;width:14px;height:14px;background:var(--adv-0)" title="CAMEL｜投資 初心者 / QS5 / CPC¥357 / COST¥759,930"></span>
+<span class="dot" style="left:27.5%;bottom:22.2%;width:14px;height:14px;background:var(--adv-0)" title="CAMEL｜少額 投資 / QS3 / CPC¥349 / COST¥575,082"></span>
+<span class="dot" style="left:88.8%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="CAMEL｜キャメル / QS3 / CPC¥1,126 / COST¥207,196"></span>
+<span class="dot" style="left:32.5%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="CAMEL｜クラファン 投資 / QS5 / CPC¥412 / COST¥189,258"></span>
+<span class="dot" style="left:31.8%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="CAMEL｜クラウドファンディング 投資 / QS5 / CPC¥403 / COST¥154,367"></span>
+<span class="dot" style="left:66.1%;bottom:55.6%;width:10px;height:10px;background:var(--adv-0)" title="CAMEL｜キャメル 不動産 / QS6 / CPC¥839 / COST¥118,293"></span>
+<span class="dot" style="left:39.7%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="CAMEL｜クラウドファンディング 不動産 / QS5 / CPC¥504 / COST¥79,657"></span>
+<span class="dot" style="left:58.6%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="CAMEL｜グローバル クラウド エステート / QS3 / CPC¥744 / COST¥49,819"></span>
+<span class="dot" style="left:37.7%;bottom:44.4%;width:10px;height:10px;background:var(--adv-0)" title="CAMEL｜クラファン 不動産 / QS5 / CPC¥478 / COST¥22,939"></span>
+<span class="dot" style="left:17.2%;bottom:100.0%;width:10px;height:10px;background:var(--adv-1)" title="FunFund｜[funfund] / QS10 / CPC¥218 / COST¥8,703"></span>
+<span class="dot" style="left:27.6%;bottom:77.8%;width:10px;height:10px;background:var(--adv-2)" title="TORCHS｜とーちーず / QS8 / CPC¥351 / COST¥202,285"></span>
+<span class="dot" style="left:23.7%;bottom:100.0%;width:18px;height:18px;background:var(--adv-2)" title="TORCHS｜トーチーズ / QS10 / CPC¥300 / COST¥6,475,295"></span>
+<span class="dot" style="left:8.4%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="TORCHS｜TORCHES / QS10 / CPC¥106 / COST¥230,190"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥317</span>
+<span class="ax" style="left:50%;bottom:-22px">¥634</span>
+<span class="ax" style="left:75%;bottom:-22px">¥951</span>
+<span class="ax" style="left:100%;bottom:-22px">¥1,268</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>CAMEL</span><span><i style="background:var(--adv-1)"></i>FunFund</span><span><i style="background:var(--adv-2)"></i>TORCHS</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l">TORCHES</td><td data-v="10">10</td><td data-v="106">¥106</td><td data-v="2162">2,162</td><td data-v="230190">¥230,190</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l">[funfund]</td><td data-v="10">10</td><td data-v="218">¥218</td><td data-v="40">40</td><td data-v="8703">¥8,703</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l">トーチーズ</td><td data-v="10">10</td><td data-v="300">¥300</td><td data-v="21570">21,570</td><td data-v="6475295">¥6,475,295</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l">とーちーず</td><td data-v="8">8</td><td data-v="351">¥351</td><td data-v="577">577</td><td data-v="202285">¥202,285</td></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l">CAMEL</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="1268">¥1,268</td><td data-v="894180">¥894,180</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l">少額 投資</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="349">¥349</td><td data-v="575082">¥575,082</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l">マンション 投資</td><td data-v="1">1</td><td>関連性・推定CTR・LP</td><td data-v="643">¥643</td><td data-v="479359">¥479,359</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l">キャメル</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="1126">¥1,126</td><td data-v="207196">¥207,196</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l">グローバル クラウド エステート</td><td data-v="3">3</td><td>関連性・推定CTR</td><td data-v="744">¥744</td><td data-v="49819">¥49,819</td></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td data-v="3.88">3.88</td><td data-v="46.2"><b>46.2%</b></td><td data-v="62.5"><b>62.5%</b></td><td data-v="64.0"><b>64.0%</b></td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td data-v="4.61">4.61</td><td data-v="16.7">16.7%</td><td data-v="14.3">14.3%</td><td data-v="14.3">14.3%</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td data-v="9.84">9.84</td><td data-v="2.9">2.9%</td><td data-v="0.0">0.0%</td><td data-v="0.0">0.0%</td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="CAMEL">
+<h3 class="adv" id="kwqs-CAMEL" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL <span class="badge">取得 2026-03-11</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>3.88</b></span><span class="chip bad">関連性↓<b>46.2%</b></span><span class="chip bad">推定CTR↓<b>62.5%</b></span><span class="chip bad">LP利便性↓<b>64.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="CAMEL"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">CAMEL</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="7389">7,389</td><td data-v="705">705</td><td data-v="0.0954">9.5%</td><td data-v="1268.3">¥1,268</td><td data-v="894180">¥894,180</td><td class="cv sep" data-v="91.0">91.0</td><td class="cv" data-v="9826.2">¥9,826</td><td class="l">CAMEL_リスティング</td></tr>
+<tr><td class="l">投資 初心者</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="59881">59,881</td><td data-v="2126">2,126</td><td data-v="0.0355">3.6%</td><td data-v="357.4">¥357</td><td data-v="759930">¥759,930</td><td class="cv sep" data-v="25.0">25.0</td><td class="cv" data-v="30397.2">¥30,397</td><td class="l">CAMEL_リスティング</td></tr>
+<tr><td class="l">少額 投資</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="38200">38,200</td><td data-v="1649">1,649</td><td data-v="0.0432">4.3%</td><td data-v="348.7">¥349</td><td data-v="575082">¥575,082</td><td class="cv sep" data-v="24.0">24.0</td><td class="cv" data-v="23961.8">¥23,962</td><td class="l">CAMEL_リスティング</td></tr>
+<tr><td class="l">マンション 投資</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="16836">16,836</td><td data-v="745">745</td><td data-v="0.0443">4.4%</td><td data-v="643.4">¥643</td><td data-v="479359">¥479,359</td><td class="cv sep" data-v="68.0">68.0</td><td class="cv" data-v="7049.4">¥7,049</td><td class="l">CAMEL_リスティング</td></tr>
+<tr><td class="l">キャメル</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="2871">2,871</td><td data-v="184">184</td><td data-v="0.0641">6.4%</td><td data-v="1126.1">¥1,126</td><td data-v="207196">¥207,196</td><td class="cv sep" data-v="27.0">27.0</td><td class="cv" data-v="7673.9">¥7,674</td><td class="l">CAMEL_リスティング</td></tr>
+<tr><td class="l">堅実 な 資産 運用</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="12972">12,972</td><td data-v="565">565</td><td data-v="0.0436">4.4%</td><td data-v="355.2">¥355</td><td data-v="200668">¥200,668</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="40133.6">¥40,134</td><td class="l">CAMEL_リスティング</td></tr>
+<tr><td class="l">クラファン 投資</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="8921">8,921</td><td data-v="459">459</td><td data-v="0.0515">5.1%</td><td data-v="412.3">¥412</td><td data-v="189258">¥189,258</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="21028.7">¥21,029</td><td class="l">CAMEL_リスティング</td></tr>
+<tr><td class="l">クラウドファンディング 投資</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="6596">6,596</td><td data-v="383">383</td><td data-v="0.0581">5.8%</td><td data-v="403.0">¥403</td><td data-v="154367">¥154,367</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="22052.4">¥22,052</td><td class="l">CAMEL_リスティング</td></tr>
+<tr><td class="l">キャメル 不動産</td><td>インテント</td><td data-v="6">6</td><td>平均</td><td>平均</td><td>平均</td><td class="sep" data-v="1169">1,169</td><td data-v="141">141</td><td data-v="0.1206">12.1%</td><td data-v="839.0">¥839</td><td data-v="118293">¥118,293</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="13143.7">¥13,144</td><td class="l">CAMEL_リスティング</td></tr>
+<tr><td class="l">クラウドファンディング 不動産</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="3846">3,846</td><td data-v="158">158</td><td data-v="0.0411">4.1%</td><td data-v="504.2">¥504</td><td data-v="79657">¥79,657</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="39828.5">¥39,828</td><td class="l">CAMEL_リスティング</td></tr>
+<tr><td class="l">投資 不動産 物件</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="4930">4,930</td><td data-v="145">145</td><td data-v="0.0294">2.9%</td><td data-v="388.3">¥388</td><td data-v="56298">¥56,298</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="8042.6">¥8,043</td><td class="l">CAMEL_リスティング</td></tr>
+<tr><td class="l">グローバル クラウド エステート</td><td>インテント</td><td data-v="3">3</td><td>平均より下</td><td>平均より下</td><td>平均</td><td class="sep" data-v="933">933</td><td data-v="67">67</td><td data-v="0.0718">7.2%</td><td data-v="743.6">¥744</td><td data-v="49819">¥49,819</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="12454.8">¥12,455</td><td class="l">CAMEL_リスティング</td></tr>
+<tr><td class="l">クラファン 不動産</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均</td><td>平均より下</td><td class="sep" data-v="1119">1,119</td><td data-v="48">48</td><td data-v="0.0429">4.3%</td><td data-v="477.9">¥478</td><td data-v="22939">¥22,939</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="4587.8">¥4,588</td><td class="l">CAMEL_リスティング</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="FunFund">
+<h3 class="adv" id="kwqs-FunFund" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund <span class="badge">取得 2026-03-11</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>4.61</b></span><span class="chip">関連性↓<b>16.7%</b></span><span class="chip">推定CTR↓<b>14.3%</b></span><span class="chip">LP利便性↓<b>14.3%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="FunFund"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">[コヅチ 不動産 評判</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="13453">13,453</td><td data-v="609">609</td><td data-v="0.0453">4.5%</td><td data-v="386.8">¥387</td><td data-v="235556">¥235,556</td><td class="cv sep" data-v="28.0">28.0</td><td class="cv" data-v="8412.7">¥8,413</td><td class="l">リスティング大口</td></tr>
+<tr><td class="l">[funfund]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="141">141</td><td data-v="40">40</td><td data-v="0.2837">28.4%</td><td data-v="217.6">¥218</td><td data-v="8703">¥8,703</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="8703.0">¥8,703</td><td class="l">指名KW</td></tr>
+<tr><td class="l">[batsunagu ファン ディング]</td><td>完全</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="37">37</td><td data-v="4">4</td><td data-v="0.1081">10.8%</td><td data-v="962.2">¥962</td><td data-v="3849">¥3,849</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1283.0">¥1,283</td><td class="l">リスティング小口</td></tr>
+<tr><td class="l">[わ かちあい ファンド]</td><td>完全</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="218">218</td><td data-v="3">3</td><td data-v="0.0138">1.4%</td><td data-v="497.0">¥497</td><td data-v="1491">¥1,491</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1491.0">¥1,491</td><td class="l">リスティング大口</td></tr>
+<tr><td class="l">[fun-fund]</td><td>完全</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="8">8</td><td data-v="2">2</td><td data-v="0.2500">25.0%</td><td data-v="127.5">¥128</td><td data-v="255">¥255</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="255.0">¥255</td><td class="l">指名KW</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="TORCHS">
+<h3 class="adv" id="kwqs-TORCHS" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS <span class="badge">取得 2026-03-11</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>9.84</b></span><span class="chip">関連性↓<b>2.9%</b></span><span class="chip">推定CTR↓<b>0.0%</b></span><span class="chip">LP利便性↓<b>0.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="TORCHS"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">トーチーズ</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="76036">76,036</td><td data-v="21570">21,570</td><td data-v="0.2837">28.4%</td><td data-v="300.2">¥300</td><td data-v="6475295">¥6,475,295</td><td class="cv sep" data-v="1123.3">1,123.3</td><td class="cv" data-v="5764.5">¥5,765</td><td class="l">GS_01_指名</td></tr>
+<tr><td class="l">TORCHES</td><td>インテント</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="9328">9,328</td><td data-v="2162">2,162</td><td data-v="0.2318">23.2%</td><td data-v="106.5">¥106</td><td data-v="230190">¥230,190</td><td class="cv sep" data-v="163.6">163.6</td><td class="cv" data-v="1406.8">¥1,407</td><td class="l">GS_01_指名</td></tr>
+<tr><td class="l">とーちーず</td><td>インテント</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="7586">7,586</td><td data-v="577">577</td><td data-v="0.0761">7.6%</td><td data-v="350.6">¥351</td><td data-v="202285">¥202,285</td><td class="cv sep" data-v="22.0">22.0</td><td class="cv" data-v="9203.1">¥9,203</td><td class="l">GS_01_指名</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="CAMEL" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">lp.camel-ftk.com<br><span>lp.camel-ftk.com › camel-lp7</span></div><div class="t">海外リゾート不動産 - 2万円からのほったらかし投資 - クラウドファンディング型投資</div><div class="d">たった2万円から始められる不動産投資。国土交通省が認可したクラファン型の不動産投資です。 金融業、不動産業のプロが目をつけている低リスク中リターンの不動産投資方法。</div><div class="meta2">IMP 176,015 ／ CTR 4.3% ／ COST ¥3,863,772<br>CAMEL_リスティング</div></div>
+</div>
+<div class="serp-col advblk" data-a="FunFund" style="--ac:var(--adv-1)"><h4><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">funfund.jp<br><span>funfund.jp</span></div><div class="t">東証上場企業が運営 - 【平均実績利回り6％】 - 【想定利回り5から7%】</div><div class="d">【想定利回り6％前後】上場企業グループが運営する不動産クラファン大型案件で効率的な資産運用 高利回り×短期運用の不動産投資。実績豊富な運営会社が厳選した案件を公開中。</div><div class="meta2">IMP 11,275 ／ CTR 4.2% ／ COST ¥217,050<br>リスティング大口</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">funfund.jp<br><span>funfund.jp</span></div><div class="t">1万円から不動産投資 - 初心者向け不動産クラファン - ほったらかし資産運用</div><div class="d">【1万円から不動産投資】初心者でも始めやすい不動産クラファン優先劣後構造で元本リスクを軽減 ほったらかしで始める不動産投資。上場企業グループ運営のFunFundで安心運用。</div><div class="meta2">IMP 7,405 ／ CTR 4.7% ／ COST ¥136,998<br>リスティング小口</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">funfund.jp<br><span>funfund.jp</span></div><div class="t">初心者向け不動産クラファン - ほったらかし資産運用 - 【公式】FunFund</div><div class="d">【想定利回り6％前後】上場企業グループが運営する不動産クラファン大型案件で効率的な資産運用 高利回り×短期運用の不動産投資。実績豊富な運営会社が厳選した案件を公開中。</div><div class="meta2">IMP 1,577 ／ CTR 6.0% ／ COST ¥46,744<br>指名KW</div></div>
+</div>
+<div class="serp-col advblk" data-a="TORCHS" style="--ac:var(--adv-2)"><h4><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.torches.fund<br><span>www.torches.fund</span></div><div class="t">【公式】TORCHES(トーチーズ) - 不動産クラウドファンディング - 1口1万円から投資可能</div><div class="d">エムトラストグループから不動産クラファン TORCHES誕生。プロ向け優良物件に少額から投資可能。 不動産のプロが目利きする不動産クラファン「TORCHES」。会員登録は無料で最短5分。</div><div class="meta2">IMP 125,877 ／ CTR 20.5% ／ COST ¥7,737,223<br>GS_01_指名</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">会員登録無料、スマホ完結</td><td data-v="3">3</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">【想定利回り5から7%】</td><td data-v="3">3</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">【公式】FunFund</td><td data-v="3">3</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">1万円から不動産投資</td><td data-v="3">3</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">全募集案件、配当実績100％</td><td data-v="3">3</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">【平均実績利回り6％】</td><td data-v="3">3</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">高利回りファンド公開中</td><td data-v="2">2</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">ほったらかし資産運用</td><td data-v="2">2</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">初心者向け不動産クラファン</td><td data-v="2">2</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">優先劣後方式で安心</td><td data-v="2">2</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">資産家向け不動産クラファン</td><td data-v="2">2</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">プロ厳選の大型案件</td><td data-v="2">2</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">不動産クラファンで資産拡大</td><td data-v="2">2</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">【創業26年の実績ノウハウ】</td><td data-v="2">2</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">東証上場企業が運営</td><td data-v="2">2</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">少額で不動産投資</td><td data-v="2">2</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">プレゼントキャンペーン実施中</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">海外リゾート不動産</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">未経験から始める小額投資</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">1口2万円からはじめる小口投資</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">初回キャンペーン実施中</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">お財布に優しい小額の不動産投資</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">クラファン型不動産投資</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">国土交通省が認可</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">2万円からのほったらかし投資</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">海外不動産への投資も可能</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">投資初心者にほったらかし投資を</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">家賃収入で不労所得をつくる</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">クラウドファンディング型投資</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">積立NISAではない選択肢</td><td data-v="1">1</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l wrap">世界の価値ある不動産を厳選</td><td data-v="1">1</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">少額で資産形成を開始</td><td data-v="1">1</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">【東証上場企業が運営】</td><td data-v="1">1</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">手軽に不労所得づくり</td><td data-v="1">1</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">未経験から始める小額投資</td><td data-v="1">1</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">安心の不動産クラファン</td><td data-v="1">1</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l wrap">【創業26年の実績とノウハウ】</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">不動産クラウドファンディング</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">取引はスマホで簡単</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">【公式】TORCHES</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">取引はWEBで完結</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">投資したら待つだけ</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">プロ向け優良物件に少額投資可能</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">不動産のプロが運用</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">無料で最短5分で会員登録</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">エムトラストグループ</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">熟練の不動産会社が運営</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">プロが目利きした確かな商品力</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">【公式】TORCHES(トーチーズ)</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">投資に、灯りを。</td><td data-v="1">1</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l wrap">1口1万円から投資可能</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="CAMEL">
+<h3 class="adv" id="adlib-CAMEL" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL <span class="badge">取得 2026-03-11</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>1本</b></span><span class="chip">CPN<b>1個</b></span><span class="chip">ADG<b>1個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>1本</b></span></div>
+<p class="note">主要LP: <span title="https://lp.camel-ftk.com/camel-lp7/">https://lp.camel-ftk.com/camel-lp7/（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="CAMEL"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">プレゼントキャンペーン実施中</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">海外リゾート不動産</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">未経験から始める小額投資</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">1口2万円からはじめる小口投資</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">初回キャンペーン実施中</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">お財布に優しい小額の不動産投資</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">クラファン型不動産投資</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">国土交通省が認可</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">2万円からのほったらかし投資</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">海外不動産への投資も可能</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">投資初心者にほったらかし投資を</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">家賃収入で不労所得をつくる</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">クラウドファンディング型投資</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">積立NISAではない選択肢</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">世界の価値ある不動産を厳選</td><td data-v="1">1</td></tr>
+</table></div></div><div>
+<table data-adv="CAMEL"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">不動産クラウドファンディング型で、未経験でも始められる安心の資産運用をご紹介します。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">金融業、不動産業のプロが目をつけている低リスク中リターンの不動産投資方法。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">プレゼントキャンペーン実施中！少額から始めるほったらかし投資を、手堅く始めてみませんか？</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">たった2万円から始められる不動産投資。国土交通省が認可したクラファン型の不動産投資です。</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="FunFund">
+<h3 class="adv" id="adlib-FunFund" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund <span class="badge">取得 2026-03-11</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>3本</b></span><span class="chip">CPN<b>3個</b></span><span class="chip">ADG<b>3個</b></span><span class="chip">ピン留め<b>100%</b></span><span class="chip">LP使い分け<b>2本</b></span></div>
+<p class="note">主要LP: <span title="https://funfund.jp/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=s">https://funfund.jp/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=s（2本）</span> ／ <span title="https://funfund.jp/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=l">https://funfund.jp/?utm_source=google&amp;utm_medium=cpc&amp;utm_campaign=l（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="FunFund"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">会員登録無料、スマホ完結</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">【想定利回り5から7%】</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">【公式】FunFund</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">1万円から不動産投資</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">全募集案件、配当実績100％</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">【平均実績利回り6％】</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">高利回りファンド公開中</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">ほったらかし資産運用</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">初心者向け不動産クラファン</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">優先劣後方式で安心</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">資産家向け不動産クラファン</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">プロ厳選の大型案件</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">不動産クラファンで資産拡大</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【創業26年の実績ノウハウ】</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">東証上場企業が運営</td><td data-v="2">2</td></tr>
+</table></div></div><div>
+<table data-adv="FunFund"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">全募集案件で満額配当・償還実績。堅実な運用を重視した不動産クラファン。</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">数百万円規模の不動産案件に分散投資。優先劣後構造でリスクを抑えた運用を。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【想定利回り6％前後】上場企業グループが運営する不動産クラファン大型案件で効率的な資産運用</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">高利回り×短期運用の不動産投資。実績豊富な運営会社が厳選した案件を公開中。</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">【1万円から不動産投資】初心者でも始めやすい不動産クラファン優先劣後構造で元本リスクを軽減</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">少額から不動産オーナー。短期運用×安定収益を目指すクラファン。運用はプロにお任せ。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">ほったらかしで始める不動産投資。上場企業グループ運営のFunFundで安心運用。</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="TORCHS">
+<h3 class="adv" id="adlib-TORCHS" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS <span class="badge">取得 2026-03-11</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>1本</b></span><span class="chip">CPN<b>1個</b></span><span class="chip">ADG<b>1個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>1本</b></span></div>
+<p class="note">主要LP: <span title="https://www.torches.fund">https://www.torches.fund（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="TORCHS"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">不動産クラウドファンディング</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">取引はスマホで簡単</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【公式】TORCHES</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">取引はWEBで完結</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">投資したら待つだけ</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">プロ向け優良物件に少額投資可能</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">不動産のプロが運用</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">無料で最短5分で会員登録</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">エムトラストグループ</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">熟練の不動産会社が運営</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">プロが目利きした確かな商品力</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">【公式】TORCHES(トーチーズ)</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">投資に、灯りを。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">1口1万円から投資可能</td><td data-v="1">1</td></tr>
+</table></div></div><div>
+<table data-adv="TORCHS"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">親会社のエムトラスト社は、他社向けにファンドを提供し、累計100件以上の償還実績あり。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">プロが目利きした確かな商品企画力の不動産クラファン「TORCHES」。会員登録は無料で最短5分。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">不動産のプロが目利きする不動産クラファン「TORCHES」。会員登録は無料で最短5分。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">エムトラストグループから不動産クラファン TORCHES誕生。プロ向け優良物件に少額から投資可能。</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="CAMEL">
+<h3 class="adv" id="query-CAMEL" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL <span class="badge">取得 2026-03-11</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="120">120</td><td data-v="2563">2,563</td><td data-v="1752292">¥1,752,292</td><td data-v="0.5704">57.0%</td><td class="cv sep" data-v="255.0">255.0</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="18">18</td><td data-v="844">844</td><td data-v="981297">¥981,297</td><td data-v="0.3194">31.9%</td><td class="cv sep" data-v="109.0">109.0</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="46">46</td><td data-v="537">537</td><td data-v="338458">¥338,458</td><td data-v="0.1102">11.0%</td><td class="cv sep" data-v="63.0">63.0</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="CAMEL"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">camel</td><td>なし</td><td>P-MAX</td><td data-v="665">665</td><td data-v="788986">¥788,986</td><td class="cv sep" data-v="88.0">88.0</td><td class="cv" data-v="8965.8">¥8,966</td></tr>
+<tr><td class="l">キャメル</td><td>追加済み</td><td>検索</td><td data-v="259">259</td><td data-v="300514">¥300,514</td><td class="cv sep" data-v="49.0">49.0</td><td class="cv" data-v="6132.9">¥6,133</td></tr>
+<tr><td class="l">camel 不動産</td><td>追加済み</td><td>検索</td><td data-v="301">301</td><td data-v="303557">¥303,557</td><td class="cv sep" data-v="36.0">36.0</td><td class="cv" data-v="8432.1">¥8,432</td></tr>
+<tr><td class="l">camel キャンペーン</td><td>なし</td><td>検索</td><td data-v="117">117</td><td data-v="104989">¥104,989</td><td class="cv sep" data-v="26.0">26.0</td><td class="cv" data-v="4038.0">¥4,038</td></tr>
+<tr><td class="l">camel 不動産 キャンペーン</td><td>なし</td><td>検索</td><td data-v="84">84</td><td data-v="133791">¥133,791</td><td class="cv sep" data-v="21.0">21.0</td><td class="cv" data-v="6371.0">¥6,371</td></tr>
+<tr><td class="l">キャメル 不動産 投資</td><td>なし</td><td>P-MAX</td><td data-v="122">122</td><td data-v="96284">¥96,284</td><td class="cv sep" data-v="15.0">15.0</td><td class="cv" data-v="6418.9">¥6,419</td></tr>
+<tr><td class="l">キャメル 不動産</td><td>なし</td><td>P-MAX</td><td data-v="162">162</td><td data-v="129920">¥129,920</td><td class="cv sep" data-v="11.0">11.0</td><td class="cv" data-v="11810.9">¥11,811</td></tr>
+<tr><td class="l">camel クラウド ファン ディング</td><td>なし</td><td>P-MAX</td><td data-v="82">82</td><td data-v="53793">¥53,793</td><td class="cv sep" data-v="10.0">10.0</td><td class="cv" data-v="5379.3">¥5,379</td></tr>
+<tr><td class="l">camel ログイン</td><td>なし</td><td>検索</td><td data-v="34">34</td><td data-v="41363">¥41,363</td><td class="cv sep" data-v="10.0">10.0</td><td class="cv" data-v="4136.3">¥4,136</td></tr>
+<tr><td class="l">camel 投資</td><td>なし</td><td>P-MAX</td><td data-v="87">87</td><td data-v="69191">¥69,191</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="7687.9">¥7,688</td></tr>
+<tr><td class="l">camel 不動産 投資</td><td>なし</td><td>P-MAX</td><td data-v="49">49</td><td data-v="36945">¥36,945</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="4618.1">¥4,618</td></tr>
+<tr><td class="l">キャメル クラウド ファン ディング</td><td>なし</td><td>P-MAX</td><td data-v="83">83</td><td data-v="52950">¥52,950</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="6618.8">¥6,619</td></tr>
+<tr><td class="l">camel 不動産 怪しい</td><td>なし</td><td>P-MAX</td><td data-v="60">60</td><td data-v="79485">¥79,485</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="9935.6">¥9,936</td></tr>
+<tr><td class="l">不動産 クラウド ファン ディング</td><td>なし</td><td>P-MAX</td><td data-v="116">116</td><td data-v="80499">¥80,499</td><td class="cv sep" data-v="8.0">8.0</td><td class="cv" data-v="10062.4">¥10,062</td></tr>
+<tr><td class="l">リノシー</td><td>なし</td><td>P-MAX</td><td data-v="342">342</td><td data-v="104016">¥104,016</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="14859.4">¥14,859</td></tr>
+<tr><td class="l">camel クラファン</td><td>なし</td><td>検索</td><td data-v="26">26</td><td data-v="24794">¥24,794</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="3542.0">¥3,542</td></tr>
+<tr><td class="l">不動産 キャメル</td><td>なし</td><td>P-MAX</td><td data-v="34">34</td><td data-v="24625">¥24,625</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="4104.2">¥4,104</td></tr>
+<tr><td class="l">ウェルス ナビ</td><td>なし</td><td>検索</td><td data-v="182">182</td><td data-v="55120">¥55,120</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="11024.0">¥11,024</td></tr>
+<tr><td class="l">クリアル</td><td>なし</td><td>P-MAX</td><td data-v="119">119</td><td data-v="43905">¥43,905</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="8781.0">¥8,781</td></tr>
+<tr><td class="l">セキュリテ</td><td>なし</td><td>検索</td><td data-v="106">106</td><td data-v="36994">¥36,994</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="7398.8">¥7,399</td></tr>
+<tr><td class="l">不動産 クラウド ファン ディング camel</td><td>なし</td><td>P-MAX</td><td data-v="29">29</td><td data-v="18467">¥18,467</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="3693.4">¥3,693</td></tr>
+<tr><td class="l">不動産 投資 camel</td><td>なし</td><td>P-MAX</td><td data-v="27">27</td><td data-v="27894">¥27,894</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="6973.5">¥6,974</td></tr>
+<tr><td class="l">camel ファンド</td><td>なし</td><td>P-MAX</td><td data-v="49">49</td><td data-v="36536">¥36,536</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="9134.0">¥9,134</td></tr>
+<tr><td class="l">不動産 camel</td><td>なし</td><td>P-MAX</td><td data-v="15">15</td><td data-v="13279">¥13,279</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="3319.8">¥3,320</td></tr>
+<tr><td class="l">グローバル クラウド エステート</td><td>追加済み</td><td>検索</td><td data-v="53">53</td><td data-v="39087">¥39,087</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="9771.8">¥9,772</td></tr>
+<tr><td class="l">camel 不動産 ログイン</td><td>なし</td><td>P-MAX</td><td data-v="13">13</td><td data-v="11044">¥11,044</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="2761.0">¥2,761</td></tr>
+<tr><td class="l">クラウド バンク</td><td>なし</td><td>検索</td><td data-v="18">18</td><td data-v="9205">¥9,205</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="3068.3">¥3,068</td></tr>
+<tr><td class="l">ai 不動産 投資</td><td>なし</td><td>P-MAX</td><td data-v="59">59</td><td data-v="32016">¥32,016</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="10672.0">¥10,672</td></tr>
+<tr><td class="l">不動産 投資 キャメル</td><td>なし</td><td>P-MAX</td><td data-v="47">47</td><td data-v="36496">¥36,496</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="12165.3">¥12,165</td></tr>
+<tr><td class="l">トーチーズ キャンペーン</td><td>なし</td><td>検索</td><td data-v="23">23</td><td data-v="13807">¥13,807</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="4602.3">¥4,602</td></tr>
+<tr><td class="l">みんな で 大家 さん</td><td>なし</td><td>P-MAX</td><td data-v="21">21</td><td data-v="4350">¥4,350</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1450.0">¥1,450</td></tr>
+<tr><td class="l">camel どこ 得</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="6226">¥6,226</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="2075.3">¥2,075</td></tr>
+<tr><td class="l">camel 乗り換え キャンペーン</td><td>なし</td><td>P-MAX</td><td data-v="9">9</td><td data-v="11892">¥11,892</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="3964.0">¥3,964</td></tr>
+<tr><td class="l">国土 交通 省 投資 おすすめ</td><td>なし</td><td>P-MAX</td><td data-v="26">26</td><td data-v="8572">¥8,572</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="2857.3">¥2,857</td></tr>
+<tr><td class="l">事業 投資 型 クラウド ファン ディング 北極星</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="2858">¥2,858</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1429.0">¥1,429</td></tr>
+<tr><td class="l">おすすめ 株</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="1921">¥1,921</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="960.5">¥960</td></tr>
+<tr><td class="l">海外 不動産 投資</td><td>なし</td><td>P-MAX</td><td data-v="82">82</td><td data-v="35033">¥35,033</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="17516.5">¥17,516</td></tr>
+<tr><td class="l">ドバイ 不動産</td><td>なし</td><td>P-MAX</td><td data-v="26">26</td><td data-v="13418">¥13,418</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="6709.0">¥6,709</td></tr>
+<tr><td class="l">三井 物産 デジタル アセット マネジメント</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="1218">¥1,218</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="609.0">¥609</td></tr>
+<tr><td class="l">ウェルス ナビ 楽天</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="155">¥155</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="77.5">¥78</td></tr>
+<tr><td class="l">らく たま</td><td>なし</td><td>P-MAX</td><td data-v="31">31</td><td data-v="12247">¥12,247</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="6123.5">¥6,124</td></tr>
+<tr><td class="l">camel アマギフ</td><td>なし</td><td>P-MAX</td><td data-v="7">7</td><td data-v="9786">¥9,786</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="4893.0">¥4,893</td></tr>
+<tr><td class="l">camel 不動産 口コミ</td><td>なし</td><td>P-MAX</td><td data-v="13">13</td><td data-v="19821">¥19,821</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="9910.5">¥9,910</td></tr>
+<tr><td class="l">楽天 証券</td><td>なし</td><td>検索</td><td data-v="41">41</td><td data-v="16448">¥16,448</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="8224.0">¥8,224</td></tr>
+<tr><td class="l">sbi 証券</td><td>なし</td><td>検索</td><td data-v="105">105</td><td data-v="48620">¥48,620</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="24310.0">¥24,310</td></tr>
+<tr><td class="l">株式 会社 グローバル クラウド エステート 評判</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="1614">¥1,614</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="807.0">¥807</td></tr>
+<tr><td class="l">不動産 クラファン</td><td>なし</td><td>P-MAX</td><td data-v="20">20</td><td data-v="10049">¥10,049</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="5024.5">¥5,024</td></tr>
+<tr><td class="l">rimple</td><td>なし</td><td>P-MAX</td><td data-v="5">5</td><td data-v="2074">¥2,074</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1037.0">¥1,037</td></tr>
+<tr><td class="l">creal</td><td>なし</td><td>P-MAX</td><td data-v="112">112</td><td data-v="43805">¥43,805</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="21902.5">¥21,902</td></tr>
+<tr><td class="l">キャメル 不動産 クラウド ファン ディング</td><td>なし</td><td>P-MAX</td><td data-v="11">11</td><td data-v="7530">¥7,530</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3765.0">¥3,765</td></tr>
+<tr><td class="l">ウェルス ナビ と は</td><td>なし</td><td>P-MAX</td><td data-v="44">44</td><td data-v="11829">¥11,829</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="5914.5">¥5,914</td></tr>
+<tr><td class="l">aix ドバイ</td><td>なし</td><td>P-MAX</td><td data-v="6">6</td><td data-v="3029">¥3,029</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1514.5">¥1,514</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（52行）。</p></div>
+<div class="advblk" data-a="FunFund">
+<h3 class="adv" id="query-FunFund" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund <span class="badge">取得 2026-03-11</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="10">10</td><td data-v="113">113</td><td data-v="28069">¥28,069</td><td data-v="0.5161">51.6%</td><td class="cv sep" data-v="21.0">21.0</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="21">21</td><td data-v="41">41</td><td data-v="15065">¥15,065</td><td data-v="0.2770">27.7%</td><td class="cv sep" data-v="12.0">12.0</td></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="14">14</td><td data-v="93">93</td><td data-v="11257">¥11,257</td><td data-v="0.2070">20.7%</td><td class="cv sep" data-v="10.6">10.6</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="FunFund"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">funfund</td><td>なし</td><td>検索</td><td data-v="192">192</td><td data-v="36683">¥36,683</td><td class="cv sep" data-v="26.0">26.0</td><td class="cv" data-v="1410.9">¥1,411</td></tr>
+<tr><td class="l">バツナグ</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="3849">¥3,849</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1283.0">¥1,283</td></tr>
+<tr><td class="l">ファン ファンド</td><td>追加済み</td><td>検索</td><td data-v="10">10</td><td data-v="2853">¥2,853</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="1141.2">¥1,141</td></tr>
+<tr><td class="l">ファン ドロップ</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="865">¥865</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="432.5">¥432</td></tr>
+<tr><td class="l">fun fund</td><td>なし</td><td>P-MAX</td><td data-v="8">8</td><td data-v="449">¥449</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="224.5">¥224</td></tr>
+<tr><td class="l">funds</td><td>なし</td><td>P-MAX</td><td data-v="10">10</td><td data-v="2128">¥2,128</td><td class="cv sep" data-v="1.1">1.1</td><td class="cv" data-v="2007.5">¥2,008</td></tr>
+<tr><td class="l">不動産 ファンド</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="3160">¥3,160</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="3160.0">¥3,160</td></tr>
+<tr><td class="l">fundi</td><td>なし</td><td>P-MAX</td><td data-v="4">4</td><td data-v="669">¥669</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="669.0">¥669</td></tr>
+<tr><td class="l">ヤマ ワケ エステート</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="615">¥615</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="615.0">¥615</td></tr>
+<tr><td class="l">クリアル</td><td>なし</td><td>P-MAX</td><td data-v="4">4</td><td data-v="451">¥451</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="451.0">¥451</td></tr>
+<tr><td class="l">みんな で シェア ファンド</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="728">¥728</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="728.0">¥728</td></tr>
+<tr><td class="l">不動産 クラウド ファン ディング と は</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="450">¥450</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="450.0">¥450</td></tr>
+<tr><td class="l">わ かちあい ファンド</td><td>追加済み</td><td>検索</td><td data-v="3">3</td><td data-v="1491">¥1,491</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="1491.0">¥1,491</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（13行）。</p></div>
+<div class="advblk" data-a="TORCHS">
+<h3 class="adv" id="query-TORCHS" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS <span class="badge">取得 2026-03-11</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜なし</td><td data-v="134">134</td><td data-v="3129">3,129</td><td data-v="3712156">¥3,712,156</td><td data-v="0.4329">43.3%</td><td class="cv sep" data-v="323.3">323.3</td></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="9">9</td><td data-v="20858">20,858</td><td data-v="2440290">¥2,440,290</td><td data-v="0.2846">28.5%</td><td class="cv sep" data-v="962.8">962.8</td></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="343">343</td><td data-v="4721">4,721</td><td data-v="2421922">¥2,421,922</td><td data-v="0.2825">28.2%</td><td class="cv sep" data-v="385.2">385.2</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="TORCHS"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">トーチーズ</td><td>追加済み</td><td>検索</td><td data-v="18666">18,666</td><td data-v="2253660">¥2,253,660</td><td class="cv sep" data-v="803.0">803.0</td><td class="cv" data-v="2806.4">¥2,806</td></tr>
+<tr><td class="l">torches</td><td>追加済み</td><td>検索</td><td data-v="2163">2,163</td><td data-v="219167">¥219,167</td><td class="cv sep" data-v="166.7">166.7</td><td class="cv" data-v="1314.7">¥1,315</td></tr>
+<tr><td class="l">トーチーズ キャンペーン</td><td>なし</td><td>P-MAX</td><td data-v="479">479</td><td data-v="1155270">¥1,155,270</td><td class="cv sep" data-v="111.1">111.1</td><td class="cv" data-v="10396.6">¥10,397</td></tr>
+<tr><td class="l">トーチーズ 評判</td><td>なし</td><td>P-MAX</td><td data-v="592">592</td><td data-v="942795">¥942,795</td><td class="cv sep" data-v="90.2">90.2</td><td class="cv" data-v="10451.1">¥10,451</td></tr>
+<tr><td class="l">トーチーズ ポイント サイト</td><td>なし</td><td>P-MAX</td><td data-v="85">85</td><td data-v="305461">¥305,461</td><td class="cv sep" data-v="44.0">44.0</td><td class="cv" data-v="6939.1">¥6,939</td></tr>
+<tr><td class="l">クラウド ファン ディング</td><td>なし</td><td>検索</td><td data-v="1441">1,441</td><td data-v="548746">¥548,746</td><td class="cv sep" data-v="42.5">42.5</td><td class="cv" data-v="12908.6">¥12,909</td></tr>
+<tr><td class="l">不動産 クラウド ファン ディング</td><td>なし</td><td>P-MAX</td><td data-v="393">393</td><td data-v="224972">¥224,972</td><td class="cv sep" data-v="20.8">20.8</td><td class="cv" data-v="10800.4">¥10,800</td></tr>
+<tr><td class="l">torches キャンペーン</td><td>なし</td><td>検索</td><td data-v="46">46</td><td data-v="48286">¥48,286</td><td class="cv sep" data-v="17.8">17.8</td><td class="cv" data-v="2720.3">¥2,720</td></tr>
+<tr><td class="l">トーチーズ アマギフ</td><td>なし</td><td>P-MAX</td><td data-v="44">44</td><td data-v="150989">¥150,989</td><td class="cv sep" data-v="16.2">16.2</td><td class="cv" data-v="9337.6">¥9,338</td></tr>
+<tr><td class="l">トーチズ</td><td>なし</td><td>P-MAX</td><td data-v="164">164</td><td data-v="48141">¥48,141</td><td class="cv sep" data-v="15.6">15.6</td><td class="cv" data-v="3076.1">¥3,076</td></tr>
+<tr><td class="l">トーチーズ 怪しい</td><td>なし</td><td>P-MAX</td><td data-v="182">182</td><td data-v="527848">¥527,848</td><td class="cv sep" data-v="15.2">15.2</td><td class="cv" data-v="34635.7">¥34,636</td></tr>
+<tr><td class="l">とーちーず</td><td>追加済み</td><td>検索</td><td data-v="308">308</td><td data-v="29746">¥29,746</td><td class="cv sep" data-v="15.2">15.2</td><td class="cv" data-v="1959.6">¥1,960</td></tr>
+<tr><td class="l">リノシー</td><td>なし</td><td>P-MAX</td><td data-v="410">410</td><td data-v="99442">¥99,442</td><td class="cv sep" data-v="13.0">13.0</td><td class="cv" data-v="7649.4">¥7,649</td></tr>
+<tr><td class="l">トーチス</td><td>なし</td><td>検索</td><td data-v="139">139</td><td data-v="44001">¥44,001</td><td class="cv sep" data-v="12.8">12.8</td><td class="cv" data-v="3437.6">¥3,438</td></tr>
+<tr><td class="l">不動産 クラファン</td><td>なし</td><td>検索</td><td data-v="113">113</td><td data-v="68174">¥68,174</td><td class="cv sep" data-v="12.7">12.7</td><td class="cv" data-v="5359.6">¥5,360</td></tr>
+<tr><td class="l">torches 不動産</td><td>なし</td><td>検索</td><td data-v="112">112</td><td data-v="101128">¥101,128</td><td class="cv sep" data-v="12.0">12.0</td><td class="cv" data-v="8427.3">¥8,427</td></tr>
+<tr><td class="l">トーチーズ ログイン</td><td>なし</td><td>P-MAX</td><td data-v="730">730</td><td data-v="279021">¥279,021</td><td class="cv sep" data-v="10.7">10.7</td><td class="cv" data-v="26174.6">¥26,175</td></tr>
+<tr><td class="l">トーチーズ 口コミ</td><td>なし</td><td>検索</td><td data-v="55">55</td><td data-v="137069">¥137,069</td><td class="cv sep" data-v="10.0">10.0</td><td class="cv" data-v="13706.9">¥13,707</td></tr>
+<tr><td class="l">torches ポイント サイト</td><td>なし</td><td>検索</td><td data-v="25">25</td><td data-v="73791">¥73,791</td><td class="cv sep" data-v="9.5">9.5</td><td class="cv" data-v="7767.5">¥7,767</td></tr>
+<tr><td class="l">renosy</td><td>なし</td><td>P-MAX</td><td data-v="150">150</td><td data-v="63816">¥63,816</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="7090.7">¥7,091</td></tr>
+<tr><td class="l">トーチーズ 不動産</td><td>なし</td><td>P-MAX</td><td data-v="171">171</td><td data-v="49836">¥49,836</td><td class="cv sep" data-v="8.7">8.7</td><td class="cv" data-v="5761.4">¥5,761</td></tr>
+<tr><td class="l">torches 株式 会社</td><td>なし</td><td>検索</td><td data-v="166">166</td><td data-v="68944">¥68,944</td><td class="cv sep" data-v="8.4">8.4</td><td class="cv" data-v="8207.6">¥8,208</td></tr>
+<tr><td class="l">トーチーズ 株式 会社</td><td>なし</td><td>検索</td><td data-v="174">174</td><td data-v="49461">¥49,461</td><td class="cv sep" data-v="7.9">7.9</td><td class="cv" data-v="6253.0">¥6,253</td></tr>
+<tr><td class="l">torches トーチーズ</td><td>なし</td><td>検索</td><td data-v="29">29</td><td data-v="7681">¥7,681</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="1097.3">¥1,097</td></tr>
+<tr><td class="l">torches クラファン</td><td>なし</td><td>検索</td><td data-v="28">28</td><td data-v="36028">¥36,028</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="6004.7">¥6,005</td></tr>
+<tr><td class="l">トーチーズ クラファン</td><td>なし</td><td>P-MAX</td><td data-v="77">77</td><td data-v="21617">¥21,617</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="4323.4">¥4,323</td></tr>
+<tr><td class="l">トー チーズ クラファン</td><td>なし</td><td>P-MAX</td><td data-v="40">40</td><td data-v="41161">¥41,161</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="8232.2">¥8,232</td></tr>
+<tr><td class="l">不動産 クラウド ファン ディング torches</td><td>なし</td><td>検索</td><td data-v="33">33</td><td data-v="16983">¥16,983</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="3396.6">¥3,397</td></tr>
+<tr><td class="l">クラファン</td><td>なし</td><td>P-MAX</td><td data-v="135">135</td><td data-v="41501">¥41,501</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="8300.2">¥8,300</td></tr>
+<tr><td class="l">エム トラスト トーチーズ</td><td>なし</td><td>検索</td><td data-v="16">16</td><td data-v="7584">¥7,584</td><td class="cv sep" data-v="4.8">4.8</td><td class="cv" data-v="1593.3">¥1,593</td></tr>
+<tr><td class="l">tecrowd</td><td>なし</td><td>P-MAX</td><td data-v="87">87</td><td data-v="32797">¥32,797</td><td class="cv sep" data-v="4.5">4.5</td><td class="cv" data-v="7288.2">¥7,288</td></tr>
+<tr><td class="l">トーチズ クラファン</td><td>なし</td><td>検索</td><td data-v="60">60</td><td data-v="76044">¥76,044</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="19011.0">¥19,011</td></tr>
+<tr><td class="l">ヤマ ワケ エステート</td><td>なし</td><td>P-MAX</td><td data-v="17">17</td><td data-v="7069">¥7,069</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="1767.2">¥1,767</td></tr>
+<tr><td class="l">クラファン 投資</td><td>なし</td><td>P-MAX</td><td data-v="8">8</td><td data-v="3497">¥3,497</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="874.2">¥874</td></tr>
+<tr><td class="l">不動産 投資 ファンド</td><td>なし</td><td>P-MAX</td><td data-v="9">9</td><td data-v="6288">¥6,288</td><td class="cv sep" data-v="3.1">3.1</td><td class="cv" data-v="2028.4">¥2,028</td></tr>
+<tr><td class="l">事業 投資 型 クラウド ファン ディング</td><td>なし</td><td>P-MAX</td><td data-v="92">92</td><td data-v="44493">¥44,493</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="14831.0">¥14,831</td></tr>
+<tr><td class="l">クラウド ファン ディング cozuchi</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="1695">¥1,695</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="565.0">¥565</td></tr>
+<tr><td class="l">トーチーズ 手数料</td><td>なし</td><td>検索</td><td data-v="8">8</td><td data-v="5978">¥5,978</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1992.7">¥1,993</td></tr>
+<tr><td class="l">クラウド ファン ディング 投資</td><td>なし</td><td>P-MAX</td><td data-v="67">67</td><td data-v="23662">¥23,662</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="7887.3">¥7,887</td></tr>
+<tr><td class="l">cozuchi</td><td>なし</td><td>P-MAX</td><td data-v="61">61</td><td data-v="56325">¥56,325</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="18775.0">¥18,775</td></tr>
+<tr><td class="l">利回り 不動産</td><td>なし</td><td>P-MAX</td><td data-v="14">14</td><td data-v="9900">¥9,900</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="3300.0">¥3,300</td></tr>
+<tr><td class="l">コヅチ</td><td>なし</td><td>P-MAX</td><td data-v="7">7</td><td data-v="3909">¥3,909</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1303.0">¥1,303</td></tr>
+<tr><td class="l">不動産 クラウド</td><td>なし</td><td>P-MAX</td><td data-v="10">10</td><td data-v="12452">¥12,452</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="4941.3">¥4,941</td></tr>
+<tr><td class="l">ヤマワケ</td><td>なし</td><td>P-MAX</td><td data-v="13">13</td><td data-v="5536">¥5,536</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="2214.4">¥2,214</td></tr>
+<tr><td class="l">クラウド ファン ディング っ て 何</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="859">¥859</td><td class="cv sep" data-v="2.3">2.3</td><td class="cv" data-v="375.1">¥375</td></tr>
+<tr><td class="l">トーチーズ 元 本 割れ</td><td>なし</td><td>P-MAX</td><td data-v="36">36</td><td data-v="54656">¥54,656</td><td class="cv sep" data-v="2.2">2.2</td><td class="cv" data-v="24619.8">¥24,620</td></tr>
+<tr><td class="l">利回り 不動産 キャンペーン</td><td>なし</td><td>P-MAX</td><td data-v="7">7</td><td data-v="5108">¥5,108</td><td class="cv sep" data-v="2.1">2.1</td><td class="cv" data-v="2432.4">¥2,432</td></tr>
+<tr><td class="l">トーチーズ 紹介</td><td>なし</td><td>P-MAX</td><td data-v="9">9</td><td data-v="6130">¥6,130</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2990.2">¥2,990</td></tr>
+<tr><td class="l">不動産 投資 クラウド ファン ディング</td><td>なし</td><td>P-MAX</td><td data-v="39">39</td><td data-v="24665">¥24,665</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="12271.1">¥12,271</td></tr>
+<tr><td class="l">不動産 投資</td><td>なし</td><td>P-MAX</td><td data-v="106">106</td><td data-v="47478">¥47,478</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="23739.0">¥23,739</td></tr>
+<tr><td class="l">ai 不動産 投資</td><td>なし</td><td>P-MAX</td><td data-v="77">77</td><td data-v="43883">¥43,883</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="21941.5">¥21,942</td></tr>
+<tr><td class="l">不動産 クラウド ファン ディング と は</td><td>なし</td><td>P-MAX</td><td data-v="55">55</td><td data-v="13071">¥13,071</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="6535.5">¥6,536</td></tr>
+<tr><td class="l">投資 クラウド ファン ディング</td><td>なし</td><td>P-MAX</td><td data-v="6">6</td><td data-v="3836">¥3,836</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1918.0">¥1,918</td></tr>
+<tr><td class="l">投資 型 クラウド ファン ディング</td><td>なし</td><td>P-MAX</td><td data-v="37">37</td><td data-v="18741">¥18,741</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="9370.5">¥9,370</td></tr>
+<tr><td class="l">お金 の 増やし 方</td><td>なし</td><td>検索</td><td data-v="26">26</td><td data-v="21690">¥21,690</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="10845.0">¥10,845</td></tr>
+<tr><td class="l">不動産 ファンド</td><td>なし</td><td>P-MAX</td><td data-v="26">26</td><td data-v="16281">¥16,281</td><td class="cv sep" data-v="1.6">1.6</td><td class="cv" data-v="9867.3">¥9,867</td></tr>
+<tr><td class="l">torches 口コミ</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="10593">¥10,593</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="10593.0">¥10,593</td></tr>
+<tr><td class="l">お金 を 増やす 方法</td><td>なし</td><td>検索</td><td data-v="78">78</td><td data-v="71900">¥71,900</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="71900.0">¥71,900</td></tr>
+<tr><td class="l">トーチーズ エム トラスト</td><td>なし</td><td>検索</td><td data-v="33">33</td><td data-v="10130">¥10,130</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="10130.0">¥10,130</td></tr>
+<tr><td class="l">不動産 投資 少額</td><td>なし</td><td>P-MAX</td><td data-v="28">28</td><td data-v="16271">¥16,271</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="16271.0">¥16,271</td></tr>
+<tr><td class="l">クラウド ファン ディング サイト</td><td>なし</td><td>検索</td><td data-v="25">25</td><td data-v="11715">¥11,715</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="11715.0">¥11,715</td></tr>
+<tr><td class="l">camel</td><td>なし</td><td>P-MAX</td><td data-v="53">53</td><td data-v="24016">¥24,016</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="24016.0">¥24,016</td></tr>
+<tr><td class="l">クラウド ファン ディング 不動産</td><td>なし</td><td>P-MAX</td><td data-v="30">30</td><td data-v="16791">¥16,791</td><td class="cv sep" data-v="0.3">0.3</td><td class="cv" data-v="59967.9">¥59,968</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（63行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2026-03-11 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l">指名</td><td data-v="7389">7,389</td><td data-v="705">705</td><td data-v="0.0954">9.5%</td><td data-v="1268.3">¥1,268</td><td data-v="894180">¥894,180</td><td data-v="0.2361">23.6%</td><td class="cv sep" data-v="91">91</td><td class="cv" data-v="0.1291">12.9%</td><td class="cv" data-v="9826.2">¥9,826</td></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td class="l">一般</td><td data-v="158274">158,274</td><td data-v="6670">6,670</td><td data-v="0.0421">4.2%</td><td data-v="433.7">¥434</td><td data-v="2892866">¥2,892,866</td><td data-v="0.7639">76.4%</td><td class="cv sep" data-v="192">192</td><td class="cv" data-v="0.0288">2.9%</td><td class="cv" data-v="15067.0">¥15,067</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l">指名</td><td data-v="149">149</td><td data-v="42">42</td><td data-v="0.2819">28.2%</td><td data-v="213.3">¥213</td><td data-v="8958">¥8,958</td><td data-v="0.0359">3.6%</td><td class="cv sep" data-v="2">2</td><td class="cv" data-v="0.0476">4.8%</td><td class="cv" data-v="4479.0">¥4,479</td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td class="l">一般</td><td data-v="13708">13,708</td><td data-v="616">616</td><td data-v="0.0449">4.5%</td><td data-v="391.1">¥391</td><td data-v="240896">¥240,896</td><td data-v="0.9641">96.4%</td><td class="cv sep" data-v="32">32</td><td class="cv" data-v="0.0519">5.2%</td><td class="cv" data-v="7528.0">¥7,528</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l">指名</td><td data-v="92950">92,950</td><td data-v="24309">24,309</td><td data-v="0.2615">26.2%</td><td data-v="284.2">¥284</td><td data-v="6907770">¥6,907,770</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="1309">1,309</td><td class="cv" data-v="0.0538">5.4%</td><td class="cv" data-v="5277.5">¥5,277</td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td class="l">一般</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2026-03-11</th></tr>
+<tr data-a="CAMEL"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>CAMEL</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div><div class="note">インテント100%</div></td></tr>
+<tr data-a="FunFund"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>FunFund</td><td><div class="bar"><div class="mt-i" style="width:94.3%" title="インテント マッチ 94.3%"></div><div class="mt-e" style="width:5.7%" title="完全一致 5.7%"></div></div><div class="note">インテント94% / 完全6%</div></td></tr>
+<tr data-a="TORCHS"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>TORCHS</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div><div class="note">インテント100%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2026-03-11</b>（20260311_レポート依頼用【不動産クラファン】_セレス様__1quRDuru.xlsx）<br>端数月: 2026-03（12日まで）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>

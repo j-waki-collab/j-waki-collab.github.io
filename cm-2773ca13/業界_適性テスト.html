@@ -1,0 +1,973 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競合定点観測｜適性テスト</title><style>
+:root{
+  --c-bg:#f4f6f9; --c-surface:#fff;
+  --c-border:#e3e7ee; --c-border-strong:#c9d0da;
+  --c-text:#1f2430; --c-text-sub:#5a6472; --c-text-faint:#7d8694;
+  --c-primary:#2b5aa7; --c-primary-weak:#eef3fa; --c-primary-text:#244c8d;
+  --c-inc:#b45309; --c-dec:#1d6fb8;
+  --c-warn-bg:#fff6e5; --c-warn-bd:#d9a520;
+  --c-danger-bg:#fdecec; --c-danger-bd:#c25e5e;
+  --adv-0:#0072b2; --adv-1:#e69f00; --adv-2:#009e73; --adv-3:#cc79a7; --adv-4:#d55e00;
+  --sp-1:4px; --sp-2:8px; --sp-3:16px; --sp-4:24px; --sp-5:32px; --sp-6:48px;
+  --rad-s:4px; --rad-m:8px;
+  --sh-1:0 1px 2px rgba(15,23,42,.06); --sh-2:0 2px 8px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+body{font-family:'Segoe UI','Yu Gothic UI','Meiryo',sans-serif;margin:0;background:var(--c-bg);color:var(--c-text);}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px;}
+.page-head{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:var(--sp-3) 0 var(--sp-2);}
+h1{font-size:22px;margin:0 0 var(--sp-1);font-weight:700;}
+h2{font-size:17px;margin:var(--sp-4) 0 var(--sp-2);padding-bottom:var(--sp-1);border-bottom:2px solid var(--c-primary);}
+h3{font-size:14.5px;margin:var(--sp-4) 0 var(--sp-1);}
+h3.adv{border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2);margin:var(--sp-2) 0;}
+.kpi{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:10px 14px;box-shadow:var(--sh-1);}
+.kpi .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;}
+.kpi .k{font-size:11px;color:var(--c-text-sub);letter-spacing:.03em;}
+table{border-collapse:collapse;background:var(--c-surface);font-size:12.5px;margin:var(--sp-2) 0 var(--sp-3);width:100%;box-shadow:var(--sh-1);}
+th,td{border:none;border-bottom:1px solid var(--c-border);padding:6px 12px;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+th{background:#f8f9fb;border-bottom:2px solid var(--c-border-strong);font-weight:600;text-align:center;color:var(--c-text-sub);font-size:11.5px;letter-spacing:.02em;cursor:pointer;user-select:none;}
+th:hover{background:var(--c-primary-weak);}
+td.l,th.l{text-align:left;}
+td.wrap{white-space:normal;word-break:break-all;max-width:520px;}
+td.sep,th.sep{border-left:1px solid var(--c-border);}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+tbody tr:hover td{background:var(--c-primary-weak);}
+.note{color:var(--c-text-sub);font-size:12px;}
+.cv{color:var(--c-text-faint);}
+.inc{color:var(--c-inc);font-weight:600;} .dec{color:var(--c-dec);font-weight:600;}
+.badge{display:inline-block;background:var(--c-primary);color:#fff;border-radius:var(--rad-s);padding:1px 8px;font-size:11px;margin-left:6px;font-weight:400;}
+.badge.red{background:#b3261e;}
+.adv-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.bar{display:flex;height:12px;border-radius:var(--rad-s);overflow:hidden;min-width:180px;}
+.bar div{height:100%;}
+.mt-i{background:#2b5aa7;} .mt-p{background:#5f9e6e;} .mt-e{background:#c98a2b;} .mt-o{background:#999;}
+.legend span{display:inline-block;margin-right:14px;font-size:12px;}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:4px;border-radius:2px;vertical-align:-1px;}
+.card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);margin:var(--sp-3) 0;box-shadow:var(--sh-1);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);}
+@media(max-width:900px){.grid{grid-template-columns:1fr;}}
+a{color:var(--c-primary-text);}
+.callout{border-left:4px solid var(--c-warn-bd);background:var(--c-warn-bg);border-radius:0 var(--rad-s) var(--rad-s) 0;padding:var(--sp-2) var(--sp-3);font-size:12.5px;margin:var(--sp-2) 0;}
+.callout.danger{border-left-color:var(--c-danger-bd);background:var(--c-danger-bg);}
+.tabs{position:sticky;top:0;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:6;display:flex;gap:2px;flex-wrap:wrap;padding:var(--sp-2) 0 0;border-bottom:2px solid var(--c-border-strong);}
+.tab{border:1px solid var(--c-border);border-bottom:none;background:#eceff4;border-radius:var(--rad-s) var(--rad-s) 0 0;padding:7px 14px;font-size:12.5px;cursor:pointer;color:var(--c-text-sub);}
+.tab:hover{background:var(--c-primary-weak);}
+.tab.act{background:var(--c-surface);color:var(--c-primary-text);font-weight:700;border-color:var(--c-border-strong);position:relative;top:2px;padding-bottom:9px;}
+.panel{display:none;animation:fade .15s;}
+.panel.act{display:block;}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.adv-chips{position:sticky;top:44px;background:rgba(244,246,249,.97);backdrop-filter:blur(4px);z-index:5;padding:var(--sp-2) 0;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--c-border);}
+.achip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:14px;padding:3px 12px;font-size:12px;cursor:pointer;color:var(--c-text);}
+.achip.on{border-color:var(--c-primary);background:var(--c-primary-weak);font-weight:600;}
+.stat-chips{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin:var(--sp-1) 0 var(--sp-2);}
+.chip{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);padding:2px 10px;font-size:12px;color:var(--c-text-sub);}
+.chip b{color:var(--c-text);margin-left:4px;font-variant-numeric:tabular-nums;}
+.chip.bad b{color:var(--c-inc);}
+.flt{width:100%;max-width:320px;padding:6px 12px;border:1px solid var(--c-border-strong);border-radius:var(--rad-s);font-size:12.5px;margin:var(--sp-1) 0;}
+.flt:focus{outline:2px solid var(--c-primary);outline-offset:-1px;border-color:var(--c-primary);}
+.flt-count{margin-left:var(--sp-2);}
+.tbl-scroll{max-height:560px;overflow:auto;border:1px solid var(--c-border);border-radius:var(--rad-s);margin:var(--sp-2) 0 var(--sp-3);}
+.tbl-scroll table{margin:0;box-shadow:none;}
+.tbl-scroll th{position:sticky;top:0;z-index:2;}
+.tools{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;}
+.btn{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:var(--rad-s);padding:4px 10px;font-size:12px;cursor:pointer;color:var(--c-text-sub);}
+.btn:hover{background:var(--c-primary-weak);color:var(--c-primary-text);}
+.qchip{border:1px solid var(--c-border-strong);background:var(--c-surface);border-radius:12px;padding:2px 10px;font-size:11.5px;cursor:pointer;color:var(--c-text-sub);}
+.qchip.on{border-color:var(--c-primary);background:var(--c-primary-weak);color:var(--c-primary-text);font-weight:600;}
+details{margin:var(--sp-2) 0;}
+details>summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:var(--sp-2) var(--sp-3);background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-s);color:var(--c-text-sub);}
+#topbtn{position:fixed;right:24px;bottom:24px;width:40px;height:40px;border-radius:50%;border:1px solid var(--c-border-strong);background:var(--c-surface);box-shadow:var(--sh-2);cursor:pointer;font-size:16px;color:var(--c-primary-text);z-index:9;}
+.ind-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:var(--sp-3);margin:var(--sp-3) 0;}
+.ind-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3);box-shadow:var(--sh-1);}
+.ind-card h3{margin:0 0 var(--sp-2);font-size:15px;}
+.ind-card .meta{font-size:12px;color:var(--c-text-sub);line-height:1.9;}
+.stale{color:var(--c-inc);font-weight:600;}
+/* 配信プレビュー（Google検索広告風） */
+.serp-grid{display:flex;gap:var(--sp-3);overflow-x:auto;padding-bottom:var(--sp-3);align-items:flex-start;}
+.serp-col{min-width:340px;max-width:340px;flex:0 0 340px;}
+.serp-col>h4{margin:0 0 var(--sp-2);font-size:13.5px;border-left:4px solid var(--ac,var(--c-primary));padding-left:var(--sp-2);}
+.gad{background:#fff;border:1px solid #dadce0;border-radius:8px;padding:12px 16px;margin-bottom:var(--sp-2);font-family:Arial,'Yu Gothic UI',sans-serif;}
+.gad .sp{font-size:12px;font-weight:700;color:#202124;}
+.gad .url{font-size:12px;color:#202124;margin:2px 0;}
+.gad .url span{color:#5f6368;}
+.gad .t{font-size:16.5px;color:#1a0dab;line-height:1.3;margin:2px 0 4px;cursor:pointer;}
+.gad .t:hover{text-decoration:underline;}
+.gad .d{font-size:12.5px;color:#4d5156;line-height:1.5;}
+.gad .meta2{font-size:11px;color:var(--c-text-faint);border-top:1px solid var(--c-border);margin-top:8px;padding-top:6px;font-family:'Segoe UI','Yu Gothic UI',sans-serif;}
+/* アカウント構造ツリー */
+.tree{margin:var(--sp-2) 0 var(--sp-4);}
+.tree ul{list-style:none;margin:0;padding-left:34px;position:relative;}
+.tree>ul{padding-left:0;}
+.tree li{position:relative;padding:5px 0 5px 18px;}
+.tree>ul>li{padding-left:0;}
+.tree ul ul li::before{content:'';position:absolute;left:-16px;top:0;bottom:0;border-left:2px solid var(--c-border-strong);}
+.tree ul ul li::after{content:'';position:absolute;left:-16px;top:22px;width:30px;border-top:2px solid var(--c-border-strong);}
+.tree ul ul li:last-child::before{height:22px;bottom:auto;}
+.node{display:inline-flex;align-items:center;gap:10px;background:var(--c-surface);border:1px solid var(--c-border-strong);
+  border-radius:var(--rad-m);padding:7px 14px;box-shadow:var(--sh-1);max-width:100%;flex-wrap:wrap;}
+.node.acct{border-left:5px solid var(--ac,var(--c-primary));font-size:14px;}
+.node.camp{border-left:4px solid var(--c-primary);}
+.node.adg{border-left:3px solid var(--c-border-strong);background:#fbfcfe;}
+.node .nm{font-weight:600;font-size:12.5px;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.node.acct .nm{font-size:15px;max-width:none;}
+.node .st{font-size:11.5px;color:var(--c-text-sub);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.node .st b{color:var(--c-text);}
+.share{width:90px;height:8px;background:var(--c-primary-weak);border-radius:4px;overflow:hidden;}
+.share div{height:100%;background:var(--c-primary);}
+.tree details{margin:2px 0 0;}
+.tree details>summary{display:inline-block;font-size:12px;padding:4px 12px;border:1px dashed var(--c-border-strong);
+  border-radius:var(--rad-m);background:transparent;color:var(--c-text-sub);}
+/* 勝ち筋 散布図 */
+.plot-wrap{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--rad-m);padding:var(--sp-3) var(--sp-3) var(--sp-4);box-shadow:var(--sh-1);}
+.plot{position:relative;height:420px;margin:var(--sp-3) 36px var(--sp-2) 44px;border-left:2px solid var(--c-border-strong);border-bottom:2px solid var(--c-border-strong);
+  background:repeating-linear-gradient(to top,transparent 0,transparent 41px,var(--c-border) 41px,var(--c-border) 42px);}
+.dot{position:absolute;width:10px;height:10px;border-radius:50%;opacity:.7;transform:translate(-5px,5px);cursor:pointer;border:1px solid rgba(255,255,255,.8);}
+.dot:hover{opacity:1;z-index:3;transform:translate(-5px,5px) scale(1.4);}
+.ax{position:absolute;font-size:10.5px;color:var(--c-text-faint);}
+.quad{position:absolute;font-size:11px;color:var(--c-text-faint);background:rgba(244,246,249,.7);padding:2px 6px;border-radius:3px;}
+</style></head><body>
+<div class="page-head"><div class="wrap">
+<h1>適性テスト業界 <span class="note" style="font-size:13px">競合定点観測</span></h1>
+<p class="note"><a href="index.html">← 業界一覧</a>・生成 2026-07-17 16:42 ／ ⚠ CV・CVR・CPAは社間比較禁止（詳細→「品質」タブ）</p>
+<div class="kpis"><div class="kpi"><div class="v">3社</div><div class="k">広告主</div></div><div class="kpi"><div class="v">1回</div><div class="k">蓄積バッチ</div></div><div class="kpi"><div class="v">2025-11-27</div><div class="k">最新取得</div></div><div class="kpi"><div class="v">¥10,683,221</div><div class="k">検索COST計（直近バッチ）</div></div><div class="kpi"><div class="v">¥530</div><div class="k">平均CPC（直近バッチ）</div></div><div class="kpi"><div class="v">4.2〜7.3</div><div class="k">QSレンジ（IMP加重）</div></div></div>
+</div></div><div class="wrap">
+<div class="tabs"><button class="tab" data-p="sum" onclick="showTab('sum')">📊 サマリー</button><button class="tab" data-p="struct" onclick="showTab('struct')">🌳 アカウント構造</button><button class="tab" data-p="diff" onclick="showTab('diff')">🔁 定点比較</button><button class="tab" data-p="win" onclick="showTab('win')">🏆 勝ち筋 CPC×QS</button><button class="tab" data-p="kwqs" onclick="showTab('kwqs')">🔍 KW品質</button><button class="tab" data-p="preview" onclick="showTab('preview')">🖼️ 配信プレビュー</button><button class="tab" data-p="adlib" onclick="showTab('adlib')">✏️ 広告文・LP</button><button class="tab" data-p="query" onclick="showTab('query')">💬 クエリ</button><button class="tab" data-p="brand" onclick="showTab('brand')">🏷️ 指名/一般</button><button class="tab" data-p="mt" onclick="showTab('mt')">📐 MT構成</button><button class="tab" data-p="dq" onclick="showTab('dq')">🧪 品質</button></div>
+<div class="adv-chips"><button class="achip on" data-t="*" onclick="advSel(this)">全社</button><button class="achip" data-t="アッテル適性検査" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</button><button class="achip" data-t="キュービック" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</button><button class="achip" data-t="ミキワメ適性検査" onclick="advSel(this)"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</button><input class="flt" style="max-width:300px;margin-left:auto" placeholder="🔍 全社横断KW検索" oninput="xsearch(this)"></div>
+<div id="xres" style="display:none"></div>
+<section class="panel" id="p-sum">
+<h2>業界サマリー（検索・登録KWベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<h3>取得 2025-11-27（期間 2025年9月1日 - 2025年11月27日） <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>COST合計</th><th>Click</th><th>CTR</th><th>CPC</th><th>QS(IMP加重)</th><th>検索IS平均</th><th>指名費用比率</th><th>MT構成(費用)</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td data-v="843340">¥843,340</td><td data-v="965">965</td><td data-v="0.0552">5.5%</td><td data-v="873.9">¥874</td><td data-v="4.21">4.21</td><td data-v="0.0">--</td><td data-v="1.0000">100.0%</td><td><div class="bar"><div class="mt-i" style="width:1.0%" title="インテント マッチ 1.0%"></div><div class="mt-p" style="width:60.3%" title="フレーズ一致 60.3%"></div><div class="mt-e" style="width:38.7%" title="完全一致 38.7%"></div></div></td><td class="cv sep" data-v="38">38</td><td class="cv" data-v="0.0399">4.0%</td><td class="cv" data-v="21904.9">¥21,905</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td data-v="475575">¥475,575</td><td data-v="1740">1,740</td><td data-v="0.1519">15.2%</td><td data-v="273.3">¥273</td><td data-v="7.31">7.31</td><td data-v="0.0">--</td><td data-v="0.1970">19.7%</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div></td><td class="cv sep" data-v="68">68</td><td class="cv" data-v="0.0391">3.9%</td><td class="cv" data-v="6984.5">¥6,985</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td data-v="9364306">¥9,364,306</td><td data-v="17444">17,444</td><td data-v="0.0728">7.3%</td><td data-v="536.8">¥537</td><td data-v="4.28">4.28</td><td data-v="0.0">--</td><td data-v="0.5456">54.6%</td><td><div class="bar"><div class="mt-i" style="width:38.0%" title="インテント マッチ 38.0%"></div><div class="mt-p" style="width:11.6%" title="フレーズ一致 11.6%"></div><div class="mt-e" style="width:50.4%" title="完全一致 50.4%"></div></div></td><td class="cv sep" data-v="830">830</td><td class="cv" data-v="0.0476">4.8%</td><td class="cv" data-v="11281.2">¥11,281</td></tr>
+</table></div>
+<p class="note">⚠ 取得不可（空タブ）: SPI</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>月</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td data-v="202509">2025-09</td><td data-v="6246">6,246</td><td data-v="298">298</td><td data-v="0.0477">4.8%</td><td data-v="983.1">¥983</td><td data-v="292952">¥292,952</td><td class="cv sep" data-v="14">14</td><td class="cv" data-v="0.0470">4.7%</td><td class="cv" data-v="20925.1">¥20,925</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td data-v="202510">2025-10</td><td data-v="6767">6,767</td><td data-v="377">377</td><td data-v="0.0557">5.6%</td><td data-v="851.2">¥851</td><td data-v="320889">¥320,889</td><td class="cv sep" data-v="14">14</td><td class="cv" data-v="0.0358">3.6%</td><td class="cv" data-v="23769.6">¥23,770</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td data-v="202511">2025-11 ⚠</td><td data-v="4476">4,476</td><td data-v="290">290</td><td data-v="0.0648">6.5%</td><td data-v="791.4">¥791</td><td data-v="229499">¥229,499</td><td class="cv sep" data-v="11">11</td><td class="cv" data-v="0.0379">3.8%</td><td class="cv" data-v="20863.5">¥20,864</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td data-v="202509">2025-09</td><td data-v="3777">3,777</td><td data-v="599">599</td><td data-v="0.1586">15.9%</td><td data-v="277.7">¥278</td><td data-v="166340">¥166,340</td><td class="cv sep" data-v="22">22</td><td class="cv" data-v="0.0373">3.7%</td><td class="cv" data-v="7449.2">¥7,449</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td data-v="202510">2025-10</td><td data-v="4723">4,723</td><td data-v="657">657</td><td data-v="0.1391">13.9%</td><td data-v="272.8">¥273</td><td data-v="179203">¥179,203</td><td class="cv sep" data-v="18">18</td><td class="cv" data-v="0.0275">2.8%</td><td class="cv" data-v="9900.7">¥9,901</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td data-v="202511">2025-11 ⚠</td><td data-v="2953">2,953</td><td data-v="484">484</td><td data-v="0.1639">16.4%</td><td data-v="268.7">¥269</td><td data-v="130032">¥130,032</td><td class="cv sep" data-v="28">28</td><td class="cv" data-v="0.0571">5.7%</td><td class="cv" data-v="4701.1">¥4,701</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td data-v="202509">2025-09</td><td data-v="123060">123,060</td><td data-v="7433">7,433</td><td data-v="0.0604">6.0%</td><td data-v="474.2">¥474</td><td data-v="3525034">¥3,525,034</td><td class="cv sep" data-v="333">333</td><td class="cv" data-v="0.0449">4.5%</td><td class="cv" data-v="10570.1">¥10,570</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td data-v="202510">2025-10</td><td data-v="59820">59,820</td><td data-v="5402">5,402</td><td data-v="0.0903">9.0%</td><td data-v="517.1">¥517</td><td data-v="2793524">¥2,793,524</td><td class="cv sep" data-v="310">310</td><td class="cv" data-v="0.0573">5.7%</td><td class="cv" data-v="9020.4">¥9,020</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td data-v="202511">2025-11 ⚠</td><td data-v="56618">56,618</td><td data-v="4609">4,609</td><td data-v="0.0814">8.1%</td><td data-v="660.8">¥661</td><td data-v="3045748">¥3,045,748</td><td class="cv sep" data-v="187">187</td><td class="cv" data-v="0.0406">4.1%</td><td class="cv" data-v="16296.1">¥16,296</td></tr>
+</table></div><p class="note">⚠=端数月（月次比較に使わない）。CV系グレー＝社内相対。</p>
+</section>
+<section class="panel" id="p-struct">
+<h2>アカウント構造（キャンペーン → 広告グループ → KW・広告・LP）</h2>
+<p class="note">直近バッチの登録KW・RSAから復元。キャンペーンは費用の大きい順に上位を展開（残りは折りたたみ）。🔑=登録KW数（KW×マッチタイプ）／✏️=RSA本数／🔗=LP本数。COSTは検索・登録KWベース。</p>
+<div class="advblk" data-a="アッテル適性検査">
+<h3 class="adv" id="struct-アッテル適性検査" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査 <span class="badge">取得 2025-11-27</span></h3>
+<div class="tree" style="--ac:var(--adv-0)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</span><span class="st">📁 CPN <b>3</b></span><span class="st">📂 ADG <b>4</b></span><span class="st">🔑 KW <b>9</b></span><span class="st">✏️ 広告 <b>5</b></span><span class="st">🔗 LP <b>3</b></span><span class="st">💰 <b>¥843,340</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="リスティング_HP遷移（適性検査）_単価検証_非指名">リスティング_HP遷移（適性検査）_単価検証_非指名</span><span class="share"><div style="width:57%"></div></span><span class="st">57.1%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>2</b></span><span class="st">💰 <b>¥481,899</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="適性検査　キーワード">適性検査　キーワード</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥473,102</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="サーベイ">サーベイ</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥8,797</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="リスティング_HP遷移（適性検査）_アッテルワード_指名">リスティング_HP遷移（適性検査）_アッテルワード_指名</span><span class="share"><div style="width:33%"></div></span><span class="st">32.8%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥276,699</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="指名検索（アッテル）">指名検索（アッテル）</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥276,699</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="リスティング_HP遷移（適性検査）_単価検証_非指名 LPテスト">リスティング_HP遷移（適性検査）_単価検証_非指名 LPテスト</span><span class="share"><div style="width:10%"></div></span><span class="st">10.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥84,742</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="適性検査　キーワード">適性検査　キーワード</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥84,742</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="キュービック">
+<h3 class="adv" id="struct-キュービック" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック <span class="badge">取得 2025-11-27</span></h3>
+<div class="tree" style="--ac:var(--adv-1)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</span><span class="st">📁 CPN <b>2</b></span><span class="st">📂 ADG <b>3</b></span><span class="st">🔑 KW <b>7</b></span><span class="st">✏️ 広告 <b>3</b></span><span class="st">🔗 LP <b>3</b></span><span class="st">💰 <b>¥475,575</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="CUBIC採用">CUBIC採用</span><span class="share"><div style="width:72%"></div></span><span class="st">72.3%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥343,805</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="CUBIC採用適性検査">CUBIC採用適性検査</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥343,805</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="WEB適性検査">WEB適性検査</span><span class="share"><div style="width:28%"></div></span><span class="st">27.7%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>2</b></span><span class="st">💰 <b>¥131,770</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="Compass適性検査">Compass適性検査</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥91,978</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="CUBIC for WEB">CUBIC for WEB</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥39,792</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+<div class="advblk" data-a="ミキワメ適性検査">
+<h3 class="adv" id="struct-ミキワメ適性検査" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査 <span class="badge">取得 2025-11-27</span></h3>
+<div class="tree" style="--ac:var(--adv-2)"><ul><li>
+<span class="node acct"><span class="nm"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</span><span class="st">📁 CPN <b>10</b></span><span class="st">📂 ADG <b>12</b></span><span class="st">🔑 KW <b>27</b></span><span class="st">✏️ 広告 <b>19</b></span><span class="st">🔗 LP <b>11</b></span><span class="st">💰 <b>¥9,364,306</b></span></span>
+<ul>
+<li><span class="node camp"><span class="nm" title="非指名(部分一致)">非指名(部分一致)</span><span class="share"><div style="width:40%"></div></span><span class="st">40.0%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>4</b></span><span class="st">🔗 <b>3</b></span><span class="st">💰 <b>¥3,746,085</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="非指名(部分一致)">非指名(部分一致)</span><span class="st">🔑 <b>6</b></span><span class="st">✏️ <b>4</b></span><span class="st">🔗 <b>3</b></span><span class="st">💰 <b>¥3,746,085</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="ミキワメ">ミキワメ</span><span class="share"><div style="width:40%"></div></span><span class="st">40.0%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>7</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>3</b></span><span class="st">💰 <b>¥3,745,697</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="MIKIWAME">MIKIWAME</span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>2</b></span><span class="st">💰 <b>¥3,700,576</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="費用">費用</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥45,121</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="非指名_ウェルビーイング">非指名_ウェルビーイング</span><span class="share"><div style="width:6%"></div></span><span class="st">5.9%</span><span class="st">📂 <b>2</b></span><span class="st">🔑 <b>5</b></span><span class="st">✏️ <b>4</b></span><span class="st">🔗 <b>4</b></span><span class="st">💰 <b>¥549,104</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="非指名_サーベイ">非指名_サーベイ</span><span class="st">🔑 <b>4</b></span><span class="st">✏️ <b>3</b></span><span class="st">🔗 <b>3</b></span><span class="st">💰 <b>¥492,584</b></span></span></li>
+<li><span class="node adg"><span class="nm" title="非指名_エンゲージメントサーベイ">非指名_エンゲージメントサーベイ</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥56,520</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="非指名(部分一致) AD LPテスト_非指名_20251107">非指名(部分一致) AD LPテスト_非指名_20251107</span><span class="share"><div style="width:4%"></div></span><span class="st">4.1%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥383,125</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="非指名(部分一致)">非指名(部分一致)</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥383,125</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="指名（マネジメント）">指名（マネジメント）</span><span class="share"><div style="width:4%"></div></span><span class="st">3.7%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥348,632</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="指名">指名</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥348,632</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="ミキワメ AD LPテスト_20251107">ミキワメ AD LPテスト_20251107</span><span class="share"><div style="width:3%"></div></span><span class="st">3.3%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥308,162</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="MIKIWAME">MIKIWAME</span><span class="st">🔑 <b>3</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥308,162</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="RLSA">RLSA</span><span class="share"><div style="width:2%"></div></span><span class="st">1.6%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥145,378</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="RLSA">RLSA</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥145,378</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="指名_ウェルビーイング">指名_ウェルビーイング</span><span class="share"><div style="width:1%"></div></span><span class="st">0.9%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>2</b></span><span class="st">💰 <b>¥81,871</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="指名_ウェルビーイング">指名_ウェルビーイング</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>2</b></span><span class="st">🔗 <b>2</b></span><span class="st">💰 <b>¥81,871</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="人材経営ラボ">人材経営ラボ</span><span class="share"><div style="width:0%"></div></span><span class="st">0.5%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥43,592</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="人材経営ラボ">人材経営ラボ</span><span class="st">🔑 <b>2</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥43,592</b></span></span></li>
+</ul></li>
+<li><span class="node camp"><span class="nm" title="ミキワメ_ポートフォリオ">ミキワメ_ポートフォリオ</span><span class="share"><div style="width:0%"></div></span><span class="st">0.1%</span><span class="st">📂 <b>1</b></span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥12,660</b></span></span>
+<ul>
+<li><span class="node adg"><span class="nm" title="MIKIWAME">MIKIWAME</span><span class="st">🔑 <b>1</b></span><span class="st">✏️ <b>1</b></span><span class="st">🔗 <b>1</b></span><span class="st">💰 <b>¥12,660</b></span></span></li>
+</ul></li>
+</ul></li></ul></div></div>
+</section>
+<section class="panel" id="p-diff">
+<h2>定点比較（同一広告主のバッチ間変化）</h2><p class="note">▲=上昇/▼=下降（色は方向のみ・良し悪しではない）</p>
+<p class="note">2バッチ以上蓄積された広告主がまだありません。次回取得分から自動で比較が出ます。</p>
+</section>
+<section class="panel" id="p-win">
+<h2>勝ち筋分析（CPC×品質スコア）— 何が安くて、何がGoogleに評価されているか</h2>
+<div class="plot-wrap"><b style="font-size:13.5px">KW散布図（クリック30以上・直近バッチ）</b><span class="note">　縦=品質スコア（上ほどGoogle評価が高い）／横=CPC実額（左ほど安い）。<b>左上=勝ち筋ゾーン</b>。点にカーソルでKW表示</span>
+<div class="plot">
+<span class="quad" style="left:2%;top:4%">◎ 勝ち筋（高評価×低CPC）</span>
+<span class="quad" style="right:2%;top:4%">激戦（高評価でも高CPC）</span>
+<span class="quad" style="left:2%;bottom:4%">低評価×低CPC</span>
+<span class="quad" style="right:2%;bottom:4%">⚠ 非効率（低評価×高CPC）</span>
+<span class="dot" style="left:100.0%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="アッテル適性検査｜[適性検査] / QS3 / CPC¥1,763 / COST¥326,132"></span>
+<span class="dot" style="left:91.8%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="アッテル適性検査｜適性検査 / QS3 / CPC¥1,618 / COST¥67,966"></span>
+<span class="dot" style="left:100.0%;bottom:22.2%;width:10px;height:10px;background:var(--adv-0)" title="アッテル適性検査｜性格診断 企業 / QS3 / CPC¥1,824 / COST¥72,948"></span>
+<span class="dot" style="left:28.3%;bottom:66.7%;width:10px;height:10px;background:var(--adv-0)" title="アッテル適性検査｜アッテル 適性 検査 / QS7 / CPC¥499 / COST¥93,890"></span>
+<span class="dot" style="left:22.1%;bottom:77.8%;width:10px;height:10px;background:var(--adv-0)" title="アッテル適性検査｜アッテル / QS8 / CPC¥390 / COST¥182,809"></span>
+<span class="dot" style="left:16.3%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="キュービック｜CUBIC 適性検査 / QS8 / CPC¥288 / COST¥153,844"></span>
+<span class="dot" style="left:12.0%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="キュービック｜キュービック 適性 検査 / QS8 / CPC¥212 / COST¥54,424"></span>
+<span class="dot" style="left:16.4%;bottom:44.4%;width:10px;height:10px;background:var(--adv-1)" title="キュービック｜キュービック / QS5 / CPC¥289 / COST¥39,286"></span>
+<span class="dot" style="left:14.6%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="キュービック｜cubic / QS8 / CPC¥257 / COST¥96,251"></span>
+<span class="dot" style="left:16.6%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="キュービック｜CUBIC 適性検査 WEB / QS7 / CPC¥293 / COST¥39,792"></span>
+<span class="dot" style="left:17.5%;bottom:66.7%;width:10px;height:10px;background:var(--adv-1)" title="キュービック｜コンパス WEBテスト / QS7 / CPC¥309 / COST¥45,475"></span>
+<span class="dot" style="left:17.0%;bottom:77.8%;width:10px;height:10px;background:var(--adv-1)" title="キュービック｜compass 適性 検査 / QS8 / CPC¥300 / COST¥46,503"></span>
+<span class="dot" style="left:20.0%;bottom:66.7%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜mikiwame / QS7 / CPC¥352 / COST¥326,922"></span>
+<span class="dot" style="left:23.1%;bottom:44.4%;width:14px;height:14px;background:var(--adv-2)" title="ミキワメ適性検査｜[ミキワメ 適性 検査] / QS5 / CPC¥408 / COST¥1,109,679"></span>
+<span class="dot" style="left:21.9%;bottom:66.7%;width:14px;height:14px;background:var(--adv-2)" title="ミキワメ適性検査｜[ミキワメ] / QS7 / CPC¥386 / COST¥1,974,908"></span>
+<span class="dot" style="left:71.2%;bottom:22.2%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜[エンゲージメントサーベイ] / QS3 / CPC¥1,256 / COST¥56,520"></span>
+<span class="dot" style="left:38.4%;bottom:22.2%;width:14px;height:14px;background:var(--adv-2)" title="ミキワメ適性検査｜[適性検査] / QS3 / CPC¥677 / COST¥868,410"></span>
+<span class="dot" style="left:40.4%;bottom:22.2%;width:14px;height:14px;background:var(--adv-2)" title="ミキワメ適性検査｜適性診断 / QS3 / CPC¥713 / COST¥2,049,553"></span>
+<span class="dot" style="left:47.0%;bottom:22.2%;width:14px;height:14px;background:var(--adv-2)" title="ミキワメ適性検査｜適性検査 / QS3 / CPC¥828 / COST¥948,794"></span>
+<span class="dot" style="left:23.2%;bottom:77.8%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜ミキワメ 料金 / QS8 / CPC¥409 / COST¥37,602"></span>
+<span class="dot" style="left:11.6%;bottom:77.8%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜[ミキワメ 1on1] / QS8 / CPC¥204 / COST¥9,187"></span>
+<span class="dot" style="left:33.7%;bottom:77.8%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜ミキワメ 1on1 / QS8 / CPC¥594 / COST¥70,651"></span>
+<span class="dot" style="left:38.5%;bottom:77.8%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜ミキワメ マネジメント / QS8 / CPC¥679 / COST¥268,794"></span>
+<span class="dot" style="left:26.0%;bottom:77.8%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜ミキワメ / QS8 / CPC¥459 / COST¥332,817"></span>
+<span class="dot" style="left:46.0%;bottom:11.1%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜spi検査 / QS2 / CPC¥811 / COST¥125,738"></span>
+<span class="dot" style="left:23.8%;bottom:66.7%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜[適性 検査 ミキワメ] / QS7 / CPC¥419 / COST¥277,072"></span>
+<span class="dot" style="left:20.6%;bottom:100.0%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜[人材経営ラボ] / QS10 / CPC¥362 / COST¥16,304"></span>
+<span class="dot" style="left:77.7%;bottom:11.1%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜[社員 適性 検査] / QS2 / CPC¥1,370 / COST¥108,211"></span>
+<span class="dot" style="left:54.9%;bottom:22.2%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜従業員サーベイ / QS3 / CPC¥967 / COST¥202,092"></span>
+<span class="dot" style="left:42.2%;bottom:22.2%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜[適性診断] / QS3 / CPC¥743 / COST¥78,789"></span>
+<span class="dot" style="left:18.1%;bottom:77.8%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜ミキワメ サーベイ / QS8 / CPC¥320 / COST¥77,405"></span>
+<span class="dot" style="left:62.5%;bottom:11.1%;width:10px;height:10px;background:var(--adv-2)" title="ミキワメ適性検査｜[社内サーベイ] / QS2 / CPC¥1,102 / COST¥37,473"></span>
+<span class="ax" style="left:0%;bottom:-22px">¥0</span>
+<span class="ax" style="left:25%;bottom:-22px">¥441</span>
+<span class="ax" style="left:50%;bottom:-22px">¥881</span>
+<span class="ax" style="left:75%;bottom:-22px">¥1,322</span>
+<span class="ax" style="left:100%;bottom:-22px">¥1,763</span>
+<span class="ax" style="left:-38px;bottom:-2%">QS1</span>
+<span class="ax" style="left:-38px;bottom:31%">QS4</span>
+<span class="ax" style="left:-38px;bottom:65%">QS7</span>
+<span class="ax" style="left:-38px;bottom:98%">QS10</span>
+</div>
+<p class="legend"><span><i style="background:var(--adv-0)"></i>アッテル適性検査</span><span><i style="background:var(--adv-1)"></i>キュービック</span><span><i style="background:var(--adv-2)"></i>ミキワメ適性検査</span><span class="note">点の大きさ=COST規模</span></p></div>
+<div class="grid"><div>
+<h3>◎ Googleに評価されて安い（QS7以上・CPC安い順TOP30）</h3><p class="note">この業界で「勝ちやすい入口」。自社KW設計・広告文の参考の最優先。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>CPC</th><th>Click</th><th>COST</th></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">[ミキワメ 1on1]</td><td data-v="8">8</td><td data-v="204">¥204</td><td data-v="45">45</td><td data-v="9187">¥9,187</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l">キュービック 適性 検査</td><td data-v="8">8</td><td data-v="212">¥212</td><td data-v="257">257</td><td data-v="54424">¥54,424</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l">cubic</td><td data-v="8">8</td><td data-v="257">¥257</td><td data-v="375">375</td><td data-v="96251">¥96,251</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l">CUBIC 適性検査</td><td data-v="8">8</td><td data-v="288">¥288</td><td data-v="534">534</td><td data-v="153844">¥153,844</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l">CUBIC 適性検査 WEB</td><td data-v="7">7</td><td data-v="293">¥293</td><td data-v="136">136</td><td data-v="39792">¥39,792</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l">compass 適性 検査</td><td data-v="8">8</td><td data-v="300">¥300</td><td data-v="155">155</td><td data-v="46503">¥46,503</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l">コンパス WEBテスト</td><td data-v="7">7</td><td data-v="309">¥309</td><td data-v="147">147</td><td data-v="45475">¥45,475</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">ミキワメ サーベイ</td><td data-v="8">8</td><td data-v="320">¥320</td><td data-v="242">242</td><td data-v="77405">¥77,405</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">mikiwame</td><td data-v="7">7</td><td data-v="352">¥352</td><td data-v="929">929</td><td data-v="326922">¥326,922</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">[人材経営ラボ]</td><td data-v="10">10</td><td data-v="362">¥362</td><td data-v="45">45</td><td data-v="16304">¥16,304</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">[ミキワメ]</td><td data-v="7">7</td><td data-v="386">¥386</td><td data-v="5110">5,110</td><td data-v="1974908">¥1,974,908</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l">アッテル</td><td data-v="8">8</td><td data-v="390">¥390</td><td data-v="469">469</td><td data-v="182809">¥182,809</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">ミキワメ 料金</td><td data-v="8">8</td><td data-v="409">¥409</td><td data-v="92">92</td><td data-v="37602">¥37,602</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">[適性 検査 ミキワメ]</td><td data-v="7">7</td><td data-v="419">¥419</td><td data-v="661">661</td><td data-v="277072">¥277,072</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">ミキワメ</td><td data-v="8">8</td><td data-v="459">¥459</td><td data-v="725">725</td><td data-v="332817">¥332,817</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l">アッテル 適性 検査</td><td data-v="7">7</td><td data-v="499">¥499</td><td data-v="188">188</td><td data-v="93890">¥93,890</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">ミキワメ 1on1</td><td data-v="8">8</td><td data-v="594">¥594</td><td data-v="119">119</td><td data-v="70651">¥70,651</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">ミキワメ マネジメント</td><td data-v="8">8</td><td data-v="679">¥679</td><td data-v="396">396</td><td data-v="268794">¥268,794</td></tr>
+</table></div></div></div><div>
+<h3>⚠ 低評価なのに大量出稿（QS4以下・COST大きい順TOP30）</h3><p class="note">競合が「Googleに評価されずに高く買っている」場所＝広告文/LP次第で安く奪える攻めどころ。</p>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">KW</th><th>QS</th><th>弱点要素</th><th>CPC</th><th>COST</th></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">適性診断</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="713">¥713</td><td data-v="2049553">¥2,049,553</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">適性検査</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="828">¥828</td><td data-v="948794">¥948,794</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">[適性検査]</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="677">¥677</td><td data-v="868410">¥868,410</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l">[適性検査]</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="1763">¥1,763</td><td data-v="326132">¥326,132</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">従業員サーベイ</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="967">¥967</td><td data-v="202092">¥202,092</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">spi検査</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="811">¥811</td><td data-v="125738">¥125,738</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">[社員 適性 検査]</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="1370">¥1,370</td><td data-v="108211">¥108,211</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">[適性診断]</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="743">¥743</td><td data-v="78789">¥78,789</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l">性格診断 企業</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="1824">¥1,824</td><td data-v="72948">¥72,948</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l">適性検査</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="1618">¥1,618</td><td data-v="67966">¥67,966</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">[エンゲージメントサーベイ]</td><td data-v="3">3</td><td>推定CTR・LP</td><td data-v="1256">¥1,256</td><td data-v="56520">¥56,520</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">[社内サーベイ]</td><td data-v="2">2</td><td>推定CTR・LP</td><td data-v="1102">¥1,102</td><td data-v="37473">¥37,473</td></tr>
+</table></div></div></div></div>
+</section>
+<section class="panel" id="p-kwqs">
+<h2>KW品質スコア（QS＋関連性・推定CTR・LP利便性）</h2>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">QS弱点マトリクス</b><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th>QS(IMP加重)</th><th>広告の関連性↓</th><th>推定CTR↓</th><th>LP利便性↓</th></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td data-v="4.21">4.21</td><td data-v="6.7"><b>6.7%</b></td><td data-v="66.1">66.1%</td><td data-v="66.1"><b>66.1%</b></td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td data-v="7.31">7.31</td><td data-v="0.0">0.0%</td><td data-v="8.3">8.3%</td><td data-v="0.0">0.0%</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td data-v="4.28">4.28</td><td data-v="4.1">4.1%</td><td data-v="67.2"><b>67.2%</b></td><td data-v="49.8">49.8%</td></tr>
+</table></div><p class="note">↓=「平均より下」の費用シェア。太字=その要素が業界で最も弱い社（=自社が攻める場所）。</p>
+<div class="advblk" data-a="アッテル適性検査">
+<h3 class="adv" id="kwqs-アッテル適性検査" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査 <span class="badge">取得 2025-11-27</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>4.21</b></span><span class="chip">関連性↓<b>6.7%</b></span><span class="chip bad">推定CTR↓<b>66.1%</b></span><span class="chip bad">LP利便性↓<b>66.1%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="アッテル適性検査"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">[適性検査]</td><td>完全</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="8775">8,775</td><td data-v="185">185</td><td data-v="0.0211">2.1%</td><td data-v="1762.9">¥1,763</td><td data-v="326132">¥326,132</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="81533.0">¥81,533</td><td class="l">リスティング_HP遷移（適性検査）_単価検証_非指名</td></tr>
+<tr><td class="l">アッテル</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="3437">3,437</td><td data-v="469">469</td><td data-v="0.1365">13.6%</td><td data-v="389.8">¥390</td><td data-v="182809">¥182,809</td><td class="cv sep" data-v="12.5">12.5</td><td class="cv" data-v="14624.7">¥14,625</td><td class="l">リスティング_HP遷移（適性検査）_アッテルワード_指名</td></tr>
+<tr><td class="l">アッテル 適性 検査</td><td>フレーズ</td><td data-v="7">7</td><td>平均</td><td>平均</td><td>平均より上</td><td class="sep" data-v="1359">1,359</td><td data-v="188">188</td><td data-v="0.1383">13.8%</td><td data-v="499.4">¥499</td><td data-v="93890">¥93,890</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="13412.9">¥13,413</td><td class="l">リスティング_HP遷移（適性検査）_アッテルワード_指名</td></tr>
+<tr><td class="l">性格診断 企業</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="792">792</td><td data-v="40">40</td><td data-v="0.0505">5.1%</td><td data-v="1823.7">¥1,824</td><td data-v="72948">¥72,948</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="24316.0">¥24,316</td><td class="l">リスティング_HP遷移（適性検査）_単価検証_非指名</td></tr>
+<tr><td class="l">適性検査</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1857">1,857</td><td data-v="42">42</td><td data-v="0.0226">2.3%</td><td data-v="1618.2">¥1,618</td><td data-v="67966">¥67,966</td><td class="cv sep" data-v="1.5">1.5</td><td class="cv" data-v="45310.7">¥45,311</td><td class="l">リスティング_HP遷移（適性検査）_単価検証_非指名 LPテスト</td></tr>
+<tr><td class="l">適性検査 中途採用</td><td>フレーズ</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="531">531</td><td data-v="16">16</td><td data-v="0.0301">3.0%</td><td data-v="2886.6">¥2,887</td><td data-v="46186">¥46,186</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="23093.0">¥23,093</td><td class="l">リスティング_HP遷移（適性検査）_単価検証_非指名</td></tr>
+<tr><td class="l">適性検査 比較</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="237">237</td><td data-v="8">8</td><td data-v="0.0338">3.4%</td><td data-v="3479.5">¥3,480</td><td data-v="27836">¥27,836</td><td class="cv sep" data-v="3.5">3.5</td><td class="cv" data-v="7953.1">¥7,953</td><td class="l">リスティング_HP遷移（適性検査）_単価検証_非指名</td></tr>
+<tr><td class="l">web 適性 検査</td><td>フレーズ</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="341">341</td><td data-v="10">10</td><td data-v="0.0293">2.9%</td><td data-v="1677.6">¥1,678</td><td data-v="16776">¥16,776</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="8388.0">¥8,388</td><td class="l">リスティング_HP遷移（適性検査）_単価検証_非指名 LPテスト</td></tr>
+<tr><td class="l">ストレス チェック サービス</td><td>インテント</td><td data-v="1">1</td><td>平均より下</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="160">160</td><td data-v="7">7</td><td data-v="0.0437">4.4%</td><td data-v="1256.7">¥1,257</td><td data-v="8797">¥8,797</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="2932.3">¥2,932</td><td class="l">リスティング_HP遷移（適性検査）_単価検証_非指名</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="キュービック">
+<h3 class="adv" id="kwqs-キュービック" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック <span class="badge">取得 2025-11-27</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>7.31</b></span><span class="chip">関連性↓<b>0.0%</b></span><span class="chip">推定CTR↓<b>8.3%</b></span><span class="chip">LP利便性↓<b>0.0%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="キュービック"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">CUBIC 適性検査</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="2655">2,655</td><td data-v="534">534</td><td data-v="0.2011">20.1%</td><td data-v="288.1">¥288</td><td data-v="153844">¥153,844</td><td class="cv sep" data-v="25.0">25.0</td><td class="cv" data-v="6153.8">¥6,154</td><td class="l">CUBIC採用</td></tr>
+<tr><td class="l">cubic</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="3043">3,043</td><td data-v="375">375</td><td data-v="0.1232">12.3%</td><td data-v="256.7">¥257</td><td data-v="96251">¥96,251</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="10659.0">¥10,659</td><td class="l">CUBIC採用</td></tr>
+<tr><td class="l">キュービック 適性 検査</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="1199">1,199</td><td data-v="257">257</td><td data-v="0.2143">21.4%</td><td data-v="211.8">¥212</td><td data-v="54424">¥54,424</td><td class="cv sep" data-v="8.7">8.7</td><td class="cv" data-v="6234.1">¥6,234</td><td class="l">CUBIC採用</td></tr>
+<tr><td class="l">compass 適性 検査</td><td>インテント</td><td data-v="8">8</td><td>平均より上</td><td>平均より上</td><td>平均</td><td class="sep" data-v="724">724</td><td data-v="155">155</td><td data-v="0.2141">21.4%</td><td data-v="300.0">¥300</td><td data-v="46503">¥46,503</td><td class="cv sep" data-v="5.7">5.7</td><td class="cv" data-v="8201.6">¥8,202</td><td class="l">WEB適性検査</td></tr>
+<tr><td class="l">コンパス WEBテスト</td><td>インテント</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="741">741</td><td data-v="147">147</td><td data-v="0.1984">19.8%</td><td data-v="309.4">¥309</td><td data-v="45475">¥45,475</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="15158.3">¥15,158</td><td class="l">WEB適性検査</td></tr>
+<tr><td class="l">CUBIC 適性検査 WEB</td><td>インテント</td><td data-v="7">7</td><td>平均</td><td>平均より上</td><td>平均</td><td class="sep" data-v="1067">1,067</td><td data-v="136">136</td><td data-v="0.1275">12.7%</td><td data-v="292.6">¥293</td><td data-v="39792">¥39,792</td><td class="cv sep" data-v="9.8">9.8</td><td class="cv" data-v="4048.0">¥4,048</td><td class="l">WEB適性検査</td></tr>
+<tr><td class="l">キュービック</td><td>インテント</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="2024">2,024</td><td data-v="136">136</td><td data-v="0.0672">6.7%</td><td data-v="288.9">¥289</td><td data-v="39286">¥39,286</td><td class="cv sep" data-v="6.8">6.8</td><td class="cv" data-v="5752.0">¥5,752</td><td class="l">CUBIC採用</td></tr>
+</table></div></div></div>
+<div class="advblk" data-a="ミキワメ適性検査">
+<h3 class="adv" id="kwqs-ミキワメ適性検査" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査 <span class="badge">取得 2025-11-27</span></h3>
+<div class="stat-chips"><span class="chip">QS<b>4.28</b></span><span class="chip">関連性↓<b>4.1%</b></span><span class="chip bad">推定CTR↓<b>67.2%</b></span><span class="chip bad">LP利便性↓<b>49.8%</b></span></div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="KW・キャンペーンで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="kwtbl" data-adv="ミキワメ適性検査"><tr><th class="l">KW</th><th>MT</th><th>QS</th><th>関連性</th><th>推定CTR</th><th>LP利便性</th><th class="sep">IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th><th class="l">キャンペーン</th></tr>
+<tr><td class="l">適性診断</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="69980">69,980</td><td data-v="2876">2,876</td><td data-v="0.0411">4.1%</td><td data-v="712.6">¥713</td><td data-v="2049553">¥2,049,553</td><td class="cv sep" data-v="87.5">87.5</td><td class="cv" data-v="23418.1">¥23,418</td><td class="l">非指名(部分一致) AD LPテスト_非指名_20251107</td></tr>
+<tr><td class="l">[ミキワメ]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均より下</td><td>平均より上</td><td class="sep" data-v="29438">29,438</td><td data-v="5110">5,110</td><td data-v="0.1736">17.4%</td><td data-v="386.5">¥386</td><td data-v="1974908">¥1,974,908</td><td class="cv sep" data-v="206.3">206.3</td><td class="cv" data-v="9570.7">¥9,571</td><td class="l">ミキワメ AD LPテスト_20251107</td></tr>
+<tr><td class="l">[ミキワメ 適性 検査]</td><td>完全</td><td data-v="5">5</td><td>平均より上</td><td>平均より下</td><td>平均</td><td class="sep" data-v="18694">18,694</td><td data-v="2723">2,723</td><td data-v="0.1457">14.6%</td><td data-v="407.5">¥408</td><td data-v="1109679">¥1,109,679</td><td class="cv sep" data-v="168.1">168.1</td><td class="cv" data-v="6601.7">¥6,602</td><td class="l">ミキワメ AD LPテスト_20251107</td></tr>
+<tr><td class="l">適性検査</td><td>インテント</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="33115">33,115</td><td data-v="1146">1,146</td><td data-v="0.0346">3.5%</td><td data-v="827.9">¥828</td><td data-v="948794">¥948,794</td><td class="cv sep" data-v="21.3">21.3</td><td class="cv" data-v="44481.7">¥44,482</td><td class="l">非指名(部分一致) AD LPテスト_非指名_20251107</td></tr>
+<tr><td class="l">[適性検査]</td><td>完全</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="35851">35,851</td><td data-v="1282">1,282</td><td data-v="0.0358">3.6%</td><td data-v="677.4">¥677</td><td data-v="868410">¥868,410</td><td class="cv sep" data-v="37.8">37.8</td><td class="cv" data-v="22955.6">¥22,956</td><td class="l">非指名(部分一致) AD LPテスト_非指名_20251107</td></tr>
+<tr><td class="l">ミキワメ</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="11781">11,781</td><td data-v="725">725</td><td data-v="0.0615">6.2%</td><td data-v="459.1">¥459</td><td data-v="332817">¥332,817</td><td class="cv sep" data-v="28.8">28.8</td><td class="cv" data-v="11576.2">¥11,576</td><td class="l">ミキワメ</td></tr>
+<tr><td class="l">mikiwame</td><td>フレーズ</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="4838">4,838</td><td data-v="929">929</td><td data-v="0.1920">19.2%</td><td data-v="351.9">¥352</td><td data-v="326922">¥326,922</td><td class="cv sep" data-v="60.5">60.5</td><td class="cv" data-v="5407.2">¥5,407</td><td class="l">ミキワメ AD LPテスト_20251107</td></tr>
+<tr><td class="l">[適性 検査 ミキワメ]</td><td>完全</td><td data-v="7">7</td><td>平均より上</td><td>平均</td><td>平均</td><td class="sep" data-v="4150">4,150</td><td data-v="661">661</td><td data-v="0.1593">15.9%</td><td data-v="419.2">¥419</td><td data-v="277072">¥277,072</td><td class="cv sep" data-v="28.9">28.9</td><td class="cv" data-v="9587.3">¥9,587</td><td class="l">ミキワメ</td></tr>
+<tr><td class="l">ミキワメ マネジメント</td><td>インテント</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="3029">3,029</td><td data-v="396">396</td><td data-v="0.1307">13.1%</td><td data-v="678.8">¥679</td><td data-v="268794">¥268,794</td><td class="cv sep" data-v="36.0">36.0</td><td class="cv" data-v="7466.5">¥7,466</td><td class="l">指名（マネジメント）</td></tr>
+<tr><td class="l">従業員サーベイ</td><td>フレーズ</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="7038">7,038</td><td data-v="209">209</td><td data-v="0.0297">3.0%</td><td data-v="966.9">¥967</td><td data-v="202092">¥202,092</td><td class="cv sep" data-v="12.2">12.2</td><td class="cv" data-v="16605.8">¥16,606</td><td class="l">非指名_ウェルビーイング</td></tr>
+<tr><td class="l">[ウェルビーイングサーベイ]</td><td>完全</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2421">2,421</td><td data-v="181">181</td><td data-v="0.0748">7.5%</td><td data-v="1027.1">¥1,027</td><td data-v="185914">¥185,914</td><td class="cv sep" data-v="18.9">18.9</td><td class="cv" data-v="9836.7">¥9,837</td><td class="l">非指名_ウェルビーイング</td></tr>
+<tr><td class="l">spi検査</td><td>インテント</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="2673">2,673</td><td data-v="155">155</td><td data-v="0.0580">5.8%</td><td data-v="811.2">¥811</td><td data-v="125738">¥125,738</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="13970.9">¥13,971</td><td class="l">RLSA</td></tr>
+<tr><td class="l">[社員 適性 検査]</td><td>完全</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1219">1,219</td><td data-v="79">79</td><td data-v="0.0648">6.5%</td><td data-v="1369.8">¥1,370</td><td data-v="108211">¥108,211</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="18035.2">¥18,035</td><td class="l">非指名(部分一致)</td></tr>
+<tr><td class="l">[適性診断]</td><td>完全</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="2892">2,892</td><td data-v="106">106</td><td data-v="0.0367">3.7%</td><td data-v="743.3">¥743</td><td data-v="78789">¥78,789</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="26263.0">¥26,263</td><td class="l">非指名(部分一致)</td></tr>
+<tr><td class="l">ミキワメ サーベイ</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="1961">1,961</td><td data-v="242">242</td><td data-v="0.1234">12.3%</td><td data-v="319.9">¥320</td><td data-v="77405">¥77,405</td><td class="cv sep" data-v="24.0">24.0</td><td class="cv" data-v="3225.2">¥3,225</td><td class="l">指名_ウェルビーイング</td></tr>
+<tr><td class="l">中途採用 適性検査</td><td>インテント</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2963">2,963</td><td data-v="84">84</td><td data-v="0.0283">2.8%</td><td data-v="898.2">¥898</td><td data-v="75453">¥75,453</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="12575.5">¥12,576</td><td class="l">非指名(部分一致)</td></tr>
+<tr><td class="l">ミキワメ 1on1</td><td>インテント</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="544">544</td><td data-v="119">119</td><td data-v="0.2188">21.9%</td><td data-v="593.7">¥594</td><td data-v="70651">¥70,651</td><td class="cv sep" data-v="19.1">19.1</td><td class="cv" data-v="3695.1">¥3,695</td><td class="l">指名（マネジメント）</td></tr>
+<tr><td class="l">ワークエンゲージメントサーベイ</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="2036">2,036</td><td data-v="73">73</td><td data-v="0.0359">3.6%</td><td data-v="919.2">¥919</td><td data-v="67105">¥67,105</td><td class="cv sep" data-v="2.8">2.8</td><td class="cv" data-v="23712.0">¥23,712</td><td class="l">非指名_ウェルビーイング</td></tr>
+<tr><td class="l">[エンゲージメントサーベイ]</td><td>完全</td><td data-v="3">3</td><td>平均より上</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="2181">2,181</td><td data-v="45">45</td><td data-v="0.0206">2.1%</td><td data-v="1256.0">¥1,256</td><td data-v="56520">¥56,520</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="11304.0">¥11,304</td><td class="l">非指名_ウェルビーイング</td></tr>
+<tr><td class="l">ミキワメ 料金</td><td>フレーズ</td><td data-v="8">8</td><td>平均より上</td><td>平均</td><td>平均より上</td><td class="sep" data-v="429">429</td><td data-v="92">92</td><td data-v="0.2145">21.4%</td><td data-v="408.7">¥409</td><td data-v="37602">¥37,602</td><td class="cv sep" data-v="6.3">6.3</td><td class="cv" data-v="5940.3">¥5,940</td><td class="l">ミキワメ</td></tr>
+<tr><td class="l">[社内サーベイ]</td><td>完全</td><td data-v="2">2</td><td>平均</td><td>平均より下</td><td>平均より下</td><td class="sep" data-v="1289">1,289</td><td data-v="34">34</td><td data-v="0.0264">2.6%</td><td data-v="1102.1">¥1,102</td><td data-v="37473">¥37,473</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="18736.5">¥18,736</td><td class="l">非指名_ウェルビーイング</td></tr>
+<tr><td class="l">人材経営ラボ</td><td>フレーズ</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="66">66</td><td data-v="29">29</td><td data-v="0.4394">43.9%</td><td data-v="941.0">¥941</td><td data-v="27288">¥27,288</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="4548.0">¥4,548</td><td class="l">人材経営ラボ</td></tr>
+<tr><td class="l">適応検査</td><td>インテント</td><td data-v="5">5</td><td>平均より下</td><td>平均より上</td><td>平均より下</td><td class="sep" data-v="458">458</td><td data-v="24">24</td><td data-v="0.0524">5.2%</td><td data-v="818.3">¥818</td><td data-v="19640">¥19,640</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="4910.0">¥4,910</td><td class="l">RLSA</td></tr>
+<tr><td class="l">[人材経営ラボ]</td><td>完全</td><td data-v="10">10</td><td>平均より上</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="100">100</td><td data-v="45">45</td><td data-v="0.4500">45.0%</td><td data-v="362.3">¥362</td><td data-v="16304">¥16,304</td><td class="cv sep" data-v="22.0">22.0</td><td class="cv" data-v="741.1">¥741</td><td class="l">人材経営ラボ</td></tr>
+<tr><td class="l">[ミキワメ 1on1]</td><td>完全</td><td data-v="8">8</td><td>平均より下</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="146">146</td><td data-v="45">45</td><td data-v="0.3082">30.8%</td><td data-v="204.2">¥204</td><td data-v="9187">¥9,187</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="3062.3">¥3,062</td><td class="l">指名（マネジメント）</td></tr>
+<tr><td class="l">ミキワメ 価格</td><td>フレーズ</td><td data-v="9">9</td><td>平均</td><td>平均より上</td><td>平均より上</td><td class="sep" data-v="86">86</td><td data-v="20">20</td><td data-v="0.2326">23.3%</td><td data-v="375.9">¥376</td><td data-v="7519">¥7,519</td><td class="cv sep" data-v="2.5">2.5</td><td class="cv" data-v="3007.6">¥3,008</td><td class="l">ミキワメ</td></tr>
+<tr><td class="l">ミキワメ ウェルビーイング</td><td>フレーズ</td><td data-v="0">--</td><td>--</td><td>--</td><td>--</td><td class="sep" data-v="120">120</td><td data-v="14">14</td><td data-v="0.1167">11.7%</td><td data-v="319.0">¥319</td><td data-v="4466">¥4,466</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1488.7">¥1,489</td><td class="l">指名_ウェルビーイング</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-preview">
+<h2>配信プレビュー（実広告文からGoogle検索広告を再現・社別横並び）</h2>
+<p class="note">各社のIMP上位RSA最大4本。カスタマイザはデフォルト値で表示（実際は検索語句・地域で置換）。見出しは登録順の先頭3本＝実配信の一例。カード下部は実績（CTRは社間比較OK）。</p>
+<div class="serp-grid">
+<div class="serp-col advblk" data-a="アッテル適性検査" style="--ac:var(--adv-0)"><h4><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">attelu.jp<br><span>attelu.jp › assessment-ad</span></div><div class="t">【公式】AI適性検査 アッテル - 企業向けピープルアナリティクス - データ×AIで人事課題を解決</div><div class="d">対策不可能な「優劣のない設問」を採用し、より正確に応募者の価値観を可視化できるよう設計 データとAIで「入社後活躍可能性」を算出し、意思決定のサポートに活用することが可能</div><div class="meta2">IMP 64,559 ／ CTR 2.3% ／ COST ¥1,896,166<br>リスティング_HP遷移（適性検査）_単価検証_非指名</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">attelu.jp<br><span>attelu.jp › survey</span></div><div class="t">【公式】アッテルサーベイ - ストレスチェックに対応 - AI×サーベイで人事課題を解決</div><div class="d">パルスサーベイとエンゲージメントサーベイで、離職防止や組織パフォーマンスの改善に貢献 最小限の設問で従業員負荷が低さが特徴。充実したサポートで、導入もスムーズ！</div><div class="meta2">IMP 15,659 ／ CTR 3.2% ／ COST ¥358,191<br>リスティング_HP遷移（適性検査）_単価検証_非指名</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">attelu.jp<br><span>attelu.jp › assessment-ad</span></div><div class="t">【公式】AI適性検査 アッテル - 企業向けピープルアナリティクス - データ×AIで人事課題を解決</div><div class="d">対策不可能な「優劣のない設問」を採用し、より正確に応募者の価値観を可視化できるよう設計 データとAIで「入社後活躍可能性」を算出し、意思決定のサポートに活用することが可能</div><div class="meta2">IMP 14,322 ／ CTR 2.2% ／ COST ¥571,651<br>リスティング_HP遷移（適性検査）_単価検証_非指名 LPテスト</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">attelu.jp<br><span>attelu.jp › assessment</span></div><div class="t">【公式】AI適性検査アッテル - クラウド型適性検査の最安値 - webで完結、最短15分で受検可能</div><div class="d">応募者が「ごまかせない」性格診断でミスマッチを防止。クラウド型適性検査の業界最安値クラス。 人事データをワンクリックで分析できる機能も搭載。専門知識を持つスタッフが無料サポート。</div><div class="meta2">IMP 3,803 ／ CTR 15.3% ／ COST ¥254,818<br>リスティング_HP遷移（適性検査）_アッテルワード_指名</div></div>
+</div>
+<div class="serp-col advblk" data-a="キュービック" style="--ac:var(--adv-1)"><h4><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.gdl-cubic.com<br><span>www.gdl-cubic.com</span></div><div class="t">CUBIC（キュービック）適性検査 - 採用選考時の参考材料に - ストレス耐性診断付き</div><div class="d">初期費用無料。1名様から利用可能。税込価格で紙検査1,980円、WEB検査2,200円。トライアルあり。 実施時間20分。10名以内なら30分前後で結果をお返し。回答用紙をメールまたはFAXするだけ。</div><div class="meta2">IMP 8,421 ／ CTR 13.1% ／ COST ¥314,937<br>CUBIC採用</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.gdl-cubic.com<br><span>www.gdl-cubic.com › compass</span></div><div class="t">Compass（コンパス）適性検査 - インターネットによるWEB受検 - web上で適性検査を管理</div><div class="d">採用選考時の職務適性、対人スタイル、ストレス耐性を測定可能。お一人様2,200円(税込)。 基礎能力検査あり。1科目275円(税込)。結果即時出力可能。1名様から利用可能。</div><div class="meta2">IMP 1,632 ／ CTR 14.8% ／ COST ¥63,626<br>WEB適性検査</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">www.gdl-cubic.com<br><span>www.gdl-cubic.com › kind › cubic-for-web</span></div><div class="t">適性検査 CUBIC - 適性検査 CUBIC(キュービック) - CUBIC WEB適性検査</div><div class="d">初期費用無料。お一人様2,200円(税込)。性格・職務適性・意欲・ヤル気を測定。最少1名から利用可 基礎能力検査あり。一人当たり1,650円(税込)。結果即時出力可能。無料トライアル1名受付中。</div><div class="meta2">IMP 940 ／ CTR 13.4% ／ COST ¥36,156<br>WEB適性検査</div></div>
+</div>
+<div class="serp-col advblk" data-a="ミキワメ適性検査" style="--ac:var(--adv-2)"><h4><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</h4>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">mikiwame.com<br><span>mikiwame.com › ad_aptitudetest_lp_listing_recruitment.html</span></div><div class="t">【法人向け】ミキワメ 適性検査 - 《法人向け》ミキワメ 適性検査 - 採用ミスマッチを防ぐなら</div><div class="d">採用判断にもう迷わない！これまで感覚だったカルチャーフィットや候補者の人柄を数値化！ 《総受検者数150万人以上》貴社独自の活躍人材を見極めることへ特化！</div><div class="meta2">IMP 91,865 ／ CTR 3.7% ／ COST ¥2,713,578<br>非指名(部分一致)</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">mikiwame.com<br><span>mikiwame.com › aptitude-test › inquiry.html</span></div><div class="t">【公式】ミキワメ 適性検査 - 《法人向け》ミキワメ 適性検査 - 採用ミスマッチを防ぐなら</div><div class="d">採用判断にもう迷わない！これまで感覚だったカルチャーフィットや候補者の人柄を数値化！ 貴社独自の活躍人材を見極めることへ特化！貴社社員の分析を元に、採るべき方かS-Eで判定</div><div class="meta2">IMP 60,710 ／ CTR 14.5% ／ COST ¥3,433,995<br>ミキワメ</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">mikiwame.com<br><span>mikiwame.com › aptitude-test.html</span></div><div class="t">【法人向け】ミキワメ 適性検査 - 《法人向け》ミキワメ 適性検査 - 採用ミスマッチを防ぐなら</div><div class="d">採用判断にもう迷わない！これまで感覚だったカルチャーフィットや候補者の人柄を数値化！ 《総受検者数150万人以上》貴社独自の活躍人材を見極めることへ特化！</div><div class="meta2">IMP 34,258 ／ CTR 3.6% ／ COST ¥596,549<br>非指名(部分一致)</div></div>
+<div class="gad"><div class="sp">スポンサー</div><div class="url">mikiwame.com<br><span>mikiwame.com › well-being › inquiry.html</span></div><div class="t">公式/ミキワメ ウェルビーイング - 【公式】ミキワメ従業員サーベイ - 離職を防ぐ従業員サーベイなら</div><div class="d">従来の【組織サーベイ】ではわからなかった社員やチームのエンゲージメントまで確認できます。 フォローが必要な従業員のエンゲージメントを可視化！手遅れになる前に離職・休職を防ぎます。</div><div class="meta2">IMP 14,782 ／ CTR 5.8% ／ COST ¥720,798<br>非指名_ウェルビーイング</div></div>
+</div>
+</div>
+</section>
+<section class="panel" id="p-adlib">
+<h2>広告文・LPライブラリ</h2><p class="note">直近バッチのRSAから集計。字形置換等の審査回避表現は記録のみ・模倣禁止。</p>
+<div class="fwrap"><div class="tools"><b style="font-size:13px">全社統合・頻出見出し</b><input class="flt" placeholder="訴求で絞る（例: 入会金 / 体験 / 円）…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table><tr><th class="l">広告主</th><th class="l">見出し</th><th>使用RSA数</th></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">3分で機能や料金がわかる資料DL</td><td data-v="12">12</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">総受検者数150万人突破</td><td data-v="12">12</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">累計利用企業5,000社以上</td><td data-v="12">12</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">1か月間無料トライアル実施中</td><td data-v="11">11</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">1人あたり550円で利用可能</td><td data-v="11">11</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">入力30秒で無料トライアル可能</td><td data-v="11">11</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">選考の工数が50%以上減少</td><td data-v="11">11</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">《法人向け》ミキワメ 適性検査</td><td data-v="10">10</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">従業員は受検し放題【無料】</td><td data-v="9">9</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">採用ミスマッチを防ぐなら</td><td data-v="8">8</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">活躍人材を見極め／mikiwame</td><td data-v="8">8</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">活躍する人材かが一目でわかる</td><td data-v="8">8</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">たった10分の適性検査/無料受験</td><td data-v="6">6</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">【公式】ミキワメ 適性検査</td><td data-v="6">6</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">自社の社風を分析/採用基準策定</td><td data-v="6">6</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">ワンクリックで簡単データ分析</td><td data-v="5">5</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">【公式】ミキワメ従業員サーベイ</td><td data-v="5">5</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">サーベイで離職防止・生産性向上</td><td data-v="5">5</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">【法人向け】ミキワメ 適性検査</td><td data-v="5">5</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">法人向け／たった10分の適性検査</td><td data-v="5">5</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">AIが「入社後活躍可能性」を予測</td><td data-v="4">4</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">クラウド型適性検査の最安値</td><td data-v="4">4</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">人材の離職防止、定着促進</td><td data-v="4">4</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">従業員のパフォーマンスを最大化</td><td data-v="4">4</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">サポートが必要な社員を可視化</td><td data-v="4">4</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">従業員の性格・能力を正しく把握</td><td data-v="3">3</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">短時間で高精度の学力検査</td><td data-v="3">3</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">【公式】AI適性検査 アッテル</td><td data-v="3">3</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">{CUSTOMIZER.Name}をお探しなら</td><td data-v="3">3</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">企業向けピープルアナリティクス</td><td data-v="3">3</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">データ×AIで人事課題を解決</td><td data-v="3">3</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">配置や人材マネジメントに活用</td><td data-v="3">3</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">最少1名から利用可能</td><td data-v="3">3</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">組織サーベイでできないケアを</td><td data-v="3">3</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">社員のウェルビーイングを実現</td><td data-v="3">3</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">離職・休職 手遅れになる前に</td><td data-v="3">3</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">総受験数150万人/導入5000社以上</td><td data-v="3">3</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">離職を防ぐ従業員サーベイ</td><td data-v="3">3</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">{Keyword:適性検査}ならミキワメ</td><td data-v="3">3</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">公式/ミキワメ ウェルビーイング</td><td data-v="3">3</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">従業員のストレス耐性をチェック</td><td data-v="2">2</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">採用ミスマッチを防ぐ</td><td data-v="2">2</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">自社オリジナルの採用基準を作成</td><td data-v="2">2</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">特許技術のハイロー分析で見極め</td><td data-v="2">2</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">配置やマネジメントでも活用可</td><td data-v="2">2</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">インターネットによるWEB受検</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">エンゲージメントサーベイなら</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">定着／活躍する候補者を見える化</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">早期活躍する社員が増える</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">離職を減らす適性検査／ミキワメ</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">{Keyword:適性検査}を選ぶならミキワメ</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">離職を防ぐ従業員サーベイなら</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">短期間/高頻度で手軽なサーベイ</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">AIが社員との対話をサポート</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">新卒の離職率が50%から0%に</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">従業員エンゲージメントを向上</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">3分間と手軽で高精度なサーベイ</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">サーベイでメンタルヘルスケア</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">社員のエンゲージメントを可視化</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">実名制サーベイで離職リスク減少</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">社員のウェルビーイング実現</td><td data-v="2">2</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">従業員サーベイならミキワメ</td><td data-v="2">2</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">社員の本音を引き出す質問設計</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">人材開発/育成に活用</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">従業員のストレス状態を可視化</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">ストレスチェックに対応</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">AIで組織課題を可視化</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">サーベイで離職率を改善</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">1ユーザーあたり250円/月</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">従業員負荷が低い</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">【公式】アッテルサーベイ</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">AI×サーベイで人事課題を解決</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">従業員のストレス耐性を可視化</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">新卒・中途の採用ミスマッチ防止</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">適正検査をお探しの企業様向け</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">【公式】AI適性検査アッテル</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">webで完結、最短15分で受検可能</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">10万人の実データを元にした診断</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">ストレス耐性をチェック</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">短時間で高精度の学力テスト</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">ピープルアナリティクスSaaS</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">中途採用のミスマッチ防止</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">応募者が対策できない設問設計</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">タレントマネジメントを加速する</td><td data-v="1">1</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l wrap">利用社数1000社以上</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">適性検査 CUBIC(キュービック)</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">CUBIC WEB適性検査</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">CUBIC(キュービック)WEB適性検査</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">性格特性・職務適性検査を測定</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">適性検査 CUBIC</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">就活生の入社適性テストに活用</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">CUBIC 無料トライアル受付中</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">WEB適性検査ならCUBIC for WEB</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">多量受検時の定額プランあり</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">性格特性分析</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">51に及ぶ職務別適性検査</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">自宅でCUBICをオンライン受検</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">採用選考時の適性テスト</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">検査実施時間20分</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">紙受検およびWEB受検両対応</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">最少1名様から利用可能</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">入社前のストレス耐性の測定可能</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">ウェブ上にて適性検査を実施</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">法人向けWEB適性受検</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">検査終了後すぐに結果出力可能</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">WEB上にて簡単に適性検査実施</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">web上で適性検査を管理</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">自宅でオンライン受検</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">Compass（コンパス）適性検査</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">販売代理店 ジィ・ディー・エル</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">採用テストの人材選考時に</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">WEBで適性検査 CUBIC for WEB</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">自社に合わせて設定シートご用意</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">適性検査CUBIC 企業向け</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">株式会社ジィ・ディー・エル</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">採用選考時の参考材料に</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">5,000社導入実績</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">ストレス耐性診断付き</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">ボリューム・ディスカウント対応</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">採用時の性格・職務適性を診断</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">最短30分で結果返送</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">リピート率99%</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">性格適性検査をお探しならcubic</td><td data-v="1">1</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l wrap">CUBIC（キュービック）適性検査</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">離職防止や予防に最適なツール</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">社員の生産性が31%向上する</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">離職者が40%減少した実績あり</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">{Keyword:サーベイ}を選ぶならミキワメ</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">《法人向け》ミキワメ サーベイ</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">無料で画面を体験いただけます</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">適性検査を選ぶならミキワメ</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">離職率低下の事例多数【無料】</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">退職予兆を把握し、離職を減らす</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">{Keyword:サーベイ}ならミキワメ</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">退職の隠れた理由を可視化</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">AI分析で退職予兆を検出</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">料金/比較表はこちら</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">料金プランはこちら</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">AIによる最適なマネジメント</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">3分でわかる資料請求はこちら</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">AIを活用した豊富な機能</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">社員の成長と成果を最大化する</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">マネジメントを可視化するツール</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">1on1ツールの無料体験はこちら</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">社員の性格をふまえた1on1を実現</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">性格・心理状態・進捗を一元管理</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">【公式】ミキワメマネジメント</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">1on1ツールで社員の成長を促進</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">1on1の型化と改善</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">1on1のエンゲージメント向上</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">成果を最大化する1on1ツール</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">《2025年12月18日(木)》開催</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">【公式】人材経営ラボbyミキワメ</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">人事や採用担当者の方必見</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">{Keyword:エンゲージメントサーベイ}なら</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">【公式】ミキワメパルスサーベイ</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">ウェルビーイングサーベイ</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">組織サーベイではできないケアを</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">従業員サーベイで離職を防ぐ</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">従業員満足度調査</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">パルスサーベイならミキワメ</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">ミキワメで従業員の満足度調査を</td><td data-v="1">1</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l wrap">エンゲージメントサーベイ</td><td data-v="1">1</td></tr>
+</table></div></div>
+<div class="card advblk" data-a="アッテル適性検査">
+<h3 class="adv" id="adlib-アッテル適性検査" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査 <span class="badge">取得 2025-11-27</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>5本</b></span><span class="chip">CPN<b>3個</b></span><span class="chip">ADG<b>4個</b></span><span class="chip">ピン留め<b>40%</b></span><span class="chip">LP使い分け<b>3本</b></span></div>
+<p class="note">主要LP: <span title="https://attelu.jp/assessment-ad">https://attelu.jp/assessment-ad（2本）</span> ／ <span title="https://attelu.jp/assessment">https://attelu.jp/assessment（2本）</span> ／ <span title="https://attelu.jp/survey">https://attelu.jp/survey（1本）</span></p>
+<p class="note">カスタマイザ: {CUSTOMIZER.Name}}×3</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="アッテル適性検査"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">ワンクリックで簡単データ分析</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">AIが「入社後活躍可能性」を予測</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">クラウド型適性検査の最安値</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">人材の離職防止、定着促進</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">従業員のパフォーマンスを最大化</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">従業員の性格・能力を正しく把握</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">短時間で高精度の学力検査</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">【公式】AI適性検査 アッテル</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">{CUSTOMIZER.Name}をお探しなら</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">企業向けピープルアナリティクス</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">データ×AIで人事課題を解決</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">配置や人材マネジメントに活用</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">従業員のストレス耐性をチェック</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">採用ミスマッチを防ぐ</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">自社オリジナルの採用基準を作成</td><td data-v="2">2</td></tr>
+</table></div></div><div>
+<table data-adv="アッテル適性検査"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">取得データは人材配置やマネジメントにも効果的。組織の生産性向上、活躍人材の増加に貢献します</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">対策不可能な「優劣のない設問」を採用し、より正確に応募者の価値観を可視化できるよう設計</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">データとAIで「入社後活躍可能性」を算出し、意思決定のサポートに活用することが可能</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">アッテルは成果を出すための「分析」に特化したサービス。他社の適性診断も分析可能</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">パルスサーベイとエンゲージメントサーベイで、離職防止や組織パフォーマンスの改善に貢献</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">アッテルは成果を出すための「分析」に特化したサービス。他社サービスのデータも分析可能</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">最小限の設問で従業員負荷が低さが特徴。充実したサポートで、導入もスムーズ！</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">アッテルは成果を出すための「分析」に特化したサービス。他の適性診断も本サービスで分析可能</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="キュービック">
+<h3 class="adv" id="adlib-キュービック" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック <span class="badge">取得 2025-11-27</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>3本</b></span><span class="chip">CPN<b>2個</b></span><span class="chip">ADG<b>3個</b></span><span class="chip">ピン留め<b>0%</b></span><span class="chip">LP使い分け<b>3本</b></span></div>
+<p class="note">主要LP: <span title="https://www.gdl-cubic.com/kind/cubic-for-web/">https://www.gdl-cubic.com/kind/cubic-for-web/（1本）</span> ／ <span title="https://www.gdl-cubic.com/compass/">https://www.gdl-cubic.com/compass/（1本）</span> ／ <span title="https://www.gdl-cubic.com/">https://www.gdl-cubic.com/（1本）</span></p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="キュービック"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">最少1名から利用可能</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">インターネットによるWEB受検</td><td data-v="2">2</td></tr>
+<tr><td class="l wrap">適性検査 CUBIC(キュービック)</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">CUBIC WEB適性検査</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">CUBIC(キュービック)WEB適性検査</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">性格特性・職務適性検査を測定</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">適性検査 CUBIC</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">就活生の入社適性テストに活用</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">CUBIC 無料トライアル受付中</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">WEB適性検査ならCUBIC for WEB</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">多量受検時の定額プランあり</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">性格特性分析</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">51に及ぶ職務別適性検査</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">自宅でCUBICをオンライン受検</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">採用選考時の適性テスト</td><td data-v="1">1</td></tr>
+</table></div></div><div>
+<table data-adv="キュービック"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">管理画面からいつでもどこでも気軽に適性検査を利用可能。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">基礎能力検査あり。一人当たり1,650円(税込)。結果即時出力可能。トライアル受付中。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">初期費用無料。お一人様2,200円(税込)。性格・職務適性・意欲・ヤル気を測定。最少1名から利用可</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">基礎能力検査あり。一人当たり1,650円(税込)。結果即時出力可能。無料トライアル1名受付中。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">法人企業向けに適性検査を提供。WEB管理画面による受検設定可能。お一人様2,200円(税込)。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">採用選考時の職務適性、対人スタイル、ストレス耐性を測定可能。お一人様2,200円(税込)。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">職務適性、行動特性、ストレス耐性を測定。結果即時出力可能。トライアル受付中。</td><td data-v="1">1</td></tr>
+<tr><td class="l wrap">基礎能力検査あり。1科目275円(税込)。結果即時出力可能。1名様から利用可能。</td><td data-v="1">1</td></tr>
+</table></div></div></div>
+<div class="card advblk" data-a="ミキワメ適性検査">
+<h3 class="adv" id="adlib-ミキワメ適性検査" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査 <span class="badge">取得 2025-11-27</span></h3>
+<div class="stat-chips"><span class="chip">RSA<b>19本</b></span><span class="chip">CPN<b>10個</b></span><span class="chip">ADG<b>12個</b></span><span class="chip">ピン留め<b>47%</b></span><span class="chip">LP使い分け<b>11本</b></span></div>
+<p class="note">主要LP: <span title="https://mikiwame.com/ad_aptitudetest_lp_listing_recruitment.html">https://mikiwame.com/ad_aptitudetest_lp_listing_recruitment.html（5本）</span> ／ <span title="https://mikiwame.com/well-being.html">https://mikiwame.com/well-being.html（2本）</span> ／ <span title="https://mikiwame.com/aptitude-test/inquiry.html">https://mikiwame.com/aptitude-test/inquiry.html（2本）</span> ／ <span title="https://mikiwame.com/well-being/inquiry.html">https://mikiwame.com/well-being/inquiry.html（2本）</span> ／ <span title="https://mikiwame.com/aptitude-test.html">https://mikiwame.com/aptitude-test.html（2本）</span></p>
+<p class="note">カスタマイザ: {Keyword}×8</p>
+<div class="grid"><div>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="見出しを検索…" oninput="flt(this)"><span class="note flt-count"></span><button class="btn" onclick="cpy(this)">📋 コピー</button></div>
+<table data-adv="ミキワメ適性検査"><tr><th class="l">頻出見出しTOP15</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">3分で機能や料金がわかる資料DL</td><td data-v="12">12</td></tr>
+<tr><td class="l wrap">総受検者数150万人突破</td><td data-v="12">12</td></tr>
+<tr><td class="l wrap">累計利用企業5,000社以上</td><td data-v="12">12</td></tr>
+<tr><td class="l wrap">1か月間無料トライアル実施中</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">1人あたり550円で利用可能</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">入力30秒で無料トライアル可能</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">選考の工数が50%以上減少</td><td data-v="11">11</td></tr>
+<tr><td class="l wrap">《法人向け》ミキワメ 適性検査</td><td data-v="10">10</td></tr>
+<tr><td class="l wrap">従業員は受検し放題【無料】</td><td data-v="9">9</td></tr>
+<tr><td class="l wrap">採用ミスマッチを防ぐなら</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">活躍人材を見極め／mikiwame</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">活躍する人材かが一目でわかる</td><td data-v="8">8</td></tr>
+<tr><td class="l wrap">たった10分の適性検査/無料受験</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">【公式】ミキワメ 適性検査</td><td data-v="6">6</td></tr>
+<tr><td class="l wrap">自社の社風を分析/採用基準策定</td><td data-v="6">6</td></tr>
+</table></div></div><div>
+<table data-adv="ミキワメ適性検査"><tr><th class="l">頻出説明文TOP8</th><th>使用RSA数</th></tr>
+<tr><td class="l wrap">【業界最安値クラス】1受検あたり550円で利用可能。従業員の受検は何回受けても無料。</td><td data-v="9">9</td></tr>
+<tr><td class="l wrap">採用判断にもう迷わない！これまで感覚だったカルチャーフィットや候補者の人柄を数値化！</td><td data-v="9">9</td></tr>
+<tr><td class="l wrap">従来の【組織サーベイ】ではわからなかった社員やチームのエンゲージメントまで確認できます。</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">《総受検者数150万人以上》貴社独自の活躍人材を見極めることへ特化！</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">《法人向け》シリーズ累計利用企業数5,000社以上！採用ミスマッチや離職を減らす。</td><td data-v="5">5</td></tr>
+<tr><td class="l wrap">貴社独自の活躍人材を見極めることへ特化！貴社社員の分析を元に、採るべき方かS-Eで判定</td><td data-v="4">4</td></tr>
+<tr><td class="l wrap">3分間の手軽で高精度なサーベイ！タイムリーに社員の変化に気づき、休職・離職を予防できます。</td><td data-v="3">3</td></tr>
+<tr><td class="l wrap">《総受検者数100万人以上》シリーズ累計利用企業数5,000社以上！採用ミスマッチや離職を減らす。</td><td data-v="3">3</td></tr>
+</table></div></div></div>
+</section>
+<section class="panel" id="p-query">
+<h2>クエリ別成果（媒体CVが付いたクエリ＝競合の獲得ポイント）</h2>
+<div class="callout">⚠ このクエリレポートは<b>CVが付いたクエリのみ収録</b>（CV0のムダ打ち・除外漏れは分析不可）。CV数の絶対値は計測地点不明のため「どのクエリで獲れているかの分布」として読む。自社KW追加候補の直輸入元。</div>
+<div class="advblk" data-a="アッテル適性検査">
+<h3 class="adv" id="query-アッテル適性検査" style="--ac:var(--adv-0)"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査 <span class="badge">取得 2025-11-27</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="9">9</td><td data-v="706">706</td><td data-v="509960">¥509,960</td><td data-v="0.9969">99.7%</td><td class="cv sep" data-v="19.0">19.0</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="1">1</td><td data-v="2">2</td><td data-v="1594">¥1,594</td><td data-v="0.0031">0.3%</td><td class="cv sep" data-v="2.0">2.0</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="アッテル適性検査"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">アッテル</td><td>追加済み</td><td>検索</td><td data-v="366">366</td><td data-v="127647">¥127,647</td><td class="cv sep" data-v="9.0">9.0</td><td class="cv" data-v="14183.0">¥14,183</td></tr>
+<tr><td class="l">アッテル 適性 検査</td><td>追加済み</td><td>検索</td><td data-v="175">175</td><td data-v="86334">¥86,334</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="12333.4">¥12,333</td></tr>
+<tr><td class="l">適性 検査</td><td>追加済み</td><td>検索</td><td data-v="165">165</td><td data-v="295979">¥295,979</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="98659.7">¥98,660</td></tr>
+<tr><td class="l">ストレス チェック 格安</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="1594">¥1,594</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="797.0">¥797</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（4行）。</p></div>
+<div class="advblk" data-a="キュービック">
+<h3 class="adv" id="query-キュービック" style="--ac:var(--adv-1)"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック <span class="badge">取得 2025-11-27</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="18">18</td><td data-v="1165">1,165</td><td data-v="320956">¥320,956</td><td data-v="0.7109">71.1%</td><td class="cv sep" data-v="45.4">45.4</td></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="24">24</td><td data-v="514">514</td><td data-v="113903">¥113,903</td><td data-v="0.2523">25.2%</td><td class="cv sep" data-v="31.9">31.9</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="3">3</td><td data-v="61">61</td><td data-v="16616">¥16,616</td><td data-v="0.0368">3.7%</td><td class="cv sep" data-v="3.7">3.7</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="キュービック"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">cubic 適性 検査</td><td>追加済み</td><td>検索</td><td data-v="495">495</td><td data-v="140724">¥140,724</td><td class="cv sep" data-v="21.3">21.3</td><td class="cv" data-v="6597.5">¥6,597</td></tr>
+<tr><td class="l">cubic</td><td>追加済み</td><td>検索</td><td data-v="526">526</td><td data-v="130277">¥130,277</td><td class="cv sep" data-v="17.7">17.7</td><td class="cv" data-v="7360.3">¥7,360</td></tr>
+<tr><td class="l">キュービック 適性 検査</td><td>なし</td><td>P-MAX</td><td data-v="309">309</td><td data-v="66356">¥66,356</td><td class="cv sep" data-v="11.3">11.3</td><td class="cv" data-v="5846.3">¥5,846</td></tr>
+<tr><td class="l">適性 検査 cubic</td><td>なし</td><td>検索</td><td data-v="78">78</td><td data-v="20444">¥20,444</td><td class="cv sep" data-v="7.7">7.7</td><td class="cv" data-v="2665.4">¥2,665</td></tr>
+<tr><td class="l">キュービック</td><td>追加済み</td><td>検索</td><td data-v="112">112</td><td data-v="33096">¥33,096</td><td class="cv sep" data-v="6.0">6.0</td><td class="cv" data-v="5516.0">¥5,516</td></tr>
+<tr><td class="l">compass 適性 検査</td><td>追加済み</td><td>検索</td><td data-v="135">135</td><td data-v="41396">¥41,396</td><td class="cv sep" data-v="4.7">4.7</td><td class="cv" data-v="8864.2">¥8,864</td></tr>
+<tr><td class="l">cubic for web</td><td>なし</td><td>P-MAX</td><td data-v="20">20</td><td data-v="6213">¥6,213</td><td class="cv sep" data-v="4.3">4.3</td><td class="cv" data-v="1451.6">¥1,452</td></tr>
+<tr><td class="l">コンパス 適性 検査</td><td>なし</td><td>P-MAX</td><td data-v="25">25</td><td data-v="3765">¥3,765</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1882.5">¥1,882</td></tr>
+<tr><td class="l">gdl 適性 検査</td><td>なし</td><td>P-MAX</td><td data-v="7">7</td><td data-v="915">¥915</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="457.5">¥458</td></tr>
+<tr><td class="l">適性 検査 compass</td><td>なし</td><td>P-MAX</td><td data-v="21">21</td><td data-v="4097">¥4,097</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2048.5">¥2,048</td></tr>
+<tr><td class="l">適性 検査</td><td>なし</td><td>P-MAX</td><td data-v="12">12</td><td data-v="4192">¥4,192</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2096.0">¥2,096</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（11行）。</p></div>
+<div class="advblk" data-a="ミキワメ適性検査">
+<h3 class="adv" id="query-ミキワメ適性検査" style="--ac:var(--adv-2)"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査 <span class="badge">取得 2025-11-27</span></h3>
+<table><tr><th class="l">CPNタイプ｜登録状態</th><th>クエリ行数</th><th>Click</th><th>COST</th><th>構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th></tr>
+<tr><td class="l">検索｜追加済み</td><td data-v="30">30</td><td data-v="9703">9,703</td><td data-v="4180797">¥4,180,797</td><td data-v="0.8085">80.9%</td><td class="cv sep" data-v="466.0">466.0</td></tr>
+<tr><td class="l">P-MAX｜なし</td><td data-v="85">85</td><td data-v="788">788</td><td data-v="524433">¥524,433</td><td data-v="0.1014">10.1%</td><td class="cv sep" data-v="110.7">110.7</td></tr>
+<tr><td class="l">検索｜なし</td><td data-v="84">84</td><td data-v="612">612</td><td data-v="375965">¥375,965</td><td data-v="0.0727">7.3%</td><td class="cv sep" data-v="94.5">94.5</td></tr>
+<tr><td class="l">検索｜除外済み</td><td data-v="2">2</td><td data-v="187">187</td><td data-v="84121">¥84,121</td><td data-v="0.0163">1.6%</td><td class="cv sep" data-v="2.0">2.0</td></tr>
+<tr><td class="l">P-MAX｜除外済み</td><td data-v="1">1</td><td data-v="19">19</td><td data-v="5510">¥5,510</td><td data-v="0.0011">0.1%</td><td class="cv sep" data-v="1.9">1.9</td></tr>
+</table>
+<div class="fwrap"><div class="tools"><input class="flt" placeholder="クエリで絞り込み…" oninput="flt(this)"><span class="note flt-count"></span><button class="qchip" onclick="qchip(this,1,'なし',false)">未登録のみ</button><button class="qchip" onclick="qchip(this,1,'追加済み',false)">追加済みのみ</button><button class="qchip" onclick="qchip(this,2,'P-MAX',true)">P-MAX除く</button><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div><div class="tbl-scroll">
+<table class="qtbl" data-adv="ミキワメ適性検査"><tr><th class="l">クエリ</th><th>登録状態</th><th>CPNタイプ</th><th>Click</th><th>COST</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr><td class="l">ミキワメ</td><td>除外済み</td><td>P-MAX</td><td data-v="5057">5,057</td><td data-v="1947674">¥1,947,674</td><td class="cv sep" data-v="203.4">203.4</td><td class="cv" data-v="9574.6">¥9,575</td></tr>
+<tr><td class="l">ミキワメ 適性 検査</td><td>なし</td><td>P-MAX</td><td data-v="2721">2,721</td><td data-v="1109453">¥1,109,453</td><td class="cv sep" data-v="170.6">170.6</td><td class="cv" data-v="6503.6">¥6,504</td></tr>
+<tr><td class="l">適性 検査</td><td>追加済み</td><td>検索</td><td data-v="1096">1,096</td><td data-v="773611">¥773,611</td><td class="cv sep" data-v="33.5">33.5</td><td class="cv" data-v="23092.9">¥23,093</td></tr>
+<tr><td class="l">人材 経営 ラボ</td><td>追加済み</td><td>検索</td><td data-v="44">44</td><td data-v="16120">¥16,120</td><td class="cv sep" data-v="22.0">22.0</td><td class="cv" data-v="732.7">¥733</td></tr>
+<tr><td class="l">適性 検査 ミキワメ</td><td>なし</td><td>検索</td><td data-v="503">503</td><td data-v="204448">¥204,448</td><td class="cv sep" data-v="21.6">21.6</td><td class="cv" data-v="9478.3">¥9,478</td></tr>
+<tr><td class="l">disc 理論</td><td>なし</td><td>P-MAX</td><td data-v="3">3</td><td data-v="3790">¥3,790</td><td class="cv sep" data-v="12.0">12.0</td><td class="cv" data-v="315.8">¥316</td></tr>
+<tr><td class="l">ミキワメ サーベイ</td><td>追加済み</td><td>検索</td><td data-v="71">71</td><td data-v="22964">¥22,964</td><td class="cv sep" data-v="12.0">12.0</td><td class="cv" data-v="1913.7">¥1,914</td></tr>
+<tr><td class="l">https toughness armg service com</td><td>なし</td><td>検索</td><td data-v="52">52</td><td data-v="55136">¥55,136</td><td class="cv sep" data-v="8.3">8.3</td><td class="cv" data-v="6619.0">¥6,619</td></tr>
+<tr><td class="l">性格 診断</td><td>なし</td><td>P-MAX</td><td data-v="157">157</td><td data-v="57719">¥57,719</td><td class="cv sep" data-v="7.0">7.0</td><td class="cv" data-v="8245.6">¥8,246</td></tr>
+<tr><td class="l">適性 検査 と は</td><td>なし</td><td>検索</td><td data-v="208">208</td><td data-v="74921">¥74,921</td><td class="cv sep" data-v="6.3">6.3</td><td class="cv" data-v="11835.9">¥11,836</td></tr>
+<tr><td class="l">https app mikiwame com</td><td>なし</td><td>P-MAX</td><td data-v="6">6</td><td data-v="3293">¥3,293</td><td class="cv sep" data-v="5.5">5.5</td><td class="cv" data-v="604.2">¥604</td></tr>
+<tr><td class="l">適性 検査 採用</td><td>なし</td><td>P-MAX</td><td data-v="5">5</td><td data-v="12239">¥12,239</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="2447.8">¥2,448</td></tr>
+<tr><td class="l">不 適切 スカウター</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="421">¥421</td><td class="cv sep" data-v="5.0">5.0</td><td class="cv" data-v="84.2">¥84</td></tr>
+<tr><td class="l">ミキワメ 料金</td><td>追加済み</td><td>検索</td><td data-v="59">59</td><td data-v="23710">¥23,710</td><td class="cv sep" data-v="4.3">4.3</td><td class="cv" data-v="5475.8">¥5,476</td></tr>
+<tr><td class="l">https chikaku navi com carrier</td><td>なし</td><td>P-MAX</td><td data-v="10">10</td><td data-v="20299">¥20,299</td><td class="cv sep" data-v="4.3">4.3</td><td class="cv" data-v="4688.0">¥4,688</td></tr>
+<tr><td class="l">talsqi 適性 検査</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="721">¥721</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="180.2">¥180</td></tr>
+<tr><td class="l">https www gallupstrengthscenter com</td><td>なし</td><td>P-MAX</td><td data-v="58">58</td><td data-v="67602">¥67,602</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="16900.5">¥16,900</td></tr>
+<tr><td class="l">tpi 診断</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="1621">¥1,621</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="405.2">¥405</td></tr>
+<tr><td class="l">ミキワメ 適性 検査 結果</td><td>なし</td><td>P-MAX</td><td data-v="3">3</td><td data-v="1441">¥1,441</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="360.2">¥360</td></tr>
+<tr><td class="l">クリフトン ストレングス</td><td>なし</td><td>P-MAX</td><td data-v="245">245</td><td data-v="122882">¥122,882</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="30720.5">¥30,720</td></tr>
+<tr><td class="l">spi</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="5108">¥5,108</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="1277.0">¥1,277</td></tr>
+<tr><td class="l">noreply altpaper net</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="5559">¥5,559</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="1389.8">¥1,390</td></tr>
+<tr><td class="l">適性 検査 サンプル</td><td>なし</td><td>検索</td><td data-v="92">92</td><td data-v="39469">¥39,469</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="9867.2">¥9,867</td></tr>
+<tr><td class="l">ワーク エンゲージメント 従業 員 エンゲージメント 違い</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="124">¥124</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="31.0">¥31</td></tr>
+<tr><td class="l">採用 適性 検査</td><td>なし</td><td>P-MAX</td><td data-v="24">24</td><td data-v="41983">¥41,983</td><td class="cv sep" data-v="4.0">4.0</td><td class="cv" data-v="10548.5">¥10,548</td></tr>
+<tr><td class="l">web 受検</td><td>なし</td><td>P-MAX</td><td data-v="4">4</td><td data-v="3208">¥3,208</td><td class="cv sep" data-v="3.1">3.1</td><td class="cv" data-v="1034.8">¥1,035</td></tr>
+<tr><td class="l">mikiwame</td><td>追加済み</td><td>検索</td><td data-v="217">217</td><td data-v="81187">¥81,187</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="27062.3">¥27,062</td></tr>
+<tr><td class="l">esp 診断</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="633">¥633</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="211.0">¥211</td></tr>
+<tr><td class="l">適性 検査 nr</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="3778">¥3,778</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1259.3">¥1,259</td></tr>
+<tr><td class="l">ストレングス ファインダー 2.0</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="1120">¥1,120</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="373.3">¥373</td></tr>
+<tr><td class="l">disc 診断 ツール</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="884">¥884</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="294.7">¥295</td></tr>
+<tr><td class="l">https wity tokyo pha</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="11640">¥11,640</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="3880.0">¥3,880</td></tr>
+<tr><td class="l">mikiwame test</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="1352">¥1,352</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="450.7">¥451</td></tr>
+<tr><td class="l">適性 検査 一般 教養</td><td>なし</td><td>P-MAX</td><td data-v="2">2</td><td data-v="752">¥752</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="250.7">¥251</td></tr>
+<tr><td class="l">適性 検査 web</td><td>なし</td><td>検索</td><td data-v="16">16</td><td data-v="11710">¥11,710</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="3903.3">¥3,903</td></tr>
+<tr><td class="l">ユニポス</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="6315">¥6,315</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="2105.0">¥2,105</td></tr>
+<tr><td class="l">ミ キワメ サーベイ</td><td>なし</td><td>検索</td><td data-v="5">5</td><td data-v="1256">¥1,256</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="418.7">¥419</td></tr>
+<tr><td class="l">エンゲージメント サーベイ</td><td>追加済み</td><td>検索</td><td data-v="13">13</td><td data-v="27597">¥27,597</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="9199.0">¥9,199</td></tr>
+<tr><td class="l">適職 診断</td><td>なし</td><td>P-MAX</td><td data-v="107">107</td><td data-v="68654">¥68,654</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="22884.7">¥22,885</td></tr>
+<tr><td class="l">https www empweb21 com</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="2001">¥2,001</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="667.0">¥667</td></tr>
+<tr><td class="l">見極め 適性 検査</td><td>なし</td><td>検索</td><td data-v="17">17</td><td data-v="5501">¥5,501</td><td class="cv sep" data-v="3.0">3.0</td><td class="cv" data-v="1833.7">¥1,834</td></tr>
+<tr><td class="l">不 適性 検査 スカウター</td><td>なし</td><td>P-MAX</td><td data-v="3">3</td><td data-v="4772">¥4,772</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2386.0">¥2,386</td></tr>
+<tr><td class="l">dpi 適性 検査 と は</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="3545">¥3,545</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1772.5">¥1,772</td></tr>
+<tr><td class="l">適性 検査 compass</td><td>なし</td><td>検索</td><td data-v="6">6</td><td data-v="3901">¥3,901</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1950.5">¥1,950</td></tr>
+<tr><td class="l">スカウター 適性 検査</td><td>なし</td><td>P-MAX</td><td data-v="4">4</td><td data-v="4281">¥4,281</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2140.5">¥2,140</td></tr>
+<tr><td class="l">適性 検査 サービス</td><td>なし</td><td>検索</td><td data-v="2">2</td><td data-v="6957">¥6,957</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3478.5">¥3,478</td></tr>
+<tr><td class="l">性格 検査 対策</td><td>なし</td><td>P-MAX</td><td data-v="10">10</td><td data-v="3928">¥3,928</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1964.0">¥1,964</td></tr>
+<tr><td class="l">http toughness armg service com</td><td>なし</td><td>検索</td><td data-v="14">14</td><td data-v="11280">¥11,280</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="5640.0">¥5,640</td></tr>
+<tr><td class="l">フリー ランス 適性 診断</td><td>なし</td><td>P-MAX</td><td data-v="33">33</td><td data-v="11898">¥11,898</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="5949.0">¥5,949</td></tr>
+<tr><td class="l">適性 検査 社員 向け</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="13000">¥13,000</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="6500.0">¥6,500</td></tr>
+<tr><td class="l">販売 員 適性 検査</td><td>なし</td><td>P-MAX</td><td data-v="1">1</td><td data-v="4899">¥4,899</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2449.5">¥2,450</td></tr>
+<tr><td class="l">コーナー 人事</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="14412">¥14,412</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="7206.0">¥7,206</td></tr>
+<tr><td class="l">適性 検査 みきわめ</td><td>なし</td><td>検索</td><td data-v="11">11</td><td data-v="4209">¥4,209</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2104.5">¥2,104</td></tr>
+<tr><td class="l">https tracs jp</td><td>なし</td><td>P-MAX</td><td data-v="160">160</td><td data-v="113665">¥113,665</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="56832.5">¥56,832</td></tr>
+<tr><td class="l">リーディング マーク ミキワメ</td><td>なし</td><td>検索</td><td data-v="100">100</td><td data-v="41162">¥41,162</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="20581.0">¥20,581</td></tr>
+<tr><td class="l">アス みつ 適職 診断</td><td>なし</td><td>P-MAX</td><td data-v="14">14</td><td data-v="11388">¥11,388</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="5694.0">¥5,694</td></tr>
+<tr><td class="l">性格 診断 面接</td><td>なし</td><td>検索</td><td data-v="9">9</td><td data-v="3228">¥3,228</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="1614.0">¥1,614</td></tr>
+<tr><td class="l">適性 診断 analyzeu+</td><td>なし</td><td>P-MAX</td><td data-v="3">3</td><td data-v="4921">¥4,921</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2460.5">¥2,460</td></tr>
+<tr><td class="l">コンピテンシー 診断</td><td>なし</td><td>P-MAX</td><td data-v="45">45</td><td data-v="30503">¥30,503</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="15251.5">¥15,252</td></tr>
+<tr><td class="l">新卒 採用 適性 検査</td><td>なし</td><td>検索</td><td data-v="4">4</td><td data-v="6822">¥6,822</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="3411.0">¥3,411</td></tr>
+<tr><td class="l">エンゲージメント 調査 と は</td><td>なし</td><td>検索</td><td data-v="1">1</td><td data-v="4022">¥4,022</td><td class="cv sep" data-v="2.0">2.0</td><td class="cv" data-v="2011.0">¥2,011</td></tr>
+<tr><td class="l">ミキワメ 検査</td><td>なし</td><td>検索</td><td data-v="13">13</td><td data-v="5139">¥5,139</td><td class="cv sep" data-v="1.8">1.8</td><td class="cv" data-v="2808.2">¥2,808</td></tr>
+<tr><td class="l">採用 時 適性 検査</td><td>なし</td><td>検索</td><td data-v="3">3</td><td data-v="4348">¥4,348</td><td class="cv sep" data-v="1.0">1.0</td><td class="cv" data-v="4348.0">¥4,348</td></tr>
+</table></div></div><p class="note">CV上位50とCOST上位50の和集合（63行）。</p></div>
+</section>
+<section class="panel" id="p-brand">
+<h2>指名KW / 一般KW の比率と成果</h2><p class="note">判定: キャンペーン名（指名/商標/Brand）＋KW内ブランド語</p>
+<h3>取得 2025-11-27 <span class="badge">最新</span></h3>
+<div class="fwrap"><div class="tools"><button class="btn" onclick="cpy(this)">📋 TSVコピー</button></div>
+<table><tr><th class="l">広告主</th><th class="l">区分</th><th>IMP</th><th>Click</th><th>CTR</th><th>CPC</th><th>COST</th><th>費用構成比</th><th class="cv sep" title="社間比較禁止・社内相対の参考値">CV</th><th class="cv" title="社間比較禁止・社内相対の参考値">CVR</th><th class="cv" title="社間比較禁止・社内相対の参考値">CPA</th></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l">指名</td><td data-v="17489">17,489</td><td data-v="965">965</td><td data-v="0.0552">5.5%</td><td data-v="873.9">¥874</td><td data-v="843340">¥843,340</td><td data-v="1.0000">100.0%</td><td class="cv sep" data-v="38">38</td><td class="cv" data-v="0.0399">4.0%</td><td class="cv" data-v="21904.9">¥21,905</td></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td class="l">一般</td><td data-v="0">0</td><td data-v="0">0</td><td data-v="-1">--</td><td data-v="-1">--</td><td data-v="0">¥0</td><td data-v="0.0000">0.0%</td><td class="cv sep" data-v="0">0</td><td class="cv" data-v="-1">--</td><td class="cv" data-v="-1">--</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l">指名</td><td data-v="3223">3,223</td><td data-v="393">393</td><td data-v="0.1219">12.2%</td><td data-v="238.4">¥238</td><td data-v="93710">¥93,710</td><td data-v="0.1970">19.7%</td><td class="cv sep" data-v="16">16</td><td class="cv" data-v="0.0396">4.0%</td><td class="cv" data-v="6022.5">¥6,022</td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td class="l">一般</td><td data-v="8230">8,230</td><td data-v="1347">1,347</td><td data-v="0.1637">16.4%</td><td data-v="283.5">¥283</td><td data-v="381865">¥381,865</td><td data-v="0.8030">80.3%</td><td class="cv sep" data-v="53">53</td><td class="cv" data-v="0.0390">3.9%</td><td class="cv" data-v="7269.5">¥7,269</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">指名</td><td data-v="166785">166,785</td><td data-v="6931">6,931</td><td data-v="0.0416">4.2%</td><td data-v="737.1">¥737</td><td data-v="5108817">¥5,108,817</td><td data-v="0.5456">54.6%</td><td class="cv sep" data-v="288">288</td><td class="cv" data-v="0.0415">4.2%</td><td class="cv" data-v="17757.4">¥17,757</td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td class="l">一般</td><td data-v="72713">72,713</td><td data-v="10513">10,513</td><td data-v="0.1446">14.5%</td><td data-v="404.8">¥405</td><td data-v="4255489">¥4,255,489</td><td data-v="0.4544">45.4%</td><td class="cv sep" data-v="542">542</td><td class="cv" data-v="0.0516">5.2%</td><td class="cv" data-v="7846.0">¥7,846</td></tr>
+</table></div>
+</section>
+<section class="panel" id="p-mt">
+<h2>マッチタイプ構成の推移（費用ベース）</h2><p class="legend"><span><i class="mt-i"></i>インテントマッチ</span><span><i class="mt-p"></i>フレーズ一致</span><span><i class="mt-e"></i>完全一致</span></p>
+<table><tr><th class="l">広告主</th><th>取得 2025-11-27</th></tr>
+<tr data-a="アッテル適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-0)"></span>アッテル適性検査</td><td><div class="bar"><div class="mt-i" style="width:1.0%" title="インテント マッチ 1.0%"></div><div class="mt-p" style="width:60.3%" title="フレーズ一致 60.3%"></div><div class="mt-e" style="width:38.7%" title="完全一致 38.7%"></div></div><div class="note">インテント1% / フレーズ60% / 完全39%</div></td></tr>
+<tr data-a="キュービック"><td class="l"><span class="adv-dot" style="background:var(--adv-1)"></span>キュービック</td><td><div class="bar"><div class="mt-i" style="width:100.0%" title="インテント マッチ 100.0%"></div></div><div class="note">インテント100%</div></td></tr>
+<tr data-a="ミキワメ適性検査"><td class="l"><span class="adv-dot" style="background:var(--adv-2)"></span>ミキワメ適性検査</td><td><div class="bar"><div class="mt-i" style="width:38.0%" title="インテント マッチ 38.0%"></div><div class="mt-p" style="width:11.6%" title="フレーズ一致 11.6%"></div><div class="mt-e" style="width:50.4%" title="完全一致 50.4%"></div></div><div class="note">インテント38% / フレーズ12% / 完全50%</div></td></tr>
+</table>
+</section>
+<section class="panel" id="p-dq">
+<h2>データ品質パネル（比較禁止ルールの正本）</h2>
+<div class="callout danger"><b>比較禁止ルール（全文）</b><br>CV・CVR・CPAは計測地点が社ごとに異なるため<b>社間比較禁止</b>（表内グレー表示＝同一社内の相対参考値）。比較してよいのはCPC・CTR・QS・IS・費用構成比・構造のみ。CVR15%超はマイクロCV（LINE登録等）の可能性大。字形置換カスタマイザ等の審査回避手法は記録のみ・模倣提案は絶対禁止。数値を提案資料へ転記する前にこのルールを再確認すること。</div>
+<div class="callout"><b>取得 2025-11-27</b>（20251127_レポート依頼用（適性テスト）_セレス様__1NzCwBT8.xlsx）<br>取得不可（空タブ）: SPI<br>端数月: 2025-11（27日まで）<br>クエリレポートはCV&gt;0のクエリのみ収録（CV0クエリ0件）→ ムダ打ち・除外漏れ分析は不可</div>
+</section>
+</div><script>
+function showTab(id, push){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('act', p.id === 'p-' + id); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('act', t.dataset.p === id); });
+  if (push !== false) history.replaceState(null, '', '#' + id);
+  window.scrollTo(0, 0);
+}
+function flt(inp){
+  var q = inp.value.toLowerCase();
+  var wrap = inp.closest('.fwrap');
+  var trs = wrap.querySelectorAll('table tr');
+  var n = 0, tot = 0;
+  for (var i = 0; i < trs.length; i++) {
+    var tr = trs[i];
+    if (!tr.querySelector('td')) continue;
+    if (tr.dataset.qhide === '1') continue;
+    tot++;
+    var hit = tr.textContent.toLowerCase().indexOf(q) >= 0;
+    tr.style.display = hit ? '' : 'none';
+    if (hit) n++;
+  }
+  var c = wrap.querySelector('.flt-count');
+  if (c) c.textContent = q ? n + '件 / 全' + tot + '件' : '';
+}
+function srt(th){
+  var table = th.closest('table');
+  var trs = Array.prototype.slice.call(table.querySelectorAll('tr')).filter(function(tr){ return tr.querySelector('td'); });
+  var idx = Array.prototype.indexOf.call(th.parentNode.children, th);
+  var dir = th.dataset.dir === 'a' ? 'd' : 'a';
+  table.querySelectorAll('th').forEach(function(t){ delete t.dataset.dir; });
+  th.dataset.dir = dir;
+  trs.sort(function(x, y){
+    var a = x.children[idx], b = y.children[idx];
+    if (!a || !b) return 0;
+    var av = a.dataset.v !== undefined ? parseFloat(a.dataset.v) : NaN;
+    var bv = b.dataset.v !== undefined ? parseFloat(b.dataset.v) : NaN;
+    var r = (!isNaN(av) && !isNaN(bv)) ? av - bv : a.textContent.localeCompare(b.textContent, 'ja');
+    return dir === 'a' ? r : -r;
+  });
+  var parent = trs[0].parentNode;
+  trs.forEach(function(tr){ parent.appendChild(tr); });
+}
+function cpy(btn){
+  var wrap = btn.closest('.fwrap') || btn.parentElement.parentElement;
+  var table = wrap.querySelector('table');
+  var adv = table.dataset.adv || '';
+  var lines = []; var hasCv = false;
+  table.querySelectorAll('tr').forEach(function(tr, i){
+    if (tr.style.display === 'none') return;
+    var cells = [];
+    tr.querySelectorAll('th,td').forEach(function(c){
+      if (c.classList.contains('cv')) hasCv = true;
+      cells.push(c.dataset.v !== undefined ? c.dataset.v : c.textContent.trim());
+    });
+    if (adv) cells.unshift(i === 0 ? '広告主' : adv);
+    lines.push(cells.join('\t'));
+  });
+  if (hasCv) lines.push('※CV/CVR/CPAは計測地点が社ごとに異なるため社間比較禁止');
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    var t = btn.textContent; btn.textContent = '✓ コピー済み';
+    setTimeout(function(){ btn.textContent = t; }, 1200);
+  });
+}
+function advSel(chip){
+  var name = chip.dataset.t;
+  document.querySelectorAll('.achip').forEach(function(c){ c.classList.toggle('on', c === chip); });
+  document.querySelectorAll('.advblk').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('tr[data-a]').forEach(function(tr){
+    tr.style.display = (name === '*' || tr.dataset.a === name) ? '' : 'none';
+  });
+  document.querySelectorAll('.serp-col[data-a]').forEach(function(b){
+    b.style.display = (name === '*' || b.dataset.a === name) ? '' : 'none';
+  });
+}
+function qchip(btn, col, val, neg){
+  var on = btn.classList.toggle('on');
+  btn.parentElement.querySelectorAll('.qchip').forEach(function(b){ if (b !== btn) b.classList.remove('on'); });
+  var wrap = btn.closest('.fwrap');
+  wrap.querySelectorAll('table tr').forEach(function(tr){
+    var tds = tr.querySelectorAll('td');
+    if (!tds.length) return;
+    var ok = true;
+    if (on) {
+      var t = tds[col] ? tds[col].textContent : '';
+      ok = neg ? t.indexOf(val) < 0 : t.indexOf(val) >= 0;
+    }
+    tr.dataset.qhide = ok ? '' : '1';
+    tr.style.display = ok ? '' : 'none';
+  });
+  var inp = wrap.querySelector('.flt');
+  if (inp && inp.value) flt(inp);
+}
+function xsearch(inp){
+  var q = inp.value.toLowerCase().trim();
+  var res = document.getElementById('xres');
+  res.innerHTML = '';
+  res.style.display = q.length < 2 ? 'none' : 'block';
+  if (q.length < 2) return;
+  ['kwtbl', 'qtbl'].forEach(function(cls){
+    var rows = [];
+    document.querySelectorAll('table.' + cls).forEach(function(t){
+      var adv = t.dataset.adv || '';
+      t.querySelectorAll('tr').forEach(function(tr){
+        var td = tr.querySelector('td.l');
+        if (td && td.textContent.toLowerCase().indexOf(q) >= 0 && rows.length < 60) {
+          rows.push('<tr><td class="l"><b>' + adv + '</b></td>' + tr.innerHTML + '</tr>');
+        }
+      });
+    });
+    if (rows.length) {
+      var head = cls === 'kwtbl' ? 'KWレポート一致' : 'クエリレポート一致';
+      res.innerHTML += '<h3>' + head + '（' + rows.length + '件）</h3><div class="tbl-scroll"><table><tr><th class="l">広告主</th>' +
+        document.querySelector('table.' + cls + ' tr').innerHTML + '</tr>' + rows.join('') + '</table></div>';
+    }
+  });
+  if (!res.innerHTML) res.innerHTML = '<p class="note">一致なし</p>';
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var h = location.hash.replace('#', '');
+  var first = document.querySelector('.tab');
+  if (h && document.getElementById('p-' + h)) showTab(h, false);
+  else if (first) showTab(first.dataset.p, false);
+});
+</script>
+<button id="topbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="トップへ">↑</button></body></html>
