@@ -1,35 +1,40 @@
 <!DOCTYPE html>
-<html lang="ja"><head>
+<html lang="ja" data-theme="light"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>エニピル 薬剤×商材カテゴリ 分類管理表</title>
 <style>
 :root{
-  --bg:#f4f6fb; --panel:#ffffff; --panel2:#f0f3fa; --ink:#1a2233; --sub:#5a6478; --line:#dde3ee;
-  --c-low:#2f7de1; --c-mid:#8b5cf6; --c-mini:#12b3a6; --c-after:#e2748a;
-  --sen:#0e7bd4; --ge:#12a17a; --warn:#d98a00;
-  --yes:#1ba672; --part:#d98a00; --no:#c2c8d4; --unk:#8a6fd6;
-  --shadow:0 2px 10px rgba(30,45,80,.08);
+  --bg:#eef9f6; --panel:#ffffff; --panel2:#f4fbf9; --ink:#3d4a48; --sub:#8fa8a2; --line:#d9efe9;
+  --c-low:#2fbfb0; --c-mid:#b79aec; --c-mini:#f2798c; --c-after:#e0956a;
+  --sen:#2fbfb0; --ge:#4a9b84; --warn:#c9564a;
+  --yes:#3aa88f; --part:#d98a00; --no:#c2d4ce; --unk:#b79aec;
+  --serif:'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho','YuMincho',serif;
+  --shadow:0 1px 3px rgba(50,120,110,.09);
+  --brandgrad:linear-gradient(120deg,#e9f9f5 0%,#f3f0fb 55%,#fdeef1 100%);
+  --accentgrad:linear-gradient(90deg,#3ecfc0,#f88a9b);
 }
 [data-theme=dark]{
-  --bg:#0b0f1a; --panel:#131a2b; --panel2:#0f1626; --ink:#e8edf7; --sub:#93a0bd; --line:#25304a;
-  --c-low:#4f9dff; --c-mid:#a884ff; --c-mini:#2ad6c6; --c-after:#ff8fa6;
-  --sen:#4f9dff; --ge:#2ad6c6; --warn:#ffb23e;
-  --yes:#2ad696; --part:#ffb23e; --no:#3a465f; --unk:#b79bff;
+  --bg:#0e1a19; --panel:#152524; --panel2:#0f1e1d; --ink:#e6f2ef; --sub:#8fb4ad; --line:#22403c;
+  --c-low:#3fd8c6; --c-mid:#c3a8ff; --c-mini:#ff8fa6; --c-after:#f0b07a;
+  --sen:#3fd8c6; --ge:#4fd0a8; --warn:#ff8a6a;
+  --yes:#3fd8b0; --part:#ffb23e; --no:#3a504b; --unk:#c3a8ff;
+  --serif:'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho','YuMincho',serif;
   --shadow:0 2px 16px rgba(0,0,0,.45);
+  --brandgrad:linear-gradient(120deg,#123230,#241f3a 55%,#3a1f2b);
+  --accentgrad:linear-gradient(90deg,#3ecfc0,#f88a9b);
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
-  --bg:#0b0f1a; --panel:#131a2b; --panel2:#0f1626; --ink:#e8edf7; --sub:#93a0bd; --line:#25304a;
-  --c-low:#4f9dff; --c-mid:#a884ff; --c-mini:#2ad6c6; --c-after:#ff8fa6;
-  --sen:#4f9dff; --ge:#2ad6c6; --warn:#ffb23e;
-  --yes:#2ad696; --part:#ffb23e; --no:#3a465f; --unk:#b79bff; --shadow:0 2px 16px rgba(0,0,0,.45);
-}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif;line-height:1.6}
-.wrap{max-width:1240px;margin:0 auto;padding:24px 18px 80px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','Hiragino Kaku Gothic ProN',Meiryo,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:0 18px 80px}
+.brandbar{display:flex;align-items:center;gap:13px;background:var(--brandgrad);border:1px solid var(--line);border-radius:0 0 18px 18px;padding:16px 22px;margin-bottom:22px;box-shadow:var(--shadow)}
+.brandbar .logomark{flex:0 0 auto;display:flex}
+.brandbar .wordmark{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:.06em;color:var(--ink);line-height:1;display:flex;flex-direction:column;gap:4px}
+.brandbar .wm-sub{font-family:'Noto Sans JP',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.32em;color:var(--sub)}
+.brandbar .spacer{flex:1}
 header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:8px}
-h1{font-size:26px;margin:0 0 4px;letter-spacing:.02em}
+h1{font-family:var(--serif);font-size:25px;margin:0 0 5px;letter-spacing:.03em;font-weight:700}
 .lead{color:var(--sub);font-size:13.5px;margin:0}
 .meta{color:var(--sub);font-size:12px;margin-top:6px}
 .theme{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:20px;padding:7px 14px;cursor:pointer;font-size:12.5px;box-shadow:var(--shadow)}
@@ -40,7 +45,7 @@ h1{font-size:26px;margin:0 0 4px;letter-spacing:.02em}
 .camp-head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
 .camp-title{display:flex;align-items:center;gap:12px}
 .camp-title .dot{width:14px;height:14px;border-radius:50%;background:var(--cc);box-shadow:0 0 12px var(--cc)}
-.camp-title h2{font-size:19px;margin:0;display:flex;align-items:center;gap:10px}
+.camp-title h2{font-family:var(--serif);font-size:19px;margin:0;display:flex;align-items:center;gap:10px;font-weight:700}
 .camp-title p{margin:0;color:var(--sub);font-size:12.5px}
 .cnt{font-size:12px;background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:1px 10px;color:var(--sub);font-weight:600}
 .soon{font-size:11px;background:var(--c-after);color:#fff;border-radius:20px;padding:2px 10px}
@@ -54,7 +59,7 @@ h1{font-size:26px;margin:0 0 4px;letter-spacing:.02em}
 .card-img img{max-width:100%;max-height:118px;object-fit:contain}
 .noimg{color:#aaa;font-size:12px}
 .card-body{padding:12px 13px 13px}
-.dname{font-size:15.5px;font-weight:700;margin-bottom:2px}
+.dname{font-family:var(--serif);font-size:16px;font-weight:700;margin-bottom:2px}
 .alias{font-size:11px;color:var(--sub);margin-bottom:7px}
 .tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
 .chip{font-size:10.5px;padding:2px 8px;border-radius:20px;background:var(--panel);border:1px solid var(--line);color:var(--sub)}
@@ -65,7 +70,7 @@ h1{font-size:26px;margin:0 0 4px;letter-spacing:.02em}
 .spec th{text-align:left;color:var(--sub);font-weight:600;padding:3px 6px 3px 0;white-space:nowrap;vertical-align:top;width:64px}
 .spec td{padding:3px 0;vertical-align:top}
 .note{margin-top:9px;font-size:11.5px;background:rgba(217,138,0,.1);border-left:3px solid var(--warn);padding:7px 9px;border-radius:5px;color:var(--ink)}
-h2.sec{font-size:20px;margin:38px 0 14px;padding-left:12px;border-left:5px solid var(--c-low)}
+h2.sec{font-family:var(--serif);font-size:21px;font-weight:700;margin:38px 0 14px;padding-left:14px;border-left:5px solid transparent;border-image:var(--accentgrad) 1}
 .tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
 table.matrix,table.tk{border-collapse:collapse;width:100%;font-size:13px;min-width:640px}
 .matrix th,.matrix td,.tk th,.tk td{border:1px solid var(--line);padding:9px 11px;text-align:center}
@@ -83,13 +88,18 @@ footer{margin-top:30px;color:var(--sub);font-size:11.5px;text-align:center;line-
 </style></head>
 <body>
 <div class="wrap">
+  <div class="brandbar">
+    <span class="logomark"><svg width="42" height="42" viewBox="0 0 40 40" aria-hidden="true"><defs><mask id="lgm"><rect x="0" y="0" width="40" height="40" fill="#fff"/><circle cx="13.5" cy="12.5" r="12" fill="#000"/></mask></defs><circle cx="23" cy="21" r="15.5" fill="#b79aec" mask="url(#lgm)"/><circle cx="13" cy="13" r="8.8" fill="#47e2d0"/></svg></span>
+    <span class="wordmark">anypill<span class="wm-sub">PILL CATEGORY GUIDE</span></span>
+    <span class="spacer"></span>
+    <button class="theme" onclick="toggleTheme()">🌓 テーマ切替</button>
+  </div>
   <header class="top">
     <div>
       <h1>エニピル 薬剤 × 商材カテゴリ 分類管理表</h1>
       <p class="lead">Google Ads キャンペーン設計用マスタ／低用量・中用量・ミニピルの3ジャンル振り分け＋KWコピー機能つき</p>
       <p class="meta">取扱ラインナップ出典：<b>エニピル公式・取扱いピル一覧</b>（any-pill.com/all-pill）｜医療分類は複数の医療機関・製薬ソースでクロス検証｜作成 2026-07-23</p>
     </div>
-    <button class="theme" onclick="toggleTheme()">🌓 テーマ切替</button>
   </header>
 
   <div class="legend">
@@ -397,9 +407,8 @@ footer{margin-top:30px;color:var(--sub);font-size:11.5px;text-align:center;line-
 <script>
 function toggleTheme(){
   var r=document.documentElement;
-  var cur=r.getAttribute('data-theme');
-  var next = cur==='dark'?'light':(cur==='light'?'dark':(matchMedia('(prefers-color-scheme:dark)').matches?'light':'dark'));
-  r.setAttribute('data-theme',next);
+  var cur=r.getAttribute('data-theme')||'light';
+  r.setAttribute('data-theme', cur==='light'?'dark':'light');
 }
 document.querySelectorAll('.cbtn').forEach(function(b){
   b.addEventListener('click',function(){
